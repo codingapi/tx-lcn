@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>TxManager v3.0</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+    <style>
+        .container{
+            margin-top:20px;
+        }
+        .table-responsive{
+            margin-top:30px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h3 class="text-center">TxManagerV3.0 服务已启动</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <colgroup>
+                <col class="col-xs-4"/>
+                <col class="col-xs-8"/>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>属性名称</th>
+                <th>属性值</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">
+                    Socket对外服务IP
+                </th>
+                <td><span th:text="${info.ip}"></span></td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    Socket对外服务端口
+                </th>
+                <td><span th:text="${info.port}"></span></td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    最大连接数
+                </th>
+                <td><span th:text="${info.maxConnection}"></span></td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    当前连接数
+                </th>
+                <td><span th:text="${info.nowConnection}"></span></td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    TxManager模块心跳间隔时间(秒)
+                </th>
+                <td><span th:text="${info.transactionNettyHeartTime}"></span></td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    TxManager模块通讯最大等待时间(秒)
+                </th>
+                <td><span th:text="${info.transactionNettyDelayTime}"></span></td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    redis存储最大时间(秒)
+                </th>
+                <td><span th:text="${info.redisSaveMaxTime}"></span></td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    负载均衡服务器地址
+                </th>
+                <td><span th:text="${info.slbList}"></span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
