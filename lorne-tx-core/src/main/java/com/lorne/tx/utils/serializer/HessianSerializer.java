@@ -1,8 +1,10 @@
-package com.lorne.tx.serializer;
+package com.lorne.tx.utils.serializer;
 
 import com.caucho.hessian.io.Hessian2Input;
 import com.caucho.hessian.io.Hessian2Output;
-import com.lorne.tx.exception.TransactionException;
+
+import com.lorne.core.framework.exception.SerializerException;
+
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,9 +19,11 @@ import java.io.IOException;
  * @version 1.0
  * @since JDK 1.8
  */
-public class HessianSerializer implements ObjectSerializer {
+public class HessianSerializer implements ISerializer {
+
+
     @Override
-    public byte[] serialize(Object obj) throws TransactionException {
+    public byte[] serialize(Object obj) throws SerializerException {
         ByteArrayOutputStream baos;
         try {
             baos = new ByteArrayOutputStream();
@@ -28,20 +32,20 @@ public class HessianSerializer implements ObjectSerializer {
             hos.flush();
             hos.close();
         } catch (IOException ex) {
-            throw new TransactionException("Hessian serialize error " + ex.getMessage());
+            throw new SerializerException("Hessian serialize error " + ex.getMessage());
         }
         return baos.toByteArray();
     }
 
     @Override
-    public <T> T deSerialize(byte[] param, Class<T> clazz) throws TransactionException {
+    public <T> T deSerialize(byte[] param, Class<T> clazz) throws SerializerException {
         ByteArrayInputStream bios;
         try {
             bios = new ByteArrayInputStream(param);
             Hessian2Input his = new Hessian2Input(bios);
             return (T) his.readObject();
         } catch (IOException e) {
-            throw new TransactionException("Hessian deSerialize error " + e.getMessage());
+            throw new SerializerException("Hessian deSerialize error " + e.getMessage());
         }
     }
 }
