@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.lorne.tx.serializer;
+package com.lorne.tx.utils.serializer;
 
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
-import com.lorne.tx.exception.TransactionException;
+
+
+import com.lorne.core.framework.exception.SerializerException;
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 
@@ -34,7 +36,7 @@ import java.io.ByteArrayOutputStream;
  * @version 1.0
  * @since JDK 1.8
  */
-public class ProtostuffSerializer implements ObjectSerializer {
+public class ProtostuffSerializer implements ISerializer {
     private static final SchemaCache cachedSchema = SchemaCache.getInstance();
     private static final Objenesis objenesis = new ObjenesisStd(true);
 
@@ -48,10 +50,10 @@ public class ProtostuffSerializer implements ObjectSerializer {
      *
      * @param obj 需要序更列化的对象
      * @return byte []
-     * @throws TransactionException
+     * @throws SerializerException
      */
     @Override
-    public byte[] serialize(Object obj) throws TransactionException {
+    public byte[] serialize(Object obj) throws SerializerException {
         Class cls = obj.getClass();
         LinkedBuffer buffer = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -59,7 +61,7 @@ public class ProtostuffSerializer implements ObjectSerializer {
             Schema schema = getSchema(cls);
             ProtostuffIOUtil.writeTo(outputStream, obj, schema, buffer);
         } catch (Exception e) {
-            throw new TransactionException(e.getMessage(), e);
+            throw new SerializerException(e.getMessage(), e);
         } finally {
             buffer.clear();
         }
@@ -72,10 +74,10 @@ public class ProtostuffSerializer implements ObjectSerializer {
      * @param param 需要反序列化的byte []
      * @param clazz
      * @return 对象
-     * @throws TransactionException
+     * @throws SerializerException
      */
     @Override
-    public <T> T deSerialize(byte[] param, Class<T> clazz) throws TransactionException {
+    public <T> T deSerialize(byte[] param, Class<T> clazz) throws SerializerException {
         T object;
         try {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(param);
@@ -85,7 +87,7 @@ public class ProtostuffSerializer implements ObjectSerializer {
             ProtostuffIOUtil.mergeFrom(inputStream, object, schema);
             return object;
         } catch (Exception e) {
-            throw new TransactionException(e.getMessage(), e);
+            throw new SerializerException(e.getMessage(), e);
         }
     }
 }
