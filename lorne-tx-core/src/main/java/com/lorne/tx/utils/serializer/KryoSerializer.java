@@ -5,13 +5,13 @@
  * Created By chenbin on 16-6-14 上午10:53.
  */
 
-package com.lorne.tx.serializer;
+package com.lorne.tx.utils.serializer;
 
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.lorne.tx.exception.TransactionException;
+import com.lorne.core.framework.exception.SerializerException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,16 +26,16 @@ import java.io.IOException;
  * @version 1.0
  * @since JDK 1.8
  */
-public class KryoSerializer implements ObjectSerializer {
+public class KryoSerializer implements ISerializer {
     /**
      * 序列化
      *
      * @param obj 需要序更列化的对象
      * @return 序列化后的byte 数组
-     * @throws TransactionException
+     * @throws SerializerException
      */
     @Override
-    public byte[] serialize(Object obj) throws TransactionException {
+    public byte[] serialize(Object obj) throws SerializerException {
         byte[] bytes;
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
@@ -46,7 +46,7 @@ public class KryoSerializer implements ObjectSerializer {
             bytes = output.toBytes();
             output.flush();
         } catch (Exception ex) {
-            throw new TransactionException("kryo serialize error" + ex.getMessage());
+            throw new SerializerException("kryo serialize error" + ex.getMessage());
         } finally {
             try {
                 outputStream.flush();
@@ -63,10 +63,10 @@ public class KryoSerializer implements ObjectSerializer {
      *
      * @param param 需要反序列化的byte []
      * @return 序列化对象
-     * @throws TransactionException
+     * @throws SerializerException
      */
     @Override
-    public <T> T deSerialize(byte[] param, Class<T> clazz) throws TransactionException {
+    public <T> T deSerialize(byte[] param, Class<T> clazz) throws SerializerException {
         T object;
         ByteArrayInputStream inputStream = null;
         try {
@@ -76,7 +76,7 @@ public class KryoSerializer implements ObjectSerializer {
             object = kryo.readObject(input, clazz);
             input.close();
         } catch (Exception e) {
-            throw new TransactionException("kryo deSerialize error" + e.getMessage());
+            throw new SerializerException("kryo deSerialize error" + e.getMessage());
         } finally {
             try {
                 inputStream.close();

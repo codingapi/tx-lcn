@@ -1,8 +1,8 @@
 
-package com.lorne.tx.serializer;
+package com.lorne.tx.utils.serializer;
 
 
-import com.lorne.tx.exception.TransactionException;
+import com.lorne.core.framework.exception.SerializerException;
 
 /**
  * <p>Description: .</p>
@@ -12,22 +12,22 @@ import com.lorne.tx.exception.TransactionException;
  * @version 1.0
  * @since JDK 1.8
  */
-public interface ObjectSerializer {
+public interface ISerializer {
     /**
      * 序列化对象
      *
      * @param obj 需要序更列化的对象
      * @return byte []
-     * @throws TransactionException
+     * @throws SerializerException
      */
-    byte[] serialize(Object obj) throws TransactionException;
+    byte[] serialize(Object obj) throws SerializerException;
 
     /**
      * 反序列化对象
      *
      * @param param 需要反序列化的byte []
      * @return 对象
-     * @throws TransactionException
+     * @throws SerializerException
      */
-    <T> T deSerialize(byte[] param, Class<T> clazz) throws TransactionException;
+    <T> T deSerialize(byte[] param, Class<T> clazz) throws SerializerException;
 }
