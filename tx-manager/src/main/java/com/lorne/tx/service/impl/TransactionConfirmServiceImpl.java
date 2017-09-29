@@ -135,7 +135,7 @@ public class TransactionConfirmServiceImpl implements TransactionConfirmService 
                             ScheduledFuture future = executorService.schedule(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Task task = ConditionUtils.getInstance().createTask(key);
+                                    Task task = ConditionUtils.getInstance().getTask(key);
                                     if(task!=null&&!task.isNotify()) {
                                         task.setBack(new IBack() {
                                             @Override

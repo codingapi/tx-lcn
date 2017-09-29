@@ -122,7 +122,13 @@ public class TxTransactionLocal {
 
     public void setTransactional(Transactional transactional) {
         this.transactional = transactional;
+
         //set readOnly
-        readOnly =  transactional!=null&&transactional.readOnly();
+        if(transactional==null){
+            //没有配置事务注解的时候当做只读来处理
+            readOnly = true;
+        }else{
+            readOnly = transactional.readOnly();
+        }
     }
 }
