@@ -1,6 +1,6 @@
 # LCN分布式事务框架
 
-  了解更多设计原理与源码讲解,可访问 ![www.txlcn.org](http://www.txlcn.org)。 查看视频教程。
+  了解更多设计原理与源码讲解,可访问 [www.txlcn.org](http://www.txlcn.org)。 查看视频教程。
 
 
 ## 框架特点
