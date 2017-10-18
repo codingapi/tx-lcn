@@ -1,5 +1,8 @@
 # LCN分布式事务框架
 
+  了解更多设计原理与源码讲解,可访问 ![www.txlcn.org](http://www.txlcn.org)。 查看视频教程。
+
+
 ## 框架特点
 
 1. 支持各种基于spring的db框架
@@ -24,6 +27,9 @@
 3. 禁止重名的bean对象。
   事务的补偿机制是基于java反射的方式重新执行一次需要补偿的业务。因此执行的时候需要获取到业务的service对象，LCN是基于spring的ApplicationContent的getBean方法获取bean的对象的。因此不允许出现重名对象。
   
+
+
+
 
 
 ## 使用示例
