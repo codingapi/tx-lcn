@@ -28,6 +28,23 @@
 
 ## 使用示例
 
+引入maven文件，根据框架选择springcloud或者dubbo版本
+
+```
+    <dependency>
+        <groupId>com.github.1991wangliang</groupId>
+        <artifactId>springcloud-transaction</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>com.github.1991wangliang</groupId>
+        <artifactId>dubbo-transaction</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+
+```
+
 分布式事务发起方：
 ```java
 

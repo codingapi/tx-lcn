@@ -45,13 +45,7 @@ public class ProtostuffSerializer implements ISerializer {
     }
 
 
-    /**
-     * 序列化对象
-     *
-     * @param obj 需要序更列化的对象
-     * @return byte []
-     * @throws SerializerException
-     */
+
     @Override
     public byte[] serialize(Object obj) throws SerializerException {
         Class cls = obj.getClass();
@@ -68,14 +62,6 @@ public class ProtostuffSerializer implements ISerializer {
         return outputStream.toByteArray();
     }
 
-    /**
-     * 反序列化对象
-     *
-     * @param param 需要反序列化的byte []
-     * @param clazz
-     * @return 对象
-     * @throws SerializerException
-     */
     @Override
     public <T> T deSerialize(byte[] param, Class<T> clazz) throws SerializerException {
         T object;

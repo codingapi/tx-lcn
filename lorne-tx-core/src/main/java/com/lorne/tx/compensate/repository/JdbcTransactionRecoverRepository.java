@@ -19,7 +19,6 @@ import java.util.Date;
  *
  * @author yu.xiao@happylifeplat.com
  * @version 1.0
- * @date 2017/7/12 10:36
  * @since JDK 1.8
  */
 @Component

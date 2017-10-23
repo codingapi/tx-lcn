@@ -12,15 +12,17 @@ public interface MQTxManagerService {
     /**
      * 创建事务组
      *
-     * @return
+     * @return  事务组TxGroup
      */
     TxGroup createTransactionGroup();
 
 
     /**
      * 添加事务组子对象
-     *
-     * @return
+     * @param groupId   事务组id
+     * @param taskId    任务Id
+     * @param isGroup   是否合并到事务组 true合并 false不合并
+     * @return  事务组TxGroup
      */
     TxGroup addTransactionGroup(String groupId, String taskId, boolean isGroup);
 
@@ -28,13 +30,18 @@ public interface MQTxManagerService {
     /**
      * 关闭事务组-进入事务提交第一阶段
      *
-     * @param groupId
-     * @return
+     * @param groupId   事务组id
+     * @param state     提交或者回滚 1提交0回滚
      */
     void closeTransactionGroup(String groupId, int state);
 
 
-
+    /**
+     * 检查事务状态
+     * @param groupId   事务组id
+     * @param taskId    任务id
+     * @return  事务状态
+     */
     int checkTransactionInfo(String groupId, String taskId);
 
 
