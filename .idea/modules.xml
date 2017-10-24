@@ -3,15 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/dubbo-transaction/dubbo-transaction.iml" filepath="$PROJECT_DIR$/dubbo-transaction/dubbo-transaction.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dubbo-transaction/dubbo-transaction.iml" filepath="$PROJECT_DIR$/dubbo-transaction/dubbo-transaction.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lorne-tx-core/lorne-tx-core.iml" filepath="$PROJECT_DIR$/lorne-tx-core/lorne-tx-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/lorne-tx-core/lorne-tx-core.iml" filepath="$PROJECT_DIR$/lorne-tx-core/lorne-tx-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/lorne-tx-core-redis/lorne-tx-core-redis.iml" filepath="$PROJECT_DIR$/lorne-tx-core-redis/lorne-tx-core-redis.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lorne-tx-core-redis/lorne-tx-core-redis.iml" filepath="$PROJECT_DIR$/lorne-tx-core-redis/lorne-tx-core-redis.iml" />
-      <module fileurl="file://$PROJECT_DIR$/springcloud-transaction/springcloud-transaction.iml" filepath="$PROJECT_DIR$/springcloud-transaction/springcloud-transaction.iml" />
       <module fileurl="file://$PROJECT_DIR$/springcloud-transaction/springcloud-transaction.iml" filepath="$PROJECT_DIR$/springcloud-transaction/springcloud-transaction.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/tx-lcn.iml" filepath="$PROJECT_DIR$/.idea/tx-lcn.iml" />
-      <module fileurl="file://$PROJECT_DIR$/tx-manager/tx-manager.iml" filepath="$PROJECT_DIR$/tx-manager/tx-manager.iml" />
       <module fileurl="file://$PROJECT_DIR$/tx-manager/tx-manager.iml" filepath="$PROJECT_DIR$/tx-manager/tx-manager.iml" />
     </modules>
   </component>
