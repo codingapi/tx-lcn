@@ -27,13 +27,7 @@ import java.io.IOException;
  * @since JDK 1.8
  */
 public class KryoSerializer implements ISerializer {
-    /**
-     * 序列化
-     *
-     * @param obj 需要序更列化的对象
-     * @return 序列化后的byte 数组
-     * @throws SerializerException
-     */
+
     @Override
     public byte[] serialize(Object obj) throws SerializerException {
         byte[] bytes;
@@ -58,13 +52,7 @@ public class KryoSerializer implements ISerializer {
         return bytes;
     }
 
-    /**
-     * 反序列化
-     *
-     * @param param 需要反序列化的byte []
-     * @return 序列化对象
-     * @throws SerializerException
-     */
+
     @Override
     public <T> T deSerialize(byte[] param, Class<T> clazz) throws SerializerException {
         T object;

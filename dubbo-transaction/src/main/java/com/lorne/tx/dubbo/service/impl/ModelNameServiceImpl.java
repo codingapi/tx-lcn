@@ -42,7 +42,7 @@ public class ModelNameServiceImpl implements ModelNameService {
     @Override
     public String getUniqueKey() {
         String address = getIp()+providerConfig.getPort();
-        return  MD5Util.md5(address);
+        return  MD5Util.string2MD5(address);
     }
 
 

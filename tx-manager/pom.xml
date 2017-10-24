@@ -11,14 +11,6 @@
     <name>tx-manager</name>
     <description>Demo project for Spring Boot</description>
 
-
-    <repositories>
-        <repository>
-            <id>lorne</id>
-            <url>https://1991wangliang.github.io/repository</url>
-        </repository>
-    </repositories>
-
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -36,16 +28,17 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.lorne.core</groupId>
-            <artifactId>lorne_exception</artifactId>
+            <groupId>com.github.1991wangliang</groupId>
+            <artifactId>lorne_core</artifactId>
             <version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>com.lorne.core</groupId>
-            <artifactId>lorne_core</artifactId>
-            <version>2.0.0</version>
-        </dependency>
 
         <dependency>
             <groupId>io.netty</groupId>
