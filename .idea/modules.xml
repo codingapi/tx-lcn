@@ -9,5 +9,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/tx-lcn.iml" filepath="$PROJECT_DIR$/.idea/tx-lcn.iml" />
       <module fileurl="file://$PROJECT_DIR$/tx-manager/tx-manager.iml" filepath="$PROJECT_DIR$/tx-manager/tx-manager.iml" />
     </modules>
+
   </component>
 </project>
