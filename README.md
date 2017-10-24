@@ -1,12 +1,15 @@
 # LCN分布式事务框架
 
+  "LCN不生产事务，LCN只是本地事务的搬用工"
+
+
 ## 框架特点
 
 1. 支持各种基于spring的db框架
-2. 兼容springcloud、dubbo
+2. 兼容SpringCloud、Dubbo
 3. 使用简单，低依赖，代码完全开源
 4. 基于切面的强一致性事务框架
-5. 高可用，模块可以依赖dubbo或springcloud的集群方式做集群化，TxManager也可以做集群化
+5. 高可用，模块可以依赖Dubbo或SpringCloud的集群方式做集群化，TxManager也可以做集群化
 6. 支持本地事务和分布式事务共存
 7. 事务补偿机制，服务故障或挂机再启动时可恢复事务
 
@@ -27,16 +30,21 @@
   
 
 
+
+
+
 ## 使用示例
 
-引入maven文件，根据框架选择springcloud或者dubbo版本
+引入maven文件，根据框架选择SpringCloud或者Dubbo版本
 
 ```
+
     <dependency>
         <groupId>com.github.1991wangliang</groupId>
         <artifactId>springcloud-transaction</artifactId>
         <version>1.0.0</version>
     </dependency>
+    
     
     <dependency>
         <groupId>com.github.1991wangliang</groupId>
@@ -119,10 +127,16 @@ tx-manager 是LCN 分布式事务协调器
 
 ## 关于框架的设计原理
 
-见 [TxManager](https://github.com/1991wangliang/tx-lcn/blob/master/tx-manager/README.md)
+文档版本：
+
+见 [tx-lcn/wiki](https://github.com/1991wangliang/tx-lcn/wiki)
+
+视频版本：
+
+见 [www.txlcn.org](http://www.txlcn.org/video.html)
 
 
-## demo 说明
+## demo 示例
 
 demo里包含jdbc\hibernate\mybatis版本的demo
 
