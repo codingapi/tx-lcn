@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/lorne-tx-core/pom.xml" />
+        <option value="$PROJECT_DIR$/dubbo-transaction/pom.xml" />
+        <option value="$PROJECT_DIR$/lorne-tx-core-redis/pom.xml" />
+        <option value="$PROJECT_DIR$/springcloud-transaction/pom.xml" />
+        <option value="$PROJECT_DIR$/tx-manager/pom.xml" />
+      </list>
+    </option>
+  </component>
+</project>

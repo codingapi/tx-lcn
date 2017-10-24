@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="dubbo-transaction" />
+        <module name="lorne-tx-core" />
+        <module name="lorne-tx-core-redis" />
+        <module name="springcloud-transaction" />
+        <module name="tx-manager" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="dubbo-transaction" target="1.7" />
+      <module name="lorne-tx-core" target="1.7" />
+      <module name="lorne-tx-core-redis" target="1.7" />
+      <module name="springcloud-transaction" target="1.7" />
+      <module name="tx-manager" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
