@@ -12,7 +12,7 @@ public interface TxService {
 
     TxState getState();
 
-    boolean sendMsg(String model,String msg);
+    String sendMsg(String model,String msg);
 
     boolean checkClearGroup(String groupId, String taskId, int isGroup);
 

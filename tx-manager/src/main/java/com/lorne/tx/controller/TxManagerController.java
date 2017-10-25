@@ -41,7 +41,7 @@ public class TxManagerController {
 
     @RequestMapping("/sendMsg")
     @ResponseBody
-    public boolean sendMsg(@RequestParam("msg") String msg,@RequestParam("model") String model) {
+    public String sendMsg(@RequestParam("msg") String msg,@RequestParam("model") String model) {
         return txService.sendMsg(model,msg);
     }
 

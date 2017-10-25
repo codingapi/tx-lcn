@@ -1,6 +1,11 @@
 package com.lorne.tx.service.impl;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.lorne.core.framework.utils.task.ConditionUtils;
+import com.lorne.core.framework.utils.task.IBack;
+import com.lorne.core.framework.utils.task.Task;
 import com.lorne.tx.Constants;
 import com.lorne.tx.service.DiscoveryService;
 import com.lorne.tx.service.TxManagerService;
@@ -19,6 +24,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,6 +55,9 @@ public class TxServiceImpl implements TxService {
 
     @Autowired
     private DiscoveryService discoveryService;
+
+    @Autowired
+    private TxManagerService txManagerService;
 
 
     @Override
@@ -145,12 +157,59 @@ public class TxServiceImpl implements TxService {
     }
 
     @Override
-    public boolean sendMsg(String model,String msg) {
-        Channel channel = SocketManager.getInstance().getChannelByModelName(model);
-        if (channel != null &&channel.isActive()) {
-            SocketUtils.sendMsg(channel,msg);
-            return true;
+    public String sendMsg(String model,String msg) {
+        JSONObject jsonObject = JSON.parseObject(msg);
+        String key = jsonObject.getString("k");
+
+        //创建Task
+        final Task task = ConditionUtils.getInstance().createTask(key);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!task.isAwait() && !Thread.currentThread().interrupted()) {
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Channel channel = SocketManager.getInstance().getChannelByModelName(model);
+                if (channel != null &&channel.isActive()) {
+                    SocketUtils.sendMsg(channel,msg);
+                }
+            }
+        }).start();
+
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Task task = ConditionUtils.getInstance().getTask(key);
+                if(task!=null&&!task.isNotify()) {
+                    task.setBack(new IBack() {
+                        @Override
+                        public Object doing(Object... objs) throws Throwable {
+                            return "-2";
+                        }
+                    });
+                    task.signalTask();
+                }
+            }
+        }, txManagerService.getDelayTime() * 1000);
+
+
+        task.awaitTask();
+        timer.cancel();
+
+
+        try {
+            return  (String)task.getBack().doing();
+        } catch (Throwable throwable) {
+            return "-1";
+        }finally {
+            task.remove();
         }
-        return false;
     }
 }
