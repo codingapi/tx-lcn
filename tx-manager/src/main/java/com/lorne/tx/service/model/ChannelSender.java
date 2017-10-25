@@ -45,7 +45,7 @@ public class ChannelSender {
         }else{
             String url = String.format("http://%s/tx/manager/sendMsg",address);
             String res = HttpUtils.post(url,"msg="+msg+"&model="+modelName);
-            if(StringUtils.isEmpty(res)){
+            if(StringUtils.isNotEmpty(res)){
                 if(task!=null) {
                     task.setBack(new IBack() {
                         @Override
