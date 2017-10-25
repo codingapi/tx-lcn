@@ -96,7 +96,7 @@ public class TransactionConfirmServiceImpl implements TransactionConfirmService 
             }
 
             if(txInfo.getChannel()!=null) {
-                txInfo.getChannel().send(msg);
+                txInfo.getChannel().send(msg,task);
             }else{
                 task.setBack(new IBack() {
                     @Override
