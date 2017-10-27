@@ -29,6 +29,13 @@
   
 
 
+## 框架的设计原理
+
+文档原理介绍：见 [tx-lcn/wiki](https://github.com/1991wangliang/tx-lcn/wiki)
+
+视频原理介绍：见 [www.txlcn.org](http://www.txlcn.org/video.html)
+
+
 ## 使用示例
 
 引入maven文件，根据框架选择SpringCloud或者Dubbo版本
@@ -121,15 +128,7 @@ springcloud-transaction 是LCN springcloud分布式事务框架
 tx-manager 是LCN 分布式事务协调器
 
 
-## 关于框架的设计原理
 
-文档版本：
-
-见 [tx-lcn/wiki](https://github.com/1991wangliang/tx-lcn/wiki)
-
-视频版本：
-
-见 [www.txlcn.org](http://www.txlcn.org/video.html)
 
 
 ## demo 示例
