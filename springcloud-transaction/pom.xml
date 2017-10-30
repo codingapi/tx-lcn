@@ -6,7 +6,7 @@
 
 	<groupId>com.github.1991wangliang</groupId>
 	<artifactId>springcloud-transaction</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 
 	<name>springcloud-transaction</name>
 	<url>https://github.com/1991wangliang/tx-lcn</url>
@@ -95,7 +95,7 @@
 
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
+			<artifactId>spring-context</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
 
