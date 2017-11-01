@@ -1,4 +1,4 @@
-package com.lorne.tx;
+package com.lorne.tx.redis;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,17 +7,16 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Component;
 import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * Created by lorne on 2017/7/5.
  */
 
-@Configuration
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class RedisConfig {
 
@@ -43,7 +42,6 @@ public class RedisConfig {
 
     @Bean
     public RedisTemplate<?, ?> getRedisTemplate() {
-        RedisTemplate<?, ?> template = new StringRedisTemplate(getConnectionFactory());
-        return template;
+        return new StringRedisTemplate(getConnectionFactory());
     }
 }
