@@ -113,6 +113,13 @@ public class TxManagerServiceImpl implements TxManagerService {
         TxGroup txGroup = TxGroup.parser(json);
 
         if(txGroup.getHasOver()==0){
+            long nowTime = System.currentTimeMillis();
+            long startTime =  txGroup.getStartTime();
+            //超时清理数据
+            if(nowTime-startTime>(redis_save_max_time*1000)){
+                redisTemplate.delete(key);
+                return 0;
+            }
             return -1;
         }
         boolean res = txGroup.getState() == 1;
