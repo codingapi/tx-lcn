@@ -139,5 +139,6 @@ dubbo版本的demo [dubbo-demo](https://github.com/1991wangliang/dubbo-lcn-demo)
 
 springcloud版本的demo [springcloud-demo](https://github.com/1991wangliang/springcloud-lcn-demo)
 
+Demo使用视频讲解地址：[http://www.txlcn.org/video.html](http://www.txlcn.org/video.html)  
 
 技术交流群：554855843
