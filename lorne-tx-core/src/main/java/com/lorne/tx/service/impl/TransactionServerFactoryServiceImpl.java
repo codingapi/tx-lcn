@@ -1,9 +1,11 @@
 package com.lorne.tx.service.impl;
 
+import com.lorne.tx.annotation.TxTransaction;
 import com.lorne.tx.bean.TxTransactionInfo;
 import com.lorne.tx.bean.TxTransactionLocal;
 import com.lorne.tx.compensate.service.CompensateService;
 import com.lorne.tx.compensate.service.impl.CompensateServiceImpl;
+import com.lorne.tx.db.IBaseProxy;
 import com.lorne.tx.mq.service.NettyService;
 import com.lorne.tx.service.TransactionServer;
 import com.lorne.tx.service.TransactionServerFactoryService;
@@ -32,7 +34,13 @@ public class TransactionServerFactoryServiceImpl implements TransactionServerFac
     private TransactionServer txCompensateTransactionServer;
 
     @Autowired
+    private TransactionServer txRunningNoTransactionServer;
+
+    @Autowired
     private NettyService nettyService;
+
+    @Autowired
+    private IBaseProxy baseProxy;
 
 
     public TransactionServer createTransactionServer(TxTransactionInfo info) throws Throwable {
@@ -77,6 +85,7 @@ public class TransactionServerFactoryServiceImpl implements TransactionServerFac
             }
         }
 
+
         /** 分布式事务已经开启，业务进行中 **/
         if (info.getTxTransactionLocal() != null || StringUtils.isNotEmpty(info.getTxGroupId())) {
             //检查socket通讯是否正常 （第一次执行时启动txRunningTransactionServer的业务处理控制，然后嵌套调用其他事务的业务方法时都并到txInServiceTransactionServer业务处理下）
@@ -84,14 +93,17 @@ public class TransactionServerFactoryServiceImpl implements TransactionServerFac
                 if (info.getTxTransactionLocal() != null) {
                     return txDefaultTransactionServer;
                 } else {
-                    return txRunningTransactionServer;
+                    if(baseProxy.hasTransaction()) {//有事务业务的操作
+                        return txRunningTransactionServer;
+                    }else {
+                        return txRunningNoTransactionServer;
+                    }
                 }
             } else {
                 throw new Exception("tx-manager尚未链接成功,请检测tx-manager服务");
             }
         }
         /*********分布式事务处理逻辑*结束***********/
-
 
         return txDefaultTransactionServer;
     }

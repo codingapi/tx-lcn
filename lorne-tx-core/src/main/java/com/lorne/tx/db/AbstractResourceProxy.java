@@ -31,6 +31,11 @@ public abstract class AbstractResourceProxy<C,T extends IResource> implements IB
 
 
     @Override
+    public boolean hasTransaction() {
+        return true;
+    }
+
+    @Override
     public void setDataSourceService(DataSourceService dataSourceService) {
         this.dataSourceService =dataSourceService;
     }

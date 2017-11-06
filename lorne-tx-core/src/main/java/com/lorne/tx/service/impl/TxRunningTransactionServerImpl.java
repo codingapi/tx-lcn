@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 分布式事务启动开始时的业务处理
+ * 分布式事务启动参与事务中的业务处理
  * Created by lorne on 2017/6/8.
  */
 @Service(value = "txRunningTransactionServer")
