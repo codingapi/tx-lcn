@@ -1,10 +1,10 @@
 package com.lorne.tx.service.impl;
 
 import com.lorne.tx.annotation.TxTransaction;
-import com.lorne.tx.bean.TxTransactionCompensate;
+//import com.lorne.tx.bean.TxTransactionCompensate;
 import com.lorne.tx.bean.TxTransactionInfo;
 import com.lorne.tx.bean.TxTransactionLocal;
-import com.lorne.tx.compensate.model.TransactionInvocation;
+//import com.lorne.tx.compensate.model.TransactionInvocation;
 import com.lorne.tx.service.AspectBeforeService;
 import com.lorne.tx.service.TransactionServer;
 import com.lorne.tx.service.TransactionServerFactoryService;
@@ -40,11 +40,11 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
 
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
-        TxTransactionCompensate compensate = TxTransactionCompensate.current();
+       // TxTransactionCompensate compensate = TxTransactionCompensate.current();
 
-        TransactionInvocation invocation = new TransactionInvocation(clazz, thisMethod.getName(), args, method.getParameterTypes());
+//        TransactionInvocation invocation = new TransactionInvocation(clazz, thisMethod.getName(), args, method.getParameterTypes());
 
-        TxTransactionInfo info = new TxTransactionInfo(transaction,transactional,txTransactionLocal,groupId,maxTimeOut,compensate,invocation);
+        TxTransactionInfo info = new TxTransactionInfo(transaction,transactional,txTransactionLocal,groupId,maxTimeOut);
 
         TransactionServer server = transactionServerFactoryService.createTransactionServer(info);
 

@@ -83,8 +83,8 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
                 }else{
                     //可能存在自动补偿先执行了，但是通知还没有执行的情况。
                     if(!Constants.hasExit){
-                        //补偿本次事务,通过taskId获取groupId。然后执行补偿
-                        nettyService.executeCompensate(task.getKey());
+                        //todo 补偿本次事务,通过taskId获取groupId。然后执行补偿
+                        // nettyService.executeCompensate(task.getKey());
                     }
                     res = "0";
                 }
@@ -118,17 +118,17 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
                 String res = "0";
 
                 switch (action) {
-                    case "c": {
-                        String taskId = resObj.getString("g");
-                        long row = nettyService.checkCompensate(taskId);
-                        //有数据则等待执行补偿，需要保留数据
-                        if(row>0){
-                            res = "0";
-                        }else{
-                            res = "1";
-                        }
-                        break;
-                    }
+//                    case "c": {
+//                        String taskId = resObj.getString("g");
+//                        long row = nettyService.checkCompensate(taskId);
+//                        //有数据则等待执行补偿，需要保留数据
+//                        if(row>0){
+//                            res = "0";
+//                        }else{
+//                            res = "1";
+//                        }
+//                        break;
+//                    }
                     case "t": {
                         //通知提醒
                         final int state = resObj.getInteger("c");

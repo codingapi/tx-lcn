@@ -3,7 +3,7 @@ package com.lorne.tx.service.impl;
 import com.lorne.tx.db.IBaseProxy;
 import com.lorne.tx.db.service.DataSourceService;
 import com.lorne.tx.mq.service.NettyService;
-import com.lorne.tx.compensate.service.CompensateService;
+//import com.lorne.tx.compensate.service.CompensateService;
 import com.lorne.tx.service.InitService;
 import com.lorne.tx.service.TimeOutService;
 import org.slf4j.Logger;
@@ -22,8 +22,8 @@ public class InitServiceImpl implements InitService {
     @Autowired
     private NettyService nettyService;
 
-    @Autowired
-    private CompensateService compensateService;
+//    @Autowired
+//    private CompensateService compensateService;
 
     @Autowired
     private TimeOutService timeOutService;
@@ -48,7 +48,7 @@ public class InitServiceImpl implements InitService {
 
         timeOutService.loadOutTime();
 
-        compensateService.start();
+        //compensateService.start();
         logger.info("check-compensate-running..");
 
     }

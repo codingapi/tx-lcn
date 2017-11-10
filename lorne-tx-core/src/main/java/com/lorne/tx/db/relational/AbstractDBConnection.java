@@ -1,9 +1,9 @@
 package com.lorne.tx.db.relational;
 
-import com.lorne.tx.bean.TxTransactionCompensate;
+//import com.lorne.tx.bean.TxTransactionCompensate;
 import com.lorne.tx.bean.TxTransactionLocal;
-import com.lorne.tx.compensate.model.TransactionRecover;
-import com.lorne.tx.compensate.service.CompensateService;
+//import com.lorne.tx.compensate.model.TransactionRecover;
+//import com.lorne.tx.compensate.service.CompensateService;
 import com.lorne.tx.db.ICallClose;
 import com.lorne.tx.db.IResource;
 import com.lorne.tx.db.service.DataSourceService;
@@ -43,9 +43,9 @@ public abstract class AbstractDBConnection implements Connection,IResource<Conne
 
     private boolean hasGroup = false;
 
-    private List<TransactionRecover> compensateList;
-
-    protected TransactionRecover nowCompensate;
+//    private List<TransactionRecover> compensateList;
+//
+//    protected TransactionRecover nowCompensate;
 
     private String groupId;
 
@@ -55,30 +55,35 @@ public abstract class AbstractDBConnection implements Connection,IResource<Conne
 
 
     public AbstractDBConnection(Connection connection, DataSourceService dataSourceService, TxTransactionLocal transactionLocal, ICallClose<AbstractDBConnection> runnable) {
-        compensateList = new ArrayList<>();
+       // compensateList = new ArrayList<>();
         this.connection = connection;
         this.runnable = runnable;
         this.dataSourceService = dataSourceService;
         groupId = transactionLocal.getGroupId();
         maxOutTime = transactionLocal.getMaxTimeOut();
-        nowCompensate = transactionLocal.getRecover();
-        compensateList.add(nowCompensate);
+//        nowCompensate = transactionLocal.getRecover();
+//        compensateList.add(nowCompensate);
 
-        if (!CompensateService.COMPENSATE_KEY.equals(transactionLocal.getGroupId())) {
-            TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(transactionLocal.getKid(),transactionLocal.getType());
-            waitTask = taskGroup.getCurrent();
-            logger.info("task-create-> " + waitTask.getKey());
-        }
+//        if (!CompensateService.COMPENSATE_KEY.equals(transactionLocal.getGroupId())) {
+//            TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(transactionLocal.getKid(),transactionLocal.getType());
+//            waitTask = taskGroup.getCurrent();
+//            logger.info("task-create-> " + waitTask.getKey());
+//        }
+
+        TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(transactionLocal.getKid(),transactionLocal.getType());
+        waitTask = taskGroup.getCurrent();
+        logger.info("task-create-> " + waitTask.getKey());
+
     }
 
-    public List<TransactionRecover> getCompensateList() {
-        return compensateList;
-    }
-
-    public void addCompensate(TransactionRecover recover) {
-        nowCompensate = recover;
-        compensateList.add(recover);
-    }
+//    public List<TransactionRecover> getCompensateList() {
+//        return compensateList;
+//    }
+//
+//    public void addCompensate(TransactionRecover recover) {
+//        nowCompensate = recover;
+//        compensateList.add(recover);
+//    }
 
     public void setHasIsGroup(boolean isGroup) {
         hasGroup = isGroup;
@@ -155,57 +160,103 @@ public abstract class AbstractDBConnection implements Connection,IResource<Conne
                 closeConnection();
                 //dataSourceService.deleteCompensates(compensateList);
             }
-            logger.info("rollback->" + compensateList);
+          //  logger.info("rollback->" + compensateList);
         }
         if (state == 1) {
 
-            if (CompensateService.COMPENSATE_KEY.equals(groupId)) {
+//            if (CompensateService.COMPENSATE_KEY.equals(groupId)) {
+//
+//                if(TxTransactionCompensate.current()!=null){
+//                    connection.commit();
+//                    closeConnection();
+//                }else {
+//                    //补偿事务 一概回滚
+//                    connection.rollback();
+//                    closeConnection();
+//                }
+//                logger.info("compensate - over");
+//
+//            } else {
+//                //分布式事务
+//
+//                dataSourceService.saveTransactionRecover(nowCompensate);
+//
+//                if (hasGroup) {
+//                    //加入队列的连接，仅操作连接对象，不处理事务
+//                    return;
+//                }
+//
+//                Runnable runnable = new HookRunnable() {
+//                    @Override
+//                    public void run0() {
+//                        try {
+//                            transaction();
+//                        } catch (Exception e) {
+//                            try {
+//                                connection.rollback();
+//                            } catch (SQLException e1) {
+//                                e1.printStackTrace();
+//                            }
+//                        } finally {
+//                            try {
+//                                closeConnection();
+//                            } catch (SQLException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                };
+//                Thread thread = new Thread(runnable);
+//                thread.start();
+//            }
 
-                if(TxTransactionCompensate.current()!=null){
-                    connection.commit();
-                    closeConnection();
-                }else {
-                    //补偿事务 一概回滚
-                    connection.rollback();
-                    closeConnection();
-                }
-                logger.info("compensate - over");
-
-            } else {
+//            if (CompensateService.COMPENSATE_KEY.equals(groupId)) {
+//
+//                if(TxTransactionCompensate.current()!=null){
+//                    connection.commit();
+//                    closeConnection();
+//                }else {
+//                    //补偿事务 一概回滚
+//                    connection.rollback();
+//                    closeConnection();
+//                }
+//                logger.info("compensate - over");
+//
+//            } else {
                 //分布式事务
 
-                dataSourceService.saveTransactionRecover(nowCompensate);
+          //  dataSourceService.saveTransactionRecover(nowCompensate);
 
-                if (hasGroup) {
-                    //加入队列的连接，仅操作连接对象，不处理事务
-                    return;
-                }
-
-                Runnable runnable = new HookRunnable() {
-                    @Override
-                    public void run0() {
-                        try {
-                            transaction();
-                        } catch (Exception e) {
-                            try {
-                                connection.rollback();
-                            } catch (SQLException e1) {
-                                e1.printStackTrace();
-                            }
-                        } finally {
-                            try {
-                                closeConnection();
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                };
-                Thread thread = new Thread(runnable);
-                thread.start();
+            if (hasGroup) {
+                //加入队列的连接，仅操作连接对象，不处理事务
+                return;
             }
 
+            Runnable runnable = new HookRunnable() {
+                @Override
+                public void run0() {
+                    try {
+                        transaction();
+                    } catch (Exception e) {
+                        try {
+                            connection.rollback();
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        }
+                    } finally {
+                        try {
+                            closeConnection();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            };
+            Thread thread = new Thread(runnable);
+            thread.start();
         }
+
+        //}
     }
 
     public String getGroupId() {

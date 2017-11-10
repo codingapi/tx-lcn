@@ -1,8 +1,8 @@
 package com.lorne.tx.db.service.impl;
 
 import com.lorne.core.framework.utils.task.Task;
-import com.lorne.tx.compensate.model.TransactionRecover;
-import com.lorne.tx.compensate.service.CompensateService;
+//import com.lorne.tx.compensate.model.TransactionRecover;
+//import com.lorne.tx.compensate.service.CompensateService;
 import com.lorne.tx.db.service.DataSourceService;
 import com.lorne.tx.mq.service.MQTxManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +20,12 @@ public class DataSourceServiceImpl implements DataSourceService {
     @Autowired
     private MQTxManagerService txManagerService;
 
-    @Autowired
-    private CompensateService compensateService;
+//    @Autowired
+//    private CompensateService compensateService;
 
 
     @Override
-    public void schedule(String groupId, List<TransactionRecover> compensates, Task waitTask) {
+    public void schedule(String groupId, Task waitTask) {
         String waitTaskId = waitTask.getKey();
         int rs = txManagerService.checkTransactionInfo(groupId, waitTaskId);
         if (rs == 1 || rs == 0) {
@@ -54,23 +54,23 @@ public class DataSourceServiceImpl implements DataSourceService {
 
     }
 
-    @Override
-    public void deleteCompensates(List<TransactionRecover> compensates) {
-        if(compensates!=null) {
-            for (TransactionRecover recover : compensates) {
-                deleteCompensateId(recover.getId());
-            }
-        }
-    }
+//    @Override
+//    public void deleteCompensates(List<TransactionRecover> compensates) {
+//        if(compensates!=null) {
+//            for (TransactionRecover recover : compensates) {
+//                deleteCompensateId(recover.getId());
+//            }
+//        }
+//    }
 
 
-    @Override
-    public void saveTransactionRecover(TransactionRecover recover) {
-        compensateService.saveTransactionInfo(recover);
-    }
-
-    @Override
-    public void deleteCompensateId(String compensateId) {
-        compensateService.deleteTransactionInfo(compensateId);
-    }
+//    @Override
+//    public void saveTransactionRecover(TransactionRecover recover) {
+//        compensateService.saveTransactionInfo(recover);
+//    }
+//
+//    @Override
+//    public void deleteCompensateId(String compensateId) {
+//        compensateService.deleteTransactionInfo(compensateId);
+//    }
 }

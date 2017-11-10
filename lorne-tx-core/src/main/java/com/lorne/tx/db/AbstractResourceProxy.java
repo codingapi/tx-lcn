@@ -2,9 +2,9 @@ package com.lorne.tx.db;
 
 
 import com.lorne.core.framework.utils.task.Task;
-import com.lorne.tx.bean.TxTransactionCompensate;
+//import com.lorne.tx.bean.TxTransactionCompensate;
 import com.lorne.tx.bean.TxTransactionLocal;
-import com.lorne.tx.compensate.service.CompensateService;
+//import com.lorne.tx.compensate.service.CompensateService;
 import com.lorne.tx.db.service.DataSourceService;
 import org.apache.commons.lang.StringUtils;
 
@@ -74,7 +74,7 @@ public abstract class AbstractResourceProxy<C,T extends IResource> implements IB
         T old = pools.get(txTransactionLocal.getGroupId());
         if (old != null) {
             old.setHasIsGroup(true);
-            old.addCompensate(txTransactionLocal.getRecover());
+           // old.addCompensate(txTransactionLocal.getRecover());
 
             txTransactionLocal.setHasIsGroup(true);
             TxTransactionLocal.setCurrent(txTransactionLocal);
@@ -125,12 +125,18 @@ public abstract class AbstractResourceProxy<C,T extends IResource> implements IB
             }
 
             //更新操作的开启LCN分布式事务
+//            if(StringUtils.isNotEmpty(txTransactionLocal.getGroupId())){
+//                if(TxTransactionCompensate.current()!=null){
+//                    return connection;
+//                }else if (CompensateService.COMPENSATE_KEY.equals(txTransactionLocal.getGroupId())) {
+//                    lcnConnection = createConnection(txTransactionLocal, connection);
+//                } else if (!txTransactionLocal.isHasStart()) {
+//                    lcnConnection = createConnection(txTransactionLocal, connection);
+//                }
+//            }
+
             if(StringUtils.isNotEmpty(txTransactionLocal.getGroupId())){
-                if(TxTransactionCompensate.current()!=null){
-                    return connection;
-                }else if (CompensateService.COMPENSATE_KEY.equals(txTransactionLocal.getGroupId())) {
-                    lcnConnection = createConnection(txTransactionLocal, connection);
-                } else if (!txTransactionLocal.isHasStart()) {
+                if (!txTransactionLocal.isHasStart()) {
                     lcnConnection = createConnection(txTransactionLocal, connection);
                 }
             }
