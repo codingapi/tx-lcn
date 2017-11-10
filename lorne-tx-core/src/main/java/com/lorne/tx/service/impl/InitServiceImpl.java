@@ -1,10 +1,12 @@
 package com.lorne.tx.service.impl;
 
+import com.lorne.tx.Constants;
 import com.lorne.tx.db.IBaseProxy;
 import com.lorne.tx.db.service.DataSourceService;
 import com.lorne.tx.mq.service.NettyService;
 //import com.lorne.tx.compensate.service.CompensateService;
 import com.lorne.tx.service.InitService;
+import com.lorne.tx.service.ModelNameService;
 import com.lorne.tx.service.TimeOutService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,9 @@ public class InitServiceImpl implements InitService {
     @Autowired
     private IBaseProxy baseProxy;
 
+    @Autowired
+    private ModelNameService modelNameService;
+
     @Override
     public void start() {
 
@@ -42,6 +47,12 @@ public class InitServiceImpl implements InitService {
          * bean自动注入的方式注入给代理对象，因此通过初始化的时候再为其赋值。
          */
         baseProxy.setDataSourceService(dataSourceService);
+
+        /**
+         * 设置模块唯一标示
+         */
+
+        Constants.uniqueKey = modelNameService.getUniqueKey();
 
         nettyService.start();
         logger.info("socket-start..");
