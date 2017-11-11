@@ -56,19 +56,16 @@ public class TxManagerServiceImpl implements TxManagerService {
         if (txGroup==null) {
             return null;
         }
-        if (txGroup != null) {
-            TxInfo txInfo = new TxInfo();
-            txInfo.setModelName(modelName);
-            txInfo.setKid(taskId);
-            txInfo.setAddress(Constants.address);
-            txInfo.setIsGroup(isGroup);
-            txInfo.setUniqueKey(uniqueKey);
-            txGroup.addTransactionInfo(txInfo);
+        TxInfo txInfo = new TxInfo();
+        txInfo.setModelName(modelName);
+        txInfo.setKid(taskId);
+        txInfo.setAddress(Constants.address);
+        txInfo.setIsGroup(isGroup);
+        txInfo.setUniqueKey(uniqueKey);
+        txGroup.addTransactionInfo(txInfo);
 
-            redisServerService.updateTransactionGroup(groupId,txGroup.toJsonString());
-            return txGroup;
-        }
-        return null;
+        redisServerService.updateTransactionGroup(groupId,txGroup.toJsonString());
+        return txGroup;
     }
 
     @Override
@@ -179,10 +176,8 @@ public class TxManagerServiceImpl implements TxManagerService {
         if (!hasOk) {
             //未通知成功
             if (txGroup.getState() == 1) {
-
                 redisServerService.updateNotifyTransactionGroup(txGroup.getGroupId(),txGroup.toJsonString());
             }
-
         }
         redisServerService.deleteTxGroup(txGroup.getGroupId());
     }
@@ -191,12 +186,6 @@ public class TxManagerServiceImpl implements TxManagerService {
     @Override
     public void deleteTxGroup(TxGroup txGroup) {
         redisServerService.deleteTxGroup(txGroup.getGroupId());
-    }
-
-
-    @Override
-    public int getDelayTime() {
-        return configReader.getTransactionNettyDelayTime();
     }
 
 

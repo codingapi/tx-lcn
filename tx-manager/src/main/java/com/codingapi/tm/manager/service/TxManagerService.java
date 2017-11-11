@@ -42,7 +42,7 @@ public interface TxManagerService {
 
     boolean clearTransaction(String groupId, String taskId, int isGroup);
 
-    int getDelayTime();
+
 
 
 }

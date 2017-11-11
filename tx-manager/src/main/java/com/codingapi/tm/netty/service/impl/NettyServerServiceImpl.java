@@ -2,10 +2,11 @@ package com.codingapi.tm.netty.service.impl;
 
 import com.codingapi.tm.Constants;
 import com.codingapi.tm.config.ConfigReader;
+import com.codingapi.tm.manager.service.TxManagerService;
 import com.codingapi.tm.netty.handler.TxCoreServerHandler;
 import com.codingapi.tm.netty.service.NettyServerService;
-import com.codingapi.tm.netty.service.MQTxManagerService;
 
+import com.codingapi.tm.netty.service.NettyService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -33,7 +34,7 @@ public class NettyServerServiceImpl implements NettyServerService {
 
 
     @Autowired
-    private MQTxManagerService mqTxManagerService;
+    private NettyService nettyService;
 
 
     private Logger logger = LoggerFactory.getLogger(NettyServerServiceImpl.class);
@@ -51,7 +52,7 @@ public class NettyServerServiceImpl implements NettyServerService {
     @Override
     public void start() {
         int heartTime = configReader.getTransactionNettyHeartTime()+10;
-        txCoreServerHandler = new TxCoreServerHandler(mqTxManagerService);
+        txCoreServerHandler = new TxCoreServerHandler(nettyService);
         bossGroup = new NioEventLoopGroup(50); // (1)
         workerGroup = new NioEventLoopGroup();
         try {

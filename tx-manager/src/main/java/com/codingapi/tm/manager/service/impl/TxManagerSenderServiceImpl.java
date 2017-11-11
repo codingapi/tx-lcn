@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import com.codingapi.tm.Constants;
+import com.codingapi.tm.config.ConfigReader;
 import com.codingapi.tm.manager.service.TxManagerSenderService;
 import com.codingapi.tm.manager.service.TxManagerService;
 import com.codingapi.tm.framework.utils.SocketManager;
@@ -44,6 +45,9 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
 
     @Autowired
     private TxManagerService txManagerService;
+
+    @Autowired
+    private ConfigReader configReader;
 
     @Override
     public boolean confirm(TxGroup txGroup) {
@@ -250,7 +254,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                     task.signalTask();
                 }
             }
-        }, txManagerService.getDelayTime(), TimeUnit.SECONDS);
+        }, configReader.getTransactionNettyDelayTime(), TimeUnit.SECONDS);
 
         return future;
     }

@@ -7,11 +7,8 @@ package com.codingapi.tm.netty.handler;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.tm.framework.utils.SocketManager;
 import com.codingapi.tm.framework.utils.SocketUtils;
-import com.codingapi.tm.netty.model.TxGroup;
-import com.codingapi.tm.netty.service.MQTxManagerService;
-import com.lorne.core.framework.utils.task.ConditionUtils;
-import com.lorne.core.framework.utils.task.IBack;
-import com.lorne.core.framework.utils.task.Task;
+import com.codingapi.tm.netty.service.IActionService;
+import com.codingapi.tm.netty.service.NettyService;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -31,7 +28,7 @@ import java.util.concurrent.Executors;
 @ChannelHandler.Sharable
 public class TxCoreServerHandler extends ChannelInboundHandlerAdapter { // (1)
 
-    private MQTxManagerService txManagerService;
+    private NettyService nettyService;
 
 
     private Logger logger = LoggerFactory.getLogger(TxCoreServerHandler.class);
@@ -43,8 +40,8 @@ public class TxCoreServerHandler extends ChannelInboundHandlerAdapter { // (1)
 
 
 
-    public TxCoreServerHandler(MQTxManagerService txManagerService) {
-        this.txManagerService = txManagerService;
+    public TxCoreServerHandler(NettyService nettyService) {
+        this.nettyService = nettyService;
     }
 
     @Override
@@ -65,87 +62,12 @@ public class TxCoreServerHandler extends ChannelInboundHandlerAdapter { // (1)
             String action = jsonObject.getString("a");
             String key = jsonObject.getString("k");
             JSONObject params = JSONObject.parseObject(jsonObject.getString("p"));
+            String modelName = ctx.channel().remoteAddress().toString();
 
-            String res = "";
-            switch (action) {
-                //创建事务组
-                case "cg": {
-                    TxGroup txGroup = txManagerService.createTransactionGroup();
-                    if(txGroup!=null) {
-                        txGroup.setNowTime(System.currentTimeMillis());
-                        res = txGroup.toJsonString(false);
-                    }else {
-                        res = "";
-                    }
-                    break;
-                }
-                //添加事务组
-                case "atg": {
-                    String groupId = params.getString("g");
-                    String taskId = params.getString("t");
-                    String uniqueKey = params.getString("u");
-                    int isGroup = params.getInteger("s");
-                    String modelName = ctx.channel().remoteAddress().toString();
+            IActionService actionService =  nettyService.getActionService(action);
 
-                    SocketManager.getInstance().onLine(modelName,uniqueKey);
+            String res = actionService.execute(modelName,key,params);
 
-                    TxGroup txGroup = txManagerService.addTransactionGroup(groupId, uniqueKey,taskId, isGroup,modelName);
-
-                    if(txGroup!=null) {
-                        txGroup.setNowTime(System.currentTimeMillis());
-                        res = txGroup.toJsonString(false);
-                    }else {
-                         res = "";
-                    }
-
-                    break;
-                }
-
-                //关闭事务组
-                case "ctg": {
-                    String groupId = params.getString("g");
-                    int state = params.getInteger("s");
-                    boolean bs = txManagerService.closeTransactionGroup(groupId,state);
-
-                    res = bs ? "1" : "0";
-                    break;
-                }
-
-                //检查事务组
-                case "ckg": {
-                    String groupId = params.getString("g");
-                    String taskId = params.getString("t");
-                    int bs = txManagerService.checkTransactionGroup(groupId,taskId);
-
-                    res = String.valueOf(bs);
-                    break;
-                }
-
-
-                //心跳包
-                case "h": {
-                    res = String.valueOf(txManagerService.getDelayTime());
-                    break;
-                }
-
-                //通知事务单元
-                case "c":
-                case "t": {
-                    final String data = params.getString("d");
-                    Task task = ConditionUtils.getInstance().getTask(key);
-                    if (task != null) {
-                        task.setBack(new IBack() {
-                            @Override
-                            public Object doing(Object... objs) throws Throwable {
-                                return data;
-                            }
-                        });
-                        task.signalTask();
-                    }
-                    return;
-                }
-
-            }
             JSONObject resObj = new JSONObject();
             resObj.put("k", key);
             resObj.put("d", res);
