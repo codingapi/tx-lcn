@@ -2,7 +2,7 @@ package com.codingapi.tx.datasource.service.impl;
 
 import com.lorne.core.framework.utils.task.Task;
 import com.codingapi.tx.datasource.service.DataSourceService;
-import com.codingapi.tx.mq.service.MQTxManagerService;
+import com.codingapi.tx.netty.service.MQTxManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

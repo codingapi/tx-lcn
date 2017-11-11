@@ -1,8 +1,8 @@
 package com.codingapi.tx.aop.service.impl;
 
 //import TxTransaction;
-import com.codingapi.tx.bean.TxTransactionInfo;
-import com.codingapi.tx.listener.service.NettyService;
+import com.codingapi.tx.aop.bean.TxTransactionInfo;
+import com.codingapi.tx.netty.service.NettyService;
 //import TxTransactionLocal;
 //import CompensateService;
 //import CompensateServiceImpl;

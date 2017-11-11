@@ -1,6 +1,6 @@
 package com.codingapi.tx.aop.service;
 
-import com.codingapi.tx.bean.TxTransactionInfo;
+import com.codingapi.tx.aop.bean.TxTransactionInfo;
 
 /**
  * Created by lorne on 2017/6/8.

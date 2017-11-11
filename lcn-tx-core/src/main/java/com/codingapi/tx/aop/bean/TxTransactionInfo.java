@@ -1,4 +1,4 @@
-package com.codingapi.tx.bean;
+package com.codingapi.tx.aop.bean;
 
 import com.codingapi.tx.annotation.TxTransaction;
 import com.codingapi.tx.model.TransactionInvocation;

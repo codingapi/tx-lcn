@@ -1,7 +1,7 @@
 package com.codingapi.tx.dubbo.filter;
 
 import com.alibaba.dubbo.rpc.*;
-import com.codingapi.tx.bean.TxTransactionLocal;
+import com.codingapi.tx.aop.bean.TxTransactionLocal;
 
 /**
  * Created by lorne on 2017/6/30.

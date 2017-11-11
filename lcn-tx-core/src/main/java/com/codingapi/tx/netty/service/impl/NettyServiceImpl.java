@@ -1,10 +1,11 @@
-package com.codingapi.tx.listener.service.impl;
+package com.codingapi.tx.netty.service.impl;
 
 import com.codingapi.tx.Constants;
-import com.codingapi.tx.listener.handler.TransactionHandler;
-import com.codingapi.tx.listener.model.Request;
-import com.codingapi.tx.listener.service.NettyDistributeService;
-import com.codingapi.tx.listener.service.NettyService;
+import com.codingapi.tx.framework.utils.SocketManager;
+import com.codingapi.tx.netty.handler.TransactionHandler;
+import com.codingapi.tx.netty.service.NettyControlService;
+import com.codingapi.tx.netty.service.NettyDistributeService;
+import com.codingapi.tx.netty.service.NettyService;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -30,7 +31,9 @@ public class NettyServiceImpl implements NettyService {
     @Autowired
     private NettyDistributeService nettyDistributeService;
 
-    private TransactionHandler transactionHandler;
+
+    @Autowired
+    private NettyControlService nettyControlService;
 
     private EventLoopGroup workerGroup;
 
@@ -53,7 +56,7 @@ public class NettyServiceImpl implements NettyService {
         final int heart = Constants.txServer.getHeart();
         int delay = Constants.txServer.getDelay();
 
-        transactionHandler = new TransactionHandler(this, delay);
+        final TransactionHandler transactionHandler = new TransactionHandler(nettyControlService, delay);
         workerGroup = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap(); // (1)
@@ -110,27 +113,28 @@ public class NettyServiceImpl implements NettyService {
         if (workerGroup != null) {
             workerGroup.shutdownGracefully();
             workerGroup = null;
-            TransactionHandler.net_state = false;
+
+            SocketManager.getInstance().setNetState(false);
             isStarting = false;
         }
     }
 
-
-    @Override
-    public String sendMsg(Request request) {
-        return transactionHandler.sendMsg(request);
-    }
+//
+//    @Override
+//    public String sendMsg(Request request) {
+//        return transactionHandler.sendMsg(request);
+//    }
 
     @Override
     public boolean checkState() {
-        if (!TransactionHandler.net_state) {
+        if (!SocketManager.getInstance().isNetState()) {
             logger.error("socket服务尚未建立连接成功,将在此等待2秒.");
             try {
                 Thread.sleep(1000 * 2);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (!TransactionHandler.net_state) {
+            if (!SocketManager.getInstance().isNetState()) {
                 logger.error("socket还未连接成功,请检查TxManager服务后再试.");
                 return false;
             }

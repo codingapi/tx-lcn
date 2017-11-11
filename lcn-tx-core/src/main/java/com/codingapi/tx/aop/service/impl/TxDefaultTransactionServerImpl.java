@@ -1,6 +1,6 @@
 package com.codingapi.tx.aop.service.impl;
 
-import com.codingapi.tx.bean.TxTransactionInfo;
+import com.codingapi.tx.aop.bean.TxTransactionInfo;
 import com.codingapi.tx.aop.service.TransactionServer;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.stereotype.Service;

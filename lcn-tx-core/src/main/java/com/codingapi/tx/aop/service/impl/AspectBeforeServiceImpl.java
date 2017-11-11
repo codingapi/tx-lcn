@@ -1,8 +1,8 @@
 package com.codingapi.tx.aop.service.impl;
 
 import com.codingapi.tx.annotation.TxTransaction;
-import com.codingapi.tx.bean.TxTransactionInfo;
-import com.codingapi.tx.bean.TxTransactionLocal;
+import com.codingapi.tx.aop.bean.TxTransactionInfo;
+import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.aop.service.AspectBeforeService;
 import com.codingapi.tx.aop.service.TransactionServer;
 import com.codingapi.tx.aop.service.TransactionServerFactoryService;

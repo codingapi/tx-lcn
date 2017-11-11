@@ -1,4 +1,4 @@
-package com.codingapi.tx.bean;
+package com.codingapi.tx.aop.bean;
 
 import org.springframework.transaction.annotation.Transactional;
 

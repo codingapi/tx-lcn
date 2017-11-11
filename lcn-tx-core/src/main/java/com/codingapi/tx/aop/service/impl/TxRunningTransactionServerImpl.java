@@ -1,15 +1,15 @@
 package com.codingapi.tx.aop.service.impl;
 
-import com.codingapi.tx.bean.TxTransactionInfo;
+import com.codingapi.tx.aop.bean.TxTransactionInfo;
 import com.codingapi.tx.listener.model.TxGroup;
 import com.lorne.core.framework.exception.ServiceException;
 import com.lorne.core.framework.utils.KidUtils;
-import com.codingapi.tx.bean.TxTransactionLocal;
+import com.codingapi.tx.aop.bean.TxTransactionLocal;
 //import com.lorne.tx.compensate.model.TransactionRecover;
 import com.codingapi.tx.datasource.ILCNDataSourceProxy;
 import com.codingapi.tx.framework.task.TaskGroupManager;
 import com.codingapi.tx.framework.task.TxTask;
-import com.codingapi.tx.mq.service.MQTxManagerService;
+import com.codingapi.tx.netty.service.MQTxManagerService;
 import com.codingapi.tx.aop.service.TransactionServer;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;

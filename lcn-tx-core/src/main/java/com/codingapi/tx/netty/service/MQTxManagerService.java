@@ -1,6 +1,6 @@
-package com.codingapi.tx.mq.service;
+package com.codingapi.tx.netty.service;
 
-import com.codingapi.tx.bean.TxTransactionInfo;
+import com.codingapi.tx.aop.bean.TxTransactionInfo;
 import com.codingapi.tx.listener.model.TxGroup;
 
 

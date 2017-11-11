@@ -1,6 +1,6 @@
 package com.codingapi.tx.springcloud.http;
 
-import com.codingapi.tx.bean.TxTransactionLocal;
+import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
