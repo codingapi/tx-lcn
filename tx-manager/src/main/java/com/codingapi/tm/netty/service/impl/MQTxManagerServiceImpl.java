@@ -1,9 +1,8 @@
-package com.codingapi.tm.mq.service.impl;
+package com.codingapi.tm.netty.service.impl;
 
-import com.codingapi.tm.api.service.TxManagerService;
-import com.codingapi.tm.config.ConfigReader;
-import com.codingapi.tm.listener.model.TxGroup;
-import com.codingapi.tm.mq.service.MQTxManagerService;
+import com.codingapi.tm.manager.service.TxManagerService;
+import com.codingapi.tm.netty.model.TxGroup;
+import com.codingapi.tm.netty.service.MQTxManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,4 +42,6 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
     public int getDelayTime() {
         return txManagerService.getDelayTime();
     }
+
+
 }

@@ -3,7 +3,7 @@ package com.codingapi.tm.listener.service.impl;
 import com.codingapi.tm.Constants;
 import com.codingapi.tm.config.ConfigReader;
 import com.codingapi.tm.listener.service.InitService;
-import com.codingapi.tm.listener.service.NettyServerService;
+import com.codingapi.tm.netty.service.NettyServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,6 @@ public class InitServiceImpl implements InitService {
 
     @Autowired
     private NettyServerService nettyServerService;
-
 
     @Autowired
     private ConfigReader configReader;

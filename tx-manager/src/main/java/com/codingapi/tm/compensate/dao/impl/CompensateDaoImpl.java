@@ -25,7 +25,7 @@ public class CompensateDaoImpl implements CompensateDao {
 
     @Override
     public boolean saveCompensateMsg(TransactionCompensateMsg transactionCompensateMsg) {
-        String name =String.format("/%s/compensate_%s.json",transactionCompensateMsg.getModel(),DateUtil.getCurrentDateFormat());
+        String name =String.format("/%s/compensate_%s.loadNotifyJson",transactionCompensateMsg.getModel(),DateUtil.getCurrentDateFormat());
         String json = JSON.toJSONString(transactionCompensateMsg);
 
         File file = new File(logPath+"/"+name);

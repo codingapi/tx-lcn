@@ -1,4 +1,4 @@
-package com.codingapi.tm.listener.handler;
+package com.codingapi.tm.netty.handler;
 
 /**
  * Created by lorne on 2017/6/29.
@@ -7,8 +7,8 @@ package com.codingapi.tm.listener.handler;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.tm.framework.utils.SocketManager;
 import com.codingapi.tm.framework.utils.SocketUtils;
-import com.codingapi.tm.listener.model.TxGroup;
-import com.codingapi.tm.mq.service.MQTxManagerService;
+import com.codingapi.tm.netty.model.TxGroup;
+import com.codingapi.tm.netty.service.MQTxManagerService;
 import com.lorne.core.framework.utils.task.ConditionUtils;
 import com.lorne.core.framework.utils.task.IBack;
 import com.lorne.core.framework.utils.task.Task;
@@ -50,7 +50,7 @@ public class TxCoreServerHandler extends ChannelInboundHandlerAdapter { // (1)
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) throws Exception {
         final String json = SocketUtils.getJson(msg);
-        logger.info("接受-json->"+json);
+        logger.info("接受-loadNotifyJson->"+json);
         threadPool.execute(new Runnable() {
             @Override
             public void run() {

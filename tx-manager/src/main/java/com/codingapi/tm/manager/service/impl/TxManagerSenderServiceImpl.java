@@ -1,13 +1,14 @@
-package com.codingapi.tm.api.service.impl;
+package com.codingapi.tm.manager.service.impl;
 
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import com.codingapi.tm.Constants;
-import com.codingapi.tm.api.service.TransactionConfirmService;
-import com.codingapi.tm.api.service.TxManagerService;
+import com.codingapi.tm.manager.service.TxManagerSenderService;
+import com.codingapi.tm.manager.service.TxManagerService;
 import com.codingapi.tm.framework.utils.SocketManager;
-import com.codingapi.tm.listener.model.TxGroup;
+import com.codingapi.tm.netty.model.TxGroup;
 import com.codingapi.tm.model.ChannelSender;
 import com.lorne.core.framework.utils.KidUtils;
 import com.lorne.core.framework.utils.task.ConditionUtils;
@@ -15,7 +16,7 @@ import com.lorne.core.framework.utils.task.IBack;
 import com.lorne.core.framework.utils.task.Task;
 import com.lorne.core.framework.utils.thread.CountDownLatchHelper;
 import com.lorne.core.framework.utils.thread.IExecute;
-import com.codingapi.tm.listener.model.TxInfo;
+import com.codingapi.tm.netty.model.TxInfo;
 
 
 import io.netty.channel.Channel;
@@ -32,10 +33,10 @@ import java.util.concurrent.*;
  * Created by lorne on 2017/6/9.
  */
 @Service
-public class TransactionConfirmServiceImpl implements TransactionConfirmService {
+public class TxManagerSenderServiceImpl implements TxManagerSenderService {
 
 
-    private Logger logger = LoggerFactory.getLogger(TransactionConfirmServiceImpl.class);
+    private Logger logger = LoggerFactory.getLogger(TxManagerSenderServiceImpl.class);
 
     private ScheduledExecutorService executorService  = Executors.newScheduledThreadPool(100);
 
@@ -87,27 +88,6 @@ public class TransactionConfirmServiceImpl implements TransactionConfirmService 
     }
 
 
-    private void awaitSend(Task task, TxInfo txInfo,String msg){
-            while (!task.isAwait() && !Thread.currentThread().interrupted()) {
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if(txInfo.getChannel()!=null) {
-                txInfo.getChannel().send(msg,task);
-            }else{
-                task.setBack(new IBack() {
-                    @Override
-                    public Object doing(Object... objs) throws Throwable {
-                        return "-2";
-                    }
-                });
-                task.signalTask();
-            }
-    }
 
     /**
      * 事务提交或回归
@@ -131,36 +111,18 @@ public class TransactionConfirmServiceImpl implements TransactionConfirmService 
                             jsonObject.put("t", txInfo.getKid());
                             final String key = KidUtils.generateShortUuid();
                             jsonObject.put("k", key);
+
                             Task task = ConditionUtils.getInstance().createTask(key);
 
-                            ScheduledFuture future = executorService.schedule(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Task task = ConditionUtils.getInstance().getTask(key);
-                                    if(task!=null&&!task.isNotify()) {
-                                        task.setBack(new IBack() {
-                                            @Override
-                                            public Object doing(Object... objs) throws Throwable {
-                                                return "-2";
-                                            }
-                                        });
-                                        task.signalTask();
-                                    }
-                                }
-                            }, txManagerService.getDelayTime(), TimeUnit.SECONDS);
+                            ScheduledFuture future = schedule(key);
 
-                            threadPool.execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    awaitSend(task, txInfo, jsonObject.toJSONString());
-                                }
-                            });
+                            threadAwaitSend(task, txInfo, jsonObject.toJSONString());
+
                             task.awaitTask();
 
                             if (!future.isDone()) {
                                 future.cancel(false);
                             }
-
 
                             try {
                                 String data = (String) task.getBack().doing();
@@ -187,7 +149,7 @@ public class TransactionConfirmServiceImpl implements TransactionConfirmService 
 
             boolean hasOk = true;
             for (boolean bl : hasOks) {
-                if (bl == false) {
+                if (!bl) {
                     hasOk = false;
                     break;
                 }
@@ -211,6 +173,86 @@ public class TransactionConfirmServiceImpl implements TransactionConfirmService 
             return true;
         }
 
+    }
+
+
+
+    @Override
+    public String sendMsg(String model,String msg) {
+        JSONObject jsonObject = JSON.parseObject(msg);
+        String key = jsonObject.getString("k");
+
+        //创建Task
+        final Task task = ConditionUtils.getInstance().createTask(key);
+
+        threadAwaitSend(task,null,msg);
+
+        ScheduledFuture future = schedule(key);
+
+        task.awaitTask();
+
+        if (!future.isDone()) {
+            future.cancel(false);
+        }
+
+        try {
+            return  (String)task.getBack().doing();
+        } catch (Throwable throwable) {
+            return "-1";
+        }finally {
+            task.remove();
+        }
+    }
+
+
+
+    private void threadAwaitSend(final Task task, final TxInfo txInfo, final String msg){
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                while (!task.isAwait() && !Thread.currentThread().interrupted()) {
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if(txInfo!=null&&txInfo.getChannel()!=null) {
+                    txInfo.getChannel().send(msg,task);
+                }else{
+                    task.setBack(new IBack() {
+                        @Override
+                        public Object doing(Object... objs) throws Throwable {
+                            return "-2";
+                        }
+                    });
+                    task.signalTask();
+                }
+            }
+        });
+
+    }
+
+
+    private ScheduledFuture schedule(String key){
+        ScheduledFuture future = executorService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                Task task = ConditionUtils.getInstance().getTask(key);
+                if(task!=null&&!task.isNotify()) {
+                    task.setBack(new IBack() {
+                        @Override
+                        public Object doing(Object... objs) throws Throwable {
+                            return "-2";
+                        }
+                    });
+                    task.signalTask();
+                }
+            }
+        }, txManagerService.getDelayTime(), TimeUnit.SECONDS);
+
+        return future;
     }
 
 

@@ -1,4 +1,4 @@
-package com.codingapi.tm.listener.model;
+package com.codingapi.tm.netty.model;
 
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.tm.model.ChannelSender;

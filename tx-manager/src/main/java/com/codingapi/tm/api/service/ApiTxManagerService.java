@@ -6,7 +6,7 @@ import com.codingapi.tm.model.TxState;
 /**
  * Created by lorne on 2017/7/1.
  */
-public interface TxService {
+public interface ApiTxManagerService {
 
     TxServer getServer();
 
@@ -46,4 +46,7 @@ public interface TxService {
      * @return  是否保存成功
      */
     boolean sendCompensateMsg(String groupId, String model, String uniqueKey, String className, String method, String data, int time);
+
+
+    String loadNotifyJson();
 }

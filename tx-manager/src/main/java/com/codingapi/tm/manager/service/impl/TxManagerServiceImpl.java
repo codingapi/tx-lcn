@@ -1,23 +1,18 @@
-package com.codingapi.tm.api.service.impl;
+package com.codingapi.tm.manager.service.impl;
 
 
-import com.codingapi.tm.api.service.TxManagerService;
-import com.codingapi.tm.api.service.TransactionConfirmService;
-import com.codingapi.tm.config.ConfigReader;
-import com.lorne.core.framework.utils.KidUtils;
 import com.codingapi.tm.Constants;
-import com.codingapi.tm.listener.model.TxGroup;
-import com.codingapi.tm.listener.model.TxInfo;
-import org.apache.commons.lang.StringUtils;
+import com.codingapi.tm.manager.service.TxManagerSenderService;
+import com.codingapi.tm.manager.service.TxManagerService;
+import com.codingapi.tm.config.ConfigReader;
+import com.codingapi.tm.netty.model.TxGroup;
+import com.codingapi.tm.netty.model.TxInfo;
+import com.codingapi.tm.redis.service.RedisServerService;
+import com.lorne.core.framework.utils.KidUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.*;
 
 /**
  * Created by lorne on 2017/6/7.
@@ -30,13 +25,12 @@ public class TxManagerServiceImpl implements TxManagerService {
     @Autowired
     private ConfigReader configReader;
 
+    @Autowired
+    private RedisServerService redisServerService;
+
 
     @Autowired
-    private RedisTemplate<String, String> redisTemplate;
-
-
-    @Autowired
-    private TransactionConfirmService transactionConfirmService;
+    private TxManagerSenderService transactionConfirmService;
 
 
 
@@ -49,21 +43,19 @@ public class TxManagerServiceImpl implements TxManagerService {
         TxGroup txGroup = new TxGroup();
         txGroup.setStartTime(System.currentTimeMillis());
         txGroup.setGroupId(groupId);
-        String key = configReader.getKeyPrefix() + groupId;
-        ValueOperations<String, String> value = redisTemplate.opsForValue();
-        value.set(key, txGroup.toJsonString(), configReader.getRedisSaveMaxTime(), TimeUnit.SECONDS);
+
+        redisServerService.createTransactionGroup(groupId,txGroup.toJsonString());
+
         return txGroup;
     }
 
     @Override
     public TxGroup addTransactionGroup(String groupId,String uniqueKey, String taskId,int isGroup, String modelName) {
-        ValueOperations<String, String> value = redisTemplate.opsForValue();
-        String key = configReader.getKeyPrefix() + groupId;
-        String json = value.get(key);
-        if (StringUtils.isEmpty(json)) {
+
+        TxGroup txGroup = redisServerService.getTxGroupById(groupId);
+        if (txGroup==null) {
             return null;
         }
-        TxGroup txGroup = TxGroup.parser(json);
         if (txGroup != null) {
             TxInfo txInfo = new TxInfo();
             txInfo.setModelName(modelName);
@@ -72,7 +64,8 @@ public class TxManagerServiceImpl implements TxManagerService {
             txInfo.setIsGroup(isGroup);
             txInfo.setUniqueKey(uniqueKey);
             txGroup.addTransactionInfo(txInfo);
-            value.set(key, txGroup.toJsonString(), configReader.getRedisSaveMaxTime(), TimeUnit.SECONDS);
+
+            redisServerService.updateTransactionGroup(groupId,txGroup.toJsonString());
             return txGroup;
         }
         return null;
@@ -80,24 +73,26 @@ public class TxManagerServiceImpl implements TxManagerService {
 
     @Override
     public  int getTransaction(String groupId, String taskId) {
-        ValueOperations<String, String> value = redisTemplate.opsForValue();
-        String key = configReader.getKeyPrefix() + groupId;
-        String json = value.get(key);
-        if (StringUtils.isEmpty(json)) {
-            key = configReader.getKeyPrefixNotify() + groupId;
-            json = value.get(key);
-            if (StringUtils.isEmpty(json)) {
+        boolean inNotify = false;
+        TxGroup txGroup = redisServerService.getTxGroupById(groupId);
+        if (txGroup==null) {
+            txGroup = redisServerService.getTxGroupOnNotifyById(groupId);
+            inNotify = true;
+            if(txGroup==null){
                 return 0;
             }
         }
-        TxGroup txGroup = TxGroup.parser(json);
 
         if(txGroup.getHasOver()==0){
             long nowTime = System.currentTimeMillis();
             long startTime =  txGroup.getStartTime();
             //超时清理数据
             if(nowTime-startTime>(configReader.getRedisSaveMaxTime()*1000)){
-                redisTemplate.delete(key);
+                if(inNotify){
+                    redisServerService.deleteTxGroup(groupId);
+                }else{
+                    redisServerService.deleteNotifyTxGroup(groupId);
+                }
                 return 0;
             }
             return -1;
@@ -120,17 +115,15 @@ public class TxManagerServiceImpl implements TxManagerService {
     @Override
     public boolean clearTransaction(String groupId, String taskId, int isGroup) {
         logger.info("start-clearTransaction->groupId:"+groupId+",taskId:"+taskId);
-        ValueOperations<String, String> value = redisTemplate.opsForValue();
-        String key = configReader.getKeyPrefix() + groupId;
-        String json = value.get(key);
-        if (StringUtils.isEmpty(json)) {
-            key = configReader.getKeyPrefixNotify() + groupId;
-            json = value.get(key);
-            if (StringUtils.isEmpty(json)) {
+        boolean isNotify = false;
+        TxGroup txGroup = redisServerService.getTxGroupById(groupId);
+        if (txGroup==null) {
+            txGroup = redisServerService.getTxGroupOnNotifyById(groupId);
+            isNotify=true;
+            if (txGroup==null) {
                 return false;
             }
         }
-        TxGroup txGroup = TxGroup.parser(json);
         boolean res = txGroup.getState() == 1;
 
         boolean hasSet = false;
@@ -142,8 +135,7 @@ public class TxManagerServiceImpl implements TxManagerService {
         }
 
         if(hasSet&&res) {
-            String pnKey = configReader.getKeyPrefixNotify() + groupId;
-            value.set(pnKey, txGroup.toJsonString());
+            redisServerService.updateNotifyTransactionGroup(groupId,txGroup.toJsonString());
         }
 
         boolean isOver = true;
@@ -161,10 +153,8 @@ public class TxManagerServiceImpl implements TxManagerService {
             }
         }
 
-        if (isOver) {
-            if(key.startsWith(configReader.getKeyPrefix())) {
-                redisTemplate.delete(key);
-            }
+        if (isOver&&!isNotify) {
+            redisServerService.deleteTxGroup(groupId);
         }
 
         logger.info("end-clearTransaction->groupId:"+groupId+",taskId:"+taskId+",res:"+res);
@@ -174,13 +164,10 @@ public class TxManagerServiceImpl implements TxManagerService {
 
     @Override
     public boolean closeTransactionGroup(String groupId,int state) {
-        ValueOperations<String, String> value = redisTemplate.opsForValue();
-        String key = configReader.getKeyPrefix() + groupId;
-        String json = value.get(key);
-        if (StringUtils.isEmpty(json)) {
+        TxGroup txGroup = redisServerService.getTxGroupById(groupId);
+        if(txGroup==null){
             return false;
         }
-        final TxGroup txGroup = TxGroup.parser(json);
         txGroup.setState(state);
         txGroup.setHasOver(1);
         return transactionConfirmService.confirm(txGroup);
@@ -189,24 +176,21 @@ public class TxManagerServiceImpl implements TxManagerService {
 
     @Override
     public void dealTxGroup(TxGroup txGroup, boolean hasOk) {
-        String key = configReader.getKeyPrefix() + txGroup.getGroupId();
         if (!hasOk) {
             //未通知成功
             if (txGroup.getState() == 1) {
-                ValueOperations<String, String> value = redisTemplate.opsForValue();
-                String newKey = configReader.getKeyPrefixNotify() + txGroup.getGroupId();
-                value.set(newKey, txGroup.toJsonString());
+
+                redisServerService.updateNotifyTransactionGroup(txGroup.getGroupId(),txGroup.toJsonString());
             }
 
         }
-        redisTemplate.delete(key);
+        redisServerService.deleteTxGroup(txGroup.getGroupId());
     }
 
 
     @Override
     public void deleteTxGroup(TxGroup txGroup) {
-        String key = configReader.getKeyPrefix() + txGroup.getGroupId();
-        redisTemplate.delete(key);
+        redisServerService.deleteTxGroup(txGroup.getGroupId());
     }
 
 
@@ -214,4 +198,7 @@ public class TxManagerServiceImpl implements TxManagerService {
     public int getDelayTime() {
         return configReader.getTransactionNettyDelayTime();
     }
+
+
+
 }

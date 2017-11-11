@@ -1,6 +1,6 @@
-package com.codingapi.tm.api.service;
+package com.codingapi.tm.manager.service;
 
-import com.codingapi.tm.listener.model.TxGroup;
+import com.codingapi.tm.netty.model.TxGroup;
 
 /**
  * Created by lorne on 2017/6/7.
@@ -43,5 +43,6 @@ public interface TxManagerService {
     boolean clearTransaction(String groupId, String taskId, int isGroup);
 
     int getDelayTime();
+
 
 }

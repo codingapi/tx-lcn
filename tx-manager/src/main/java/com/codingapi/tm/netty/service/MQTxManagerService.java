@@ -1,6 +1,6 @@
-package com.codingapi.tm.mq.service;
+package com.codingapi.tm.netty.service;
 
-import com.codingapi.tm.listener.model.TxGroup;
+import com.codingapi.tm.netty.model.TxGroup;
 
 /**
  * Created by lorne on 2017/6/7.
@@ -31,5 +31,6 @@ public interface MQTxManagerService {
 
 
     int getDelayTime();
+
 
 }
