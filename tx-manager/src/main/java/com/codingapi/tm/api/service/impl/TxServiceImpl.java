@@ -3,11 +3,13 @@ package com.codingapi.tm.api.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.codingapi.tm.Constants;
 import com.codingapi.tm.api.service.DiscoveryService;
 import com.codingapi.tm.api.service.TxManagerService;
 import com.codingapi.tm.api.service.TxService;
 import com.codingapi.tm.compensate.model.TransactionCompensateMsg;
 import com.codingapi.tm.compensate.service.CompensateService;
+import com.codingapi.tm.config.ConfigReader;
 import com.codingapi.tm.framework.utils.SocketManager;
 import com.codingapi.tm.framework.utils.SocketUtils;
 import com.codingapi.tm.model.TxServer;
@@ -15,12 +17,10 @@ import com.codingapi.tm.model.TxState;
 import com.lorne.core.framework.utils.task.ConditionUtils;
 import com.lorne.core.framework.utils.task.IBack;
 import com.lorne.core.framework.utils.task.Task;
-import com.codingapi.tm.Constants;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.EurekaServerContextHolder;
 import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -37,15 +37,6 @@ import java.util.regex.Pattern;
 @Service
 public class TxServiceImpl implements TxService {
 
-    @Value("${redis_save_max_time}")
-    private int redis_save_max_time;
-
-    @Value("${transaction_netty_heart_time}")
-    private int transaction_netty_heart_time;
-
-    @Value("${transaction_netty_delay_time}")
-    private int transaction_netty_delay_time;
-
 
     @Autowired
     private TxManagerService managerService;
@@ -61,6 +52,9 @@ public class TxServiceImpl implements TxService {
 
     @Autowired
     private CompensateService compensateService;
+
+    @Autowired
+    private ConfigReader configReader;
 
 
     @Override
@@ -115,9 +109,9 @@ public class TxServiceImpl implements TxService {
         state.setPort(Constants.socketPort);
         state.setMaxConnection(SocketManager.getInstance().getMaxConnection());
         state.setNowConnection(SocketManager.getInstance().getNowConnection());
-        state.setRedisSaveMaxTime(redis_save_max_time);
-        state.setTransactionNettyDelayTime(transaction_netty_delay_time);
-        state.setTransactionNettyHeartTime(transaction_netty_heart_time);
+        state.setRedisSaveMaxTime(configReader.getRedisSaveMaxTime());
+        state.setTransactionNettyDelayTime(configReader.getTransactionNettyDelayTime());
+        state.setTransactionNettyHeartTime(configReader.getTransactionNettyHeartTime());
         state.setSlbList(getServices());
         return state;
     }

@@ -39,7 +39,6 @@ public class IndexController {
     @RequestMapping("/json")
     @ResponseBody
     public String json() {
-        //test//
         Set<String> keys =  redisTemplate.keys("tx_manager_notify_*");
         ValueOperations<String,String> value =  redisTemplate.opsForValue();
         JSONArray jsonArray = new JSONArray();
