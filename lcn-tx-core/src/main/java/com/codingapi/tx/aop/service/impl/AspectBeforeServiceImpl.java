@@ -36,6 +36,9 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
         TxTransaction transaction = thisMethod.getAnnotation(TxTransaction.class);
 
         Transactional transactional = thisMethod.getAnnotation(Transactional.class);
+        if (transactional == null) {
+            transactional = clazz.getAnnotation(Transactional.class);
+        }
 
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
