@@ -3,12 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.1991wangliang</groupId>
-    <artifactId>lorne-tx-core</artifactId>
+    <groupId>com.codingapi</groupId>
+    <artifactId>tx-core</artifactId>
     <version>1.1.0</version>
 
-    <name>lorne-tx-core</name>
-    <url>https://github.com/1991wangliang/tx-lcn</url>
+    <name>tx-lcn</name>
+    <url>https://github.com/codingapi/tx-lcn</url>
 
     <description> tx-lcn-core project for Spring Boot</description>
 
@@ -31,9 +31,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/1991wangliang/tx-lcn.git</connection>
-        <developerConnection>scm:git:https://github.com/1991wangliang/tx-lcn.git</developerConnection>
-        <url>https://github.com/1991wangliang/tx-lcn</url>
+        <connection>scm:git:https://github.com/codingapi/tx-lcn.git</connection>
+        <developerConnection>scm:git:https://github.com/codingapi/tx-lcn.git</developerConnection>
+        <url>https://github.com/codingapi/tx-lcn</url>
         <tag>v${project.version}</tag>
     </scm>
 

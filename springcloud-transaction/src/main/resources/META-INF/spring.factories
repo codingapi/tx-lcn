@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.lorne.tx.TransactionConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.codingapi.tx.TransactionConfiguration

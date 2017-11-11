@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
 
-    <groupId>com.github.1991wangliang</groupId>
+    <groupId>com.codingapi</groupId>
     <artifactId>dubbo-transaction</artifactId>
     <version>1.1.0</version>
 
     <name>dubbo-transaction</name>
-    <url>https://github.com/1991wangliang/tx-lcn</url>
+    <url>https://github.com/codingapi/tx-lcn</url>
 
     <description> dubbo-transaction project for Spring Boot</description>
 
@@ -33,9 +33,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/1991wangliang/tx-lcn.git</connection>
-        <developerConnection>scm:git:https://github.com/1991wangliang/tx-lcn.git</developerConnection>
-        <url>https://github.com/1991wangliang/tx-lcn</url>
+        <connection>scm:git:https://github.com/codingapi/tx-lcn.git</connection>
+        <developerConnection>scm:git:https://github.com/codingapi/tx-lcn.git</developerConnection>
+        <url>https://github.com/codingapi/tx-lcn</url>
         <tag>v${project.version}</tag>
     </scm>
 
@@ -66,8 +66,8 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.github.1991wangliang</groupId>
-            <artifactId>lorne-tx-core</artifactId>
+            <groupId>com.codingapi</groupId>
+            <artifactId>tx-core</artifactId>
             <version>1.1.0</version>
         </dependency>
 
