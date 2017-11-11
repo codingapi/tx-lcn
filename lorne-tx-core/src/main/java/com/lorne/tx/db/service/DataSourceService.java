@@ -1,7 +1,7 @@
 package com.lorne.tx.db.service;
 
 import com.lorne.core.framework.utils.task.Task;
-import com.lorne.tx.compensate.model.TransactionRecover;
+//import com.lorne.tx.compensate.model.TransactionRecover;
 
 import java.util.List;
 
@@ -11,11 +11,11 @@ import java.util.List;
 public interface DataSourceService {
 
 
-    void schedule(String groupId,List<TransactionRecover> compensates, Task waitTask);
+    void schedule(String groupId, Task waitTask);
 
-    void deleteCompensates(List<TransactionRecover> compensates);
+   // void deleteCompensates(List<TransactionRecover> compensates);
 
-    void deleteCompensateId(String compensateId);
-
-    void saveTransactionRecover(TransactionRecover recover);
+//    void deleteCompensateId(String compensateId);
+//
+//    void saveTransactionRecover(TransactionRecover recover);
 }

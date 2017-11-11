@@ -7,7 +7,7 @@
 
     <groupId>com.github.1991wangliang</groupId>
     <artifactId>dubbo-transaction</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 
     <name>dubbo-transaction</name>
     <url>https://github.com/1991wangliang/tx-lcn</url>
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.github.1991wangliang</groupId>
             <artifactId>lorne-tx-core</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
 
         <dependency>

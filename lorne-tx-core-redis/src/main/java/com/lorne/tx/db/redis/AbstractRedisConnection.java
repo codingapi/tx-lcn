@@ -2,8 +2,8 @@ package com.lorne.tx.db.redis;
 
 
 import com.lorne.tx.bean.TxTransactionLocal;
-import com.lorne.tx.compensate.model.TransactionRecover;
-import com.lorne.tx.compensate.service.CompensateService;
+//import com.lorne.tx.compensate.model.TransactionRecover;
+//import com.lorne.tx.compensate.service.CompensateService;
 import com.lorne.tx.db.ICallClose;
 import com.lorne.tx.db.IResource;
 import com.lorne.tx.db.service.DataSourceService;
@@ -43,9 +43,9 @@ public abstract class AbstractRedisConnection implements RedisConnection,IResour
 
     private boolean hasGroup = false;
 
-    private List<TransactionRecover> compensateList;
-
-    protected TransactionRecover nowCompensate;
+//    private List<TransactionRecover> compensateList;
+//
+//    protected TransactionRecover nowCompensate;
 
     private String groupId;
 
@@ -76,14 +76,14 @@ public abstract class AbstractRedisConnection implements RedisConnection,IResour
         hasGroup = isGroup;
     }
 
-    @Override
-    public void addCompensate(TransactionRecover recover) {
-        compensateList.add(recover);
-    }
-
-    public List<TransactionRecover> getCompensateList() {
-        return compensateList;
-    }
+//    @Override
+//    public void addCompensate(TransactionRecover recover) {
+//        compensateList.add(recover);
+//    }
+//
+//    public List<TransactionRecover> getCompensateList() {
+//        return compensateList;
+//    }
 
     @Override
     public RedisConnection get() {
@@ -92,19 +92,23 @@ public abstract class AbstractRedisConnection implements RedisConnection,IResour
 
     public AbstractRedisConnection(RedisConnection redisConnection, DataSourceService dataSourceService, TxTransactionLocal transactionLocal, ICallClose<AbstractRedisConnection> runnable) {
         this.redisConnection = redisConnection;
-        compensateList = new ArrayList<>();
+//        compensateList = new ArrayList<>();
         this.runnable = runnable;
         this.dataSourceService = dataSourceService;
         groupId = transactionLocal.getGroupId();
         maxOutTime = transactionLocal.getMaxTimeOut();
-        nowCompensate = transactionLocal.getRecover();
-        compensateList.add(nowCompensate);
+//        nowCompensate = transactionLocal.getRecover();
+//        compensateList.add(nowCompensate);
 
-        if (!CompensateService.COMPENSATE_KEY.equals(transactionLocal.getGroupId())) {
-            TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(transactionLocal.getKid(),transactionLocal.getType());
-            waitTask = taskGroup.getCurrent();
-            logger.info("task-create-> " + waitTask.getKey());
-        }
+//        if (!CompensateService.COMPENSATE_KEY.equals(transactionLocal.getGroupId())) {
+//            TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(transactionLocal.getKid(),transactionLocal.getType());
+//            waitTask = taskGroup.getCurrent();
+//            logger.info("task-create-> " + waitTask.getKey());
+//        }
+
+        TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(transactionLocal.getKid(),transactionLocal.getType());
+        waitTask = taskGroup.getCurrent();
+        logger.info("task-create-> " + waitTask.getKey());
     }
 
 

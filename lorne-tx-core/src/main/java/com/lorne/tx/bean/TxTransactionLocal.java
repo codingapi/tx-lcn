@@ -1,6 +1,6 @@
 package com.lorne.tx.bean;
 
-import com.lorne.tx.compensate.model.TransactionRecover;
+//import com.lorne.tx.compensate.model.TransactionRecover;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -11,7 +11,7 @@ public class TxTransactionLocal {
 
     private final static ThreadLocal<TxTransactionLocal> currentLocal = new ThreadLocal<TxTransactionLocal>();
 
-    private boolean hasCompensate = false;
+  //  private boolean hasCompensate = false;
 
     private String groupId;
 
@@ -23,7 +23,7 @@ public class TxTransactionLocal {
 
     private String kid;
 
-    private TransactionRecover recover;
+   // private TransactionRecover recover;
 
     private String type;
 
@@ -31,13 +31,13 @@ public class TxTransactionLocal {
 
     private Transactional transactional;
 
-    public TransactionRecover getRecover() {
-        return recover;
-    }
+//    public TransactionRecover getRecover() {
+//        return recover;
+//    }
 
-    public void setRecover(TransactionRecover recover) {
-        this.recover = recover;
-    }
+//    public void setRecover(TransactionRecover recover) {
+//        this.recover = recover;
+//    }
 
     public boolean isHasIsGroup() {
         return hasIsGroup;
@@ -72,13 +72,13 @@ public class TxTransactionLocal {
     }
 
 
-    public boolean isHasCompensate() {
-        return hasCompensate;
-    }
-
-    public void setHasCompensate(boolean hasCompensate) {
-        this.hasCompensate = hasCompensate;
-    }
+//    public boolean isHasCompensate() {
+//        return hasCompensate;
+//    }
+//
+//    public void setHasCompensate(boolean hasCompensate) {
+//        this.hasCompensate = hasCompensate;
+//    }
 
     public TxTransactionLocal() {
 

@@ -34,7 +34,7 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
     @Override
     public int checkTransactionGroup(String groupId, String taskId) {
-        return txManagerService.checkTransactionGroup(groupId, taskId);
+        return txManagerService.getTransaction(groupId, taskId);
     }
 
 

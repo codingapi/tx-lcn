@@ -6,7 +6,7 @@
 
 	<groupId>com.github.1991wangliang</groupId>
 	<artifactId>springcloud-transaction</artifactId>
-	<version>1.0.1</version>
+	<version>1.1.0</version>
 
 	<name>springcloud-transaction</name>
 	<url>https://github.com/1991wangliang/tx-lcn</url>
@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>com.github.1991wangliang</groupId>
 			<artifactId>lorne-tx-core</artifactId>
-			<version>1.0.0</version>
+			<version>1.1.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>

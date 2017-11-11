@@ -25,7 +25,7 @@ public class LCNDBConnection extends AbstractDBConnection {
     public void transaction() throws SQLException {
         if (waitTask == null) {
             connection.rollback();
-            dataSourceService.deleteCompensates(getCompensateList());
+            //dataSourceService.deleteCompensates(getCompensateList());
             System.out.println("waitTask is null");
             return;
         }
@@ -37,7 +37,7 @@ public class LCNDBConnection extends AbstractDBConnection {
             @Override
             public void run() {
                 System.out.println("自动回滚->" + getGroupId());
-                dataSourceService.schedule(getGroupId(), getCompensateList(), waitTask);
+                dataSourceService.schedule(getGroupId(), waitTask);
             }
         }, getMaxOutTime());
 
@@ -55,9 +55,9 @@ public class LCNDBConnection extends AbstractDBConnection {
         } else {
             connection.rollback();
         }
-        if (rs != -100) {
-            dataSourceService.deleteCompensates(getCompensateList());
-        }
+//        if (rs != -100) {
+//            dataSourceService.deleteCompensates(getCompensateList());
+//        }
         waitTask.remove();
 
     }

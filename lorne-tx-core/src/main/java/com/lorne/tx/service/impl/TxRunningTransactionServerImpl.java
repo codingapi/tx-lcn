@@ -4,7 +4,7 @@ import com.lorne.core.framework.exception.ServiceException;
 import com.lorne.core.framework.utils.KidUtils;
 import com.lorne.tx.bean.TxTransactionInfo;
 import com.lorne.tx.bean.TxTransactionLocal;
-import com.lorne.tx.compensate.model.TransactionRecover;
+//import com.lorne.tx.compensate.model.TransactionRecover;
 import com.lorne.tx.db.IBaseProxy;
 import com.lorne.tx.db.task.TaskGroupManager;
 import com.lorne.tx.db.task.TxTask;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 分布式事务启动开始时的业务处理
+ * 分布式事务启动参与事务中的业务处理
  * Created by lorne on 2017/6/8.
  */
 @Service(value = "txRunningTransactionServer")
@@ -47,16 +47,16 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
 
         boolean isHasIsGroup =  group.hasGroup(txGroupId);
 
-        TransactionRecover recover = new TransactionRecover();
-        recover.setId(KidUtils.generateShortUuid());
-        recover.setInvocation(info.getInvocation());
-        recover.setTaskId(kid);
-        recover.setGroupId(txGroupId);
+//        TransactionRecover recover = new TransactionRecover();
+//        recover.setId(KidUtils.generateShortUuid());
+//        recover.setInvocation(info.getInvocation());
+//        recover.setTaskId(kid);
+//        recover.setGroupId(txGroupId);
 
         TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
         txTransactionLocal.setGroupId(txGroupId);
         txTransactionLocal.setHasStart(false);
-        txTransactionLocal.setRecover(recover);
+      //  txTransactionLocal.setRecover(recover);
         txTransactionLocal.setKid(kid);
         txTransactionLocal.setTransactional(info.getTransactional());
         txTransactionLocal.setMaxTimeOut(info.getMaxTimeOut());

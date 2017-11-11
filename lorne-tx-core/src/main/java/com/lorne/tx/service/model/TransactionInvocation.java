@@ -1,19 +1,11 @@
-package com.lorne.tx.compensate.model;
+package com.lorne.tx.service.model;
 
 import java.io.Serializable;
 
 /**
- * <p>Description: .</p>
- * <p>Copyright: 2015-2017 happylifeplat.com All Rights Reserved</p>
- * TransactionInvocation 事务补偿方法参数
- *
- * @author yu.xiao@happylifeplat.com
- * @version 1.0
- * @since JDK 1.8
+ * create by lorne on 2017/11/11
  */
-public class TransactionInvocation implements Serializable {
-
-    private static final long serialVersionUID = 7722060715819141844L;
+public class TransactionInvocation  implements Serializable{
 
     /**
      * 事务执行器
@@ -28,12 +20,13 @@ public class TransactionInvocation implements Serializable {
      */
     private Object[] argumentValues;
 
+    /**
+     * 参数类型
+     */
     private Class[] parameterTypes;
-
 
     public TransactionInvocation() {
     }
-
 
     public TransactionInvocation(Class targetClazz, String method, Object[] argumentValues, Class[] parameterTypes) {
         this.targetClazz = targetClazz;
@@ -41,7 +34,6 @@ public class TransactionInvocation implements Serializable {
         this.argumentValues = argumentValues;
         this.parameterTypes = parameterTypes;
     }
-
 
     public Class getTargetClazz() {
         return targetClazz;

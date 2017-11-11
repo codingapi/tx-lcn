@@ -22,7 +22,7 @@ public class LCNRedisConnection  extends AbstractRedisConnection{
     public void transaction() throws Exception {
         if (waitTask == null) {
             redisConnection.close();
-            dataSourceService.deleteCompensates(getCompensateList());
+           // dataSourceService.deleteCompensates(getCompensateList());
             System.out.println("waitTask is null");
             return;
         }
@@ -34,7 +34,7 @@ public class LCNRedisConnection  extends AbstractRedisConnection{
             @Override
             public void run() {
                 System.out.println("自动回滚->" + getGroupId());
-                dataSourceService.schedule(getGroupId(), getCompensateList(), waitTask);
+                dataSourceService.schedule(getGroupId(),  waitTask);
             }
         }, getMaxOutTime());
 
@@ -50,9 +50,9 @@ public class LCNRedisConnection  extends AbstractRedisConnection{
         if (rs == 1) {
             redisConnection.exec();
         }
-        if (rs != -100) {
-            dataSourceService.deleteCompensates(getCompensateList());
-        }
+//        if (rs != -100) {
+//            dataSourceService.deleteCompensates(getCompensateList());
+//        }
         waitTask.remove();
 
     }

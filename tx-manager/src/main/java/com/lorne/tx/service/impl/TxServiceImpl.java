@@ -7,6 +7,8 @@ import com.lorne.core.framework.utils.task.ConditionUtils;
 import com.lorne.core.framework.utils.task.IBack;
 import com.lorne.core.framework.utils.task.Task;
 import com.lorne.tx.Constants;
+import com.lorne.tx.compensate.model.TransactionCompensateMsg;
+import com.lorne.tx.compensate.service.CompensateService;
 import com.lorne.tx.service.DiscoveryService;
 import com.lorne.tx.service.TxManagerService;
 import com.lorne.tx.service.TxService;
@@ -26,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,6 +58,9 @@ public class TxServiceImpl implements TxService {
 
     @Autowired
     private TxManagerService txManagerService;
+
+    @Autowired
+    private CompensateService compensateService;
 
 
     @Override
@@ -147,13 +150,19 @@ public class TxServiceImpl implements TxService {
 
 
     @Override
-    public boolean checkClearGroup(String groupId, String taskId, int isGroup) {
-        return managerService.checkClearGroup(groupId,taskId,isGroup);
+    public boolean clearTransaction(String groupId, String taskId, int isGroup) {
+        return managerService.clearTransaction(groupId,taskId,isGroup);
     }
 
     @Override
-    public int checkGroup(String groupId, String taskId) {
-        return managerService.checkTransactionGroup(groupId, taskId);
+    public int getTransaction(String groupId, String taskId) {
+        return managerService.getTransaction(groupId, taskId);
+    }
+
+    @Override
+    public boolean sendCompensateMsg(String groupId, String model, String uniqueKey, String className, String method, String data, int time) {
+        TransactionCompensateMsg transactionCompensateMsg = new TransactionCompensateMsg(groupId,model,uniqueKey,className,method,data,time);
+        return compensateService.saveCompensateMsg(transactionCompensateMsg);
     }
 
     @Override

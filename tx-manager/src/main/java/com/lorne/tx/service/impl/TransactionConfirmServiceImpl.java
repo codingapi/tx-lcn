@@ -45,18 +45,19 @@ public class TransactionConfirmServiceImpl implements TransactionConfirmService 
     private TxManagerService txManagerService;
 
     @Override
-    public void confirm(TxGroup txGroup) {
+    public boolean confirm(TxGroup txGroup) {
         //绑定管道对象，检查网络
         setChannel(txGroup.getList());
 
         //事务不满足直接回滚事务
         if (txGroup.getState()==0) {
             transaction(txGroup, 0);
-            return;
+            return false;
         }
 
         boolean hasOk =  transaction(txGroup, 1);
         txManagerService.dealTxGroup(txGroup,hasOk);
+        return hasOk;
     }
 
 

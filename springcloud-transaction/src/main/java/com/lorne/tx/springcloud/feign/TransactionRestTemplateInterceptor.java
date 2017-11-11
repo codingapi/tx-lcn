@@ -1,7 +1,7 @@
 package com.lorne.tx.springcloud.feign;
 
 import com.lorne.tx.bean.TxTransactionLocal;
-import com.lorne.tx.compensate.service.impl.CompensateServiceImpl;
+//import com.lorne.tx.compensate.service.impl.CompensateServiceImpl;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 
@@ -17,12 +17,12 @@ public class TransactionRestTemplateInterceptor implements RequestInterceptor {
         String groupId = txTransactionLocal == null ? null : txTransactionLocal.getGroupId();
         int maxTimeOut = txTransactionLocal == null ? 0 : txTransactionLocal.getMaxTimeOut();
         if (txTransactionLocal != null) {
-            if (txTransactionLocal.isHasCompensate()) {
-                requestTemplate.header("tx-group", CompensateServiceImpl.COMPENSATE_KEY);
-            } else {
+//            if (txTransactionLocal.isHasCompensate()) {
+//                requestTemplate.header("tx-group", CompensateServiceImpl.COMPENSATE_KEY);
+//            } else {
                 requestTemplate.header("tx-group", groupId);
                 requestTemplate.header("tx-maxTimeOut", String.valueOf(maxTimeOut));
-            }
+           // }
         }
     }
 

@@ -29,7 +29,7 @@ public interface TxManagerService {
      * @param taskId
      * @return  1 存在 0不存在 -1 未结束
      */
-    int checkTransactionGroup(String groupId,String taskId);
+    int getTransaction(String groupId, String taskId);
 
 
     boolean closeTransactionGroup(String groupId,int state);
@@ -42,7 +42,7 @@ public interface TxManagerService {
     int getDelayTime();
 
 
-    void clearNotifyData(int time);
+//    void clearNotifyData(int time);
 
-    boolean checkClearGroup(String groupId, String taskId, int isGroup);
+    boolean clearTransaction(String groupId, String taskId, int isGroup);
 }

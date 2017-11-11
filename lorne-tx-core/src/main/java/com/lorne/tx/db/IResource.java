@@ -1,6 +1,6 @@
 package com.lorne.tx.db;
 
-import com.lorne.tx.compensate.model.TransactionRecover;
+//import com.lorne.tx.compensate.model.TransactionRecover;
 import com.lorne.tx.db.task.TxTask;
 
 import java.util.List;
@@ -20,11 +20,11 @@ public interface IResource<T> {
 
     void setHasIsGroup(boolean isGroup);
 
-    void addCompensate(TransactionRecover recover);
+//    void addCompensate(TransactionRecover recover);
 
     T get();
 
-    List<TransactionRecover> getCompensateList();
+//    List<TransactionRecover> getCompensateList();
 
     int getMaxOutTime();
 }

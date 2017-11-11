@@ -99,7 +99,7 @@ public class TxManagerServiceImpl implements TxManagerService {
     }
 
     @Override
-    public  int checkTransactionGroup(String groupId, String taskId) {
+    public  int getTransaction(String groupId, String taskId) {
         ValueOperations<String, String> value = redisTemplate.opsForValue();
         String key = key_prefix + groupId;
         String json = value.get(key);
@@ -138,8 +138,8 @@ public class TxManagerServiceImpl implements TxManagerService {
 
 
     @Override
-    public boolean checkClearGroup(String groupId, String taskId, int isGroup) {
-        logger.info("checkTransactionGroup->groupId:"+groupId+",taskId:"+taskId);
+    public boolean clearTransaction(String groupId, String taskId, int isGroup) {
+        logger.info("start-clearTransaction->groupId:"+groupId+",taskId:"+taskId);
         ValueOperations<String, String> value = redisTemplate.opsForValue();
         String key = key_prefix + groupId;
         String json = value.get(key);
@@ -187,7 +187,7 @@ public class TxManagerServiceImpl implements TxManagerService {
             }
         }
 
-        logger.info("end-checkTransactionGroup->groupId:"+groupId+",taskId:"+taskId+",res:"+res);
+        logger.info("end-clearTransaction->groupId:"+groupId+",taskId:"+taskId+",res:"+res);
         return res;
     }
 
@@ -203,8 +203,7 @@ public class TxManagerServiceImpl implements TxManagerService {
         final TxGroup txGroup = TxGroup.parser(json);
         txGroup.setState(state);
         txGroup.setHasOver(1);
-        transactionConfirmService.confirm(txGroup);
-        return true;
+        return transactionConfirmService.confirm(txGroup);
     }
 
 
@@ -236,120 +235,120 @@ public class TxManagerServiceImpl implements TxManagerService {
     }
 
 
-    private void awaitSend(Task task,Channel channel,String msg){
-        while (!task.isAwait()&&!Thread.currentThread().interrupted()){
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        SocketUtils.sendMsg(channel,msg);
-    }
+//    private void awaitSend(Task task,Channel channel,String msg){
+//        while (!task.isAwait()&&!Thread.currentThread().interrupted()){
+//            try {
+//                Thread.sleep(1);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        SocketUtils.sendMsg(channel,msg);
+//    }
 
 
 
-    @Override
-    public void clearNotifyData(int time) {
-        Set<String> keys =  redisTemplate.keys(key_prefix_notify+"*");
-
-        ValueOperations<String, String> value = redisTemplate.opsForValue();
-        for(String key:keys){
-            String json =  value.get(key);
-            TxGroup txGroup = TxGroup.parser(json);
-            if(txGroup==null) {
-                continue;
-            }
-
-            long nowTime = System.currentTimeMillis();
-            if((nowTime - txGroup.getStartTime())>time*1000*60){
-                if(txGroup.getList()!=null&&txGroup.getList().size()>0){
-                    for(TxInfo txInfo:txGroup.getList()){
-
-                        String modelName = txInfo.getModelName();
-
-                        Channel channel = SocketManager.getInstance().getChannelByModelName(modelName);
-
-                        if(channel==null||!channel.isActive()){
-                            //查找在线的有无同模块的
-                            String uniqueKey = txInfo.getUniqueKey();
-
-                            channel = SocketManager.getInstance().getChannelByUniqueKey(uniqueKey);
-
-                            if(channel==null||!channel.isActive()){
-                                continue;
-                            }
-
-                        }
-
-
-                        final JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("a", "c");
-                        jsonObject.put("g", txInfo.getKid());
-                        String k = KidUtils.generateShortUuid();
-                        jsonObject.put("k", k);
-                        final Task task = ConditionUtils.getInstance().createTask(k);
-
-
-                        ScheduledFuture future =  executorService.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                task.setBack(new IBack() {
-                                    @Override
-                                    public Object doing(Object... objs) throws Throwable {
-                                        return "0";
-                                    }
-                                });
-                                task.signalTask();
-                            }
-                        },getDelayTime(),TimeUnit.SECONDS);
-
-                        final Channel sender = channel;
-
-                        threadPool.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                awaitSend(task, sender, jsonObject.toJSONString());
-                            }
-                        });
-
-                        task.awaitTask();
-
-                        if(!future.isDone()){
-                            future.cancel(false);
-                        }
-
-                        try {
-                            String data = (String) task.getBack().doing();
-                            // 1 tx数据已经删除
-                            boolean res = "1".equals(data);
-                            if (res) {
-                                txInfo.setNotify(1);
-                            }
-
-                        } catch (Throwable throwable) {
-                            throwable.printStackTrace();
-                        } finally {
-                            task.remove();
-                        }
-
-                    }
-
-                    boolean isOver = true;
-                    for (TxInfo info : txGroup.getList()) {
-                        if (info.getIsGroup()==0&&info.getNotify() == 0) {
-                            isOver = false;
-                            break;
-                        }
-                    }
-
-                    if (isOver) {
-                        redisTemplate.delete(key);
-                    }
-                }
-            }
-        }
-    }
+//    @Override
+//    public void clearNotifyData(int time) {
+//        Set<String> keys =  redisTemplate.keys(key_prefix_notify+"*");
+//
+//        ValueOperations<String, String> value = redisTemplate.opsForValue();
+//        for(String key:keys){
+//            String json =  value.get(key);
+//            TxGroup txGroup = TxGroup.parser(json);
+//            if(txGroup==null) {
+//                continue;
+//            }
+//
+//            long nowTime = System.currentTimeMillis();
+//            if((nowTime - txGroup.getStartTime())>time*1000*60){
+//                if(txGroup.getList()!=null&&txGroup.getList().size()>0){
+//                    for(TxInfo txInfo:txGroup.getList()){
+//
+//                        String modelName = txInfo.getModelName();
+//
+//                        Channel channel = SocketManager.getInstance().getChannelByModelName(modelName);
+//
+//                        if(channel==null||!channel.isActive()){
+//                            //查找在线的有无同模块的
+//                            String uniqueKey = txInfo.getUniqueKey();
+//
+//                            channel = SocketManager.getInstance().getChannelByUniqueKey(uniqueKey);
+//
+//                            if(channel==null||!channel.isActive()){
+//                                continue;
+//                            }
+//
+//                        }
+//
+//
+//                        final JSONObject jsonObject = new JSONObject();
+//                        jsonObject.put("a", "c");
+//                        jsonObject.put("g", txInfo.getKid());
+//                        String k = KidUtils.generateShortUuid();
+//                        jsonObject.put("k", k);
+//                        final Task task = ConditionUtils.getInstance().createTask(k);
+//
+//
+//                        ScheduledFuture future =  executorService.schedule(new TimerTask() {
+//                            @Override
+//                            public void run() {
+//                                task.setBack(new IBack() {
+//                                    @Override
+//                                    public Object doing(Object... objs) throws Throwable {
+//                                        return "0";
+//                                    }
+//                                });
+//                                task.signalTask();
+//                            }
+//                        },getDelayTime(),TimeUnit.SECONDS);
+//
+//                        final Channel sender = channel;
+//
+//                        threadPool.execute(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                awaitSend(task, sender, jsonObject.toJSONString());
+//                            }
+//                        });
+//
+//                        task.awaitTask();
+//
+//                        if(!future.isDone()){
+//                            future.cancel(false);
+//                        }
+//
+//                        try {
+//                            String data = (String) task.getBack().doing();
+//                            // 1 tx数据已经删除
+//                            boolean res = "1".equals(data);
+//                            if (res) {
+//                                txInfo.setNotify(1);
+//                            }
+//
+//                        } catch (Throwable throwable) {
+//                            throwable.printStackTrace();
+//                        } finally {
+//                            task.remove();
+//                        }
+//
+//                    }
+//
+//                    boolean isOver = true;
+//                    for (TxInfo info : txGroup.getList()) {
+//                        if (info.getIsGroup()==0&&info.getNotify() == 0) {
+//                            isOver = false;
+//                            break;
+//                        }
+//                    }
+//
+//                    if (isOver) {
+//                        redisTemplate.delete(key);
+//                    }
+//                }
+//            }
+//        }
+//    }
 
 
 }
