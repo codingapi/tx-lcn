@@ -16,7 +16,7 @@ public class CompensateServiceImpl implements CompensateService {
 
     @Override
     public void saveLocal(String modelName, String uniqueKey, String data, String method, String className, String json) {
-        logger.info("state:"+json+",modelName:"+modelName+"," +
+        logger.warn("state:"+json+",modelName:"+modelName+"," +
             "uniqueKey:"+uniqueKey+",method:"+method+",className:"+className+",data:"+data);
     }
 }

@@ -4,7 +4,6 @@ import com.codingapi.tx.aop.bean.TxTransactionInfo;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.aop.service.TransactionServer;
 import com.lorne.core.framework.utils.KidUtils;
-//import com.lorne.tx.compensate.model.TransactionRecover;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,17 +27,10 @@ public class TxRunningNoTransactionServerImpl implements TransactionServer {
         logger.info("tx-no-running-start->" + txGroupId);
         long t1 = System.currentTimeMillis();
 
-//
-//        TransactionRecover recover = new TransactionRecover();
-//        recover.setId(KidUtils.generateShortUuid());
-//        recover.setInvocation(info.getInvocation());
-//        recover.setTaskId(kid);
-//        recover.setGroupId(txGroupId);
 
         TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
         txTransactionLocal.setGroupId(txGroupId);
         txTransactionLocal.setHasStart(false);
-      //  txTransactionLocal.setRecover(recover);
         txTransactionLocal.setKid(kid);
         txTransactionLocal.setTransactional(info.getTransactional());
         txTransactionLocal.setMaxTimeOut(info.getMaxTimeOut());

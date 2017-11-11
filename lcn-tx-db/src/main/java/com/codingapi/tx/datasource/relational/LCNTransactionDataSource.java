@@ -17,10 +17,10 @@ import java.util.logging.Logger;
  * create by lorne on 2017/7/29
  */
 
-public class LCNDataSourceProxy extends AbstractResourceProxy<Connection,LCNDBConnection> implements DataSource {
+public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,LCNDBConnection> implements DataSource {
 
 
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(LCNDataSourceProxy.class);
+    private org.slf4j.Logger logger = LoggerFactory.getLogger(LCNTransactionDataSource.class);
 
 
     private DataSource dataSource;

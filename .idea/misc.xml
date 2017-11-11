@@ -13,6 +13,7 @@
         <option value="$PROJECT_DIR$/lcn-springcloud-transaction/pom.xml" />
         <option value="$PROJECT_DIR$/lcn-dubbo-transaction/pom.xml" />
         <option value="$PROJECT_DIR$/lcn-tx-redis/pom.xml" />
+        <option value="$PROJECT_DIR$/lcn-tx-nodb/pom.xml" />
       </list>
     </option>
   </component>

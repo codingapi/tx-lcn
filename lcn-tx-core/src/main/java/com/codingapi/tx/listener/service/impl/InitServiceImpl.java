@@ -6,7 +6,7 @@ import com.codingapi.tx.netty.service.NettyService;
 import com.codingapi.tx.listener.service.InitService;
 import com.codingapi.tx.listener.service.ModelNameService;
 import com.codingapi.tx.listener.service.TimeOutService;
-import com.codingapi.tx.datasource.ILCNDataSourceProxy;
+import com.codingapi.tx.datasource.ILCNTransactionControl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class InitServiceImpl implements InitService {
     private DataSourceService dataSourceService;
 
     @Autowired
-    private ILCNDataSourceProxy dataSourceProxy;
+    private ILCNTransactionControl dataSourceProxy;
 
     @Autowired
     private ModelNameService modelNameService;

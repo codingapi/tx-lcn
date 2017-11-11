@@ -10,6 +10,7 @@
         <module name="lcn-springcloud-transaction" />
         <module name="lcn-tx-core" />
         <module name="lcn-tx-db" />
+        <module name="lcn-tx-nodb" />
         <module name="lcn-tx-redis" />
         <module name="tx-manager" />
       </profile>
@@ -19,6 +20,7 @@
       <module name="lcn-springcloud-transaction" target="1.7" />
       <module name="lcn-tx-core" target="1.7" />
       <module name="lcn-tx-db" target="1.7" />
+      <module name="lcn-tx-nodb" target="1.7" />
       <module name="lcn-tx-redis" target="1.7" />
       <module name="tx-manager" target="1.8" />
     </bytecodeTargetLevel>

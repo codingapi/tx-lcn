@@ -5,8 +5,7 @@ import com.codingapi.tx.listener.model.TxGroup;
 import com.lorne.core.framework.exception.ServiceException;
 import com.lorne.core.framework.utils.KidUtils;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
-//import com.lorne.tx.compensate.model.TransactionRecover;
-import com.codingapi.tx.datasource.ILCNDataSourceProxy;
+import com.codingapi.tx.datasource.ILCNTransactionControl;
 import com.codingapi.tx.framework.task.TaskGroupManager;
 import com.codingapi.tx.framework.task.TxTask;
 import com.codingapi.tx.netty.service.MQTxManagerService;
@@ -32,7 +31,7 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
 
 
     @Autowired
-    private ILCNDataSourceProxy group;
+    private ILCNTransactionControl transactionControl;
 
 
     private Logger logger = LoggerFactory.getLogger(TxRunningTransactionServerImpl.class);
@@ -45,18 +44,12 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
         logger.info("tx-running-start->" + txGroupId);
         long t1 = System.currentTimeMillis();
 
-        boolean isHasIsGroup =  group.hasGroup(txGroupId);
+        boolean isHasIsGroup =  transactionControl.hasGroup(txGroupId);
 
-//        TransactionRecover recover = new TransactionRecover();
-//        recover.setId(KidUtils.generateShortUuid());
-//        recover.setInvocation(info.getInvocation());
-//        recover.setTaskId(kid);
-//        recover.setGroupId(txGroupId);
 
         TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
         txTransactionLocal.setGroupId(txGroupId);
         txTransactionLocal.setHasStart(false);
-      //  txTransactionLocal.setRecover(recover);
         txTransactionLocal.setKid(kid);
         txTransactionLocal.setTransactional(info.getTransactional());
         txTransactionLocal.setMaxTimeOut(info.getMaxTimeOut());

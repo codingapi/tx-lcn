@@ -66,8 +66,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
                 new Thread(new HookRunnable() {
                     @Override
                     public void run0() {
-                        //事务执行日志 info.getInvocation();
-                        //todo 记录补偿日志
+                        //记录补偿日志
                         txManagerService.sendCompensateMsg(groupId,time,info);
 
                     }

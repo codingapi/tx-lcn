@@ -3,10 +3,10 @@ package com.codingapi.tx.datasource;
 import com.codingapi.tx.datasource.service.DataSourceService;
 
 /**
- * LCN 代理连接池
+ * LCN 代理事务协调控制
  * create by lorne on 2017/9/6
  */
-public interface ILCNDataSourceProxy {
+public interface ILCNTransactionControl {
 
     /**
      * 是否是同一个事务下

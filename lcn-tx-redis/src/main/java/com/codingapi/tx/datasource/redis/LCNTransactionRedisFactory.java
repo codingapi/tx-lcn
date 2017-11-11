@@ -14,9 +14,9 @@ import org.springframework.data.redis.connection.RedisSentinelConnection;
 /**
  * create by lorne on 2017/8/22
  */
-public class LCNJedisFactoryProxy extends AbstractResourceProxy<RedisConnection,LCNRedisConnection> implements RedisConnectionFactory {
+public class LCNTransactionRedisFactory extends AbstractResourceProxy<RedisConnection,LCNRedisConnection> implements RedisConnectionFactory {
 
-    private Logger logger = LoggerFactory.getLogger(LCNJedisFactoryProxy.class);
+    private Logger logger = LoggerFactory.getLogger(LCNTransactionRedisFactory.class);
 
     private RedisConnectionFactory redisConnectionFactory;
 
