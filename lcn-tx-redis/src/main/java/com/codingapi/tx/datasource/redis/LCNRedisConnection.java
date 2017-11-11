@@ -1,6 +1,6 @@
 package com.codingapi.tx.datasource.redis;
 
-import com.codingapi.tx.bean.TxTransactionLocal;
+import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.ICallClose;
 import com.codingapi.tx.datasource.ILCNResource;
 import com.codingapi.tx.datasource.service.DataSourceService;

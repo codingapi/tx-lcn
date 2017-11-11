@@ -1,7 +1,7 @@
 package com.codingapi.tx.datasource.redis;
 
 
-import com.codingapi.tx.bean.TxTransactionLocal;
+import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.AbstractResourceProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

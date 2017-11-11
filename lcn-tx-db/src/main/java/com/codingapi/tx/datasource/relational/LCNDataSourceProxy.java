@@ -1,6 +1,6 @@
 package com.codingapi.tx.datasource.relational;
 
-import com.codingapi.tx.bean.TxTransactionLocal;
+import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.AbstractResourceProxy;
 import org.slf4j.LoggerFactory;
 
