@@ -31,9 +31,6 @@ public class NettyServiceImpl implements NettyService {
     @Autowired
     private NettyDistributeService nettyDistributeService;
 
-//    @Autowired
-//    private CompensateService compensateService;
-
     private TransactionHandler transactionHandler;
 
     private EventLoopGroup workerGroup;

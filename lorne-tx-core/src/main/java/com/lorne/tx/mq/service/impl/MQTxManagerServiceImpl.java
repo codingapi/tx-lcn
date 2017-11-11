@@ -2,12 +2,17 @@ package com.lorne.tx.mq.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lorne.core.framework.utils.config.ConfigUtils;
+import com.lorne.core.framework.utils.encode.Base64Utils;
 import com.lorne.core.framework.utils.http.HttpUtils;
 import com.lorne.tx.Constants;
+import com.lorne.tx.bean.TxTransactionInfo;
+import com.lorne.tx.compensate.service.CompensateService;
 import com.lorne.tx.mq.model.Request;
 import com.lorne.tx.mq.model.TxGroup;
 import com.lorne.tx.mq.service.MQTxManagerService;
 import com.lorne.tx.mq.service.NettyService;
+import com.lorne.tx.service.ModelNameService;
+import com.lorne.tx.utils.SerializerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +29,20 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
     private Logger logger = LoggerFactory.getLogger(MQTxManagerServiceImpl.class);
 
+    @Autowired
+    private ModelNameService modelNameService;
 
     private String url;
+
+    @Autowired
+    private CompensateService compensateService;
 
 
     public MQTxManagerServiceImpl() {
         url = ConfigUtils.getString("tx.properties", "url");
+        if(url.contains("/tx/manager/getServer")){
+            url = url.replace("getServer","");
+        }
     }
 
     @Override
@@ -54,13 +67,18 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
 
     @Override
-    public void closeTransactionGroup(final String groupId, final int state) {
+    public int closeTransactionGroup(final String groupId, final int state) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("g", groupId);
         jsonObject.put("s", state);
         Request request = new Request("ctg", jsonObject.toString());
         String json = nettyService.sendMsg(request);
         logger.info("closeTransactionGroup-res-"+groupId+"->" + json);
+        try {
+            return Integer.parseInt(json);
+        }catch (Exception e){
+            return 0;
+        }
     }
 
 
@@ -80,9 +98,9 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
 
     @Override
-    public int httpCheckTransactionInfo(String groupId, String waitTaskId) {
-        String json = HttpUtils.get(url + "State?groupId=" + groupId + "&taskId=" + waitTaskId);
-        System.out.println("httpCheckTransactionInfo-->groupId:"+groupId+",taskId:"+waitTaskId+",res:"+json);
+    public int getTransaction(String groupId, String waitTaskId) {
+        String json = HttpUtils.get(url + "getTransaction?groupId=" + groupId + "&taskId=" + waitTaskId);
+        System.out.println("getTransaction-->groupId:"+groupId+",taskId:"+waitTaskId+",res:"+json);
 
         if (json == null) {
             return -2;
@@ -97,12 +115,43 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
 
     @Override
-    public int httpClearTransactionInfo(String groupId, String waitTaskId, boolean isGroup) {
-        String murl = url + "Clear?groupId=" +groupId + "&taskId=" + waitTaskId+"&isGroup="+(isGroup?1:0);
+    public int clearTransaction(String groupId, String waitTaskId, boolean isGroup) {
+        String murl = url + "clearTransaction?groupId=" +groupId + "&taskId=" + waitTaskId+"&isGroup="+(isGroup?1:0);
         String clearRes = HttpUtils.get(murl);
         if(clearRes==null){
             return -1;
         }
         return  clearRes.contains("true") ? 1 : 0;
+    }
+
+
+    @Override
+    public String httpGetServer() {
+        String murl = url + "getServer";
+        return HttpUtils.get(murl);
+    }
+
+
+    @Override
+    public void sendCompensateMsg(String groupId, long time, TxTransactionInfo info) {
+
+        String modelName = modelNameService.getModelName();
+        String uniqueKey = modelNameService.getUniqueKey();
+
+        byte[] serializers =  SerializerUtils.serializeTransactionInvocation(info.getInvocation());
+        String data = Base64Utils.encode(serializers);
+
+        String method = info.getInvocation().getMethod();
+        String className = info.getInvocation().getTargetClazz().getName();
+
+        String postParam = "model="+modelName+"&uniqueKey="+uniqueKey+"" +
+            "&data="+data+"&time="+time+"&groupId="+groupId+"" +
+            "&method="+method+"&className="+className;
+
+
+        String json = HttpUtils.post(url + "sendCompensateMsg",postParam);
+        //记录本地日志
+        compensateService.saveLocal(modelName,uniqueKey,data,method,className,json);
+
     }
 }

@@ -1,13 +1,13 @@
 package com.lorne.tx.mq.service.impl;
 
-import com.lorne.core.framework.utils.config.ConfigUtils;
-import com.lorne.core.framework.utils.http.HttpUtils;
 import com.lorne.tx.Constants;
 import com.lorne.tx.mq.model.TxServer;
+import com.lorne.tx.mq.service.MQTxManagerService;
 import com.lorne.tx.mq.service.NettyDistributeService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,6 +19,9 @@ public class NettyDistributeServiceImpl implements NettyDistributeService {
     private int connectCont = 0;
 
     private Logger logger = LoggerFactory.getLogger(NettyDistributeServiceImpl.class);
+
+    @Autowired
+    private MQTxManagerService txManagerService;
 
     @Override
     public synchronized void loadTxServer() {
@@ -36,9 +39,7 @@ public class NettyDistributeServiceImpl implements NettyDistributeService {
         //获取负载均衡服务地址
         String json = null;
         while (StringUtils.isEmpty(json)) {
-            String url = ConfigUtils.getString("tx.properties", "url");
-            //获取服务器ip
-            json = HttpUtils.get(url);
+            json = txManagerService.httpGetServer();
             logger.info("获取manager服务信息->" + json);
             if (StringUtils.isEmpty(json)) {
                 logger.info("TxManager服务器无法访问.");

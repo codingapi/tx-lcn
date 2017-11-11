@@ -1,10 +1,9 @@
 package com.lorne.tx.bean;
 
 import com.lorne.tx.annotation.TxTransaction;
-//import com.lorne.tx.compensate.model.TransactionInvocation;
+import com.lorne.tx.service.model.TransactionInvocation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Method;
 
 /**
  * 切面控制对象
@@ -23,20 +22,15 @@ public class TxTransactionInfo {
 
     private int maxTimeOut;
 
-
-   // private TxTransactionCompensate compensate;
-
-
-//    private TransactionInvocation invocation;
+    private TransactionInvocation invocation;
 
 
-    public TxTransactionInfo(TxTransaction transaction,Transactional transactional, TxTransactionLocal txTransactionLocal, String txGroupId, int maxTimeOut) {
+    public TxTransactionInfo(TxTransaction transaction,Transactional transactional, TxTransactionLocal txTransactionLocal,TransactionInvocation invocation, String txGroupId, int maxTimeOut) {
         this.transaction = transaction;
         this.txTransactionLocal = txTransactionLocal;
         this.txGroupId = txGroupId;
         this.maxTimeOut = maxTimeOut;
-       // this.compensate = compensate;
-//        this.invocation = invocation;
+        this.invocation = invocation;
         this.transactional = transactional;
     }
 
@@ -58,13 +52,9 @@ public class TxTransactionInfo {
         return txGroupId;
     }
 
-//    public TxTransactionCompensate getCompensate() {
-//        return compensate;
-//    }
-
-//    public TransactionInvocation getInvocation() {
-//        return invocation;
-//    }
+    public TransactionInvocation getInvocation() {
+        return invocation;
+    }
 
     public Transactional getTransactional() {
         return transactional;

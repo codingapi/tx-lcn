@@ -1,12 +1,11 @@
 package com.lorne.tx.controller;
 
+import com.lorne.tx.service.TxService;
 import com.lorne.tx.service.model.TxServer;
 import com.lorne.tx.service.model.TxState;
-import com.lorne.tx.service.TxService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -26,24 +25,30 @@ public class TxManagerController {
     }
 
 
-    @RequestMapping("/getServerClear")
-    @ResponseBody
-    public boolean getServerGroup(@RequestParam("groupId") String groupId,@RequestParam("taskId") String taskId,@RequestParam("isGroup") int isGroup) {
-        return txService.checkClearGroup(groupId,taskId,isGroup);
+    @RequestMapping("/clearTransaction")
+    public boolean clearTransaction(@RequestParam("groupId") String groupId,@RequestParam("taskId") String taskId,@RequestParam("isGroup") int isGroup) {
+        return txService.clearTransaction(groupId,taskId,isGroup);
     }
 
 
-    @RequestMapping("/getServerState")
-    @ResponseBody
-    public int getServerGroupState(@RequestParam("groupId") String groupId,@RequestParam("taskId") String taskId) {
-        return txService.checkGroup(groupId,taskId);
+    @RequestMapping("/getTransaction")
+    public int getTransaction(@RequestParam("groupId") String groupId,@RequestParam("taskId") String taskId) {
+        return txService.getTransaction(groupId,taskId);
     }
 
     @RequestMapping("/sendMsg")
-    @ResponseBody
     public String sendMsg(@RequestParam("msg") String msg,@RequestParam("model") String model) {
         return txService.sendMsg(model,msg);
     }
+
+
+    @RequestMapping("/sendCompensateMsg")
+    public boolean sendCompensateMsg(@RequestParam("model") String model,@RequestParam("uniqueKey") String uniqueKey,
+                                     @RequestParam("groupId") String groupId,@RequestParam("className") String className,
+                                     @RequestParam("time") int time,@RequestParam("data") String data,@RequestParam("method") String method) {
+        return txService.sendCompensateMsg(groupId,model,uniqueKey,className,method,data,time);
+    }
+
 
 
     @RequestMapping("/state")

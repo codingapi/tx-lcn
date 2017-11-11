@@ -7,5 +7,5 @@ import com.lorne.tx.mq.model.TxGroup;
  */
 public interface TransactionConfirmService {
 
-    void confirm(TxGroup group);
+    boolean confirm(TxGroup group);
 }

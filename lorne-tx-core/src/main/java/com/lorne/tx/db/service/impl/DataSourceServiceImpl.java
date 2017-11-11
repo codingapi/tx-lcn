@@ -8,8 +8,6 @@ import com.lorne.tx.mq.service.MQTxManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * create by lorne on 2017/7/29
  */
@@ -32,18 +30,18 @@ public class DataSourceServiceImpl implements DataSourceService {
             waitTask.setState(rs);
             waitTask.signalTask();
             //clear
-            txManagerService.httpClearTransactionInfo(groupId,waitTaskId,true);
+            txManagerService.clearTransaction(groupId,waitTaskId,true);
 
             return;
         }
         if(rs==-2) {
-            rs = txManagerService.httpCheckTransactionInfo(groupId, waitTaskId);
+            rs = txManagerService.getTransaction(groupId, waitTaskId);
             if (rs == 1 || rs == 0) {
                 waitTask.setState(rs);
                 waitTask.signalTask();
                 //clear
 
-                txManagerService.httpClearTransactionInfo(groupId, waitTaskId, false);
+                txManagerService.clearTransaction(groupId, waitTaskId, false);
                 return;
             }
         }
