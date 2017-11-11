@@ -67,8 +67,6 @@ public class TaskGroupManager {
         if (StringUtils.isNotEmpty(key)) {
             taskMap.remove(key);
         }
-
-        System.out.println("taskMap->"+taskMap.size());
     }
 
 
