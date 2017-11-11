@@ -2,8 +2,8 @@ package com.codingapi.tx.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.codingapi.tx.service.model.TxState;
-import com.codingapi.tx.service.TxService;
+import com.codingapi.tx.model.TxState;
+import com.codingapi.tx.aop.service.TxService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;

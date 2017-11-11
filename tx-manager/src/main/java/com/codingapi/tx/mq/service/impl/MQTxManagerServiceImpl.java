@@ -1,7 +1,7 @@
 package com.codingapi.tx.mq.service.impl;
 
-import com.codingapi.tx.service.TxManagerService;
-import com.codingapi.tx.mq.model.TxGroup;
+import com.codingapi.tx.aop.service.TxManagerService;
+import com.codingapi.tx.listener.model.TxGroup;
 import com.codingapi.tx.mq.service.MQTxManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

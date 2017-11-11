@@ -1,8 +1,8 @@
 package com.codingapi.tx.controller;
 
-import com.codingapi.tx.service.model.TxServer;
-import com.codingapi.tx.service.model.TxState;
-import com.codingapi.tx.service.TxService;
+import com.codingapi.tx.model.TxServer;
+import com.codingapi.tx.model.TxState;
+import com.codingapi.tx.aop.service.TxService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

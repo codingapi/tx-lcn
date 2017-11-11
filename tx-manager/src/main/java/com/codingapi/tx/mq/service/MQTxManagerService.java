@@ -1,6 +1,6 @@
 package com.codingapi.tx.mq.service;
 
-import com.codingapi.tx.mq.model.TxGroup;
+import com.codingapi.tx.listener.model.TxGroup;
 
 /**
  * Created by lorne on 2017/6/7.
