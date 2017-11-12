@@ -136,6 +136,7 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
         String modelName = modelNameService.getModelName();
         String uniqueKey = modelNameService.getUniqueKey();
+        String address = modelNameService.getIpAddress();
 
         byte[] serializers =  SerializerUtils.serializeTransactionInvocation(info.getInvocation());
         String data = Base64Utils.encode(serializers);
@@ -144,6 +145,7 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
         String className = info.getInvocation().getTargetClazz().getName();
 
         String postParam = "model="+modelName+"&uniqueKey="+uniqueKey+"" +
+            "&address=" + address + "" +
             "&data="+data+"&time="+time+"&groupId="+groupId+"" +
             "&method="+method+"&className="+className;
 

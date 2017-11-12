@@ -43,10 +43,11 @@ public class TxManagerController {
 
 
     @RequestMapping("/sendCompensateMsg")
-    public boolean sendCompensateMsg(@RequestParam("model") String model,@RequestParam("uniqueKey") String uniqueKey,
-                                     @RequestParam("groupId") String groupId,@RequestParam("className") String className,
-                                     @RequestParam("time") int time,@RequestParam("data") String data,@RequestParam("method") String method) {
-        return apiTxManagerService.sendCompensateMsg(groupId,model,uniqueKey,className,method,data,time);
+    public boolean sendCompensateMsg(@RequestParam("model") String model, @RequestParam("uniqueKey") String uniqueKey,
+                                     @RequestParam("groupId") String groupId, @RequestParam("className") String className,
+                                     @RequestParam("time") int time, @RequestParam("data") String data,
+                                     @RequestParam("method") String method, @RequestParam("address") String address) {
+        return apiTxManagerService.sendCompensateMsg(groupId, model, address, uniqueKey, className, method, data, time);
     }
 
 

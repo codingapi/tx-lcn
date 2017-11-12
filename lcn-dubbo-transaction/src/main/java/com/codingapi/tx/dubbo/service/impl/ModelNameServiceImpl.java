@@ -46,4 +46,9 @@ public class ModelNameServiceImpl implements ModelNameService {
     }
 
 
+    @Override
+    public String getIpAddress() {
+        String address = getIp() + ":" + providerConfig.getPort();
+        return address;
+    }
 }

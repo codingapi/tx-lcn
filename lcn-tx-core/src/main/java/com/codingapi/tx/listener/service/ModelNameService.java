@@ -8,4 +8,6 @@ public interface ModelNameService {
     String getModelName();
 
     String getUniqueKey();
+
+    String getIpAddress();
 }

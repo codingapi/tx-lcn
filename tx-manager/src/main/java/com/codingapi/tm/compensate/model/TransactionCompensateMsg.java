@@ -1,5 +1,7 @@
 package com.codingapi.tm.compensate.model;
 
+import com.codingapi.tm.netty.model.TxGroup;
+
 /**
  * create by lorne on 2017/11/11
  */
@@ -7,16 +9,19 @@ public class TransactionCompensateMsg {
 
     private String groupId;
     private String model;
+    private String address;
     private String uniqueKey;
     private String className;
     private String method;
     private String data;
     private int time;
 
+    private TxGroup txGroup;
 
 
-
-    public TransactionCompensateMsg(String groupId, String model, String uniqueKey, String className, String method, String data, int time) {
+    public TransactionCompensateMsg(String groupId, String model, String address,
+                                    String uniqueKey, String className,
+                                    String method, String data, int time) {
         this.groupId = groupId;
         this.model = model;
         this.uniqueKey = uniqueKey;
@@ -24,6 +29,24 @@ public class TransactionCompensateMsg {
         this.method = method;
         this.data = data;
         this.time = time;
+        this.address = address;
+    }
+
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public TxGroup getTxGroup() {
+        return txGroup;
+    }
+
+    public void setTxGroup(TxGroup txGroup) {
+        this.txGroup = txGroup;
     }
 
     public String getGroupId() {

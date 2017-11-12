@@ -44,4 +44,11 @@ public class ModelNameServiceImpl implements ModelNameService {
         String address = getIp()+serverListener.getPort();
         return  MD5Util.md5(address.getBytes());
     }
+
+
+    @Override
+    public String getIpAddress() {
+        String address = getIp() + ":" + serverListener.getPort();
+        return address;
+    }
 }
