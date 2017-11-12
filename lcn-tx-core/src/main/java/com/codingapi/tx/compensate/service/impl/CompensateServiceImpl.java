@@ -15,8 +15,8 @@ public class CompensateServiceImpl implements CompensateService {
     private Logger logger = LoggerFactory.getLogger(CompensateServiceImpl.class);
 
     @Override
-    public void saveLocal(long currentTime, String modelName, String uniqueKey, String data, String method, String className, String json) {
+    public void saveLocal(long currentTime, String modelName, String uniqueKey, String data, String methodStr, String className, String json) {
         logger.warn("currentTime:" + currentTime + ",state:" + json + ",modelName:" + modelName + "," +
-            "uniqueKey:"+uniqueKey+",method:"+method+",className:"+className+",data:"+data);
+            "uniqueKey:" + uniqueKey + ",methodStr:" + methodStr + ",className:" + className + ",data:" + data);
     }
 }

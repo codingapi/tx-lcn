@@ -51,12 +51,12 @@ public interface ApiTxManagerService {
      * @param address 模块地址
      * @param uniqueKey 唯一标示
      * @param className 事务启动类
-     * @param method    事务启动方法
+     * @param methodStr    事务启动方法
      * @param data      切面数据
      * @param time      执行时间
      * @return  是否保存成功
      */
-    boolean sendCompensateMsg(long currentTime, String groupId, String model, String address, String uniqueKey, String className, String method, String data, int time);
+    boolean sendCompensateMsg(long currentTime, String groupId, String model, String address, String uniqueKey, String className, String methodStr, String data, int time);
 
     /**
      * 获取服务器状态

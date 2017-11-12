@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Method;
+
 /**
  * Created by lorne on 2017/6/30.
  */
@@ -130,7 +132,6 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
         return HttpUtils.get(murl);
     }
 
-
     @Override
     public void sendCompensateMsg(String groupId, long time, TxTransactionInfo info) {
 
@@ -138,22 +139,23 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
         String uniqueKey = modelNameService.getUniqueKey();
         String address = modelNameService.getIpAddress();
 
+
         byte[] serializers =  SerializerUtils.serializeTransactionInvocation(info.getInvocation());
         String data = Base64Utils.encode(serializers);
 
-        String method = info.getInvocation().getMethod();
         String className = info.getInvocation().getTargetClazz().getName();
+        String methodStr = info.getInvocation().getMethodStr();
         long currentTime = System.currentTimeMillis();
 
         String postParam = "model="+modelName+"&uniqueKey="+uniqueKey+"" +
             "&address=" + address + "&currentTime=" + currentTime +
             "&data="+data+"&time="+time+"&groupId="+groupId+"" +
-            "&method="+method+"&className="+className;
+            "&className=" + className + "&methodStr=" + methodStr;
 
 
         String json = HttpUtils.post(url + "sendCompensateMsg",postParam);
         //记录本地日志
-        compensateService.saveLocal(currentTime, modelName, uniqueKey, data, method, className, json);
+        compensateService.saveLocal(currentTime, modelName, uniqueKey, data, methodStr, className, json);
 
     }
 }

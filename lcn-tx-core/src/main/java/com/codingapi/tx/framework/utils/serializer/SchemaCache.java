@@ -25,13 +25,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * <p>Description: .</p>
- * <p>Copyright: 2015-2017 happylifeplat.com All Rights Reserved</p>
- * SchemaCache 缓存
- *
- * @author yu.xiao@happylifeplat.com
- * @version 1.0
- * @since JDK 1.8
+ * @author lorne 2017/11/11
  */
 public class SchemaCache {
     private static class SchemaCacheHolder {

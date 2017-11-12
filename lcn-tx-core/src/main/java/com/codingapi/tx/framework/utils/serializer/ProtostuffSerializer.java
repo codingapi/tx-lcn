@@ -28,13 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 /**
- * <p>Description: .</p>
- * <p>Copyright: 2015-2017 happylifeplat.com All Rights Reserved</p>
- * Protostuff 序列化
- *
- * @author yu.xiao@happylifeplat.com
- * @version 1.0
- * @since JDK 1.8
+ * @author lorne 2017/11/11
  */
 public class ProtostuffSerializer implements ISerializer {
     private static final SchemaCache cachedSchema = SchemaCache.getInstance();

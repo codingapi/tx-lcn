@@ -13,7 +13,7 @@ public class TransactionCompensateMsg {
     private String address;
     private String uniqueKey;
     private String className;
-    private String method;
+    private String methodStr;
     private String data;
     private int time;
 
@@ -22,13 +22,13 @@ public class TransactionCompensateMsg {
 
     public TransactionCompensateMsg(long currentTime, String groupId, String model, String address,
                                     String uniqueKey, String className,
-                                    String method, String data, int time) {
+                                    String methodStr, String data, int time) {
         this.currentTime = currentTime;
         this.groupId = groupId;
         this.model = model;
         this.uniqueKey = uniqueKey;
         this.className = className;
-        this.method = method;
+        this.methodStr = methodStr;
         this.data = data;
         this.time = time;
         this.address = address;
@@ -91,12 +91,13 @@ public class TransactionCompensateMsg {
         this.className = className;
     }
 
-    public String getMethod() {
-        return method;
+
+    public String getMethodStr() {
+        return methodStr;
     }
 
-    public void setMethod(String method) {
-        this.method = method;
+    public void setMethodStr(String methodStr) {
+        this.methodStr = methodStr;
     }
 
     public String getData() {

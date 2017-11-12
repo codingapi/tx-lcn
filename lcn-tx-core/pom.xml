@@ -62,7 +62,6 @@
         <guava.version>19.0</guava.version>
         <hessian.version>4.0.38</hessian.version>
         <protostuff.version>1.0.8</protostuff.version>
-        <kryo.version>4.0.0</kryo.version>
         <org.slf4j-version>1.7.7</org.slf4j-version>
     </properties>
 
@@ -142,12 +141,6 @@
             <groupId>com.caucho</groupId>
             <artifactId>hessian</artifactId>
             <version>${hessian.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>kryo-shaded</artifactId>
-            <version>${kryo.version}</version>
         </dependency>
         <dependency>
             <groupId>com.dyuproject.protostuff</groupId>

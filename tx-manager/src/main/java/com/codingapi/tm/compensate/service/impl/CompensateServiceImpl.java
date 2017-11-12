@@ -109,7 +109,7 @@ public class CompensateServiceImpl implements CompensateService {
             long currentTime = jsonObject.getLong("currentTime");
             model.setTime(DateUtil.formatDate(new Date(currentTime), DateUtil.FULL_DATE_TIME_FORMAT));
             model.setClassName(jsonObject.getString("className"));
-            model.setMethod(jsonObject.getString("method"));
+            model.setMethod(jsonObject.getString("methodStr"));
             model.setExecuteTime(jsonObject.getInteger("time"));
             model.setBase64(Base64Utils.encode(json.getBytes()));
             models.add(model);

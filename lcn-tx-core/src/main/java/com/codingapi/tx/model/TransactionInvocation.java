@@ -25,14 +25,28 @@ public class TransactionInvocation  implements Serializable{
      */
     private Class[] parameterTypes;
 
+    /**
+     * 方法字符串
+     */
+    private String methodStr;
+
     public TransactionInvocation() {
     }
 
-    public TransactionInvocation(Class targetClazz, String method, Object[] argumentValues, Class[] parameterTypes) {
+    public TransactionInvocation(Class targetClazz, String method, String methodStr, Object[] argumentValues, Class[] parameterTypes) {
         this.targetClazz = targetClazz;
         this.method = method;
+        this.methodStr = methodStr;
         this.argumentValues = argumentValues;
         this.parameterTypes = parameterTypes;
+    }
+
+    public String getMethodStr() {
+        return methodStr;
+    }
+
+    public void setMethodStr(String methodStr) {
+        this.methodStr = methodStr;
     }
 
     public Class getTargetClazz() {

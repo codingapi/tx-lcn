@@ -5,12 +5,7 @@ package com.codingapi.tx.framework.utils.serializer;
 import com.lorne.core.framework.exception.SerializerException;
 
 /**
- * <p>Description: .</p>
- * 序列化接口
- *
- * @author yu.xiao@happylifeplat.com
- * @version 1.0
- * @since JDK 1.8
+ * @author lorne 2017/11/11
  */
 public interface ISerializer {
     /**
