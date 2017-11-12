@@ -7,6 +7,7 @@ import com.codingapi.tm.netty.model.TxGroup;
  */
 public class TransactionCompensateMsg {
 
+    private long currentTime;
     private String groupId;
     private String model;
     private String address;
@@ -19,9 +20,10 @@ public class TransactionCompensateMsg {
     private TxGroup txGroup;
 
 
-    public TransactionCompensateMsg(String groupId, String model, String address,
+    public TransactionCompensateMsg(long currentTime, String groupId, String model, String address,
                                     String uniqueKey, String className,
                                     String method, String data, int time) {
+        this.currentTime = currentTime;
         this.groupId = groupId;
         this.model = model;
         this.uniqueKey = uniqueKey;
@@ -32,6 +34,14 @@ public class TransactionCompensateMsg {
         this.address = address;
     }
 
+
+    public long getCurrentTime() {
+        return currentTime;
+    }
+
+    public void setCurrentTime(long currentTime) {
+        this.currentTime = currentTime;
+    }
 
     public String getAddress() {
         return address;

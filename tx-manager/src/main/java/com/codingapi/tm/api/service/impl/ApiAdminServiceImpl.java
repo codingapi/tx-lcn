@@ -1,11 +1,15 @@
 package com.codingapi.tm.api.service.impl;
 
 import com.codingapi.tm.api.service.ApiAdminService;
+import com.codingapi.tm.compensate.model.TxModel;
+import com.codingapi.tm.compensate.service.CompensateService;
 import com.codingapi.tm.manager.service.EurekaService;
 import com.codingapi.tm.model.TxState;
 import com.codingapi.tm.redis.service.RedisServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * create by lorne on 2017/11/12
@@ -20,6 +24,9 @@ public class ApiAdminServiceImpl implements ApiAdminService {
     @Autowired
     private RedisServerService redisServerService;
 
+    @Autowired
+    private CompensateService compensateService;
+
     @Override
     public TxState getState() {
         return eurekaService.getState();
@@ -28,5 +35,25 @@ public class ApiAdminServiceImpl implements ApiAdminService {
     @Override
     public String loadNotifyJson() {
         return redisServerService.loadNotifyJson();
+    }
+
+    @Override
+    public List<String> modelList() {
+        return compensateService.loadModelList();
+    }
+
+    @Override
+    public List<String> childModel(String model) {
+        return compensateService.childModel(model);
+    }
+
+    @Override
+    public List<String> logFile(String path) {
+        return compensateService.logFile(path);
+    }
+
+    @Override
+    public List<TxModel> logs(String path) {
+        return compensateService.logs(path);
     }
 }

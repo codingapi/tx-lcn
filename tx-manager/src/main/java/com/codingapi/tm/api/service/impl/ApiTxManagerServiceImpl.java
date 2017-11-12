@@ -51,8 +51,8 @@ public class ApiTxManagerServiceImpl implements ApiTxManagerService {
     }
 
     @Override
-    public boolean sendCompensateMsg(String groupId, String model, String address, String uniqueKey, String className, String method, String data, int time) {
-        TransactionCompensateMsg transactionCompensateMsg = new TransactionCompensateMsg(groupId, model, address, uniqueKey, className, method, data, time);
+    public boolean sendCompensateMsg(long currentTime, String groupId, String model, String address, String uniqueKey, String className, String method, String data, int time) {
+        TransactionCompensateMsg transactionCompensateMsg = new TransactionCompensateMsg(currentTime, groupId, model, address, uniqueKey, className, method, data, time);
         return compensateService.saveCompensateMsg(transactionCompensateMsg);
     }
 

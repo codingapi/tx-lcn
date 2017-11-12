@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>补偿日志</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css"/>
+    <script src="static/jquery/jquery.min.js"></script>
+    <script src="static/jquery/jquery.blockUI.min.js"></script>
+    <script src="static/jquery/jquery.blockUI-css.js"></script>
+    <script src="static/common/common.js"></script>
+    <script src="static/common/http.js"></script>
+
+    <style>
+        .container {
+            margin-top: 20px;
+        }
+
+        .table-responsive {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+
+    <h3 class="text-center" id="model"></h3>
+
+    <div class="row">
+        <div class="col-lg-2 col-md-2">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <colgroup>
+                        <col class="col-xs-4"/>
+                        <col class="col-xs-8"/>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>模块名称</th>
+                    </tr>
+                    </thead>
+                    <tbody id="list">
+                    <tr>
+                        <td><span></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-2">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <colgroup>
+                        <col class="col-xs-4"/>
+                        <col class="col-xs-8"/>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>日志文件</th>
+                    </tr>
+                    </thead>
+                    <tbody id="logs">
+                    <tr>
+                        <td><span></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <colgroup>
+                        <col class="col-xs-4"/>
+                        <col class="col-xs-8"/>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>补偿信息</th>
+                    </tr>
+                    </thead>
+                    <tbody id="compensate">
+                    <tr>
+                        <td><span></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="static/log.js"></script>
+</div>
+</body>
+</html>

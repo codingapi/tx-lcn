@@ -45,6 +45,7 @@ public interface ApiTxManagerService {
 
     /**
      * 保存事务补偿日志信息
+     * @param currentTime  时间
      * @param groupId    事务组id
      * @param model     模块名称
      * @param address 模块地址
@@ -55,7 +56,7 @@ public interface ApiTxManagerService {
      * @param time      执行时间
      * @return  是否保存成功
      */
-    boolean sendCompensateMsg(String groupId, String model, String address, String uniqueKey, String className, String method, String data, int time);
+    boolean sendCompensateMsg(long currentTime, String groupId, String model, String address, String uniqueKey, String className, String method, String data, int time);
 
     /**
      * 获取服务器状态

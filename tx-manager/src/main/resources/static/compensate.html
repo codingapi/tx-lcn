@@ -8,7 +8,7 @@
     <script src="static/jquery/jquery.min.js"></script>
     <script src="static/jquery/jquery.blockUI.min.js"></script>
     <script src="static/jquery/jquery.blockUI-css.js"></script>
-    <script src="static/common/hint.js"></script>
+    <script src="static/common/common.js"></script>
     <script src="static/common/http.js"></script>
 
     <style>
@@ -22,7 +22,7 @@
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container-fluid">
 
     <h3 class="text-center">补偿日志</h3>
     <div class="table-responsive">
@@ -33,17 +33,12 @@
             </colgroup>
             <thead>
             <tr>
-                <th>属性名称</th>
-                <th>属性值</th>
+                <th>模块名称</th>
             </tr>
             </thead>
-            <tbody>
-
+            <tbody id="list">
             <tr>
-                <th scope="row">
-                    补偿数据
-                </th>
-                <td><span id="compensate"></span></td>
+                <td><span></span></td>
             </tr>
             </tbody>
         </table>

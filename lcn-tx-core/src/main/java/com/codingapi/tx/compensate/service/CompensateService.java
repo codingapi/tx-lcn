@@ -6,5 +6,5 @@ package com.codingapi.tx.compensate.service;
  */
 public interface CompensateService {
 
-    void saveLocal(String modelName, String uniqueKey, String data, String method, String className, String json);
+    void saveLocal(long currentTime, String modelName, String uniqueKey, String data, String method, String className, String json);
 }

@@ -143,16 +143,17 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
         String method = info.getInvocation().getMethod();
         String className = info.getInvocation().getTargetClazz().getName();
+        long currentTime = System.currentTimeMillis();
 
         String postParam = "model="+modelName+"&uniqueKey="+uniqueKey+"" +
-            "&address=" + address + "" +
+            "&address=" + address + "&currentTime=" + currentTime +
             "&data="+data+"&time="+time+"&groupId="+groupId+"" +
             "&method="+method+"&className="+className;
 
 
         String json = HttpUtils.post(url + "sendCompensateMsg",postParam);
         //记录本地日志
-        compensateService.saveLocal(modelName,uniqueKey,data,method,className,json);
+        compensateService.saveLocal(currentTime, modelName, uniqueKey, data, method, className, json);
 
     }
 }

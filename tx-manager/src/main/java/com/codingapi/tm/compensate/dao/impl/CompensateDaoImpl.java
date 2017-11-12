@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * create by lorne on 2017/11/11
@@ -34,10 +36,51 @@ public class CompensateDaoImpl implements CompensateDao {
         }
 
         try {
-            FileUtils.writeStringToFile(file,json,true);
+            FileUtils.writeStringToFile(file, json + "\n", true);
         } catch (IOException e) {
             return false;
         }
         return true;
+    }
+
+
+    @Override
+    public List<String> loadModelList() {
+        File file = new File(logPath);
+        return Arrays.asList(file.list());
+    }
+
+
+    @Override
+    public List<String> childModel(String model) {
+        if (model.startsWith(".")) {
+            return null;
+        }
+        File file = new File(logPath + "/" + model);
+        return Arrays.asList(file.list());
+    }
+
+
+    @Override
+    public List<String> logFile(String path) {
+        if (path.startsWith(".")) {
+            return null;
+        }
+        File file = new File(logPath + "/" + path);
+        return Arrays.asList(file.list());
+    }
+
+
+    @Override
+    public List<String> getLogs(String path) {
+        if (path.startsWith(".")) {
+            return null;
+        }
+        File file = new File(logPath + "/" + path);
+        try {
+            return FileUtils.readLines(file);
+        } catch (IOException e) {
+            return null;
+        }
     }
 }
