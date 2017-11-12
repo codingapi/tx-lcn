@@ -8,11 +8,22 @@ import com.codingapi.tm.model.TxState;
  */
 public interface ApiTxManagerService {
 
+
+    /**
+     * 获取本服务的信息
+     *
+     * @return 服务信息
+     */
     TxServer getServer();
 
-    TxState getState();
 
-    String sendMsg(String model,String msg);
+    /**
+     * 给 tx模块发送指令
+     * @param model 模块名称
+     * @param msg   指令
+     * @return 指令返回结果
+     */
+    String sendMsg(String model, String msg);
 
     /**
      * 检查并清理事务数据
@@ -32,8 +43,6 @@ public interface ApiTxManagerService {
     int getTransaction(String groupId, String taskId);
 
 
-
-
     /**
      * 保存事务补偿日志信息
      * @param groupId    事务组id
@@ -47,6 +56,11 @@ public interface ApiTxManagerService {
      */
     boolean sendCompensateMsg(String groupId, String model, String uniqueKey, String className, String method, String data, int time);
 
+    /**
+     * 获取服务器状态
+     *
+     * @return 状态
+     */
+    TxState getState();
 
-    String loadNotifyJson();
 }

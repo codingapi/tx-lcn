@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
 
     <name>tx-manager</name>
-    <description>Demo project for Spring Boot</description>
+    <description>tx-manager</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -52,13 +52,13 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-eureka</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka</artifactId>
         </dependency>
 
         <dependency>

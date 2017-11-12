@@ -29,8 +29,6 @@ public class ApiTxManagerServiceImpl implements ApiTxManagerService {
     @Autowired
     private CompensateService compensateService;
 
-    @Autowired
-    private RedisServerService redisServerService;
 
     @Autowired
     private TxManagerSenderService txManagerSenderService;
@@ -39,11 +37,6 @@ public class ApiTxManagerServiceImpl implements ApiTxManagerService {
     @Override
     public TxServer getServer() {
         return eurekaService.getServer();
-    }
-
-    @Override
-    public TxState getState() {
-        return eurekaService.getState();
     }
 
 
@@ -68,8 +61,9 @@ public class ApiTxManagerServiceImpl implements ApiTxManagerService {
         return txManagerSenderService.sendMsg(model, msg);
     }
 
+
     @Override
-    public String loadNotifyJson() {
-        return redisServerService.loadNotifyJson();
+    public TxState getState() {
+        return eurekaService.getState();
     }
 }
