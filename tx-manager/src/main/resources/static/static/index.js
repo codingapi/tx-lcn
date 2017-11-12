@@ -5,7 +5,21 @@ var init = function () {
             var value = res[key];
             $("#" + key).text(value);
         }
-    })
+    });
+
+    http.get('/admin/json', '加载中', function (res) {
+        $("#redisState").text("正常");
+    }, function (res) {
+        $("#redisState").text("异常");
+    });
 }
 
 init();
+
+
+$(document).on("click", "#btn-compensate", function () {
+
+    open('compensate.html');
+
+    return false;
+});

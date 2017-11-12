@@ -75,6 +75,12 @@
             </tr>
             <tr>
                 <th scope="row">
+                    redis服务状态
+                </th>
+                <td><span id="redisState"></span></td>
+            </tr>
+            <tr>
+                <th scope="row">
                     redis存储最大时间(秒)
                 </th>
                 <td><span id="redisSaveMaxTime"></span></td>
@@ -85,8 +91,16 @@
                 </th>
                 <td><span id="slbList"></span></td>
             </tr>
+            <tr>
+                <th scope="row">
+                    补偿数据
+                </th>
+                <td><span id="compensate"></span></td>
+            </tr>
             </tbody>
         </table>
+
+        <button id="btn-compensate" class="btn btn-default pull-right">补偿记录</button>
     </div>
 
 

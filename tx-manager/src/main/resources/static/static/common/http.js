@@ -10,7 +10,7 @@ if (!http)
  * @param msg   提示信息
  * @param success   成功回调
  */
-http.post = function (url, params, msg, success) {
+http.post = function (url, params, msg, success, error) {
     if (msg == null)
         msg = '加载中...';
     $.blockUI(
@@ -36,12 +36,17 @@ http.post = function (url, params, msg, success) {
             if (success != null) {
                 success(data);
             }
+        }, error: function (data) {
+            $.unblockUI();
+            if (error != null) {
+                error(data);
+            }
         }
     });
 }
 
 
-http.get = function (url, msg, success) {
+http.get = function (url, msg, success, error) {
     if (msg == null)
         msg = '加载中...';
     $.blockUI(
@@ -65,6 +70,12 @@ http.get = function (url, msg, success) {
             $.unblockUI();
             if (success != null) {
                 success(data);
+            }
+        },
+        error: function (data) {
+            $.unblockUI();
+            if (error != null) {
+                error(data);
             }
         }
     });

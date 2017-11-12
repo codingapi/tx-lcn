@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>补偿日志</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css"/>
+    <script src="static/jquery/jquery.min.js"></script>
+    <script src="static/jquery/jquery.blockUI.min.js"></script>
+    <script src="static/jquery/jquery.blockUI-css.js"></script>
+    <script src="static/common/hint.js"></script>
+    <script src="static/common/http.js"></script>
+
+    <style>
+        .container {
+            margin-top: 20px;
+        }
+
+        .table-responsive {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h3 class="text-center">补偿日志</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <colgroup>
+                <col class="col-xs-4"/>
+                <col class="col-xs-8"/>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>属性名称</th>
+                <th>属性值</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr>
+                <th scope="row">
+                    补偿数据
+                </th>
+                <td><span id="compensate"></span></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+
+    <script src="static/compensate.js"></script>
+</div>
+</body>
+</html>
