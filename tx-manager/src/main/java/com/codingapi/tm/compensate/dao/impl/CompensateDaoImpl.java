@@ -3,9 +3,10 @@ package com.codingapi.tm.compensate.dao.impl;
 import com.alibaba.fastjson.JSON;
 import com.codingapi.tm.compensate.dao.CompensateDao;
 import com.codingapi.tm.compensate.model.TransactionCompensateMsg;
+import com.codingapi.tm.config.ConfigReader;
 import com.lorne.core.framework.utils.DateUtil;
-import com.lorne.core.framework.utils.config.ConfigUtils;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -19,18 +20,16 @@ import java.util.List;
 @Service
 public class CompensateDaoImpl implements CompensateDao {
 
-    private String logPath;
 
-    public CompensateDaoImpl() {
-        logPath = ConfigUtils.getString("application.properties","tm.compensate.log.path");
-    }
+    @Autowired
+    private ConfigReader configReader;
 
     @Override
     public boolean saveCompensateMsg(TransactionCompensateMsg transactionCompensateMsg) {
         String name = String.format("/%s/%s/compensate_%s.json", transactionCompensateMsg.getModel(), transactionCompensateMsg.getAddress(), DateUtil.getCurrentDateFormat());
         String json = JSON.toJSONString(transactionCompensateMsg);
 
-        File file = new File(logPath+"/"+name);
+        File file = new File(configReader.getCompensateLogPath() + "/" + name);
         if(!file.exists()){
             file.getParentFile().mkdirs();
         }
@@ -46,7 +45,7 @@ public class CompensateDaoImpl implements CompensateDao {
 
     @Override
     public List<String> loadModelList() {
-        File file = new File(logPath);
+        File file = new File(configReader.getCompensateLogPath());
         return Arrays.asList(file.list());
     }
 
@@ -56,7 +55,7 @@ public class CompensateDaoImpl implements CompensateDao {
         if (model.startsWith(".")) {
             return null;
         }
-        File file = new File(logPath + "/" + model);
+        File file = new File(configReader.getCompensateLogPath() + "/" + model);
         return Arrays.asList(file.list());
     }
 
@@ -66,7 +65,7 @@ public class CompensateDaoImpl implements CompensateDao {
         if (path.startsWith(".")) {
             return null;
         }
-        File file = new File(logPath + "/" + path);
+        File file = new File(configReader.getCompensateLogPath() + "/" + path);
         return Arrays.asList(file.list());
     }
 
@@ -76,7 +75,7 @@ public class CompensateDaoImpl implements CompensateDao {
         if (path.startsWith(".")) {
             return null;
         }
-        File file = new File(logPath + "/" + path);
+        File file = new File(configReader.getCompensateLogPath() + "/" + path);
         try {
             return FileUtils.readLines(file);
         } catch (IOException e) {

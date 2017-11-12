@@ -24,11 +24,25 @@ public class ConfigReader {
     @Value("${tm.redis.savemaxtime}")
     private int redisSaveMaxTime;
 
+    @Value("${tm.compensate.log.path}")
+    private String compensateLogPath;
+
+    @Value("${tm.compensate.notify.url}")
+    private String compensateNotifyUrl;
+
 
     private final String key_prefix = "tx_manager_default_";
 
     private final String key_prefix_notify = "tx_manager_notify_";
 
+
+    public String getCompensateLogPath() {
+        return compensateLogPath;
+    }
+
+    public String getCompensateNotifyUrl() {
+        return compensateNotifyUrl;
+    }
 
     public String getKeyPrefix() {
         return key_prefix;

@@ -30,7 +30,10 @@ $(document).on("click", ".model-name", function () {
         var list = $("#logs");
         list.empty();
         for (var p in res) {
-            var tr = '<tr><td><a class="log-name" href="#">' + res[p] + '</a></td></tr>';
+            var data = res[p];
+            var name = data.split("_")[1];
+            name = name.split(".")[0];
+            var tr = '<tr><td><a class="log-name" data-data="' + data + '" href="#">' + name + '</a></td></tr>';
             list.append(tr);
         }
 
@@ -42,7 +45,7 @@ $(document).on("click", ".model-name", function () {
 
 $(document).on("click", ".log-name", function () {
 
-    var file = $(this).text();
+    var file = $(this).attr("data-data");
 
     var path = $('#model').attr("data-path") + "/" + file;
 
@@ -52,7 +55,14 @@ $(document).on("click", ".log-name", function () {
         list.empty();
         for (var p in res) {
             var param = res[p];
-            var tr = '<tr><td><a href="#">' + param.time + '</a></td></tr>';
+            var tr =
+                '<tr>' +
+                '<td><span>' + param.time + '</span></td>' +
+                '<td><span>' + param.className + '</span></td>' +
+                '<td><span>' + param.method + '</span></td>' +
+                '<td><span>' + param.executeTime + '</span></td>' +
+                '<td><button data-data="' + param.base64 + '" class="btn btn-info">详情</button>&nbsp;&nbsp;<button class="btn btn-success">补偿</button></td>' +
+                '</tr>';
             list.append(tr);
         }
 
