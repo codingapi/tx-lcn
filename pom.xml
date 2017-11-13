@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.codingapi</groupId>
-    <artifactId>transaction</artifactId>
+    <artifactId>tx-lcn</artifactId>
     <version>4.0.0</version>
     <packaging>pom</packaging>
 
-    <name>transaction</name>
+    <name>tx-lcn</name>
 
     <modules>
         <module>lcn-tx-core</module>

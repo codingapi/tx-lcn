@@ -58,7 +58,6 @@ $(document).on("click", ".log-name", function () {
             var tr =
                 '<tr>' +
                 '<td><span>' + param.time + '</span></td>' +
-                '<td><span>' + param.className + '</span></td>' +
                 '<td><span>' + param.method + '</span></td>' +
                 '<td><span>' + param.executeTime + '</span></td>' +
                 '<td><button data-data="' + param.base64 + '" class="btn btn-info">详情</button>&nbsp;&nbsp;<button class="btn btn-success">补偿</button></td>' +
