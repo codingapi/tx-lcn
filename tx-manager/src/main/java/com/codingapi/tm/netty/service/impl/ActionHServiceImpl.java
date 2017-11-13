@@ -20,7 +20,6 @@ public class ActionHServiceImpl implements IActionService{
 
     @Override
     public String execute(String modelName,String key,JSONObject params ) {
-        String res  = String.valueOf(configReader.getTransactionNettyDelayTime());
-        return res;
+        return String.valueOf(configReader.getTransactionNettyDelayTime());
     }
 }

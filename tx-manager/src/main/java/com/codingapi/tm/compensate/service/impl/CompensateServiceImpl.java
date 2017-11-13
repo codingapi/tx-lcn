@@ -117,4 +117,9 @@ public class CompensateServiceImpl implements CompensateService {
     }
 
 
+    @Override
+    public boolean executeCompensate(String key) {
+
+        return false;
+    }
 }

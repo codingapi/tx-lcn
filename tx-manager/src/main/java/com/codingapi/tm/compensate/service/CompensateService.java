@@ -18,4 +18,7 @@ public interface CompensateService {
 
     List<TxModel> loadCompensateByModelAndTime(String path);
 
+
+    boolean executeCompensate(String key);
+
 }

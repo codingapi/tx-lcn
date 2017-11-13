@@ -7,6 +7,7 @@ package com.codingapi.tm.netty.handler;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.tm.framework.utils.SocketManager;
 import com.codingapi.tm.framework.utils.SocketUtils;
+import com.codingapi.tm.manager.ModelInfoManager;
 import com.codingapi.tm.netty.service.IActionService;
 import com.codingapi.tm.netty.service.NettyService;
 import io.netty.channel.ChannelHandler;
@@ -95,6 +96,8 @@ public class TxCoreServerHandler extends ChannelInboundHandlerAdapter { // (1)
         SocketManager.getInstance().removeClient(ctx.channel());
         String modelName = ctx.channel().remoteAddress().toString();
         SocketManager.getInstance().outLine(modelName);
+
+        ModelInfoManager.getInstance().removeModelInfo(modelName);
         super.channelUnregistered(ctx);
     }
 

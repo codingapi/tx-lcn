@@ -30,7 +30,6 @@ public class ActionATGServiceImpl implements IActionService{
         String model = params.getString("mn");
         int isGroup = params.getInteger("s");
 
-
         SocketManager.getInstance().onLine(modelName,uniqueKey);
 
         TxGroup txGroup = txManagerService.addTransactionGroup(groupId, uniqueKey, taskId, isGroup, modelName, model, modelIpAddress, methodStr);

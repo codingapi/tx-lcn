@@ -11,6 +11,11 @@ public interface MQTxManagerService {
 
 
     /**
+     * 上传模块信息
+     */
+    void uploadModelInfo();
+
+    /**
      * 创建事务组
      *
      * @return  事务组TxGroup

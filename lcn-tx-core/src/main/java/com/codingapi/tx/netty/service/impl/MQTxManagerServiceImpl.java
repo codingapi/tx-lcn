@@ -14,8 +14,6 @@ import com.codingapi.tx.listener.service.ModelNameService;
 import com.codingapi.tx.netty.service.MQTxManagerService;
 import com.lorne.core.framework.utils.encode.Base64Utils;
 import com.lorne.core.framework.utils.http.HttpUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +23,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class MQTxManagerServiceImpl implements MQTxManagerService {
 
-
-
-    private Logger logger = LoggerFactory.getLogger(MQTxManagerServiceImpl.class);
 
     @Autowired
     private ModelNameService modelNameService;
@@ -71,7 +66,6 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
         jsonObject.put("s", state);
         Request request = new Request("ctg", jsonObject.toString());
         String json =  SocketManager.getInstance().sendMsg(request);
-        logger.info("closeTransactionGroup-res-"+groupId+"->" + json);
         try {
             return Integer.parseInt(json);
         }catch (Exception e){
@@ -79,6 +73,17 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
         }
     }
 
+
+    @Override
+    public void uploadModelInfo() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("m", modelNameService.getModelName());
+        jsonObject.put("i", modelNameService.getIpAddress());
+        jsonObject.put("u", modelNameService.getUniqueKey());
+        Request request = new Request("umi", jsonObject.toString());
+        String json = SocketManager.getInstance().sendMsg(request);
+        System.out.println(json);
+    }
 
     @Override
     public int checkTransactionInfo(String groupId, String taskId) {
@@ -98,8 +103,6 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
     @Override
     public int getTransaction(String groupId, String waitTaskId) {
         String json = HttpUtils.get(configReader.getTxUrl() + "getTransaction?groupId=" + groupId + "&taskId=" + waitTaskId);
-        System.out.println("getTransaction-->groupId:"+groupId+",taskId:"+waitTaskId+",res:"+json);
-
         if (json == null) {
             return -2;
         }

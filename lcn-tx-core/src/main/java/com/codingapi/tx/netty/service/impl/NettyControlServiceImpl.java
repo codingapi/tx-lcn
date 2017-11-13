@@ -3,6 +3,7 @@ package com.codingapi.tx.netty.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.tx.control.service.TransactionControlService;
 import com.codingapi.tx.framework.utils.SocketManager;
+import com.codingapi.tx.netty.service.MQTxManagerService;
 import com.codingapi.tx.netty.service.NettyControlService;
 import com.codingapi.tx.netty.service.NettyService;
 import com.lorne.core.framework.utils.task.ConditionUtils;
@@ -13,6 +14,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -26,6 +29,8 @@ public class NettyControlServiceImpl implements NettyControlService {
     @Autowired
     private NettyService nettyService;
 
+    @Autowired
+    private MQTxManagerService mqTxManagerService;
 
     @Autowired
     private TransactionControlService transactionControlService;
@@ -86,8 +91,20 @@ public class NettyControlServiceImpl implements NettyControlService {
                 }
             }
         } else {
+            //心跳数据
             final String data = resObj.getString("d");
             if (StringUtils.isNotEmpty(data)) {
+
+                Timer timer = new Timer();
+
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        mqTxManagerService.uploadModelInfo();
+                    }
+                }, 1000 * 10);
+
+
                 try {
                     SocketManager.getInstance().setDelay(Integer.parseInt(data));
                 } catch (Exception e) {

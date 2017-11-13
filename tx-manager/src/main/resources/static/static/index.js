@@ -16,10 +16,3 @@ var init = function () {
 
 init();
 
-
-$(document).on("click", "#btn-compensate", function () {
-
-    open('log.html');
-
-    return false;
-});
