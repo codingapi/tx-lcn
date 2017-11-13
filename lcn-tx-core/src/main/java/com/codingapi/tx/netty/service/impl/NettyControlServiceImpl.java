@@ -24,14 +24,17 @@ import java.util.concurrent.Executors;
 public class NettyControlServiceImpl implements NettyControlService {
 
 
+
     @Autowired
     private NettyService nettyService;
 
-    @Autowired
-    private MQTxManagerService mqTxManagerService;
 
     @Autowired
     private TransactionControlService transactionControlService;
+
+
+    @Autowired
+    private MQTxManagerService mqTxManagerService;
 
 
     private Executor threadPool = Executors.newFixedThreadPool(100);
@@ -48,7 +51,22 @@ public class NettyControlServiceImpl implements NettyControlService {
         nettyService.start();
     }
 
-
+    @Override
+    public void uploadModelInfo() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!SocketManager.getInstance().isNetState()) {
+                    try {
+                        Thread.sleep(1000 * 5);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                mqTxManagerService.uploadModelInfo();
+            }
+        }).start();
+    }
 
     @Override
     public void executeService(final ChannelHandlerContext ctx,final String json) {
@@ -73,7 +91,7 @@ public class NettyControlServiceImpl implements NettyControlService {
     }
 
 
-    private void responseMsg(String key,JSONObject resObj){
+    private void responseMsg(String key, JSONObject resObj) {
         if (!"h".equals(key)) {
             final String data = resObj.getString("d");
             Task task = ConditionUtils.getInstance().getTask(key);
@@ -91,22 +109,8 @@ public class NettyControlServiceImpl implements NettyControlService {
         } else {
             //心跳数据
             final String data = resObj.getString("d");
+            SocketManager.getInstance().setNetState(true);
             if (StringUtils.isNotEmpty(data)) {
-
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(1000 * 10);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        mqTxManagerService.uploadModelInfo();
-                    }
-                }).start();
-
-
                 try {
                     SocketManager.getInstance().setDelay(Integer.parseInt(data));
                 } catch (Exception e) {

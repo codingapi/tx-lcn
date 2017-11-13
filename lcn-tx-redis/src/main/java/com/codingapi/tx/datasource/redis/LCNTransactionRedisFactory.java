@@ -36,6 +36,11 @@ public class LCNTransactionRedisFactory extends AbstractResourceProxy<RedisConne
 
 
     @Override
+    protected RedisConnection getRollback(RedisConnection connection) {
+        return null;
+    }
+
+    @Override
     protected void initDbType() {
 
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();

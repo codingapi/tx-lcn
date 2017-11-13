@@ -41,7 +41,9 @@ public class TxManagerServiceImpl implements TxManagerService {
     @Override
     public TxGroup createTransactionGroup(String groupId) {
         TxGroup txGroup = new TxGroup();
-        if (StringUtils.isEmpty(groupId)) {
+        if (StringUtils.isNotEmpty(groupId)) {
+            txGroup.setIsCommit(1);
+        } else {
             groupId = KidUtils.generateShortUuid();
         }
 

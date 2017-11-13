@@ -41,6 +41,12 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
 
 
     @Override
+    protected Connection getRollback(Connection connection) {
+        LCNRollBackDBConnection rollBackDBConnection = new LCNRollBackDBConnection(connection);
+        return rollBackDBConnection;
+    }
+
+    @Override
     protected void initDbType() {
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
         if(txTransactionLocal!=null) {

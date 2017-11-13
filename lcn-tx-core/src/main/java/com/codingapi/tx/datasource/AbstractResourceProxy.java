@@ -1,6 +1,7 @@
 package com.codingapi.tx.datasource;
 
 
+import com.codingapi.tx.aop.bean.TxCompensateLocal;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.service.DataSourceService;
 import com.lorne.core.framework.utils.task.Task;
@@ -85,6 +86,8 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
 
     protected abstract void initDbType();
 
+    protected abstract C getRollback(C connection);
+
     private C createConnection(TxTransactionLocal txTransactionLocal, C connection){
         if (nowCount == maxCount) {
             for (int i = 0; i < maxWaitTime; i++) {
@@ -121,20 +124,14 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
                 return connection;
             }
 
-            //更新操作的开启LCN分布式事务
-//            if(StringUtils.isNotEmpty(txTransactionLocal.getGroupId())){
-//                if(TxTransactionCompensate.current()!=null){
-//                    return connection;
-//                }else if (CompensateService.COMPENSATE_KEY.equals(txTransactionLocal.getGroupId())) {
-//                    lcnConnection = createConnection(txTransactionLocal, connection);
-//                } else if (!txTransactionLocal.isHasStart()) {
-//                    lcnConnection = createConnection(txTransactionLocal, connection);
-//                }
-//            }
+            //补偿的情况的
+            if (TxCompensateLocal.current() != null) {
+                return getRollback(connection);
+            }
 
             if(StringUtils.isNotEmpty(txTransactionLocal.getGroupId())){
                 if (!txTransactionLocal.isHasStart()) {
-                    lcnConnection = createConnection(txTransactionLocal, connection);
+                    return createConnection(txTransactionLocal, connection);
                 }
             }
 

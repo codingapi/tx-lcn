@@ -132,27 +132,28 @@ public class CompensateServiceImpl implements CompensateService {
 
 
     @Override
-    public TxGroup reloadCompensate(TxGroup txGroup) {
+    public void reloadCompensate(TxGroup txGroup) {
         TxGroup compensateGroup = getCompensateByGroupId(txGroup.getGroupId());
-        for (TxInfo txInfo : txGroup.getList()) {
+        if (compensateGroup != null) {
+            for (TxInfo txInfo : txGroup.getList()) {
 
-            for (TxInfo cinfo : compensateGroup.getList()) {
-                if (cinfo.getModel().equals(txInfo.getModel()) && cinfo.getMethodStr().equals(txInfo.getMethodStr())) {
+                for (TxInfo cinfo : compensateGroup.getList()) {
+                    if (cinfo.getModel().equals(txInfo.getModel()) && cinfo.getMethodStr().equals(txInfo.getMethodStr())) {
 
-                    //根据之前的数据补偿现在的事务
+                        //根据之前的数据补偿现在的事务
 
-                    int oldNotify = txInfo.getNotify();
+                        int oldNotify = txInfo.getNotify();
 
-                    if (oldNotify == 1) {
-                        cinfo.setIsCommit(0);
-                    } else {
-                        cinfo.setIsCommit(1);
+                        if (oldNotify == 1) {
+                            cinfo.setIsCommit(0);
+                        } else {
+                            cinfo.setIsCommit(1);
+                        }
                     }
                 }
-            }
 
+            }
         }
-        return null;
     }
 
     private TxGroup getCompensateByGroupId(String groupId) {

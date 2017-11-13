@@ -53,7 +53,7 @@ public class NettyDistributeServiceImpl implements NettyDistributeService {
 
         TxServer txServer = TxServer.parser(json);
         if (txServer != null) {
-            logger.info("txServer is " + (txServer == null ? "null" : "not null"));
+            logger.info("txServer -> " + txServer);
             logger.info(txServer.toString());
             Constants.txServer = txServer;
             logger.info(Constants.txServer.toString());

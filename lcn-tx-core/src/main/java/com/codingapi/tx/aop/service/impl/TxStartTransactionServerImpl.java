@@ -1,14 +1,14 @@
 package com.codingapi.tx.aop.service.impl;
 
-import com.codingapi.tx.aop.bean.TxTransactionInfo;
-import com.codingapi.tx.model.TxGroup;
-import com.lorne.core.framework.exception.ServiceException;
 import com.codingapi.tx.Constants;
+import com.codingapi.tx.aop.bean.TxCompensateLocal;
+import com.codingapi.tx.aop.bean.TxTransactionInfo;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
-import com.codingapi.tx.netty.service.MQTxManagerService;
 import com.codingapi.tx.aop.service.TransactionServer;
 import com.codingapi.tx.framework.thread.HookRunnable;
-import com.lorne.core.framework.exception.TransactionException;
+import com.codingapi.tx.model.TxGroup;
+import com.codingapi.tx.netty.service.MQTxManagerService;
+import com.lorne.core.framework.exception.ServiceException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,25 +60,22 @@ public class TxStartTransactionServerImpl implements TransactionServer {
         } finally {
             int rs  = txManagerService.closeTransactionGroup(groupId, state);
 
-            //补偿请求，回滚本次事务
-            if (txGroup.getIsCommit() == 1) {
-                throw new TransactionException("补偿回滚");
-            }
-
             long end = System.currentTimeMillis();
 
             final long time = end - start;
 
-            if(state == 1&&rs == 0){
-                new Thread(new HookRunnable() {
-                    @Override
-                    public void run0() {
-                        //记录补偿日志
-                        txManagerService.sendCompensateMsg(groupId,time,info);
+            if (TxCompensateLocal.current() == null) {
+                if (state == 1 && rs == 0) {
+                    new Thread(new HookRunnable() {
+                        @Override
+                        public void run0() {
+                            //记录补偿日志
+                            txManagerService.sendCompensateMsg(groupId, time, info);
 
-                    }
-                }).start();
+                        }
+                    }).start();
 
+                }
             }
             TxTransactionLocal.setCurrent(null);
             logger.info("tx-end-"+txGroup.getGroupId()+">"+state);

@@ -10,4 +10,6 @@ public interface NettyControlService {
     void executeService(ChannelHandlerContext ctx, String json);
 
 
+    void uploadModelInfo();
+
 }

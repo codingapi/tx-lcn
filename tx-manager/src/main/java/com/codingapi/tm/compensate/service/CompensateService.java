@@ -23,6 +23,6 @@ public interface CompensateService {
 
     boolean executeCompensate(String key) throws ServiceException;
 
-    TxGroup reloadCompensate(TxGroup txGroup);
+    void reloadCompensate(TxGroup txGroup);
 
 }

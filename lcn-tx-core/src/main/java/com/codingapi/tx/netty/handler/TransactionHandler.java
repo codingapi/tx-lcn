@@ -47,7 +47,6 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
 
-        SocketManager.getInstance().setNetState(true);
         final String json = SocketUtils.getJson(msg);
         logger.info("接受->" + json);
 
@@ -76,7 +75,7 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
         SocketManager.getInstance().setCtx(ctx);
         logger.info("建立链接-->" + ctx);
 
-        SocketManager.getInstance().setNetState(true);
+        nettyControlService.uploadModelInfo();
     }
 
 

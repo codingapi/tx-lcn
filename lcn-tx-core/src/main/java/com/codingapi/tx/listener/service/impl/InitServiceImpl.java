@@ -1,13 +1,12 @@
 package com.codingapi.tx.listener.service.impl;
 
 import com.codingapi.tx.Constants;
+import com.codingapi.tx.datasource.ILCNTransactionControl;
 import com.codingapi.tx.datasource.service.DataSourceService;
-import com.codingapi.tx.netty.service.NettyService;
 import com.codingapi.tx.listener.service.InitService;
 import com.codingapi.tx.listener.service.ModelNameService;
 import com.codingapi.tx.listener.service.TimeOutService;
-import com.codingapi.tx.datasource.ILCNTransactionControl;
-
+import com.codingapi.tx.netty.service.NettyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +34,7 @@ public class InitServiceImpl implements InitService {
 
     @Autowired
     private ModelNameService modelNameService;
+
 
     @Override
     public void start() {
