@@ -1,5 +1,5 @@
 var init = function () {
-    http.get('http://127.0.0.1:8899/admin/modelList', '加载数据...', function (res) {
+    http.get('/admin/modelList', '加载数据...', function (res) {
 
         var list = $("#list");
         list.empty();

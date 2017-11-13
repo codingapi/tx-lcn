@@ -19,10 +19,12 @@ public class TransactionCompensateMsg {
 
     private TxGroup txGroup;
 
+    private int state;
+
 
     public TransactionCompensateMsg(long currentTime, String groupId, String model, String address,
                                     String uniqueKey, String className,
-                                    String methodStr, String data, int time) {
+                                    String methodStr, String data, int time, int state) {
         this.currentTime = currentTime;
         this.groupId = groupId;
         this.model = model;
@@ -32,8 +34,17 @@ public class TransactionCompensateMsg {
         this.data = data;
         this.time = time;
         this.address = address;
+        this.state = state;
     }
 
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
 
     public long getCurrentTime() {
         return currentTime;

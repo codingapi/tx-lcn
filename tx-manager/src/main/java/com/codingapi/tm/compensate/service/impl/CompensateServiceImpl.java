@@ -112,6 +112,7 @@ public class CompensateServiceImpl implements CompensateService {
             model.setMethod(jsonObject.getString("methodStr"));
             model.setExecuteTime(jsonObject.getInteger("time"));
             model.setBase64(Base64Utils.encode(json.getBytes()));
+            model.setState(jsonObject.getInteger("state"));
             models.add(model);
         }
         return models;

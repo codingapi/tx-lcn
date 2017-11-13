@@ -2,7 +2,7 @@ var init = function () {
     var name = getRequestParam('model');
     $("#model").text(name);
 
-    http.get('http://127.0.0.1:8899/admin/childModel?model=' + name, '加载数据...', function (res) {
+    http.get('/admin/childModel?model=' + name, '加载数据...', function (res) {
 
         var list = $("#list");
         list.empty();
@@ -25,7 +25,7 @@ $(document).on("click", ".model-name", function () {
 
     $('#model').attr("data-path", path);
 
-    http.get('http://127.0.0.1:8899/admin/logFile?path=' + path, '加载数据...', function (res) {
+    http.get('/admin/logFile?path=' + path, '加载数据...', function (res) {
 
         var list = $("#logs");
         list.empty();
@@ -49,7 +49,7 @@ $(document).on("click", ".log-name", function () {
 
     var path = $('#model').attr("data-path") + "/" + file;
 
-    http.get('http://127.0.0.1:8899/admin/logs?path=' + path, '加载数据...', function (res) {
+    http.get('/admin/logs?path=' + path, '加载数据...', function (res) {
 
         var list = $("#compensate");
         list.empty();
@@ -60,7 +60,9 @@ $(document).on("click", ".log-name", function () {
                 '<td><span>' + param.time + '</span></td>' +
                 '<td><span>' + param.method + '</span></td>' +
                 '<td><span>' + param.executeTime + '</span></td>' +
-                '<td><button  data-data="' + param.base64 + '" class="btn btn-info detail">详情</button>&nbsp;&nbsp;<button class="btn btn-success">补偿</button></td>' +
+                '<td><span>' + param.state + '</span></td>' +
+                '<td><button  data-data="' + param.base64 + '" class="btn btn-info detail">详情</button>' +
+                '&nbsp;&nbsp;<button class="btn btn-success">补偿</button></td>' +
                 '</tr>';
             list.append(tr);
         }
@@ -168,9 +170,35 @@ $(document).on("click", ".detail", function () {
     for (var index in list) {
         var p = list[index];
         var notify = p["notify"];
-        var model = p["modelName"];
-        var tr = '<tr><th>事务状态</th><td><span>' + notify + '</span><th>模块名称</th><td><span>' + model + '</span></td></tr>';
-        $("#body").append(tr);
+        var model = p["model"];
+        var modelIpAddress = p["modelIpAddress"];
+        var methodStr = p["methodStr"];
+
+        var uniqueKey = p["uniqueKey"];
+
+        var tr1 =
+            '<tr>' +
+            '<th>模块名称</th><td><span>' + model + '</span></td>' +
+            '<th>模块地址</th><td><span>' + modelIpAddress + '</span></td>' +
+            '</tr>';
+
+        $("#body").append(tr1);
+
+        var tr2 =
+            '<tr>' +
+            '<th>唯一标示</th><td><span>' + uniqueKey + '</span></td>' +
+            '<th>是否提交</th><td><span>' + notify + '</span></td>' +
+            '</tr>';
+
+        $("#body").append(tr2);
+
+        var tr3 =
+            '<tr>' +
+            '<th>执行方法</th><td colspan="3"><span>' + methodStr + '</span></td>' +
+            '</tr>';
+
+        $("#body").append(tr3);
+
     }
 
 
