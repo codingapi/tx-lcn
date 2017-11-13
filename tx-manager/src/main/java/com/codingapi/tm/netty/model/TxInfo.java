@@ -9,10 +9,19 @@ import com.lorne.core.framework.model.JsonModel;
  */
 public class TxInfo extends JsonModel {
 
+    /**
+     * 任务唯一标示
+     */
     private String kid;
 
+    /**
+     * 模块管道名称（netty管道名称）
+     */
     private String modelName;
 
+    /**
+     * 是否通知成功
+     */
     private int notify;
 
     /**
@@ -31,8 +40,52 @@ public class TxInfo extends JsonModel {
      */
     private String uniqueKey;
 
+
+    /**
+     * 管道发送数据
+     */
     private ChannelSender channel;
 
+
+    /**
+     * 业务方法名称
+     */
+    private String methodStr;
+
+    /**
+     * 模块名称
+     */
+    private String model;
+
+    /**
+     * 模块地址
+     */
+    private String modelIpAddress;
+
+
+    public String getMethodStr() {
+        return methodStr;
+    }
+
+    public void setMethodStr(String methodStr) {
+        this.methodStr = methodStr;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public String getModelIpAddress() {
+        return modelIpAddress;
+    }
+
+    public void setModelIpAddress(String modelIpAddress) {
+        this.modelIpAddress = modelIpAddress;
+    }
 
     public String getKid() {
         return kid;
@@ -99,6 +152,11 @@ public class TxInfo extends JsonModel {
         jsonObject.put("isGroup",getIsGroup());
         jsonObject.put("address",getAddress());
         jsonObject.put("uniqueKey",getUniqueKey());
+
+        jsonObject.put("model", getModel());
+        jsonObject.put("modelIpAddress", getModelIpAddress());
+        jsonObject.put("methodStr", getMethodStr());
+
         return jsonObject.toString();
     }
 }

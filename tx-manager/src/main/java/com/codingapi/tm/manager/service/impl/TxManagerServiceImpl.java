@@ -50,7 +50,8 @@ public class TxManagerServiceImpl implements TxManagerService {
     }
 
     @Override
-    public TxGroup addTransactionGroup(String groupId,String uniqueKey, String taskId,int isGroup, String modelName) {
+    public TxGroup addTransactionGroup(String groupId, String uniqueKey, String taskId,
+                                       int isGroup, String modelName, String model, String modelIpAddress, String methodStr) {
 
         TxGroup txGroup = redisServerService.getTxGroupById(groupId);
         if (txGroup==null) {
@@ -62,6 +63,11 @@ public class TxManagerServiceImpl implements TxManagerService {
         txInfo.setAddress(Constants.address);
         txInfo.setIsGroup(isGroup);
         txInfo.setUniqueKey(uniqueKey);
+
+        txInfo.setMethodStr(methodStr);
+        txInfo.setModelIpAddress(modelIpAddress);
+        txInfo.setModel(model);
+
         txGroup.addTransactionInfo(txInfo);
 
         redisServerService.updateTransactionGroup(groupId,txGroup.toJsonString());

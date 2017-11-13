@@ -23,9 +23,10 @@ public interface MQTxManagerService {
      * @param groupId   事务组id
      * @param taskId    任务Id
      * @param isGroup   是否合并到事务组 true合并 false不合并
+     * @param methodStr   方法参数列表
      * @return  事务组TxGroup
      */
-    TxGroup addTransactionGroup(String groupId, String taskId, boolean isGroup);
+    TxGroup addTransactionGroup(String groupId, String taskId, boolean isGroup, String methodStr);
 
 
     /**

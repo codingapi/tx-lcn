@@ -63,7 +63,9 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
             //写操作 处理
             if(!txTransactionLocal.isReadOnly()) {
 
-                TxGroup resTxGroup = txManagerService.addTransactionGroup(txGroupId, kid, isHasIsGroup);
+                String methodStr = info.getInvocation().getMethodStr();
+
+                TxGroup resTxGroup = txManagerService.addTransactionGroup(txGroupId, kid, isHasIsGroup, methodStr);
 
                 //已经进入过该模块的
                 if(!isHasIsGroup) {

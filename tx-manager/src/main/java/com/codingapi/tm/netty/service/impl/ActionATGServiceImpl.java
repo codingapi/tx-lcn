@@ -25,11 +25,15 @@ public class ActionATGServiceImpl implements IActionService{
         String groupId = params.getString("g");
         String taskId = params.getString("t");
         String uniqueKey = params.getString("u");
+        String methodStr = params.getString("ms");
+        String modelIpAddress = params.getString("ip");
+        String model = params.getString("mn");
         int isGroup = params.getInteger("s");
+
 
         SocketManager.getInstance().onLine(modelName,uniqueKey);
 
-        TxGroup txGroup = txManagerService.addTransactionGroup(groupId, uniqueKey,taskId, isGroup,modelName);
+        TxGroup txGroup = txManagerService.addTransactionGroup(groupId, uniqueKey, taskId, isGroup, modelName, model, modelIpAddress, methodStr);
 
         if(txGroup!=null) {
             txGroup.setNowTime(System.currentTimeMillis());

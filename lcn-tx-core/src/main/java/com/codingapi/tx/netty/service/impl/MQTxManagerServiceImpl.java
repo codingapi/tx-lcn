@@ -55,11 +55,14 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
     }
 
     @Override
-    public TxGroup addTransactionGroup(String groupId, String taskId, boolean isGroup) {
+    public TxGroup addTransactionGroup(String groupId, String taskId, boolean isGroup, String methodStr) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("g", groupId);
         jsonObject.put("t", taskId);
         jsonObject.put("u", Constants.uniqueKey);
+        jsonObject.put("ms", methodStr);
+        jsonObject.put("ip", modelNameService.getIpAddress());
+        jsonObject.put("mn", modelNameService.getModelName());
         jsonObject.put("s", isGroup ? 1 : 0);
         Request request = new Request("atg", jsonObject.toString());
         String json =  SocketManager.getInstance().sendMsg(request);

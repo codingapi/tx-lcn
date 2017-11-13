@@ -11,6 +11,7 @@ import com.codingapi.tm.manager.service.TxManagerService;
 import com.codingapi.tm.framework.utils.SocketManager;
 import com.codingapi.tm.netty.model.TxGroup;
 import com.codingapi.tm.model.ChannelSender;
+import com.codingapi.tm.redis.service.RedisServerService;
 import com.lorne.core.framework.utils.KidUtils;
 import com.lorne.core.framework.utils.task.ConditionUtils;
 import com.lorne.core.framework.utils.task.IBack;
@@ -45,6 +46,9 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
 
     @Autowired
     private TxManagerService txManagerService;
+
+    @Autowired
+    private RedisServerService redisServerService;
 
     @Autowired
     private ConfigReader configReader;
@@ -150,6 +154,8 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
             }
 
             List<Boolean> hasOks = countDownLatchHelper.execute().getData();
+
+            redisServerService.updateTransactionGroup(txGroup.getGroupId(), txGroup.toJsonString());
 
             boolean hasOk = true;
             for (boolean bl : hasOks) {

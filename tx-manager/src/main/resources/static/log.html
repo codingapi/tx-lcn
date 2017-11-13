@@ -6,8 +6,10 @@
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css"/>
     <script src="static/jquery/jquery.min.js"></script>
+    <script src="static/bootstrap/js/bootstrap.min.js"></script>
     <script src="static/jquery/jquery.blockUI.min.js"></script>
     <script src="static/jquery/jquery.blockUI-css.js"></script>
+    <script src="static/common/jbase64.js"></script>
     <script src="static/common/common.js"></script>
     <script src="static/common/http.js"></script>
 
@@ -94,7 +96,46 @@
     </div>
 
 
+    <!-- Modal -->
+    <div class="modal fade" id="show-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">详细信息</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-striped">
+                        <colgroup>
+                            <col class="col-xs-2"/>
+                            <col class="col-xs-4"/>
+                            <col class="col-xs-2"/>
+                            <col class="col-xs-4"/>
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>属性名称</th>
+                            <th>属性值</th>
+                            <th>属性名称</th>
+                            <th>属性值</th>
+                        </tr>
+                        </thead>
+                        <tbody id="body">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="static/log.js"></script>
+
+
 </div>
 </body>
 </html>

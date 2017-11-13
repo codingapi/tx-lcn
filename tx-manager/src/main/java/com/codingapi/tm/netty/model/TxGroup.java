@@ -103,6 +103,11 @@ public class TxGroup {
                 info.setIsGroup(object.getInteger("ig"));
                 info.setAddress(object.getString("a"));
                 info.setUniqueKey(object.getString("u"));
+
+                info.setModel(object.getString("mn"));
+                info.setModelIpAddress(object.getString("ip"));
+                info.setMethodStr(object.getString("ms"));
+
                 txGroup.getList().add(info);
             }
             return txGroup;
@@ -130,6 +135,12 @@ public class TxGroup {
                 item.put("ig", info.getIsGroup());
                 item.put("a", info.getAddress());
                 item.put("u", info.getUniqueKey());
+
+                item.put("mn", info.getModel());
+                item.put("ip", info.getModelIpAddress());
+                item.put("ms", info.getMethodStr());
+
+
                 jsonArray.add(item);
             }
             jsonObject.put("l", jsonArray);
