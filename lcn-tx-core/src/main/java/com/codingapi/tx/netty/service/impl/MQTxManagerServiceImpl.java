@@ -82,7 +82,6 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
         jsonObject.put("u", modelNameService.getUniqueKey());
         Request request = new Request("umi", jsonObject.toString());
         String json = SocketManager.getInstance().sendMsg(request);
-        System.out.println(json);
     }
 
     @Override

@@ -14,8 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -95,14 +93,18 @@ public class NettyControlServiceImpl implements NettyControlService {
             final String data = resObj.getString("d");
             if (StringUtils.isNotEmpty(data)) {
 
-                Timer timer = new Timer();
 
-                timer.schedule(new TimerTask() {
+                new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        try {
+                            Thread.sleep(1000 * 10);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         mqTxManagerService.uploadModelInfo();
                     }
-                }, 1000 * 10);
+                }).start();
 
 
                 try {
