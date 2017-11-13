@@ -2,22 +2,21 @@ package com.codingapi.tm.compensate.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.codingapi.tm.compensate.dao.CompensateDao;
 import com.codingapi.tm.compensate.model.TransactionCompensateMsg;
 import com.codingapi.tm.compensate.model.TxModel;
 import com.codingapi.tm.compensate.service.CompensateService;
-import com.codingapi.tm.compensate.dao.CompensateDao;
 import com.codingapi.tm.config.ConfigReader;
 import com.codingapi.tm.manager.ModelInfoManager;
 import com.codingapi.tm.manager.service.TxManagerSenderService;
 import com.codingapi.tm.model.ModelInfo;
 import com.codingapi.tm.netty.model.TxGroup;
+import com.codingapi.tm.netty.model.TxInfo;
 import com.codingapi.tm.redis.service.RedisServerService;
 import com.lorne.core.framework.exception.ServiceException;
 import com.lorne.core.framework.utils.DateUtil;
-import com.lorne.core.framework.utils.KidUtils;
 import com.lorne.core.framework.utils.encode.Base64Utils;
 import com.lorne.core.framework.utils.http.HttpUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,6 +132,41 @@ public class CompensateServiceImpl implements CompensateService {
 
 
     @Override
+    public TxGroup reloadCompensate(TxGroup txGroup) {
+        TxGroup compensateGroup = getCompensateByGroupId(txGroup.getGroupId());
+        for (TxInfo txInfo : txGroup.getList()) {
+
+            for (TxInfo cinfo : compensateGroup.getList()) {
+                if (cinfo.getModel().equals(txInfo.getModel()) && cinfo.getMethodStr().equals(txInfo.getMethodStr())) {
+
+                    //根据之前的数据补偿现在的事务
+
+                    int oldNotify = txInfo.getNotify();
+
+                    if (oldNotify == 1) {
+                        cinfo.setIsCommit(0);
+                    } else {
+                        cinfo.setIsCommit(1);
+                    }
+                }
+            }
+
+        }
+        return null;
+    }
+
+    private TxGroup getCompensateByGroupId(String groupId) {
+        String json = compensateDao.getCompensateByGroupId(groupId);
+        if (json == null) {
+            return null;
+        }
+        JSONObject jsonObject = JSON.parseObject(json);
+        String txGroup = jsonObject.getString("txGroup");
+        return JSON.parseObject(txGroup, TxGroup.class);
+    }
+
+
+    @Override
     public boolean executeCompensate(String path) throws ServiceException {
 
         String json = compensateDao.getCompensate(path);
@@ -152,8 +186,14 @@ public class CompensateServiceImpl implements CompensateService {
 
         String data = jsonObject.getString("data");
 
-        String res = managerSenderService.sendCompensateMsg(modelInfo.getChannelName(), data);
-        System.out.println(res);
+        String groupId = jsonObject.getString("groupId");
+
+        String res = managerSenderService.sendCompensateMsg(modelInfo.getChannelName(), groupId, data);
+
+        if ("1".equals(res)) {
+            //todo 删除本地补偿数据
+            return true;
+        }
 
         return false;
     }

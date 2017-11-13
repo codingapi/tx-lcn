@@ -21,7 +21,8 @@ public class ActionCGServiceImpl implements IActionService{
     @Override
     public String execute(String modelName,String key,JSONObject params ) {
         String res = "";
-        TxGroup txGroup = txManagerService.createTransactionGroup();
+        String groupId = params.getString("g");
+        TxGroup txGroup = txManagerService.createTransactionGroup(groupId);
         if(txGroup!=null) {
             txGroup.setNowTime(System.currentTimeMillis());
             res = txGroup.toJsonString(false);

@@ -1,6 +1,6 @@
 package com.codingapi.tx;
 
-import com.codingapi.tx.listener.model.TxServer;
+import com.codingapi.tx.model.TxServer;
 
 /**
  * Created by lorne on 2017/6/8.

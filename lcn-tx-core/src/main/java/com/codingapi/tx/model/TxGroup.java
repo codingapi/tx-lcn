@@ -1,4 +1,4 @@
-package com.codingapi.tx.listener.model;
+package com.codingapi.tx.model;
 
 
 import com.alibaba.fastjson.JSONArray;
@@ -17,6 +17,16 @@ public class TxGroup {
     private long nowTime;
 
     private int hasOver;
+
+    private int isCommit;
+
+    public int getIsCommit() {
+        return isCommit;
+    }
+
+    public void setIsCommit(int isCommit) {
+        this.isCommit = isCommit;
+    }
 
     public String getGroupId() {
         return groupId;
@@ -64,6 +74,7 @@ public class TxGroup {
             txGroup.setStartTime(jsonObject.getLong("st"));
             txGroup.setHasOver(jsonObject.getInteger("o"));
             txGroup.setNowTime(jsonObject.getLong("nt"));
+            txGroup.setIsCommit(jsonObject.getInteger("i"));
             return txGroup;
 
         } catch (Exception e) {
@@ -78,6 +89,7 @@ public class TxGroup {
         jsonObject.put("st", getStartTime());
         jsonObject.put("o",getHasOver());
         jsonObject.put("nt", getNowTime());
+        jsonObject.put("i", getIsCommit());
         JSONArray jsonArray = new JSONArray();
         jsonObject.put("l", jsonArray);
         return jsonObject.toString();

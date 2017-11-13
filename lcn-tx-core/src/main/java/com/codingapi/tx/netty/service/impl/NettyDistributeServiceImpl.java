@@ -1,7 +1,7 @@
 package com.codingapi.tx.netty.service.impl;
 
 import com.codingapi.tx.Constants;
-import com.codingapi.tx.listener.model.TxServer;
+import com.codingapi.tx.model.TxServer;
 import com.codingapi.tx.netty.service.MQTxManagerService;
 import com.codingapi.tx.netty.service.NettyDistributeService;
 import org.apache.commons.lang.StringUtils;

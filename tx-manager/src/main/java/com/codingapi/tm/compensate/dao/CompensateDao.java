@@ -1,6 +1,7 @@
 package com.codingapi.tm.compensate.dao;
 
 import com.codingapi.tm.compensate.model.TransactionCompensateMsg;
+import com.codingapi.tm.netty.model.TxGroup;
 
 import java.util.List;
 
@@ -18,5 +19,7 @@ public interface CompensateDao {
     List<String> loadCompensateByModelAndTime(String path);
 
     String getCompensate(String key);
+
+    String getCompensateByGroupId(String groupId);
 
 }

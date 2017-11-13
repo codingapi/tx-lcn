@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import com.codingapi.tm.Constants;
+import com.codingapi.tm.compensate.service.CompensateService;
 import com.codingapi.tm.config.ConfigReader;
 import com.codingapi.tm.framework.utils.SocketUtils;
 import com.codingapi.tm.manager.service.TxManagerSenderService;
@@ -53,6 +54,9 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
 
     @Autowired
     private ConfigReader configReader;
+
+    @Autowired
+    private CompensateService compensateService;
 
     @Override
     public boolean confirm(TxGroup txGroup) {
@@ -104,7 +108,15 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
      * @param checkSate
      */
     private boolean transaction(TxGroup txGroup, final int checkSate) {
+
+
         if (checkSate == 1) {
+
+            //补偿请求，加载历史数据
+            if (txGroup.getIsCommit() == 1) {
+                compensateService.reloadCompensate(txGroup);
+            }
+
             CountDownLatchHelper<Boolean> countDownLatchHelper = new CountDownLatchHelper<>();
             for (final TxInfo txInfo : txGroup.getList()) {
                 if (txInfo.getIsGroup() == 0) {
@@ -114,9 +126,17 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                             if(txInfo.getChannel()==null){
                                 return false;
                             }
+
                             final JSONObject jsonObject = new JSONObject();
                             jsonObject.put("a", "t");
-                            jsonObject.put("c", checkSate);
+
+
+                            if (txGroup.getIsCommit() == 1) {   //补偿请求
+                                jsonObject.put("c", txInfo.getIsCommit());
+                            } else { //正常业务
+                                jsonObject.put("c", checkSate);
+                            }
+
                             jsonObject.put("t", txInfo.getKid());
                             final String key = KidUtils.generateShortUuid();
                             jsonObject.put("k", key);
@@ -187,11 +207,12 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
     }
 
     @Override
-    public String sendCompensateMsg(String model, String data) {
+    public String sendCompensateMsg(String model, String groupId, String data) {
 
         JSONObject newCmd = new JSONObject();
         newCmd.put("a", "c");
         newCmd.put("d", data);
+        newCmd.put("g", groupId);
         newCmd.put("k", KidUtils.generateShortUuid());
         return sendMsg(model, newCmd.toJSONString());
     }

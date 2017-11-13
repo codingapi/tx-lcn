@@ -2,6 +2,7 @@ package com.codingapi.tm.compensate.service;
 
 import com.codingapi.tm.compensate.model.TransactionCompensateMsg;
 import com.codingapi.tm.compensate.model.TxModel;
+import com.codingapi.tm.netty.model.TxGroup;
 import com.lorne.core.framework.exception.ServiceException;
 
 import java.util.List;
@@ -21,5 +22,7 @@ public interface CompensateService {
 
 
     boolean executeCompensate(String key) throws ServiceException;
+
+    TxGroup reloadCompensate(TxGroup txGroup);
 
 }

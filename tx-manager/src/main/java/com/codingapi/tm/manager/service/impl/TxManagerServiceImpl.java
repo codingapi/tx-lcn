@@ -9,6 +9,7 @@ import com.codingapi.tm.netty.model.TxGroup;
 import com.codingapi.tm.netty.model.TxInfo;
 import com.codingapi.tm.redis.service.RedisServerService;
 import com.lorne.core.framework.utils.KidUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +39,12 @@ public class TxManagerServiceImpl implements TxManagerService {
 
 
     @Override
-    public TxGroup createTransactionGroup() {
-        String groupId = KidUtils.generateShortUuid();
+    public TxGroup createTransactionGroup(String groupId) {
         TxGroup txGroup = new TxGroup();
+        if (StringUtils.isEmpty(groupId)) {
+            groupId = KidUtils.generateShortUuid();
+        }
+
         txGroup.setStartTime(System.currentTimeMillis());
         txGroup.setGroupId(groupId);
 

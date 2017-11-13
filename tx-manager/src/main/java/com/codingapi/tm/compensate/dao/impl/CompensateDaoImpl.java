@@ -3,6 +3,7 @@ package com.codingapi.tm.compensate.dao.impl;
 import com.alibaba.fastjson.JSON;
 import com.codingapi.tm.compensate.dao.CompensateDao;
 import com.codingapi.tm.compensate.model.TransactionCompensateMsg;
+import com.codingapi.tm.netty.model.TxGroup;
 import com.codingapi.tm.redis.service.RedisServerService;
 import com.lorne.core.framework.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,5 +79,17 @@ public class CompensateDaoImpl implements CompensateDao {
     public String getCompensate(String path) {
         String key = String.format("%s%s.json", prefix, path);
         return redisServerService.getValueByKey(key);
+    }
+
+
+    @Override
+    public String getCompensateByGroupId(String groupId) {
+        String key = String.format("%s*%s.json", prefix, groupId);
+        List<String> keys = redisServerService.getKeys(key);
+        if (keys != null && keys.size() == 1) {
+            String k = keys.get(0);
+            return redisServerService.getValueByKey(k);
+        }
+        return null;
     }
 }

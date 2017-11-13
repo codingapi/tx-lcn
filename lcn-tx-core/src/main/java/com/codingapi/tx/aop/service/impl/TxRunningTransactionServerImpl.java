@@ -1,7 +1,7 @@
 package com.codingapi.tx.aop.service.impl;
 
 import com.codingapi.tx.aop.bean.TxTransactionInfo;
-import com.codingapi.tx.listener.model.TxGroup;
+import com.codingapi.tx.model.TxGroup;
 import com.lorne.core.framework.exception.ServiceException;
 import com.lorne.core.framework.utils.KidUtils;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;

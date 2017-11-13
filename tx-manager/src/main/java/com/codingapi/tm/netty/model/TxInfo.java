@@ -62,6 +62,18 @@ public class TxInfo extends JsonModel {
      */
     private String modelIpAddress;
 
+    /**
+     * 是否提交（临时数据）
+     */
+    private int isCommit;
+
+    public int getIsCommit() {
+        return isCommit;
+    }
+
+    public void setIsCommit(int isCommit) {
+        this.isCommit = isCommit;
+    }
 
     public String getMethodStr() {
         return methodStr;

@@ -1,7 +1,7 @@
 package com.codingapi.tx.netty.service;
 
 import com.codingapi.tx.aop.bean.TxTransactionInfo;
-import com.codingapi.tx.listener.model.TxGroup;
+import com.codingapi.tx.model.TxGroup;
 
 
 /**

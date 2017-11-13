@@ -11,5 +11,5 @@ public interface TxManagerSenderService {
 
     String sendMsg(String model,String msg);
 
-    String sendCompensateMsg(String model, String data);
+    String sendCompensateMsg(String model, String groupId, String data);
 }

@@ -1,6 +1,5 @@
 package com.codingapi.tx.model;
 
-import com.codingapi.tx.listener.model.TxGroup;
 import com.lorne.core.framework.utils.task.Task;
 import org.springframework.transaction.TransactionStatus;
 

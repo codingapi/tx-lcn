@@ -22,6 +22,11 @@ public class TxGroup {
 
     private int hasOver;
 
+    /**
+     * 补偿请求
+     */
+    private int isCommit;
+
 
     private List<TxInfo> list;
 
@@ -53,6 +58,13 @@ public class TxGroup {
         this.startTime = startTime;
     }
 
+    public int getIsCommit() {
+        return isCommit;
+    }
+
+    public void setIsCommit(int isCommit) {
+        this.isCommit = isCommit;
+    }
 
     public int getState() {
         return state;
@@ -91,6 +103,7 @@ public class TxGroup {
             txGroup.setStartTime(jsonObject.getLong("st"));
             txGroup.setNowTime(jsonObject.getLong("nt"));
             txGroup.setState(jsonObject.getInteger("s"));
+            txGroup.setIsCommit(jsonObject.getInteger("i"));
             txGroup.setHasOver(jsonObject.getInteger("o"));
             JSONArray array = jsonObject.getJSONArray("l");
             int length = array.size();
@@ -124,6 +137,7 @@ public class TxGroup {
         jsonObject.put("st", getStartTime());
         jsonObject.put("nt", getNowTime());
         jsonObject.put("s", getState());
+        jsonObject.put("i", getIsCommit());
         jsonObject.put("o",getHasOver());
         if(noList) {
             JSONArray jsonArray = new JSONArray();

@@ -1,4 +1,4 @@
-package com.codingapi.tx.listener.model;
+package com.codingapi.tx.model;
 
 import com.lorne.core.framework.utils.KidUtils;
 

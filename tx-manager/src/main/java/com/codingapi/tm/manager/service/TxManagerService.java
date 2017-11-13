@@ -11,8 +11,10 @@ public interface TxManagerService {
 
     /**
      * 创建事物组
+     *
+     * @param groupId 补偿事务组id
      */
-    TxGroup createTransactionGroup();
+    TxGroup createTransactionGroup(String groupId);
 
 
     /**

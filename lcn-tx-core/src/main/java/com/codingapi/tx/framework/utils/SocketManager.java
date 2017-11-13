@@ -1,6 +1,6 @@
 package com.codingapi.tx.framework.utils;
 
-import com.codingapi.tx.listener.model.Request;
+import com.codingapi.tx.model.Request;
 import com.lorne.core.framework.utils.task.ConditionUtils;
 import com.lorne.core.framework.utils.task.IBack;
 import com.lorne.core.framework.utils.task.Task;

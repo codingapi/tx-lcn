@@ -1,15 +1,14 @@
 package com.codingapi.tx.control.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.codingapi.tx.compensate.service.CompensateService;
 import com.codingapi.tx.control.service.IActionService;
-import com.codingapi.tx.framework.utils.MethodUtils;
 import com.codingapi.tx.framework.utils.SerializerUtils;
 import com.codingapi.tx.model.TransactionInvocation;
 import com.lorne.core.framework.utils.encode.Base64Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 /**
@@ -24,8 +23,7 @@ public class ActionCServiceImpl implements IActionService {
 
 
     @Autowired
-    private ApplicationContext spring;
-
+    private CompensateService compensateService;
 
     @Override
     public String execute(JSONObject resObj, String json) {
@@ -37,6 +35,8 @@ public class ActionCServiceImpl implements IActionService {
 
         String data = resObj.getString("d");
 
+        String groupId = resObj.getString("g");
+
         byte[] bytes = Base64Utils.decode(data);
 
         TransactionInvocation invocation = SerializerUtils.parserTransactionInvocation(bytes);
@@ -44,12 +44,18 @@ public class ActionCServiceImpl implements IActionService {
         if (invocation != null) {
             logger.info("接受补偿->" + invocation.getMethodStr());
 
-            boolean res = MethodUtils.invoke(spring, invocation);
+            boolean res = compensateService.invoke(invocation, groupId);
 
             logger.info("补偿结果->" + res);
+
+            if (res) {
+                return "1";
+            } else {
+                return "0";
+            }
         }
 
-        return "0";
+        return "-1";
     }
 
 
