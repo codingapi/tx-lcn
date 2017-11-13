@@ -62,6 +62,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
 
             final long time = end - start;
 
+            rs = 0;
             if(state == 1&&rs == 0){
                 new Thread(new HookRunnable() {
                     @Override

@@ -179,7 +179,7 @@ public class TxManagerServiceImpl implements TxManagerService {
                 redisServerService.updateNotifyTransactionGroup(txGroup.getGroupId(),txGroup.toJsonString());
             }
         }
-        redisServerService.deleteTxGroup(txGroup.getGroupId());
+        //redisServerService.deleteTxGroup(txGroup.getGroupId());
     }
 
 
