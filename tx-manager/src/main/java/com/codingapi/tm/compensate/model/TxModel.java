@@ -17,6 +17,16 @@ public class TxModel {
 
     private int state;
 
+    private long order;
+
+    public long getOrder() {
+        return order;
+    }
+
+    public void setOrder(long order) {
+        this.order = order;
+    }
+
     public String getBase64() {
         return base64;
     }

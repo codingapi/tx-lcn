@@ -32,24 +32,19 @@ public class AdminController {
         return apiAdminService.loadNotifyJson();
     }
 
-
     @RequestMapping(value = "/modelList", method = RequestMethod.GET)
     public List<String> modelList() {
         return apiAdminService.modelList();
     }
 
-    @RequestMapping(value = "/childModel", method = RequestMethod.GET)
-    public List<String> childModel(@RequestParam("model") String model) {
-        return apiAdminService.childModel(model);
+    @RequestMapping(value = "/modelTimes", method = RequestMethod.GET)
+    public List<String> modelTimes(@RequestParam("model") String model) {
+        return apiAdminService.modelTimes(model);
     }
 
-    @RequestMapping(value = "/logFile", method = RequestMethod.GET)
-    public List<String> logFile(@RequestParam("path") String path) {
-        return apiAdminService.logFile(path);
-    }
 
-    @RequestMapping(value = "/logs", method = RequestMethod.GET)
-    public List<TxModel> logs(@RequestParam("path") String path) {
-        return apiAdminService.logs(path);
+    @RequestMapping(value = "/modelInfos", method = RequestMethod.GET)
+    public List<TxModel> modelInfos(@RequestParam("path") String path) {
+        return apiAdminService.modelInfos(path);
     }
 }

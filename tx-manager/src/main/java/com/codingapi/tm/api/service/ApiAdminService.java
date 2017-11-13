@@ -17,9 +17,8 @@ public interface ApiAdminService {
     List<String> modelList();
 
 
-    List<String> childModel(String model);
+    List<String> modelTimes(String model);
 
-    List<String> logFile(String path);
+    List<TxModel> modelInfos(String path);
 
-    List<TxModel> logs(String path);
 }

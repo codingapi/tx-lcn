@@ -17,10 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * create by lorne on 2017/11/11
@@ -83,25 +80,15 @@ public class CompensateServiceImpl implements CompensateService {
         return compensateDao.loadModelList();
     }
 
-
     @Override
-    public List<String> childModel(String model) {
-        return compensateDao.childModel(model);
-    }
-
-
-    @Override
-    public List<String> logFile(String path) {
-        return compensateDao.logFile(path);
+    public List<String> loadCompensateTimes(String model) {
+        return compensateDao.loadCompensateTimes(model);
     }
 
     @Override
-    public List<TxModel> logs(String path) {
-        List<String> logs = compensateDao.getLogs(path);
-        if (logs == null) {
-            return null;
-        }
-        Collections.reverse(logs);
+    public List<TxModel> loadCompensateByModelAndTime(String path) {
+        List<String> logs = compensateDao.loadCompensateByModelAndTime(path);
+
         List<TxModel> models = new ArrayList<>();
         for (String json : logs) {
             JSONObject jsonObject = JSON.parseObject(json);
@@ -113,8 +100,21 @@ public class CompensateServiceImpl implements CompensateService {
             model.setExecuteTime(jsonObject.getInteger("time"));
             model.setBase64(Base64Utils.encode(json.getBytes()));
             model.setState(jsonObject.getInteger("state"));
+            model.setOrder(currentTime);
             models.add(model);
         }
+        Collections.sort(models, new Comparator<TxModel>() {
+            @Override
+            public int compare(TxModel o1, TxModel o2) {
+                if (o2.getOrder() > o1.getOrder()) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        });
         return models;
     }
+
+
 }

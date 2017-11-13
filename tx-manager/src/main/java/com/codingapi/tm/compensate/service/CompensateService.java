@@ -14,10 +14,8 @@ public interface CompensateService {
 
     List<String> loadModelList();
 
-    List<String> childModel(String model);
+    List<String> loadCompensateTimes(String model);
 
-    List<String> logFile(String path);
-
-    List<TxModel> logs(String path);
+    List<TxModel> loadCompensateByModelAndTime(String path);
 
 }

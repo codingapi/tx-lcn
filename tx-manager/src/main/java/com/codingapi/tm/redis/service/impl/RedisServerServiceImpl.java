@@ -11,6 +11,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -94,5 +97,33 @@ public class RedisServerServiceImpl implements RedisServerService{
             return null;
         }
         return  TxGroup.parser(json);
+    }
+
+
+    @Override
+    public void saveCompensateMsg(String name, String json) {
+        ValueOperations<String, String> value = redisTemplate.opsForValue();
+        value.set(name, json);
+    }
+
+    @Override
+    public List<String> getKeys(String key) {
+        Set<String> keys = redisTemplate.keys(key);
+        List<String> list = new ArrayList<>();
+        for (String k : keys) {
+            list.add(k);
+        }
+        return list;
+    }
+
+    @Override
+    public List<String> getValuesByKeys(List<String> keys) {
+        ValueOperations<String, String> value = redisTemplate.opsForValue();
+        List<String> list = new ArrayList<>();
+        for (String key : keys) {
+            String json = value.get(key);
+            list.add(json);
+        }
+        return list;
     }
 }

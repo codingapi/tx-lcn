@@ -13,10 +13,7 @@ public interface CompensateDao {
 
     List<String> loadModelList();
 
+    List<String> loadCompensateTimes(String model);
 
-    List<String> childModel(String model);
-
-    List<String> logFile(String path);
-
-    List<String> getLogs(String path);
+    List<String> loadCompensateByModelAndTime(String path);
 }

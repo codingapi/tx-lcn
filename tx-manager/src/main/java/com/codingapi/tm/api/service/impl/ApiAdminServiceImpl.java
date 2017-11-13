@@ -42,18 +42,14 @@ public class ApiAdminServiceImpl implements ApiAdminService {
         return compensateService.loadModelList();
     }
 
+
     @Override
-    public List<String> childModel(String model) {
-        return compensateService.childModel(model);
+    public List<String> modelTimes(String model) {
+        return compensateService.loadCompensateTimes(model);
     }
 
     @Override
-    public List<String> logFile(String path) {
-        return compensateService.logFile(path);
-    }
-
-    @Override
-    public List<TxModel> logs(String path) {
-        return compensateService.logs(path);
+    public List<TxModel> modelInfos(String path) {
+        return compensateService.loadCompensateByModelAndTime(path);
     }
 }

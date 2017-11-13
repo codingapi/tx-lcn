@@ -1,8 +1,7 @@
 var init = function () {
-    var name = getRequestParam('model');
-    $("#model").text(name);
 
-    http.get('/admin/childModel?model=' + name, '加载数据...', function (res) {
+
+    http.get('/admin/modelList', '加载数据...', function (res) {
 
         var list = $("#list");
         list.empty();
@@ -19,21 +18,18 @@ init();
 
 
 $(document).on("click", ".model-name", function () {
-    var txt = $(this).text();
+    var model = $(this).text();
 
-    var path = $('#model').text() + "/" + txt;
+    $('#model').attr("data-model", model);
 
-    $('#model').attr("data-path", path);
-
-    http.get('/admin/logFile?path=' + path, '加载数据...', function (res) {
+    http.get('/admin/modelTimes?model=' + model, '加载数据...', function (res) {
 
         var list = $("#logs");
         list.empty();
         for (var p in res) {
             var data = res[p];
-            var name = data.split("_")[1];
-            name = name.split(".")[0];
-            var tr = '<tr><td><a class="log-name" data-data="' + data + '" href="#">' + name + '</a></td></tr>';
+            var name = data.split("_")[0];
+            var tr = '<tr><td><a class="model-time" data-data="' + data + '" href="#">' + name + '</a></td></tr>';
             list.append(tr);
         }
 
@@ -43,13 +39,13 @@ $(document).on("click", ".model-name", function () {
 });
 
 
-$(document).on("click", ".log-name", function () {
+$(document).on("click", ".model-time", function () {
 
     var file = $(this).attr("data-data");
 
-    var path = $('#model').attr("data-path") + "/" + file;
+    var path = $('#model').attr("data-model") + "_" + file;
 
-    http.get('/admin/logs?path=' + path, '加载数据...', function (res) {
+    http.get('/admin/modelInfos?path=' + path, '加载数据...', function (res) {
 
         var list = $("#compensate");
         list.empty();

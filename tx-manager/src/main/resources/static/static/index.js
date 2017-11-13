@@ -19,7 +19,7 @@ init();
 
 $(document).on("click", "#btn-compensate", function () {
 
-    open('compensate.html');
+    open('log.html');
 
     return false;
 });
