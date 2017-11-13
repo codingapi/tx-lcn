@@ -23,18 +23,22 @@ public class ModelNameServiceImpl implements ModelNameService {
     @Autowired
     private ProviderConfig providerConfig;
 
+    private String host = null;
+
 
     @Override
     public String getModelName() {
         return  applicationConfig.getName();
     }
 
+
     private String getIp(){
-        String host = null;
-        try {
-            host = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+        if (host == null) {
+            try {
+                host = InetAddress.getLocalHost().getHostAddress();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
         }
         return host;
     }

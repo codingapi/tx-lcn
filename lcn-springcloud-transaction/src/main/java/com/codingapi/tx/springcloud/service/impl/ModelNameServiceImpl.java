@@ -24,17 +24,21 @@ public class ModelNameServiceImpl implements ModelNameService {
     @Autowired
     private ServerListener serverListener;
 
+
+    private String host = null;
+
     @Override
     public String getModelName() {
         return modelName;
     }
 
     private String getIp(){
-        String host = null;
-        try {
-            host = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+        if (host == null) {
+            try {
+                host = InetAddress.getLocalHost().getHostAddress();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
         }
         return host;
     }
