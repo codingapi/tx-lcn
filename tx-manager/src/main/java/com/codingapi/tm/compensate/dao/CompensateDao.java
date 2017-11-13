@@ -16,4 +16,7 @@ public interface CompensateDao {
     List<String> loadCompensateTimes(String model);
 
     List<String> loadCompensateByModelAndTime(String path);
+
+    String getCompensate(String key);
+
 }

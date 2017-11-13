@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import com.codingapi.tm.Constants;
 import com.codingapi.tm.config.ConfigReader;
+import com.codingapi.tm.framework.utils.SocketUtils;
 import com.codingapi.tm.manager.service.TxManagerSenderService;
 import com.codingapi.tm.manager.service.TxManagerService;
 import com.codingapi.tm.framework.utils.SocketManager;
@@ -185,7 +186,15 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
 
     }
 
+    @Override
+    public String sendCompensateMsg(String model, String data) {
 
+        JSONObject newCmd = new JSONObject();
+        newCmd.put("a", "c");
+        newCmd.put("d", data);
+        newCmd.put("k", KidUtils.generateShortUuid());
+        return sendMsg(model, newCmd.toJSONString());
+    }
 
     @Override
     public String sendMsg(String model,String msg) {
@@ -195,7 +204,23 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
         //创建Task
         final Task task = ConditionUtils.getInstance().createTask(key);
 
-        threadAwaitSend(task,null,msg);
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                while (!task.isAwait() && !Thread.currentThread().interrupted()) {
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                Channel channel = SocketManager.getInstance().getChannelByModelName(model);
+                if (channel != null && channel.isActive()) {
+                    SocketUtils.sendMsg(channel, msg);
+                }
+            }
+        });
 
         ScheduledFuture future = schedule(key);
 

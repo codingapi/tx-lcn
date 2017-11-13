@@ -2,6 +2,7 @@ package com.codingapi.tm.api.service;
 
 import com.codingapi.tm.compensate.model.TxModel;
 import com.codingapi.tm.model.TxState;
+import com.lorne.core.framework.exception.ServiceException;
 
 import java.util.List;
 
@@ -20,5 +21,7 @@ public interface ApiAdminService {
     List<String> modelTimes(String model);
 
     List<TxModel> modelInfos(String path);
+
+    boolean compensate(String path) throws ServiceException;
 
 }

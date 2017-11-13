@@ -10,4 +10,6 @@ public interface TxManagerSenderService {
     boolean confirm(TxGroup group);
 
     String sendMsg(String model,String msg);
+
+    String sendCompensateMsg(String model, String data);
 }

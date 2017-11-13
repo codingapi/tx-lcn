@@ -126,4 +126,11 @@ public class RedisServerServiceImpl implements RedisServerService{
         }
         return list;
     }
+
+    @Override
+    public String getValueByKey(String key) {
+        ValueOperations<String, String> value = redisTemplate.opsForValue();
+        String json = value.get(key);
+        return json;
+    }
 }

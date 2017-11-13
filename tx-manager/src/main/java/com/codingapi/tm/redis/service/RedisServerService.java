@@ -30,4 +30,7 @@ public interface RedisServerService {
     List<String> getKeys(String key);
 
     List<String> getValuesByKeys(List<String> keys);
+
+    String getValueByKey(String key);
+
 }

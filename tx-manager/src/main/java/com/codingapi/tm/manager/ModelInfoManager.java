@@ -52,4 +52,13 @@ public class ModelInfoManager {
     public List<ModelInfo> getOnlines() {
         return modelInfos;
     }
+
+    public ModelInfo getModel(String model) {
+        for (ModelInfo modelInfo : modelInfos) {
+            if (model.equalsIgnoreCase(modelInfo.getModel())) {
+                return modelInfo;
+            }
+        }
+        return null;
+    }
 }

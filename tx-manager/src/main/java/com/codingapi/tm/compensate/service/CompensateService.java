@@ -2,6 +2,7 @@ package com.codingapi.tm.compensate.service;
 
 import com.codingapi.tm.compensate.model.TransactionCompensateMsg;
 import com.codingapi.tm.compensate.model.TxModel;
+import com.lorne.core.framework.exception.ServiceException;
 
 import java.util.List;
 
@@ -19,6 +20,6 @@ public interface CompensateService {
     List<TxModel> loadCompensateByModelAndTime(String path);
 
 
-    boolean executeCompensate(String key);
+    boolean executeCompensate(String key) throws ServiceException;
 
 }

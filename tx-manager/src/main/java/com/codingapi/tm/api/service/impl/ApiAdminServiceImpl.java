@@ -6,6 +6,7 @@ import com.codingapi.tm.compensate.service.CompensateService;
 import com.codingapi.tm.manager.service.EurekaService;
 import com.codingapi.tm.model.TxState;
 import com.codingapi.tm.redis.service.RedisServerService;
+import com.lorne.core.framework.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +52,10 @@ public class ApiAdminServiceImpl implements ApiAdminService {
     @Override
     public List<TxModel> modelInfos(String path) {
         return compensateService.loadCompensateByModelAndTime(path);
+    }
+
+    @Override
+    public boolean compensate(String path) throws ServiceException {
+        return compensateService.executeCompensate(path);
     }
 }

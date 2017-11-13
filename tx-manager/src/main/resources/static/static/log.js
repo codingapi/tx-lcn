@@ -58,7 +58,7 @@ $(document).on("click", ".model-time", function () {
                 '<td><span>' + param.executeTime + '</span></td>' +
                 '<td><span>' + param.state + '</span></td>' +
                 '<td><button  data-data="' + param.base64 + '" class="btn btn-info detail">详情</button>' +
-                '&nbsp;&nbsp;<button class="btn btn-success">补偿</button></td>' +
+                '&nbsp;&nbsp;<button data-data="' + param.key + '" class="btn btn-success compensate">补偿</button></td>' +
                 '</tr>';
             list.append(tr);
         }
@@ -66,6 +66,21 @@ $(document).on("click", ".model-time", function () {
     });
 
     return false;
+});
+
+
+$(document).on("click", ".compensate", function () {
+
+    var path = $(this).attr("data-data");
+
+    http.get('/admin/compensate?path=' + path, '加载数据...', function (res) {
+
+        alert(res);
+
+    });
+
+    return false;
+
 });
 
 $(document).on("click", ".detail", function () {

@@ -73,4 +73,10 @@ public class CompensateDaoImpl implements CompensateDao {
         List<String> values = redisServerService.getValuesByKeys(keys);
         return values;
     }
+
+    @Override
+    public String getCompensate(String path) {
+        String key = String.format("%s%s.json", prefix, path);
+        return redisServerService.getValueByKey(key);
+    }
 }

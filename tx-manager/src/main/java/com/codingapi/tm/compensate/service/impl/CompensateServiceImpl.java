@@ -7,11 +7,17 @@ import com.codingapi.tm.compensate.model.TxModel;
 import com.codingapi.tm.compensate.service.CompensateService;
 import com.codingapi.tm.compensate.dao.CompensateDao;
 import com.codingapi.tm.config.ConfigReader;
+import com.codingapi.tm.manager.ModelInfoManager;
+import com.codingapi.tm.manager.service.TxManagerSenderService;
+import com.codingapi.tm.model.ModelInfo;
 import com.codingapi.tm.netty.model.TxGroup;
 import com.codingapi.tm.redis.service.RedisServerService;
+import com.lorne.core.framework.exception.ServiceException;
 import com.lorne.core.framework.utils.DateUtil;
+import com.lorne.core.framework.utils.KidUtils;
 import com.lorne.core.framework.utils.encode.Base64Utils;
 import com.lorne.core.framework.utils.http.HttpUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +42,9 @@ public class CompensateServiceImpl implements CompensateService {
 
     @Autowired
     private ConfigReader configReader;
+
+    @Autowired
+    private TxManagerSenderService managerSenderService;
 
     @Override
     public boolean saveCompensateMsg(TransactionCompensateMsg transactionCompensateMsg) {
@@ -101,6 +110,12 @@ public class CompensateServiceImpl implements CompensateService {
             model.setBase64(Base64Utils.encode(json.getBytes()));
             model.setState(jsonObject.getInteger("state"));
             model.setOrder(currentTime);
+
+            String groupId = jsonObject.getString("groupId");
+
+            String key = path + "_" + groupId;
+            model.setKey(key);
+
             models.add(model);
         }
         Collections.sort(models, new Comparator<TxModel>() {
@@ -118,7 +133,27 @@ public class CompensateServiceImpl implements CompensateService {
 
 
     @Override
-    public boolean executeCompensate(String key) {
+    public boolean executeCompensate(String path) throws ServiceException {
+
+        String json = compensateDao.getCompensate(path);
+        if (json == null) {
+            throw new ServiceException("不存在该数据");
+        }
+
+        JSONObject jsonObject = JSON.parseObject(json);
+
+        String model = jsonObject.getString("model");
+
+        ModelInfo modelInfo = ModelInfoManager.getInstance().getModel(model);
+        if (modelInfo == null) {
+            throw new ServiceException("当前模块不在线.");
+        }
+
+
+        String data = jsonObject.getString("data");
+
+        String res = managerSenderService.sendCompensateMsg(modelInfo.getChannelName(), data);
+        System.out.println(res);
 
         return false;
     }
