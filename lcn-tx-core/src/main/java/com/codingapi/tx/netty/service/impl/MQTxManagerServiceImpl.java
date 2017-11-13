@@ -3,22 +3,21 @@ package com.codingapi.tx.netty.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.tx.Constants;
 import com.codingapi.tx.aop.bean.TxTransactionInfo;
+import com.codingapi.tx.compensate.model.CompensateInfo;
 import com.codingapi.tx.compensate.service.CompensateService;
+import com.codingapi.tx.config.ConfigReader;
 import com.codingapi.tx.framework.utils.SerializerUtils;
 import com.codingapi.tx.framework.utils.SocketManager;
 import com.codingapi.tx.listener.model.Request;
 import com.codingapi.tx.listener.model.TxGroup;
 import com.codingapi.tx.listener.service.ModelNameService;
 import com.codingapi.tx.netty.service.MQTxManagerService;
-import com.lorne.core.framework.utils.config.ConfigUtils;
 import com.lorne.core.framework.utils.encode.Base64Utils;
 import com.lorne.core.framework.utils.http.HttpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.Method;
 
 /**
  * Created by lorne on 2017/6/30.
@@ -33,18 +32,13 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
     @Autowired
     private ModelNameService modelNameService;
 
-    private String url;
+    @Autowired
+    private ConfigReader configReader;
 
     @Autowired
     private CompensateService compensateService;
 
 
-    public MQTxManagerServiceImpl() {
-        url = ConfigUtils.getString("tx.properties", "url");
-        if(url.contains("/tx/manager/getServer")){
-            url = url.replace("getServer","");
-        }
-    }
 
     @Override
     public TxGroup createTransactionGroup() {
@@ -103,7 +97,7 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
     @Override
     public int getTransaction(String groupId, String waitTaskId) {
-        String json = HttpUtils.get(url + "getTransaction?groupId=" + groupId + "&taskId=" + waitTaskId);
+        String json = HttpUtils.get(configReader.getTxUrl() + "getTransaction?groupId=" + groupId + "&taskId=" + waitTaskId);
         System.out.println("getTransaction-->groupId:"+groupId+",taskId:"+waitTaskId+",res:"+json);
 
         if (json == null) {
@@ -120,7 +114,7 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
     @Override
     public int clearTransaction(String groupId, String waitTaskId, boolean isGroup) {
-        String murl = url + "clearTransaction?groupId=" +groupId + "&taskId=" + waitTaskId+"&isGroup="+(isGroup?1:0);
+        String murl = configReader.getTxUrl() + "clearTransaction?groupId=" + groupId + "&taskId=" + waitTaskId + "&isGroup=" + (isGroup ? 1 : 0);
         String clearRes = HttpUtils.get(murl);
         if(clearRes==null){
             return -1;
@@ -131,7 +125,7 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
     @Override
     public String httpGetServer() {
-        String murl = url + "getServer";
+        String murl = configReader.getTxUrl() + "getServer";
         return HttpUtils.get(murl);
     }
 
@@ -150,15 +144,15 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
         String methodStr = info.getInvocation().getMethodStr();
         long currentTime = System.currentTimeMillis();
 
-        String postParam = "model="+modelName+"&uniqueKey="+uniqueKey+"" +
-            "&address=" + address + "&currentTime=" + currentTime +
-            "&data="+data+"&time="+time+"&groupId="+groupId+"" +
-            "&className=" + className + "&methodStr=" + methodStr;
 
+        CompensateInfo compensateInfo = new CompensateInfo(currentTime, modelName, uniqueKey, data, methodStr, className, groupId, address, time);
 
-        String json = HttpUtils.post(url + "sendCompensateMsg",postParam);
+        String json = HttpUtils.post(configReader.getTxUrl() + "sendCompensateMsg", compensateInfo.toParamsString());
+
+        compensateInfo.setResJson(json);
+
         //记录本地日志
-        compensateService.saveLocal(currentTime, modelName, uniqueKey, data, methodStr, className, json);
+        compensateService.saveLocal(compensateInfo);
 
     }
 }

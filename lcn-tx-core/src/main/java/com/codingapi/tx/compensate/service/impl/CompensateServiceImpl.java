@@ -1,8 +1,12 @@
 package com.codingapi.tx.compensate.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.codingapi.tx.compensate.dao.CompensateInfoDao;
+import com.codingapi.tx.compensate.model.CompensateInfo;
 import com.codingapi.tx.compensate.service.CompensateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,11 +16,17 @@ import org.springframework.stereotype.Service;
 public class CompensateServiceImpl implements CompensateService {
 
 
+    @Autowired
+    private CompensateInfoDao compensateInfoDao;
+
     private Logger logger = LoggerFactory.getLogger(CompensateServiceImpl.class);
 
     @Override
-    public void saveLocal(long currentTime, String modelName, String uniqueKey, String data, String methodStr, String className, String json) {
-        logger.warn("currentTime:" + currentTime + ",state:" + json + ",modelName:" + modelName + "," +
-            "uniqueKey:" + uniqueKey + ",methodStr:" + methodStr + ",className:" + className + ",data:" + data);
+    public void saveLocal(CompensateInfo compensateInfo) {
+        String json = JSON.toJSONString(compensateInfo);
+        logger.info("补偿本地记录->" + json);
+
+        compensateInfoDao.saveCompensateInfo(json);
+
     }
 }
