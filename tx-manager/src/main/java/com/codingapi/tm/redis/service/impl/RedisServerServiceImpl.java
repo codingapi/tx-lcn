@@ -133,4 +133,9 @@ public class RedisServerServiceImpl implements RedisServerService{
         String json = value.get(key);
         return json;
     }
+
+    @Override
+    public void deleteKey(String key) {
+        redisTemplate.delete(key);
+    }
 }

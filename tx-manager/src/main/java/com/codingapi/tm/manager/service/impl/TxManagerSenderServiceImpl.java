@@ -143,7 +143,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
 
                             Task task = ConditionUtils.getInstance().createTask(key);
 
-                            ScheduledFuture future = schedule(key);
+                            ScheduledFuture future = schedule(key, configReader.getTransactionNettyDelayTime());
 
                             threadAwaitSend(task, txInfo, jsonObject.toJSONString());
 
@@ -208,17 +208,16 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
 
     @Override
     public String sendCompensateMsg(String model, String groupId, String data) {
-
         JSONObject newCmd = new JSONObject();
         newCmd.put("a", "c");
         newCmd.put("d", data);
         newCmd.put("g", groupId);
         newCmd.put("k", KidUtils.generateShortUuid());
-        return sendMsg(model, newCmd.toJSONString());
+        return sendMsg(model, newCmd.toJSONString(), configReader.getRedisSaveMaxTime());
     }
 
     @Override
-    public String sendMsg(String model,String msg) {
+    public String sendMsg(String model, String msg, int delay) {
         JSONObject jsonObject = JSON.parseObject(msg);
         String key = jsonObject.getString("k");
 
@@ -243,7 +242,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
             }
         });
 
-        ScheduledFuture future = schedule(key);
+        ScheduledFuture future = schedule(key, delay);
 
         task.awaitTask();
 
@@ -291,7 +290,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
     }
 
 
-    private ScheduledFuture schedule(String key){
+    private ScheduledFuture schedule(String key, int delayTime) {
         ScheduledFuture future = executorService.schedule(new Runnable() {
             @Override
             public void run() {
@@ -306,7 +305,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                     task.signalTask();
                 }
             }
-        }, configReader.getTransactionNettyDelayTime(), TimeUnit.SECONDS);
+        }, delayTime, TimeUnit.SECONDS);
 
         return future;
     }

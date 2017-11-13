@@ -1,7 +1,7 @@
 var init = function () {
 
 
-    http.get('/model/onlines', '加载数据...', function (res) {
+    http.get('/admin/onlines', '加载数据...', function (res) {
 
         var list = $("#list");
         list.empty();

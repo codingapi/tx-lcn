@@ -22,4 +22,7 @@ public interface CompensateDao {
 
     String getCompensateByGroupId(String groupId);
 
+    void deleteCompensate(String path);
+
+    boolean hasCompensate();
 }

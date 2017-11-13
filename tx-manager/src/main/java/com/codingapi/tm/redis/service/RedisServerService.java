@@ -33,4 +33,5 @@ public interface RedisServerService {
 
     String getValueByKey(String key);
 
+    void deleteKey(String key);
 }

@@ -43,6 +43,12 @@ public class TxState {
      */
     private int redisSaveMaxTime;
 
+
+    /**
+     * 回调地址
+     */
+    private String notifyUrl;
+
     /**
      * slb list
      */
@@ -112,5 +118,13 @@ public class TxState {
 
     public void setTransactionNettyDelayTime(int transactionNettyDelayTime) {
         this.transactionNettyDelayTime = transactionNettyDelayTime;
+    }
+
+    public String getNotifyUrl() {
+        return notifyUrl;
+    }
+
+    public void setNotifyUrl(String notifyUrl) {
+        this.notifyUrl = notifyUrl;
     }
 }

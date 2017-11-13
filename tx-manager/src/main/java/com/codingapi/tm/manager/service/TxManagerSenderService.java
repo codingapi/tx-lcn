@@ -9,7 +9,7 @@ public interface TxManagerSenderService {
 
     boolean confirm(TxGroup group);
 
-    String sendMsg(String model,String msg);
+    String sendMsg(String model, String msg, int delay);
 
     String sendCompensateMsg(String model, String groupId, String data);
 }

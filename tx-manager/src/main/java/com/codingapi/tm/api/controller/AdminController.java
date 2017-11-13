@@ -1,7 +1,9 @@
 package com.codingapi.tm.api.controller;
 
 import com.codingapi.tm.api.service.ApiAdminService;
+import com.codingapi.tm.api.service.ApiModelService;
 import com.codingapi.tm.compensate.model.TxModel;
+import com.codingapi.tm.model.ModelInfo;
 import com.codingapi.tm.model.TxState;
 import com.lorne.core.framework.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,15 @@ public class AdminController {
 
     @Autowired
     private ApiAdminService apiAdminService;
+
+    @Autowired
+    private ApiModelService apiModelService;
+
+
+    @RequestMapping(value = "/onlines", method = RequestMethod.GET)
+    public List<ModelInfo> onlines() {
+        return apiModelService.onlines();
+    }
 
 
     @RequestMapping(value = "/setting", method = RequestMethod.GET)
@@ -52,5 +63,10 @@ public class AdminController {
     @RequestMapping(value = "/compensate", method = RequestMethod.GET)
     public boolean compensate(@RequestParam("path") String path) throws ServiceException {
         return apiAdminService.compensate(path);
+    }
+
+    @RequestMapping(value = "/hasCompensate", method = RequestMethod.GET)
+    public boolean hasCompensate() throws ServiceException {
+        return apiAdminService.hasCompensate();
     }
 }

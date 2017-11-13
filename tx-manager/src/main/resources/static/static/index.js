@@ -12,6 +12,17 @@ var init = function () {
     }, function (res) {
         $("#redisState").text("异常");
     });
+
+    http.get('/admin/hasCompensate', '加载中', function (res) {
+        if (res) {
+            $("#compensate").text("有");
+        } else {
+            $("#compensate").text("无");
+        }
+    }, function (res) {
+        $("#compensate").text("异常");
+    });
+
 }
 
 init();

@@ -25,4 +25,6 @@ public interface CompensateService {
 
     void reloadCompensate(TxGroup txGroup);
 
+    boolean hasCompensate();
+
 }

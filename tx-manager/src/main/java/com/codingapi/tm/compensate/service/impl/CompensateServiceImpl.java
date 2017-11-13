@@ -130,6 +130,10 @@ public class CompensateServiceImpl implements CompensateService {
         return models;
     }
 
+    @Override
+    public boolean hasCompensate() {
+        return compensateDao.hasCompensate();
+    }
 
     @Override
     public void reloadCompensate(TxGroup txGroup) {
@@ -192,7 +196,10 @@ public class CompensateServiceImpl implements CompensateService {
         String res = managerSenderService.sendCompensateMsg(modelInfo.getChannelName(), groupId, data);
 
         if ("1".equals(res)) {
-            //todo 删除本地补偿数据
+            // 删除本地补偿数据
+
+            compensateDao.deleteCompensate(path);
+
             return true;
         }
 

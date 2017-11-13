@@ -58,4 +58,9 @@ public class ApiAdminServiceImpl implements ApiAdminService {
     public boolean compensate(String path) throws ServiceException {
         return compensateService.executeCompensate(path);
     }
+
+    @Override
+    public boolean hasCompensate() {
+        return compensateService.hasCompensate();
+    }
 }

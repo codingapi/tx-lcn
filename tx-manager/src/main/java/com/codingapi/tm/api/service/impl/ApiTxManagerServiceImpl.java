@@ -4,6 +4,7 @@ package com.codingapi.tm.api.service.impl;
 import com.codingapi.tm.api.service.ApiTxManagerService;
 import com.codingapi.tm.compensate.model.TransactionCompensateMsg;
 import com.codingapi.tm.compensate.service.CompensateService;
+import com.codingapi.tm.config.ConfigReader;
 import com.codingapi.tm.manager.service.EurekaService;
 import com.codingapi.tm.manager.service.TxManagerSenderService;
 import com.codingapi.tm.manager.service.TxManagerService;
@@ -33,6 +34,9 @@ public class ApiTxManagerServiceImpl implements ApiTxManagerService {
     @Autowired
     private TxManagerSenderService txManagerSenderService;
 
+    @Autowired
+    private ConfigReader configReader;
+
 
     @Override
     public TxServer getServer() {
@@ -58,7 +62,7 @@ public class ApiTxManagerServiceImpl implements ApiTxManagerService {
 
     @Override
     public String sendMsg(String model,String msg) {
-        return txManagerSenderService.sendMsg(model, msg);
+        return txManagerSenderService.sendMsg(model, msg, configReader.getTransactionNettyDelayTime());
     }
 
 

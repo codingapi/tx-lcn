@@ -82,6 +82,7 @@ public class EurekaServiceImpl implements EurekaService{
         state.setRedisSaveMaxTime(configReader.getRedisSaveMaxTime());
         state.setTransactionNettyDelayTime(configReader.getTransactionNettyDelayTime());
         state.setTransactionNettyHeartTime(configReader.getTransactionNettyHeartTime());
+        state.setNotifyUrl(configReader.getCompensateNotifyUrl());
         state.setSlbList(getServices());
         return state;
     }

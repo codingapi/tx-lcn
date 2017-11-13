@@ -24,4 +24,6 @@ public interface ApiAdminService {
 
     boolean compensate(String path) throws ServiceException;
 
+    boolean hasCompensate();
+
 }

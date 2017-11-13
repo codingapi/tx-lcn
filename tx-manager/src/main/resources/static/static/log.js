@@ -73,9 +73,19 @@ $(document).on("click", ".compensate", function () {
 
     var path = $(this).attr("data-data");
 
+    var tag = $(this).parent().parent();
+
+
     http.get('/admin/compensate?path=' + path, '加载数据...', function (res) {
 
-        alert(res);
+        if (res) {
+            alert('补偿成功.');
+            tag.remove();
+
+        } else {
+            alert('补偿失败.');
+        }
+
 
     });
 

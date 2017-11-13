@@ -53,6 +53,13 @@ public class CompensateDaoImpl implements CompensateDao {
 
 
     @Override
+    public boolean hasCompensate() {
+        String key = prefix + "*";
+        List<String> keys = redisServerService.getKeys(key);
+        return keys != null && keys.size() > 0;
+    }
+
+    @Override
     public List<String> loadCompensateTimes(String model) {
         String key = prefix + model + "_*";
         List<String> keys = redisServerService.getKeys(key);
@@ -81,6 +88,12 @@ public class CompensateDaoImpl implements CompensateDao {
         return redisServerService.getValueByKey(key);
     }
 
+
+    @Override
+    public void deleteCompensate(String path) {
+        String key = String.format("%s%s.json", prefix, path);
+        redisServerService.deleteKey(key);
+    }
 
     @Override
     public String getCompensateByGroupId(String groupId) {
