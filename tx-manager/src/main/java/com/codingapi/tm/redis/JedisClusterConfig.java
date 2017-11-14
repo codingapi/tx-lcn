@@ -45,10 +45,10 @@ public class JedisClusterConfig {
 
         //指定具体序列化方式  不过这种方式不是很好,一个系统中可能对应值的类型不一样,如果全部使用StringRedisSerializer 序列化
         //会照成其他类型报错,所以还是推荐使用第一种,直接指定泛型的类型,spring 会根据指定类型序列化。
-        //redisTemplate.setKeySerializer( new StringRedisSerializer());
-        //redisTemplate.setValueSerializer(new StringRedisSerializer());
-        //redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        //redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+//        redisTemplate.setKeySerializer( new StringRedisSerializer());
+//        redisTemplate.setValueSerializer(new StringRedisSerializer());
+//        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+//        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
         return redisTemplate;
     }
 
