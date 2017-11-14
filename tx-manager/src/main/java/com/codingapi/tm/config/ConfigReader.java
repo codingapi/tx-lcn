@@ -29,9 +29,20 @@ public class ConfigReader {
     private String compensateNotifyUrl;
 
 
+    /**
+     * 事务默认数据的位置，有最大时间
+     */
     private final String key_prefix = "tx_manager_default_";
 
+    /**
+     * 事务存在问题，临时暂存的位置，用于等待网络超时和补偿请求之前的存储位置，有最大时间
+     */
     private final String key_prefix_notify = "tx_manager_notify_";
+
+    /**
+     * 补偿事务永久存储数据
+     */
+    private final String key_prefix_compensate = "compensate_";
 
 
     public String getCompensateNotifyUrl() {
@@ -44,6 +55,10 @@ public class ConfigReader {
 
     public String getKeyPrefixNotify() {
         return key_prefix_notify;
+    }
+
+    public String getKeyPrefixCompensate() {
+        return key_prefix_compensate;
     }
 
     public int getSocketPort(){

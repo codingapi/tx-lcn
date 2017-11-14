@@ -12,7 +12,6 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -23,10 +22,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RedisServerServiceImpl implements RedisServerService{
 
-
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-
 
     @Autowired
     private ConfigReader configReader;
@@ -47,51 +44,15 @@ public class RedisServerServiceImpl implements RedisServerService{
     }
 
     @Override
-    public void createTransactionGroup(String groupId, String json) {
-        String key = configReader.getKeyPrefix() + groupId;
+    public void saveTransaction(String key, String json) {
         ValueOperations<String, String> value = redisTemplate.opsForValue();
         value.set(key, json, configReader.getRedisSaveMaxTime(), TimeUnit.SECONDS);
     }
 
-    public void updateTransactionGroup(String groupId, String json){
-        String key = configReader.getKeyPrefix() + groupId;
-        ValueOperations<String, String> value = redisTemplate.opsForValue();
-        value.set(key, json, configReader.getRedisSaveMaxTime(), TimeUnit.SECONDS);
-    }
-
-    public void updateNotifyTransactionGroup(String groupId, String json){
-        String key = configReader.getKeyPrefixNotify() + groupId;
-        ValueOperations<String, String> value = redisTemplate.opsForValue();
-        value.set(key, json, configReader.getRedisSaveMaxTime(), TimeUnit.SECONDS);
-    }
 
     @Override
-    public void deleteTxGroup(String groupId) {
-        String key = configReader.getKeyPrefix() + groupId;
-        redisTemplate.delete(key);
-    }
-
-    @Override
-    public void deleteNotifyTxGroup(String groupId) {
-        String key = configReader.getKeyPrefixNotify() + groupId;
-        redisTemplate.delete(key);
-    }
-
-    @Override
-    public TxGroup getTxGroupById(String groupId) {
+    public TxGroup getTxGroupByKey(String key) {
         ValueOperations<String, String> value = redisTemplate.opsForValue();
-        String key = configReader.getKeyPrefix() + groupId;
-        String json = value.get(key);
-        if (StringUtils.isEmpty(json)) {
-            return null;
-        }
-        return  TxGroup.parser(json);
-    }
-
-    @Override
-    public TxGroup getTxGroupOnNotifyById(String groupId) {
-        ValueOperations<String, String> value = redisTemplate.opsForValue();
-        String key = configReader.getKeyPrefixNotify() + groupId;
         String json = value.get(key);
         if (StringUtils.isEmpty(json)) {
             return null;
@@ -130,8 +91,7 @@ public class RedisServerServiceImpl implements RedisServerService{
     @Override
     public String getValueByKey(String key) {
         ValueOperations<String, String> value = redisTemplate.opsForValue();
-        String json = value.get(key);
-        return json;
+        return value.get(key);
     }
 
     @Override

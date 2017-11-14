@@ -3,6 +3,7 @@ package com.codingapi.tm.compensate.dao.impl;
 import com.alibaba.fastjson.JSON;
 import com.codingapi.tm.compensate.dao.CompensateDao;
 import com.codingapi.tm.compensate.model.TransactionCompensateMsg;
+import com.codingapi.tm.config.ConfigReader;
 import com.codingapi.tm.netty.model.TxGroup;
 import com.codingapi.tm.redis.service.RedisServerService;
 import com.lorne.core.framework.utils.DateUtil;
@@ -22,12 +23,13 @@ public class CompensateDaoImpl implements CompensateDao {
     @Autowired
     private RedisServerService redisServerService;
 
-    private final static String prefix = "compensate_";
+    @Autowired
+    private ConfigReader configReader;
 
     @Override
     public boolean saveCompensateMsg(TransactionCompensateMsg transactionCompensateMsg) {
 
-        String name = String.format("%s%s_%s_%s.json", prefix, transactionCompensateMsg.getModel(), DateUtil.getCurrentDateFormat(), transactionCompensateMsg.getGroupId());
+        String name = String.format("%s%s_%s_%s.json", configReader.getKeyPrefixCompensate(), transactionCompensateMsg.getModel(), DateUtil.getCurrentDateFormat(), transactionCompensateMsg.getGroupId());
 
         String json = JSON.toJSONString(transactionCompensateMsg);
 
@@ -39,7 +41,7 @@ public class CompensateDaoImpl implements CompensateDao {
 
     @Override
     public List<String> loadModelList() {
-        String key = prefix + "*";
+        String key = configReader.getKeyPrefixCompensate() + "*";
         List<String> keys = redisServerService.getKeys(key);
         List<String> models = new ArrayList<>();
         for (String k : keys) {
@@ -54,14 +56,14 @@ public class CompensateDaoImpl implements CompensateDao {
 
     @Override
     public boolean hasCompensate() {
-        String key = prefix + "*";
+        String key = configReader.getKeyPrefixCompensate() + "*";
         List<String> keys = redisServerService.getKeys(key);
         return keys != null && keys.size() > 0;
     }
 
     @Override
     public List<String> loadCompensateTimes(String model) {
-        String key = prefix + model + "_*";
+        String key = configReader.getKeyPrefixCompensate() + model + "_*";
         List<String> keys = redisServerService.getKeys(key);
         List<String> times = new ArrayList<>();
         for (String k : keys) {
@@ -76,7 +78,7 @@ public class CompensateDaoImpl implements CompensateDao {
 
     @Override
     public List<String> loadCompensateByModelAndTime(String path) {
-        String key = String.format("%s%s*", prefix, path);
+        String key = String.format("%s%s*", configReader.getKeyPrefixCompensate(), path);
         List<String> keys = redisServerService.getKeys(key);
         List<String> values = redisServerService.getValuesByKeys(keys);
         return values;
@@ -84,20 +86,20 @@ public class CompensateDaoImpl implements CompensateDao {
 
     @Override
     public String getCompensate(String path) {
-        String key = String.format("%s%s.json", prefix, path);
+        String key = String.format("%s%s.json", configReader.getKeyPrefixCompensate(), path);
         return redisServerService.getValueByKey(key);
     }
 
 
     @Override
     public void deleteCompensate(String path) {
-        String key = String.format("%s%s.json", prefix, path);
+        String key = String.format("%s%s.json", configReader.getKeyPrefixCompensate(), path);
         redisServerService.deleteKey(key);
     }
 
     @Override
     public String getCompensateByGroupId(String groupId) {
-        String key = String.format("%s*%s.json", prefix, groupId);
+        String key = String.format("%s*%s.json", configReader.getKeyPrefixCompensate(), groupId);
         List<String> keys = redisServerService.getKeys(key);
         if (keys != null && keys.size() == 1) {
             String k = keys.get(0);

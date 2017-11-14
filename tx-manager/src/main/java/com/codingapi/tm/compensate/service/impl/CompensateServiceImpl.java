@@ -49,14 +49,13 @@ public class CompensateServiceImpl implements CompensateService {
     public boolean saveCompensateMsg(TransactionCompensateMsg transactionCompensateMsg) {
 
 
-        TxGroup txGroup = redisServerService.getTxGroupById(transactionCompensateMsg.getGroupId());
+        String key = configReader.getKeyPrefix() + transactionCompensateMsg.getGroupId();
+        TxGroup txGroup = redisServerService.getTxGroupByKey(key);
         if (txGroup == null) {
-            txGroup = redisServerService.getTxGroupOnNotifyById(transactionCompensateMsg.getGroupId());
-            if (txGroup != null) {
-                redisServerService.deleteNotifyTxGroup(transactionCompensateMsg.getGroupId());
-            }
+            key = configReader.getKeyPrefixNotify() + transactionCompensateMsg.getGroupId();
+            txGroup = redisServerService.getTxGroupByKey(key);
         }
-        redisServerService.deleteTxGroup(transactionCompensateMsg.getGroupId());
+        redisServerService.deleteKey(key);
 
         transactionCompensateMsg.setTxGroup(txGroup);
 

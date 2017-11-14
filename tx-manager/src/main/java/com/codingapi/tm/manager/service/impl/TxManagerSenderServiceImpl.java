@@ -176,7 +176,8 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
 
             List<Boolean> hasOks = countDownLatchHelper.execute().getData();
 
-            redisServerService.updateTransactionGroup(txGroup.getGroupId(), txGroup.toJsonString());
+            String key = configReader.getKeyPrefix() + txGroup.getGroupId();
+            redisServerService.saveTransaction(key, txGroup.toJsonString());
 
             boolean hasOk = true;
             for (boolean bl : hasOks) {
