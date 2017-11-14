@@ -83,6 +83,8 @@ public class EurekaServiceImpl implements EurekaService{
         state.setTransactionNettyDelayTime(configReader.getTransactionNettyDelayTime());
         state.setTransactionNettyHeartTime(configReader.getTransactionNettyHeartTime());
         state.setNotifyUrl(configReader.getCompensateNotifyUrl());
+        state.setCompensate(configReader.isCompensateAuto());
+        state.setCompensateTryTime(configReader.getCompensateTryTime());
         state.setSlbList(getServices());
         return state;
     }

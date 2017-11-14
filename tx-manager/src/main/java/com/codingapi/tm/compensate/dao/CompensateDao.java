@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface CompensateDao {
 
-    boolean saveCompensateMsg(TransactionCompensateMsg transactionCompensateMsg);
+    String saveCompensateMsg(TransactionCompensateMsg transactionCompensateMsg);
 
     List<String> loadModelList();
 
@@ -22,7 +22,9 @@ public interface CompensateDao {
 
     String getCompensateByGroupId(String groupId);
 
-    void deleteCompensate(String path);
+    void deleteCompensateByPath(String path);
+
+    void deleteCompensateByKey(String key);
 
     boolean hasCompensate();
 }

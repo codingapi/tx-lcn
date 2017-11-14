@@ -50,6 +50,16 @@ public class TxState {
     private String notifyUrl;
 
     /**
+     * 自动补偿
+     */
+    private boolean isCompensate;
+
+    /**
+     * 补偿尝试时间
+     */
+    private int compensateTryTime;
+
+    /**
      * slb list
      */
     private List<String> slbList;
@@ -87,6 +97,21 @@ public class TxState {
         this.nowConnection = nowConnection;
     }
 
+    public boolean isCompensate() {
+        return isCompensate;
+    }
+
+    public void setCompensate(boolean compensate) {
+        isCompensate = compensate;
+    }
+
+    public int getCompensateTryTime() {
+        return compensateTryTime;
+    }
+
+    public void setCompensateTryTime(int compensateTryTime) {
+        this.compensateTryTime = compensateTryTime;
+    }
 
     public int getRedisSaveMaxTime() {
         return redisSaveMaxTime;

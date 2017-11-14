@@ -15,12 +15,12 @@ var init = function () {
 
     http.get('/admin/hasCompensate', '加载中', function (res) {
         if (res) {
-            $("#compensate").text("有");
+            $("#hasCompensate").text("有");
         } else {
-            $("#compensate").text("无");
+            $("#hasCompensate").text("无");
         }
     }, function (res) {
-        $("#compensate").text("异常");
+        $("#hasCompensate").text("异常");
     });
 
 }

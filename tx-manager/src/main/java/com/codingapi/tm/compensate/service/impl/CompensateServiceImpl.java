@@ -17,12 +17,15 @@ import com.lorne.core.framework.exception.ServiceException;
 import com.lorne.core.framework.utils.DateUtil;
 import com.lorne.core.framework.utils.encode.Base64Utils;
 import com.lorne.core.framework.utils.http.HttpUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * create by lorne on 2017/11/11
@@ -44,6 +47,8 @@ public class CompensateServiceImpl implements CompensateService {
 
     @Autowired
     private TxManagerSenderService managerSenderService;
+
+    private Executor threadPool = Executors.newFixedThreadPool(20);
 
     @Override
     public boolean saveCompensateMsg(TransactionCompensateMsg transactionCompensateMsg) {
@@ -78,7 +83,47 @@ public class CompensateServiceImpl implements CompensateService {
             }
         }).start();
 
-        return compensateDao.saveCompensateMsg(transactionCompensateMsg);
+        final String compensateKey = compensateDao.saveCompensateMsg(transactionCompensateMsg);
+
+        //自动补偿
+        autoCompensate(compensateKey, transactionCompensateMsg);
+
+        return StringUtils.isNotEmpty(compensateKey);
+
+    }
+
+
+    public void autoCompensate(final String compensateKey, TransactionCompensateMsg transactionCompensateMsg) {
+        final String json = JSON.toJSONString(transactionCompensateMsg);
+        if (configReader.isCompensateAuto()) {
+
+            logger.info("进入补偿->" + json);
+            //自动补偿指导补偿成功...
+            threadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        final int tryTime = configReader.getCompensateTryTime();
+                        boolean isOk = _executeCompensate(json);
+                        logger.info("自动补偿结果->" + isOk + ",json->" + json);
+                        while (!isOk) {
+                            try {
+                                Thread.sleep(tryTime * 1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            isOk = _executeCompensate(json);
+                            logger.info("try补偿(补偿失败,进入补偿队列)->" + isOk + ",json->" + json);
+                        }
+
+                        compensateDao.deleteCompensateByKey(compensateKey);
+
+                    } catch (ServiceException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
     }
 
 
@@ -178,6 +223,18 @@ public class CompensateServiceImpl implements CompensateService {
             throw new ServiceException("不存在该数据");
         }
 
+        boolean hasOk = _executeCompensate(json);
+        if (hasOk) {
+            // 删除本地补偿数据
+            compensateDao.deleteCompensateByPath(path);
+
+            return true;
+        }
+        return false;
+    }
+
+
+    private boolean _executeCompensate(String json) throws ServiceException {
         JSONObject jsonObject = JSON.parseObject(json);
 
         String model = jsonObject.getString("model");
@@ -187,21 +244,12 @@ public class CompensateServiceImpl implements CompensateService {
             throw new ServiceException("当前模块不在线.");
         }
 
-
         String data = jsonObject.getString("data");
 
         String groupId = jsonObject.getString("groupId");
 
         String res = managerSenderService.sendCompensateMsg(modelInfo.getChannelName(), groupId, data);
 
-        if ("1".equals(res)) {
-            // 删除本地补偿数据
-
-            compensateDao.deleteCompensate(path);
-
-            return true;
-        }
-
-        return false;
+        return "1".equals(res);
     }
 }

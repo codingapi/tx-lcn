@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.codingapi.tm.compensate.dao.CompensateDao;
 import com.codingapi.tm.compensate.model.TransactionCompensateMsg;
 import com.codingapi.tm.config.ConfigReader;
-import com.codingapi.tm.netty.model.TxGroup;
 import com.codingapi.tm.redis.service.RedisServerService;
 import com.lorne.core.framework.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +25,9 @@ public class CompensateDaoImpl implements CompensateDao {
     @Autowired
     private ConfigReader configReader;
 
+
     @Override
-    public boolean saveCompensateMsg(TransactionCompensateMsg transactionCompensateMsg) {
+    public String saveCompensateMsg(TransactionCompensateMsg transactionCompensateMsg) {
 
         String name = String.format("%s%s_%s_%s.json", configReader.getKeyPrefixCompensate(), transactionCompensateMsg.getModel(), DateUtil.getCurrentDateFormat(), transactionCompensateMsg.getGroupId());
 
@@ -35,7 +35,7 @@ public class CompensateDaoImpl implements CompensateDao {
 
         redisServerService.saveCompensateMsg(name, json);
 
-        return true;
+        return name;
     }
 
 
@@ -92,8 +92,14 @@ public class CompensateDaoImpl implements CompensateDao {
 
 
     @Override
-    public void deleteCompensate(String path) {
+    public void deleteCompensateByPath(String path) {
         String key = String.format("%s%s.json", configReader.getKeyPrefixCompensate(), path);
+        redisServerService.deleteKey(key);
+    }
+
+
+    @Override
+    public void deleteCompensateByKey(String key) {
         redisServerService.deleteKey(key);
     }
 

@@ -20,6 +20,7 @@ public interface CompensateService {
 
     List<TxModel> loadCompensateByModelAndTime(String path);
 
+    void autoCompensate(String compensateKey, TransactionCompensateMsg transactionCompensateMsg);
 
     boolean executeCompensate(String key) throws ServiceException;
 

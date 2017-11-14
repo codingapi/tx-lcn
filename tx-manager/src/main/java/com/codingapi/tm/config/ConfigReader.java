@@ -12,7 +12,7 @@ public class ConfigReader {
     @Value("${tm.socket.port}")
     private int socketPort;
 
-    @Value("${tm.socket.max.connection}")
+    @Value("${tm.socket.maxconnection}")
     private int socketMaxConnection;
 
     @Value("${tm.transaction.netty.hearttime}")
@@ -25,8 +25,17 @@ public class ConfigReader {
     private int redisSaveMaxTime;
 
 
-    @Value("${tm.compensate.notify.url}")
+    @Value("${tm.compensate.notifyUrl}")
     private String compensateNotifyUrl;
+
+
+    @Value("${tm.compensate.auto}")
+    private boolean isCompensateAuto;
+
+
+    @Value("${tm.compensate.tryTime}")
+    private int compensateTryTime;
+
 
 
     /**
@@ -73,12 +82,19 @@ public class ConfigReader {
         return transactionNettyHeartTime;
     }
 
-
     public int getRedisSaveMaxTime() {
         return redisSaveMaxTime;
     }
 
     public int getTransactionNettyDelayTime() {
         return transactionNettyDelayTime;
+    }
+
+    public boolean isCompensateAuto() {
+        return isCompensateAuto;
+    }
+
+    public int getCompensateTryTime() {
+        return compensateTryTime;
     }
 }

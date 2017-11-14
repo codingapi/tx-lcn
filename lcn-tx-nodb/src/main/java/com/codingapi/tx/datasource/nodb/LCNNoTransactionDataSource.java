@@ -25,6 +25,6 @@ public class LCNNoTransactionDataSource implements ILCNTransactionControl{
 
     @Override
     public boolean hasTransaction() {
-        return true;
+        return false;
     }
 }
