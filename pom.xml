@@ -11,7 +11,7 @@
     <name>tx-lcn</name>
 
     <modules>
-        <module>lcn-tx-core</module>
+        <module>lcn-tx-client</module>
         <module>tx-manager</module>
 
         <module>lcn-springcloud-transaction</module>
