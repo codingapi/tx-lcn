@@ -190,18 +190,20 @@ public class CompensateServiceImpl implements CompensateService {
 
                         //根据之前的数据补偿现在的事务
 
-                        int oldNotify = txInfo.getNotify();
+                        int oldNotify = cinfo.getNotify();
 
                         if (oldNotify == 1) {
-                            cinfo.setIsCommit(0);
+                            txInfo.setIsCommit(0);
                         } else {
-                            cinfo.setIsCommit(1);
+                            txInfo.setIsCommit(1);
                         }
                     }
                 }
 
             }
         }
+
+        System.out.println("补偿以后->"+JSON.toJSONString(txGroup));
     }
 
     private TxGroup getCompensateByGroupId(String groupId) {
