@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.codingapi</groupId>
-    <artifactId>lcn-tx-nodb</artifactId>
+    <artifactId>tx-plugins-redis</artifactId>
     <version>1.0.0</version>
 
-    <name>lcn-tx-nodb</name>
-    <description>lcn-tx-nodb project for Spring Boot</description>
+    <name>tx-plugins-redis</name>
+    <description>tx-plugins-redis project for Spring Boot</description>
 
 
     <properties>
@@ -19,8 +19,12 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.7</java.version>
-
+        <java.version>1.8</java.version>
+        <org.springframework-version>4.3.7.RELEASE</org.springframework-version>
+        <guava.version>19.0</guava.version>
+        <hessian.version>4.0.38</hessian.version>
+        <protostuff.version>1.0.8</protostuff.version>
+        <kryo.version>4.0.0</kryo.version>
     </properties>
 
     <build>
@@ -69,10 +73,15 @@
 
         <dependency>
             <groupId>com.codingapi</groupId>
-            <artifactId>lcn-tx-client</artifactId>
+            <artifactId>tx-client</artifactId>
             <version>1.1.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>1.8.4.RELEASE</version>
+        </dependency>
 
     </dependencies>
 

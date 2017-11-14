@@ -11,14 +11,14 @@
     <name>tx-lcn</name>
 
     <modules>
-        <module>lcn-tx-client</module>
+        <module>tx-client</module>
         <module>tx-manager</module>
 
-        <module>lcn-springcloud-transaction</module>
-        <module>lcn-dubbo-transaction</module>
-        <module>lcn-tx-db</module>
-        <module>lcn-tx-nodb</module>
-        <module>lcn-tx-redis</module>
+        <module>transaction-dubbo</module>
+        <module>transaction-springcloud</module>
+        <module>tx-plugins-db</module>
+        <module>tx-plugins-nodb</module>
+        <module>tx-plugins-redis</module>
     </modules>
 
     <properties>

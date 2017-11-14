@@ -5,10 +5,10 @@
 
 
 	<groupId>com.codingapi</groupId>
-	<artifactId>lcn-springcloud-transaction</artifactId>
+	<artifactId>transaction-springcloud</artifactId>
 	<version>1.1.0</version>
 
-	<name>lcn-springcloud-transaction</name>
+	<name>transaction-springcloud</name>
 	<url>https://github.com/codingapi/tx-lcn</url>
 
 	<description>lcn-springcloud-transaction project for Spring Boot</description>

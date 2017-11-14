@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.codingapi</groupId>
-    <artifactId>lcn-tx-client</artifactId>
+    <artifactId>tx-client</artifactId>
     <version>1.1.0</version>
 
-    <name>lcn-tx-client</name>
+    <name>tx-client</name>
     <url>https://github.com/codingapi/tx-lcn</url>
 
     <description> tx-lcn-core project for Spring Boot</description>
