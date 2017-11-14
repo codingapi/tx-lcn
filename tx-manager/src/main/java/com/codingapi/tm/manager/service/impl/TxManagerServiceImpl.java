@@ -2,9 +2,11 @@ package com.codingapi.tm.manager.service.impl;
 
 
 import com.codingapi.tm.Constants;
+import com.codingapi.tm.manager.ModelInfoManager;
 import com.codingapi.tm.manager.service.TxManagerSenderService;
 import com.codingapi.tm.manager.service.TxManagerService;
 import com.codingapi.tm.config.ConfigReader;
+import com.codingapi.tm.model.ModelInfo;
 import com.codingapi.tm.netty.model.TxGroup;
 import com.codingapi.tm.netty.model.TxInfo;
 import com.codingapi.tm.redis.service.RedisServerService;
@@ -56,10 +58,9 @@ public class TxManagerServiceImpl implements TxManagerService {
         return txGroup;
     }
 
-    @Override
-    public TxGroup addTransactionGroup(String groupId, String uniqueKey, String taskId,
-                                       int isGroup, String modelName, String model, String modelIpAddress, String methodStr) {
 
+    @Override
+    public TxGroup addTransactionGroup(String groupId, String taskId, int isGroup, String modelName, String methodStr) {
         String key = configReader.getKeyPrefix() + groupId;
         TxGroup txGroup = redisServerService.getTxGroupByKey(key);
         if (txGroup==null) {
@@ -70,11 +71,15 @@ public class TxManagerServiceImpl implements TxManagerService {
         txInfo.setKid(taskId);
         txInfo.setAddress(Constants.address);
         txInfo.setIsGroup(isGroup);
-        txInfo.setUniqueKey(uniqueKey);
-
         txInfo.setMethodStr(methodStr);
-        txInfo.setModelIpAddress(modelIpAddress);
-        txInfo.setModel(model);
+
+
+        ModelInfo modelInfo =  ModelInfoManager.getInstance().getModelByChannelName(modelName);
+        if(modelInfo!=null) {
+            txInfo.setUniqueKey(modelInfo.getUniqueKey());
+            txInfo.setModelIpAddress(modelInfo.getIpAddress());
+            txInfo.setModel(modelInfo.getModel());
+        }
 
         txGroup.addTransactionInfo(txInfo);
 
@@ -82,6 +87,8 @@ public class TxManagerServiceImpl implements TxManagerService {
 
         return txGroup;
     }
+
+
 
     @Override
     public  int getTransaction(String groupId, String taskId) {

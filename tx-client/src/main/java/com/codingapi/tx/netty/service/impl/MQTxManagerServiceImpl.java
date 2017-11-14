@@ -1,7 +1,6 @@
 package com.codingapi.tx.netty.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.codingapi.tx.Constants;
 import com.codingapi.tx.aop.bean.TxCompensateLocal;
 import com.codingapi.tx.aop.bean.TxTransactionInfo;
 import com.codingapi.tx.compensate.model.CompensateInfo;
@@ -9,9 +8,9 @@ import com.codingapi.tx.compensate.service.CompensateService;
 import com.codingapi.tx.config.ConfigReader;
 import com.codingapi.tx.framework.utils.SerializerUtils;
 import com.codingapi.tx.framework.utils.SocketManager;
+import com.codingapi.tx.listener.service.ModelNameService;
 import com.codingapi.tx.model.Request;
 import com.codingapi.tx.model.TxGroup;
-import com.codingapi.tx.listener.service.ModelNameService;
 import com.codingapi.tx.netty.service.MQTxManagerService;
 import com.lorne.core.framework.utils.encode.Base64Utils;
 import com.lorne.core.framework.utils.http.HttpUtils;
@@ -53,10 +52,7 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("g", groupId);
         jsonObject.put("t", taskId);
-        jsonObject.put("u", Constants.uniqueKey);
         jsonObject.put("ms", methodStr);
-        jsonObject.put("ip", modelNameService.getIpAddress());
-        jsonObject.put("mn", modelNameService.getModelName());
         jsonObject.put("s", isGroup ? 1 : 0);
         Request request = new Request("atg", jsonObject.toString());
         String json =  SocketManager.getInstance().sendMsg(request);

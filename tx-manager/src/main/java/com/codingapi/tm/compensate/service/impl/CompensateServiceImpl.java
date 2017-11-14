@@ -241,7 +241,7 @@ public class CompensateServiceImpl implements CompensateService {
 
         String model = jsonObject.getString("model");
 
-        ModelInfo modelInfo = ModelInfoManager.getInstance().getModel(model);
+        ModelInfo modelInfo = ModelInfoManager.getInstance().getModelByModel(model);
         if (modelInfo == null) {
             throw new ServiceException("当前模块不在线.");
         }

@@ -53,7 +53,16 @@ public class ModelInfoManager {
         return modelInfos;
     }
 
-    public ModelInfo getModel(String model) {
+    public ModelInfo getModelByChannelName(String channelName) {
+        for (ModelInfo modelInfo : modelInfos) {
+            if (channelName.equalsIgnoreCase(modelInfo.getChannelName())) {
+                return modelInfo;
+            }
+        }
+        return null;
+    }
+
+    public ModelInfo getModelByModel(String model) {
         for (ModelInfo modelInfo : modelInfos) {
             if (model.equalsIgnoreCase(modelInfo.getModel())) {
                 return modelInfo;
