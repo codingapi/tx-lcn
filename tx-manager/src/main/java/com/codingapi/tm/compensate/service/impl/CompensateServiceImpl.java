@@ -203,7 +203,7 @@ public class CompensateServiceImpl implements CompensateService {
             }
         }
 
-        System.out.println("补偿以后->"+JSON.toJSONString(txGroup));
+        logger.info("加载补偿以后->"+JSON.toJSONString(txGroup));
     }
 
     private TxGroup getCompensateByGroupId(String groupId) {
