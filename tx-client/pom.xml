@@ -5,7 +5,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>tx-client</artifactId>
-    <version>1.1.0</version>
+    <version>1.0.0</version>
 
     <name>tx-client</name>
     <url>https://github.com/codingapi/tx-lcn</url>
@@ -65,7 +65,6 @@
         <kryo.version>4.0.0</kryo.version>
         <org.slf4j-version>1.7.7</org.slf4j-version>
     </properties>
-
 
 
 

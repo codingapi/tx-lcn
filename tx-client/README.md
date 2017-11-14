@@ -1,3 +1,3 @@
-# lorne-tx-core
+# tx-client 
 
-lorne-tx-core 是LCN分布式事务框架的切面核心类库
+是LCN基于tx模块端的核心封装库
