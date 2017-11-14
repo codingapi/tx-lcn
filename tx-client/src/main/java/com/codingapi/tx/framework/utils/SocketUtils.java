@@ -26,22 +26,12 @@ public class SocketUtils {
     }
 
     public static void sendMsg(final ChannelHandlerContext ctx, final String msg) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ctx.writeAndFlush(Unpooled.buffer().writeBytes(msg.getBytes()));
-            }
-        }).start();
+        ctx.writeAndFlush(Unpooled.buffer().writeBytes(msg.getBytes()));
 
     }
 
 
     public static void sendMsg(final Channel ctx, final String msg) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ctx.writeAndFlush(Unpooled.buffer().writeBytes(msg.getBytes()));
-            }
-        }).start();
+        ctx.writeAndFlush(Unpooled.buffer().writeBytes(msg.getBytes()));
     }
 }
