@@ -56,7 +56,6 @@ $(document).on("click", ".model-time", function () {
                 '<td><span>' + param.time + '</span></td>' +
                 '<td><span>' + param.method + '</span></td>' +
                 '<td><span>' + param.executeTime + '</span></td>' +
-                '<td><span>' + param.state + '</span></td>' +
                 '<td><button  data-data="' + param.base64 + '" class="btn btn-info detail">详情</button>' +
                 '&nbsp;&nbsp;' +
                 '<button data-data="' + param.key + '" class="btn btn-success compensate">补偿</button>' +
@@ -167,14 +166,14 @@ $(document).on("click", ".detail", function () {
 
     $('#body').append('<tr>\n' +
         '                            <th>\n' +
-        '                                模块名称\n' +
+        '                                发起方模块\n' +
         '                            </th>\n' +
         '                            <td>\n' +
         '                                <span id="data-model"></span>\n' +
         '                            </td>\n' +
         '\n' +
         '                            <th>\n' +
-        '                                模块地址\n' +
+        '                                发起方地址\n' +
         '                            </th>\n' +
         '                            <td>\n' +
         '                                <span id="data-address"></span>\n' +
@@ -182,7 +181,7 @@ $(document).on("click", ".detail", function () {
         '                        </tr>\n' +
         '                        <tr>\n' +
         '                            <th>\n' +
-        '                                唯一标示\n' +
+        '                                发起方标示\n' +
         '                            </th>\n' +
         '                            <td colspan="3">\n' +
         '                                <span id="data-uniqueKey"></span>\n' +
@@ -197,7 +196,7 @@ $(document).on("click", ".detail", function () {
         '                            </td>\n' +
         '\n' +
         '                            <th>\n' +
-        '                                执行时间\n' +
+        '                                执行时间(毫秒)\n' +
         '                            </th>\n' +
         '                            <td >\n' +
         '                                <span id="data-time"></span>\n' +
@@ -205,7 +204,7 @@ $(document).on("click", ".detail", function () {
         '                        </tr>\n' +
         '                        <tr>\n' +
         '                            <th>\n' +
-        '                                启动方法\n' +
+        '                                发起方执行方法\n' +
         '                            </th>\n' +
         '                            <td colspan="3">\n' +
         '                                <span id="data-methodStr"></span>\n' +
@@ -219,7 +218,7 @@ $(document).on("click", ".detail", function () {
         '                                <span id="data-groupId"></span>\n' +
         '                            </td>\n' +
         '                            <th>\n' +
-        '                                完成状态\n' +
+        '                                完成状态</br>(1:已结束 0:未结束)\n' +
         '                            </th>\n' +
         '                            <td >\n' +
         '                                <span id="data-hasOver"></span>\n' +
@@ -227,7 +226,11 @@ $(document).on("click", ".detail", function () {
         '                        </tr>');
 
     $("#data-address").text(obj["address"]);
-    $("#data-currentTime").text(obj["currentTime"]);
+    var currentTime = obj["currentTime"];
+    var date = new Date(currentTime);
+
+    $("#data-currentTime").text(date.format('yyyy-MM-dd h:m:s'));
+
     $("#data-model").text(obj["model"]);
     $("#data-model").text(obj["model"]);
     $("#data-time").text(obj["time"]);

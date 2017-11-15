@@ -32,7 +32,13 @@
 <body>
 <div class="container-fluid">
 
-    <a href="index.html">首页</a>
+    <a class="pull-right" href="index.html">返回首页</a>
+
+    <div class="text text-danger">
+        说明：</br>
+        补偿记录展示的数据是分布事务发起方的切面数据信息。</br>
+        记录时间是指发起方出现补偿时记录下的时间，并非是TxManager的记录数据的时间。</br>
+    </div>
 
     <input type="hidden" id="model"/>
 
@@ -86,13 +92,11 @@
                         <th>记录时间</th>
                         <th>执行方法</th>
                         <th>执行时间(毫秒)</th>
-                        <th>是否补偿</th>
                         <th>操作</th>
                     </tr>
                     </thead>
                     <tbody id="compensate">
                     <tr>
-                        <td><span></span></td>
                         <td><span></span></td>
                         <td><span></span></td>
                         <td><span></span></td>
@@ -116,6 +120,13 @@
                     <h4 class="modal-title" id="myModalLabel">详细信息</h4>
                 </div>
                 <div class="modal-body">
+                    <div class="text text-danger" style="padding: 0 0 5px 12px">
+                        补偿详细说明：</br>
+                        模块唯一标示：是由模块的ip+port然后md5加密得来，用于LCN系统的模块唯一识别码</br>
+                        事务ID：事务组信息的唯一标示</br>
+                        模块名称列表说明，该记录的数据未必是模块的完整调用曲线数据，没有事务的业务模块是不记录数据的。</br>
+                        例如：参与模块 a b c d ，若a模块是发起方，执行顺序是a->b->c->d,若b事务是只读的，c没有事务，仅有d模块有事务。那么实际记录的模块数据仅会记录d模块的数据。
+                    </div>
                     <table class="table table-bordered table-striped">
                         <colgroup>
                             <col class="col-xs-2"/>
