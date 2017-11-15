@@ -11,7 +11,7 @@
 	<name>transaction-springcloud</name>
 	<url>https://github.com/codingapi/tx-lcn</url>
 
-	<description>lcn-springcloud-transaction project for Spring Boot</description>
+	<description>transaction-springcloud project for Spring Boot</description>
 
 
 	<licenses>

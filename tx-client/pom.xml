@@ -10,7 +10,7 @@
     <name>tx-client</name>
     <url>https://github.com/codingapi/tx-lcn</url>
 
-    <description> tx-lcn-core project for Spring Boot</description>
+    <description>tx-client project for Spring Boot</description>
 
 
     <licenses>

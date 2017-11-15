@@ -12,7 +12,7 @@
     <name>transaction-dubbo</name>
     <url>https://github.com/codingapi/tx-lcn</url>
 
-    <description>lcn-dubbo-transaction project for Spring Boot</description>
+    <description>transaction-dubbo project for Spring Boot</description>
 
 
     <licenses>
