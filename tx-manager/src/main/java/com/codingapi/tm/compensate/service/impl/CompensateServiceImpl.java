@@ -180,6 +180,12 @@ public class CompensateServiceImpl implements CompensateService {
     }
 
     @Override
+    public boolean delCompensate(String path) {
+        compensateDao.deleteCompensateByPath(path);
+        return true;
+    }
+
+    @Override
     public void reloadCompensate(TxGroup txGroup) {
         TxGroup compensateGroup = getCompensateByGroupId(txGroup.getGroupId());
         if (compensateGroup != null) {

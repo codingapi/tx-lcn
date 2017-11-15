@@ -58,7 +58,10 @@ $(document).on("click", ".model-time", function () {
                 '<td><span>' + param.executeTime + '</span></td>' +
                 '<td><span>' + param.state + '</span></td>' +
                 '<td><button  data-data="' + param.base64 + '" class="btn btn-info detail">详情</button>' +
-                '&nbsp;&nbsp;<button data-data="' + param.key + '" class="btn btn-success compensate">补偿</button></td>' +
+                '&nbsp;&nbsp;' +
+                '<button data-data="' + param.key + '" class="btn btn-success compensate">补偿</button>' +
+                '&nbsp;&nbsp;' +
+                '<button data-data="' + param.key + '" class="btn btn-danger delete">删除</button></td>' +
                 '</tr>';
             list.append(tr);
         }
@@ -69,25 +72,76 @@ $(document).on("click", ".model-time", function () {
 });
 
 
-$(document).on("click", ".compensate", function () {
+var confim = function(title,callback){
+    var button = $('#show-alert').find("button[data-event=button]");
+    button.unbind();
+
+
+    $("#content").text(title);
+
+    button.click(function(){
+        if(callback!=null){
+            callback();
+            reloadPage();
+        }
+        return true;
+    })
+    $('#show-alert').modal();
+}
+
+$(document).on("click", ".delete", function () {
 
     var path = $(this).attr("data-data");
 
     var tag = $(this).parent().parent();
 
 
-    http.get('/admin/compensate?path=' + path, '加载数据...', function (res) {
+    confim("确认要删除吗？",function(){
 
-        if (res) {
-            alert('补偿成功.');
-            tag.remove();
+        http.get('/admin/delCompensate?path=' + path, '加载数据...', function (res) {
+            if (res) {
+                hint('删除成功.');
+                tag.remove();
 
-        } else {
-            alert('补偿失败.');
-        }
-
-
+            } else {
+                hint('删除失败.');
+            }
+        });
     });
+
+    return false;
+
+});
+
+var reloadPage = function(){
+    var compensate =  $("#compensate");
+    var lg = compensate.find("tr").length;
+    if(lg==1){
+        location.reload();
+    }
+}
+
+
+$(document).on("click", ".compensate", function () {
+
+    var path = $(this).attr("data-data");
+
+    var tag = $(this).parent().parent();
+
+    confim("确认要补偿吗？",function(){
+
+        http.get('/admin/compensate?path=' + path, '加载数据...', function (res) {
+            if (res) {
+                hint('补偿成功.');
+                tag.remove();
+
+            } else {
+                hint('补偿失败.');
+            }
+
+        });
+    });
+
 
     return false;
 

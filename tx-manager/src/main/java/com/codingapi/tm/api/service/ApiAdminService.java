@@ -26,4 +26,6 @@ public interface ApiAdminService {
 
     boolean hasCompensate();
 
+    boolean delCompensate(String path);
+
 }

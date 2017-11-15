@@ -65,6 +65,11 @@ public class AdminController {
         return apiAdminService.compensate(path);
     }
 
+    @RequestMapping(value = "/delCompensate", method = RequestMethod.GET)
+    public boolean delCompensate(@RequestParam("path") String path) throws ServiceException {
+        return apiAdminService.delCompensate(path);
+    }
+
     @RequestMapping(value = "/hasCompensate", method = RequestMethod.GET)
     public boolean hasCompensate() throws ServiceException {
         return apiAdminService.hasCompensate();

@@ -28,4 +28,5 @@ public interface CompensateService {
 
     boolean hasCompensate();
 
+    boolean delCompensate(String path);
 }

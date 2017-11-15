@@ -60,6 +60,11 @@ public class ApiAdminServiceImpl implements ApiAdminService {
     }
 
     @Override
+    public boolean delCompensate(String path) {
+        return compensateService.delCompensate(path);
+    }
+
+    @Override
     public boolean hasCompensate() {
         return compensateService.hasCompensate();
     }
