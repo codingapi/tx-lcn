@@ -3,6 +3,9 @@
   "LCN并不生产事务，LCN只是本地事务的搬用工"
 
 
+## maven 包
+
+
 ```
 
 <dependency>
@@ -37,3 +40,16 @@
 </dependency>
 
 ```
+
+## LCN原理介绍
+
+[LCN原理](https://github.com/codingapi/tx-lcn/wiki/LCN原理)
+
+
+## LCN demo教程
+
+[springcloud版本demo](https://github.com/codingapi/springcloud-lcn-demo)
+
+
+[dubbo版本demo](https://github.com/codingapi/dubbo-lcn-demo)
+
