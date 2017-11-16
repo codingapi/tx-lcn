@@ -40,17 +40,18 @@
 
 ```
 
-## LCN原理介绍
+## 原理介绍
 
 [LCN原理](https://github.com/codingapi/tx-lcn/wiki/LCN原理)
 
 
-## LCN demo教程
+## demo教程
 
-[springcloud版本demo](https://github.com/codingapi/springcloud-lcn-demo)
+每个demo下有区分为 jdbc/hibernate/mybatis不同框架的版本demo
 
+[springcloud版本](https://github.com/codingapi/springcloud-lcn-demo)
 
-[dubbo版本demo](https://github.com/codingapi/dubbo-lcn-demo)
+[dubbo版本](https://github.com/codingapi/dubbo-lcn-demo)
 
 
 更多资料维护中...
