@@ -12,8 +12,8 @@ import com.codingapi.tx.listener.service.ModelNameService;
 import com.codingapi.tx.model.Request;
 import com.codingapi.tx.model.TxGroup;
 import com.codingapi.tx.netty.service.MQTxManagerService;
+import com.codingapi.tx.netty.service.TxManagerHttpRequestHelper;
 import com.lorne.core.framework.utils.encode.Base64Utils;
-import com.lorne.core.framework.utils.http.HttpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +33,8 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
     @Autowired
     private CompensateService compensateService;
 
+    @Autowired
+    private TxManagerHttpRequestHelper managerHelper;
 
 
     @Override
@@ -102,7 +104,8 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
     @Override
     public int getTransaction(String groupId, String waitTaskId) {
-        String json = HttpUtils.get(configReader.getTxUrl() + "getTransaction?groupId=" + groupId + "&taskId=" + waitTaskId);
+
+        String json = managerHelper.httpGet(configReader.getTxUrl() + "getTransaction?groupId=" + groupId + "&taskId=" + waitTaskId);
         if (json == null) {
             return -2;
         }
@@ -117,8 +120,8 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
     @Override
     public int clearTransaction(String groupId, String waitTaskId, boolean isGroup) {
-        String murl = configReader.getTxUrl() + "clearTransaction?groupId=" + groupId + "&taskId=" + waitTaskId + "&isGroup=" + (isGroup ? 1 : 0);
-        String clearRes = HttpUtils.get(murl);
+        String url = configReader.getTxUrl() + "clearTransaction?groupId=" + groupId + "&taskId=" + waitTaskId + "&isGroup=" + (isGroup ? 1 : 0);
+        String clearRes = managerHelper.httpGet(url);
         if(clearRes==null){
             return -1;
         }
@@ -128,8 +131,8 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
     @Override
     public String httpGetServer() {
-        String murl = configReader.getTxUrl() + "getServer";
-        return HttpUtils.get(murl);
+        String url = configReader.getTxUrl() + "getServer";
+        return managerHelper.httpGet(url);
     }
 
     @Override
@@ -150,7 +153,7 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
         CompensateInfo compensateInfo = new CompensateInfo(currentTime, modelName, uniqueKey, data, methodStr, className, groupId, address, time);
 
-        String json = HttpUtils.post(configReader.getTxUrl() + "sendCompensateMsg", compensateInfo.toParamsString());
+        String json = managerHelper.httpPost(configReader.getTxUrl() + "sendCompensateMsg", compensateInfo.toParamsString());
 
         compensateInfo.setResJson(json);
 
