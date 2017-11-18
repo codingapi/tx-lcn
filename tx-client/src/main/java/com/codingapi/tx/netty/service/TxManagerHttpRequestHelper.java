@@ -2,6 +2,10 @@ package com.codingapi.tx.netty.service;
 
 
 import com.lorne.core.framework.utils.http.HttpUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,15 +15,23 @@ import org.springframework.stereotype.Component;
 public class TxManagerHttpRequestHelper {
 
 
-    private HttpRequestService httpRequestService;
+    private TxManagerHttpRequestService httpRequestService;
 
-    public void setHttpRequestService(HttpRequestService httpRequestService) {
-        this.httpRequestService = httpRequestService;
-    }
+    @Autowired
+    private ApplicationContext spring;
+
+    private Logger logger = LoggerFactory.getLogger(TxManagerHttpRequestHelper.class);
+
 
     private void reloadHttpRequestService(){
+        try {
+            httpRequestService = spring.getBean(TxManagerHttpRequestService.class);
+        }catch (Exception e){
+            logger.error(e.getLocalizedMessage());
+        }
+
         if(httpRequestService==null){
-            httpRequestService = new HttpRequestService() {
+            httpRequestService = new TxManagerHttpRequestService() {
                 @Override
                 public String httpGet(String url) {
                     return HttpUtils.get(url);
@@ -30,6 +42,9 @@ public class TxManagerHttpRequestHelper {
                     return HttpUtils.post(url, params);
                 }
             };
+            logger.info("load default HttpRequestService .");
+        }else {
+            logger.info("load HttpRequestService .");
         }
     }
 
