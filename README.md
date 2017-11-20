@@ -23,6 +23,7 @@
 
 [原理介绍](https://github.com/codingapi/tx-lcn/wiki)
 
+[视频讲解](http://www.txlcn.org/v4/index.html)
 
 
 ## 目录说明
