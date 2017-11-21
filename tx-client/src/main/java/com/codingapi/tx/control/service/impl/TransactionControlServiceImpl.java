@@ -28,6 +28,7 @@ public class TransactionControlServiceImpl implements TransactionControlService{
     @Override
     public void notifyTransactionMsg(ChannelHandlerContext ctx,JSONObject resObj, String json) {
 
+
         String action = resObj.getString("a");
         String key = resObj.getString("k");
 
@@ -45,6 +46,7 @@ public class TransactionControlServiceImpl implements TransactionControlService{
         data.put("p", params);
 
         SocketUtils.sendMsg(ctx, data.toString());
-        logger.info("返回通知状态->" + data.toString());
+
+        logger.info("send notify data ->" + data.toString());
     }
 }

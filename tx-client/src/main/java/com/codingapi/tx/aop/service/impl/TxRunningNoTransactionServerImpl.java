@@ -24,7 +24,7 @@ public class TxRunningNoTransactionServerImpl implements TransactionServer {
 
         String kid = KidUtils.generateShortUuid();
         String txGroupId = info.getTxGroupId();
-        logger.info("tx-no-running-start->" + txGroupId);
+        logger.info("--->begin no db transaction, groupId: " + txGroupId);
         long t1 = System.currentTimeMillis();
 
 
@@ -43,7 +43,7 @@ public class TxRunningNoTransactionServerImpl implements TransactionServer {
         } finally {
             TxTransactionLocal.setCurrent(null);
             long t2 = System.currentTimeMillis();
-            logger.info("tx-no-running-end->" + txGroupId+",time->"+(t2-t1));
+            logger.info("<---end no db transaction,groupId:" + txGroupId+",execute time:"+(t2-t1));
         }
     }
 

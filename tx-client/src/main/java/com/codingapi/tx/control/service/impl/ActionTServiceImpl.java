@@ -25,7 +25,7 @@ public class ActionTServiceImpl implements IActionService {
         final int state = resObj.getInteger("c");
         String taskId = resObj.getString("t");
         TaskGroup task = TaskGroupManager.getInstance().getTaskGroup(taskId);
-        logger.info("接受通知数据->" + json);
+        logger.info("accept notify data ->" + json);
         if (task != null) {
             if (task.isAwait()) {   //已经等待
                 res = notifyWaitTask(task, state);

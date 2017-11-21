@@ -1,8 +1,6 @@
 package com.codingapi.tx.listener.service.impl;
 
 import com.codingapi.tx.Constants;
-import com.codingapi.tx.datasource.ILCNTransactionControl;
-import com.codingapi.tx.datasource.service.DataSourceService;
 import com.codingapi.tx.listener.service.InitService;
 import com.codingapi.tx.listener.service.ModelNameService;
 import com.codingapi.tx.listener.service.TimeOutService;
@@ -26,11 +24,6 @@ public class InitServiceImpl implements InitService {
     @Autowired
     private TimeOutService timeOutService;
 
-    @Autowired
-    private DataSourceService dataSourceService;
-
-    @Autowired
-    private ILCNTransactionControl dataSourceProxy;
 
     @Autowired
     private ModelNameService modelNameService;
@@ -38,12 +31,6 @@ public class InitServiceImpl implements InitService {
 
     @Override
     public void start() {
-
-        /**
-         * 由于SQLSessionFactory等类的加载方式导致，无法通过
-         * bean自动注入的方式注入给代理对象，因此通过初始化的时候再为其赋值。
-         */
-        dataSourceProxy.setDataSourceService(dataSourceService);
 
         /**
          * 设置模块唯一标示

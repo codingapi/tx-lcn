@@ -33,7 +33,8 @@ public class TxStartTransactionServerImpl implements TransactionServer {
     @Override
     public Object execute(ProceedingJoinPoint point, final TxTransactionInfo info) throws Throwable {
         //分布式事务开始执行
-        logger.info("tx-start");
+
+        logger.info("--->begin start transaction");
 
         long start = System.currentTimeMillis();
         //创建事务组
@@ -41,7 +42,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
 
         //获取不到模块信息重新连接，本次事务异常返回数据.
         if (txGroup == null) {
-            throw new ServiceException("创建事务组异常.");
+            throw new ServiceException("create TxGroup error");
         }
         final String groupId = txGroup.getGroupId();
         int state = 0;
@@ -78,7 +79,8 @@ public class TxStartTransactionServerImpl implements TransactionServer {
                 }
             }
             TxTransactionLocal.setCurrent(null);
-            logger.info("tx-end-"+txGroup.getGroupId()+">"+state);
+            logger.info("<---end start transaction");
+            logger.info("start transaction over, res -> groupId:"+txGroup.getGroupId()+",now state:"+(state==1?"commit":"rollback"));
         }
     }
 
