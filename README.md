@@ -10,7 +10,7 @@
 ## 框架特点
 
 1. 支持各种基于spring的db框架
-2. 兼容SpringCloud、Dubbo
+2. 兼容SpringCloud、Dubbo、motan
 3. 使用简单，低依赖，代码完全开源
 4. 基于切面的强一致性事务框架
 5. 高可用，模块可以依赖Dubbo或SpringCloud的集群方式做集群化，TxManager也可以做集群化
@@ -28,6 +28,8 @@
 transaction-dubbo LCN dubbo rpc框架扩展支持
 
 transaction-springcloud LCN springcloud rpc框架扩展支持
+
+transaction-motan LCN motan rpc框架扩展支持
 
 tx-client 是LCN核心tx模块端控制框架
 
@@ -85,7 +87,7 @@ tx-plugins-redis 是LCN 对于redis模块的插件支持（功能暂未实现）
   
   若存在业务方法：a->b b->c b->d，那么开启分布式事务注解的话，只需要在a方法上添加@TxTransaction即可。
   
-```java
+```
     @TxTransaction
     @Transactional
     public void a(){
