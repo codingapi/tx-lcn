@@ -22,13 +22,15 @@ public class TransactionHttpRequestInterceptor implements ClientHttpRequestInter
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
 
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
-        String groupId = txTransactionLocal==null?null:txTransactionLocal.getGroupId();
+        String groupId = txTransactionLocal == null ? null : txTransactionLocal.getGroupId();
         int maxTimeOut = txTransactionLocal == null ? 0 : txTransactionLocal.getMaxTimeOut();
 
         logger.info("LCN-SpringCloud TxGroup info -> groupId:"+groupId+",maxTimeOut:"+maxTimeOut);
 
-        request.getHeaders().add("tx-group",groupId);
-        request.getHeaders().add("tx-maxTimeOut", String.valueOf(maxTimeOut));
+        if(txTransactionLocal!=null) {
+            request.getHeaders().add("tx-group", groupId);
+            request.getHeaders().add("tx-maxTimeOut", String.valueOf(maxTimeOut));
+        }
         return execution.execute(request,body);
     }
 }

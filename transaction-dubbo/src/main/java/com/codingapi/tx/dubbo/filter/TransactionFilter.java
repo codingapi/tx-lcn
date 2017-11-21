@@ -15,19 +15,16 @@ public class TransactionFilter implements Filter {
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-        TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
+        TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
+        String groupId = txTransactionLocal == null ? null : txTransactionLocal.getGroupId();
+        int maxTimeOut = txTransactionLocal == null ? 0 : txTransactionLocal.getMaxTimeOut();
+
+        logger.info("LCN-dubbo TxGroup info -> groupId:"+groupId+",maxTimeOut:"+maxTimeOut);
 
         if(txTransactionLocal!=null){
-            String groupId = txTransactionLocal.getGroupId();
-            int maxTimeOut = txTransactionLocal.getMaxTimeOut();
-
             RpcContext.getContext().setAttachment("tx-group",groupId);
             RpcContext.getContext().setAttachment("tx-maxTimeOut",String.valueOf(maxTimeOut));
-
-            logger.info("LCN-dubbo TxGroup info -> groupId:"+groupId+",maxTimeOut:"+maxTimeOut);
-        }else{
-            logger.info("LCN-dubbo TxGroup info -> groupId:null,maxTimeOut:null");
         }
 
         return invoker.invoke(invocation);
