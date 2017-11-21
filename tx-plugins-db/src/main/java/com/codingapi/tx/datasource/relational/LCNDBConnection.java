@@ -57,8 +57,6 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
         TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(transactionLocal.getKid(),transactionLocal.getType());
         waitTask = taskGroup.getCurrent();
-        logger.info("task-create-> " + waitTask.getKey());
-
     }
 
 
@@ -85,7 +83,7 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
         }
 
 
-        logger.info("commit");
+        logger.info("commit label");
         state = 1;
 
         close();
@@ -99,8 +97,8 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
             return;
         }
 
+        logger.info("rollback label");
 
-        logger.info("rollback");
         state = 0;
 
         close();
@@ -110,7 +108,7 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
     protected void closeConnection() throws SQLException {
         runnable.close(this);
         connection.close();
-        logger.info("close-connection->" + groupId);
+        logger.info("lcnConnection closed groupId:"+ groupId);
     }
 
     @Override
@@ -120,12 +118,12 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
             return;
         }
 
-
         if(hasClose){
             hasClose = false;
             return;
         }
-        logger.info("close-state->" + state + "," + groupId);
+        logger.info("now transaction state is" + state + ", (1:commit,0:rollback) groupId:" + groupId);
+
         if (state == 0) {
             //再嵌套时，第一次成功后面出现回滚。
             if(waitTask!=null&&waitTask.isAwait()&&!waitTask.isRemove()) {
@@ -136,7 +134,8 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
                 connection.rollback();
                 closeConnection();
             }
-            logger.info("rollback->" +groupId);
+
+            logger.info("rollback transaction ,groupId:" +groupId);
         }
         if (state == 1) {
             if (hasGroup) {
@@ -175,7 +174,7 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
     public void transaction() throws SQLException {
         if (waitTask == null) {
             connection.rollback();
-            System.out.println("waitTask is null");
+            System.out.println(" waitTask is null");
             return;
         }
 
@@ -185,19 +184,20 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("自动回滚->" + getGroupId());
+                System.out.println("auto execute ,groupId:" + getGroupId());
                 dataSourceService.schedule(getGroupId(), waitTask);
             }
         }, getMaxOutTime());
 
-        System.out.println("transaction-awaitTask->" + getGroupId());
+        System.out.println("transaction is wait for TxManager notify, groupId : " + getGroupId());
+
         waitTask.awaitTask();
 
         timer.cancel();
 
         int rs = waitTask.getState();
 
-        System.out.println("(" + getGroupId() + ")->单元事务（1：提交 0：回滚 -1：事务模块网络异常回滚 -2：事务模块超时异常回滚）:" + rs);
+        System.out.println("lcn transaction over, res -> groupId:"+getGroupId()+" and  state is "+rs+", about state (1:commit 0:rollback -1:network error -2:network time out)");
 
         if (rs == 1) {
             connection.commit();

@@ -29,7 +29,6 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
 
     public TransactionHandler(NettyControlService nettyControlService, int delay) {
         this.nettyControlService = nettyControlService;
-        //this.delay = delay;
 
         SocketManager.getInstance().setDelay(delay);
 
@@ -47,9 +46,9 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
 
-        final String json = SocketUtils.getJson(msg);
-        logger.info("接受->" + json);
+        String json = SocketUtils.getJson(msg);
 
+        logger.info("TxManager-response->" + json);
 
         nettyControlService.executeService(ctx,json);
     }
@@ -73,7 +72,8 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         SocketManager.getInstance().setCtx(ctx);
-        logger.info("建立链接-->" + ctx);
+
+        logger.info("try connection -->" + ctx);
 
         nettyControlService.uploadModelInfo();
     }
@@ -90,10 +90,9 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
             } else if (event.state() == IdleState.WRITER_IDLE) {
                 //表示已经多久没有发送数据了
                 SocketUtils.sendMsg(ctx, heartJson);
-                logger.info("心跳数据---" + heartJson);
+                logger.info("hart data --->" + heartJson);
             } else if (event.state() == IdleState.ALL_IDLE) {
                 //表示已经多久既没有收到也没有发送数据了
-
             }
         }
     }

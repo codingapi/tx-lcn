@@ -6,6 +6,9 @@ import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.service.DataSourceService;
 import com.lorne.core.framework.utils.task.Task;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,6 +23,10 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
     protected Map<String, T> pools = new ConcurrentHashMap<>();
 
 
+    private Logger logger = LoggerFactory.getLogger(AbstractResourceProxy.class);
+
+
+    @Autowired
     protected DataSourceService dataSourceService;
 
 
@@ -34,10 +41,6 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
         return true;
     }
 
-    @Override
-    public void setDataSourceService(DataSourceService dataSourceService) {
-        this.dataSourceService =dataSourceService;
-    }
 
     //default size
     protected volatile int maxCount = 5;
@@ -105,7 +108,7 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
         } else if (nowCount < maxCount) {
             return createLcnConnection(connection, txTransactionLocal);
         } else {
-            System.out.println("connection was overload");
+            logger.info("connection was overload");
             return null;
         }
         return connection;
@@ -119,18 +122,23 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
 
         if (txTransactionLocal != null) {
 
+            logger.info("lcn datasource transaction control ");
+
             //只读操作，直接返回connection
             if(txTransactionLocal.isReadOnly()){
+                logger.info("readonly transaction ");
                 return connection;
             }
 
             //补偿的情况的
             if (TxCompensateLocal.current() != null) {
+                logger.info("rollback transaction ");
                 return getRollback(connection);
             }
 
             if(StringUtils.isNotEmpty(txTransactionLocal.getGroupId())){
                 if (!txTransactionLocal.isHasStart()) {
+                    logger.info("lcn transaction ");
                     return createConnection(txTransactionLocal, connection);
                 }
             }

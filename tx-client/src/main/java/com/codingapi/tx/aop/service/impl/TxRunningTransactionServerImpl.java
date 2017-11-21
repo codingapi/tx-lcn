@@ -41,7 +41,7 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
 
         String kid = KidUtils.generateShortUuid();
         String txGroupId = info.getTxGroupId();
-        logger.info("tx-running-start->" + txGroupId);
+        logger.info("--->begin running transaction,groupId:" + txGroupId);
         long t1 = System.currentTimeMillis();
 
         boolean isHasIsGroup =  transactionControl.hasGroup(txGroupId);
@@ -85,7 +85,7 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
                             //修改事务组状态异常
                             waitTask.setState(-1);
                             waitTask.signalTask();
-                            throw new ServiceException("修改事务组状态异常." + txGroupId);
+                            throw new ServiceException("update TxGroup error, groupId:" + txGroupId);
                         }
                     }
                 }
@@ -97,7 +97,8 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
         } finally {
             TxTransactionLocal.setCurrent(null);
             long t2 = System.currentTimeMillis();
-            logger.info("tx-running-end->" + txGroupId+",time->"+(t2-t1));
+            logger.info("<---end running transaction,groupId:" + txGroupId+",execute time:"+(t2-t1));
+
         }
     }
 

@@ -30,7 +30,7 @@ public class ActionCServiceImpl implements IActionService {
 
         String cmd = resObj.toJSONString();
 
-        logger.info("接受补偿->" + cmd);
+        logger.info("accept compensate data ->" + cmd);
 
 
         String data = resObj.getString("d");
@@ -42,11 +42,11 @@ public class ActionCServiceImpl implements IActionService {
         TransactionInvocation invocation = SerializerUtils.parserTransactionInvocation(bytes);
 
         if (invocation != null) {
-            logger.info("接受补偿->" + invocation.getMethodStr());
+            logger.info("compensate method ->" + invocation.getMethodStr());
 
             boolean res = compensateService.invoke(invocation, groupId);
 
-            logger.info("补偿结果->" + res);
+            logger.info("compensate res ->" + res);
 
             if (res) {
                 return "1";

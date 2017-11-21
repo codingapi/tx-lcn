@@ -26,6 +26,7 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
     private DataSource dataSource;
 
 
+
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
@@ -42,8 +43,7 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
 
     @Override
     protected Connection getRollback(Connection connection) {
-        LCNRollBackDBConnection rollBackDBConnection = new LCNRollBackDBConnection(connection);
-        return rollBackDBConnection;
+        return new LCNRollBackDBConnection(connection);
     }
 
     @Override

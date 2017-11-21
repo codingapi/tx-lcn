@@ -33,6 +33,7 @@ public class LCNRollBackDBConnection implements Connection {
 
     @Override
     public void commit() throws SQLException {
+        // never commit
         //connection.commit();
     }
 
