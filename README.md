@@ -82,6 +82,28 @@ tx-plugins-redis 是LCN 对于redis模块的插件支持（功能暂未实现）
 
 说明：在使用LCN分布式事务时，只需要将事务的开始方法添加`@TxTransaction`注解即可。详细见demo教程
 
+## 关于@TxTransaction 使用说明
+
+  @TxTransaction注解是分布式事务的标示。
+  
+  若存在业务方法：a->b b->c b->d，那么开启分布式事务注解的话，只需要在a方法上添加@TxTransaction即可。
+  
+```java
+    @TxTransaction
+    @Transactional
+    public void a(){
+        b();
+    }
+
+    public void b(){
+        c();
+        d();
+    }
+
+    public void c(){}
+
+    public void d(){}
+```
 
 ## demo演示教程
 
