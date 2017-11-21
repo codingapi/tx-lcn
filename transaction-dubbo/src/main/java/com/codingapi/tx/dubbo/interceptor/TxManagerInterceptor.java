@@ -2,7 +2,6 @@ package com.codingapi.tx.dubbo.interceptor;
 
 
 import com.alibaba.dubbo.rpc.RpcContext;
-//import com.lorne.tx.bean.TxTransactionCompensate;
 import com.codingapi.tx.aop.service.AspectBeforeService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.beans.factory.annotation.Autowired;

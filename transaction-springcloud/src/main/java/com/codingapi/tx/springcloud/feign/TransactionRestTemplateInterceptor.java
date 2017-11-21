@@ -1,7 +1,6 @@
 package com.codingapi.tx.springcloud.feign;
 
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
-//import CompensateServiceImpl;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.slf4j.Logger;
