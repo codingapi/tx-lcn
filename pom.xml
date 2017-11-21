@@ -19,6 +19,7 @@
         <module>tx-plugins-db</module>
         <module>tx-plugins-nodb</module>
         <module>tx-plugins-redis</module>
+        <module>transaction-motan</module>
     </modules>
 
     <properties>
