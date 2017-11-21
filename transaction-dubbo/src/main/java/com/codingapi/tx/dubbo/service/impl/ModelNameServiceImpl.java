@@ -18,7 +18,7 @@ public class ModelNameServiceImpl implements ModelNameService {
 
 
     @Autowired
-    private  ApplicationConfig applicationConfig;
+    private ApplicationConfig applicationConfig;
 
     @Autowired
     private ProviderConfig providerConfig;
@@ -28,11 +28,11 @@ public class ModelNameServiceImpl implements ModelNameService {
 
     @Override
     public String getModelName() {
-        return  applicationConfig.getName();
+        return applicationConfig.getName();
     }
 
 
-    private String getIp(){
+    private String getIp() {
         if (host == null) {
             try {
                 host = InetAddress.getLocalHost().getHostAddress();
@@ -45,8 +45,8 @@ public class ModelNameServiceImpl implements ModelNameService {
 
     @Override
     public String getUniqueKey() {
-        String address = getIp()+providerConfig.getPort();
-        return  MD5Util.md5(address.getBytes());
+        String address = getIp() + providerConfig.getPort();
+        return MD5Util.md5(address.getBytes());
     }
 
 
