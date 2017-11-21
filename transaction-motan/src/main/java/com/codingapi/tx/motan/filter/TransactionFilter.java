@@ -21,8 +21,7 @@ import java.util.Map;
 @SpiMeta(name = "transaction")
 @Activation(key = {MotanConstants.NODE_TYPE_SERVICE, MotanConstants.NODE_TYPE_REFERER})
 public class TransactionFilter implements Filter {
-
-
+    
     public Response filter(Caller<?> caller, Request request) {
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
         if (txTransactionLocal != null) {
