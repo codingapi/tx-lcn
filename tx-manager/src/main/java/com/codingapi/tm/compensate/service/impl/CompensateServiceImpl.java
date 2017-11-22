@@ -88,7 +88,7 @@ public class CompensateServiceImpl implements CompensateService {
                         logger.error("补偿回调结果->" + res);
                         if (configReader.isCompensateAuto()) {
                             //自动补偿,是否自动执行补偿
-                            if ("success".equalsIgnoreCase(res)) {
+                            if (res.contains("success")||res.contains("SUCCESS")) {
                                 //自动补偿
                                 autoCompensate(compensateKey, transactionCompensateMsg);
                             }

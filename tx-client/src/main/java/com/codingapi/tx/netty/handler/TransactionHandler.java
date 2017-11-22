@@ -84,8 +84,8 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
     /**
      * 当客户端的所有ChannelHandler中4s内没有write事件，则会触发userEventTriggered方法
      *
-     * @param ctx
-     * @param evt
+     * @param ctx  管道
+     * @param evt  状态
      * @throws Exception 异常数据
      */
     @Override

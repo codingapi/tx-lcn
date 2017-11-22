@@ -10,7 +10,7 @@ var init = function () {
 
             var tr = '<tr>' +
                 '<td><a class="model-name" href="#">' + v['name'] + '</a></td>' +
-                '<td><a href="#">' + v['count'] + '</a></td>' +
+                '<td><span>' + v['count'] + '</span></td>' +
                 '</tr>';
             list.append(tr);
         }
