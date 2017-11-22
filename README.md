@@ -112,5 +112,6 @@ tx-plugins-redis 是LCN 对于redis模块的插件支持（功能暂未实现）
 
 [dubbo版本](https://github.com/codingapi/dubbo-lcn-demo)
 
+[motan版本](https://github.com/zfvipgit/motan-lcn-demo.git)
 
 技术交流群：554855843
