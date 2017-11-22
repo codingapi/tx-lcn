@@ -53,7 +53,6 @@ public class CompensateServiceImpl implements CompensateService {
     @Override
     public boolean saveCompensateMsg(TransactionCompensateMsg transactionCompensateMsg) {
 
-
         String key = configReader.getKeyPrefix() + transactionCompensateMsg.getGroupId();
         TxGroup txGroup = redisServerService.getTxGroupByKey(key);
         if (txGroup == null) {
@@ -68,25 +67,35 @@ public class CompensateServiceImpl implements CompensateService {
 
         logger.info("补偿->" + json);
 
-        new Thread(new Runnable() {
+        final String compensateKey = compensateDao.saveCompensateMsg(transactionCompensateMsg);
+
+        //调整自动补偿机制，若开启了自动补偿，需要通知业务返回success，方可执行自动补偿
+        threadPool.execute(new Runnable() {
             @Override
             public void run() {
                 try {
+                    String groupId = transactionCompensateMsg.getGroupId();
+                    JSONObject requestJson = new JSONObject();
+                    requestJson.put("action","compensate");
+                    requestJson.put("groupId",groupId);
+                    requestJson.put("json",json);
+
                     String url = configReader.getCompensateNotifyUrl();
                     logger.error("补偿回调地址->" + url);
-                    String res = HttpUtils.postJson(url, json);
+                    String res = HttpUtils.postJson(url, requestJson.toJSONString());
                     logger.error("补偿回调结果->" + res);
+                    if (configReader.isCompensateAuto()) {
+                        //自动补偿,是否自动执行补偿
+                        if("success".equalsIgnoreCase(res)) {
+                            //自动补偿
+                            autoCompensate(compensateKey, transactionCompensateMsg);
+                        }
+                    }
                 } catch (Exception e) {
-                    e.printStackTrace();
                     logger.error("补偿回调失败->" + e.getMessage());
                 }
             }
-        }).start();
-
-        final String compensateKey = compensateDao.saveCompensateMsg(transactionCompensateMsg);
-
-        //自动补偿
-        autoCompensate(compensateKey, transactionCompensateMsg);
+        });
 
         return StringUtils.isNotEmpty(compensateKey);
 
@@ -95,35 +104,52 @@ public class CompensateServiceImpl implements CompensateService {
 
     public void autoCompensate(final String compensateKey, TransactionCompensateMsg transactionCompensateMsg) {
         final String json = JSON.toJSONString(transactionCompensateMsg);
-        if (configReader.isCompensateAuto()) {
-
-            logger.info("进入补偿->" + json);
-            //自动补偿指导补偿成功...
-            threadPool.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        final int tryTime = configReader.getCompensateTryTime();
-                        boolean isOk = _executeCompensate(json);
-                        logger.info("自动补偿结果->" + isOk + ",json->" + json);
-                        while (!isOk) {
-                            try {
-                                Thread.sleep(tryTime * 1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            isOk = _executeCompensate(json);
-                            logger.info("try补偿(补偿失败,进入补偿队列)->" + isOk + ",json->" + json);
-                        }
-
-                        compensateDao.deleteCompensateByKey(compensateKey);
-
-                    } catch (ServiceException e) {
-                        e.printStackTrace();
-                    }
+        logger.info("自动补偿->" + json);
+        //自动补偿业务执行...
+        final int tryTime = configReader.getCompensateTryTime();
+        boolean autoExecuteRes = false;
+        try {
+            int executeCount = 0;
+            autoExecuteRes = _executeCompensate(json);
+            logger.info("自动补偿结果->" + autoExecuteRes + ",json->" + json);
+            while (!autoExecuteRes) {
+                logger.info("try补偿(补偿失败,进入补偿队列)->" + autoExecuteRes + ",json->" + json);
+                executeCount++;
+                if(executeCount==3){
+                    autoExecuteRes = false;
+                    break;
                 }
-            });
+                try {
+                    Thread.sleep(tryTime * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                autoExecuteRes = _executeCompensate(json);
+            }
+
+            //执行成功删除数据
+            if(autoExecuteRes) {
+                compensateDao.deleteCompensateByKey(compensateKey);
+            }
+
+        }catch (Exception e){
+            logger.error("自动补偿失败,msg:"+e.getLocalizedMessage());
+            //推送数据给第三方通知
+            autoExecuteRes = false;
         }
+
+        //执行补偿以后通知给业务方
+        String groupId = transactionCompensateMsg.getGroupId();
+        JSONObject requestJson = new JSONObject();
+        requestJson.put("action","notify");
+        requestJson.put("groupId",groupId);
+        requestJson.put("resState",autoExecuteRes);
+
+        String url = configReader.getCompensateNotifyUrl();
+        logger.error("补偿结果回调地址->" + url);
+        String res = HttpUtils.postJson(url, requestJson.toJSONString());
+        logger.error("补偿结果回调结果->" + res);
+
     }
 
 
