@@ -10,6 +10,7 @@ import com.codingapi.tm.config.ConfigReader;
 import com.codingapi.tm.manager.ModelInfoManager;
 import com.codingapi.tm.manager.service.TxManagerSenderService;
 import com.codingapi.tm.model.ModelInfo;
+import com.codingapi.tm.model.ModelName;
 import com.codingapi.tm.netty.model.TxGroup;
 import com.codingapi.tm.netty.model.TxInfo;
 import com.codingapi.tm.redis.service.RedisServerService;
@@ -59,45 +60,49 @@ public class CompensateServiceImpl implements CompensateService {
             key = configReader.getKeyPrefixNotify() + transactionCompensateMsg.getGroupId();
             txGroup = redisServerService.getTxGroupByKey(key);
         }
-        redisServerService.deleteKey(key);
+        if(txGroup!=null) {
+            redisServerService.deleteKey(key);
 
-        transactionCompensateMsg.setTxGroup(txGroup);
+            transactionCompensateMsg.setTxGroup(txGroup);
 
-        final String json = JSON.toJSONString(transactionCompensateMsg);
+            final String json = JSON.toJSONString(transactionCompensateMsg);
 
-        logger.info("补偿->" + json);
+            logger.info("补偿->" + json);
 
-        final String compensateKey = compensateDao.saveCompensateMsg(transactionCompensateMsg);
+            final String compensateKey = compensateDao.saveCompensateMsg(transactionCompensateMsg);
 
-        //调整自动补偿机制，若开启了自动补偿，需要通知业务返回success，方可执行自动补偿
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String groupId = transactionCompensateMsg.getGroupId();
-                    JSONObject requestJson = new JSONObject();
-                    requestJson.put("action","compensate");
-                    requestJson.put("groupId",groupId);
-                    requestJson.put("json",json);
+            //调整自动补偿机制，若开启了自动补偿，需要通知业务返回success，方可执行自动补偿
+            threadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        String groupId = transactionCompensateMsg.getGroupId();
+                        JSONObject requestJson = new JSONObject();
+                        requestJson.put("action", "compensate");
+                        requestJson.put("groupId", groupId);
+                        requestJson.put("json", json);
 
-                    String url = configReader.getCompensateNotifyUrl();
-                    logger.error("补偿回调地址->" + url);
-                    String res = HttpUtils.postJson(url, requestJson.toJSONString());
-                    logger.error("补偿回调结果->" + res);
-                    if (configReader.isCompensateAuto()) {
-                        //自动补偿,是否自动执行补偿
-                        if("success".equalsIgnoreCase(res)) {
-                            //自动补偿
-                            autoCompensate(compensateKey, transactionCompensateMsg);
+                        String url = configReader.getCompensateNotifyUrl();
+                        logger.error("补偿回调地址->" + url);
+                        String res = HttpUtils.postJson(url, requestJson.toJSONString());
+                        logger.error("补偿回调结果->" + res);
+                        if (configReader.isCompensateAuto()) {
+                            //自动补偿,是否自动执行补偿
+                            if ("success".equalsIgnoreCase(res)) {
+                                //自动补偿
+                                autoCompensate(compensateKey, transactionCompensateMsg);
+                            }
                         }
+                    } catch (Exception e) {
+                        logger.error("补偿回调失败->" + e.getMessage());
                     }
-                } catch (Exception e) {
-                    logger.error("补偿回调失败->" + e.getMessage());
                 }
-            }
-        });
+            });
 
-        return StringUtils.isNotEmpty(compensateKey);
+            return StringUtils.isNotEmpty(compensateKey);
+        }else {
+            return false;
+        }
 
     }
 
@@ -153,9 +158,33 @@ public class CompensateServiceImpl implements CompensateService {
     }
 
 
+
     @Override
-    public List<String> loadModelList() {
-        return compensateDao.loadModelList();
+    public List<ModelName> loadModelList() {
+        List<String> keys =  compensateDao.loadCompensateKeys();
+
+        Map<String,Integer> models = new HashMap<>();
+
+        for(String key:keys){
+            if(key.length()>36){
+                String name =  key.substring(11,key.length()-25);
+                int v = 1;
+                if(models.containsKey(name)){
+                    v =  models.get(name)+1;
+                }
+                models.put(name,v);
+            }
+        }
+        List<ModelName> names = new ArrayList<>();
+
+        for(String key:models.keySet()){
+            int v = models.get(key);
+            ModelName modelName = new ModelName();
+            modelName.setName(key);
+            modelName.setCount(v);
+            names.add(modelName);
+        }
+        return names;
     }
 
     @Override

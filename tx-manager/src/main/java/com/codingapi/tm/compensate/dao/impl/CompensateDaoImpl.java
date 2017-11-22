@@ -40,17 +40,9 @@ public class CompensateDaoImpl implements CompensateDao {
 
 
     @Override
-    public List<String> loadModelList() {
+    public List<String> loadCompensateKeys() {
         String key = configReader.getKeyPrefixCompensate() + "*";
-        List<String> keys = redisServerService.getKeys(key);
-        List<String> models = new ArrayList<>();
-        for (String k : keys) {
-            String name = k.split("_")[1];
-            if (!models.contains(name)) {
-                models.add(name);
-            }
-        }
-        return models;
+        return redisServerService.getKeys(key);
     }
 
 
@@ -67,9 +59,11 @@ public class CompensateDaoImpl implements CompensateDao {
         List<String> keys = redisServerService.getKeys(key);
         List<String> times = new ArrayList<>();
         for (String k : keys) {
-            String time = k.split("_")[2];
-            if (!times.contains(time)) {
-                times.add(time);
+            if(k.length()>36) {
+                String time = k.substring(k.length() - 24, k.length() - 14);
+                if (!times.contains(time)) {
+                    times.add(time);
+                }
             }
         }
         return times;

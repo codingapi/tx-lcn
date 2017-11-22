@@ -1,7 +1,6 @@
 package com.codingapi.tx.datasource.nodb;
 
 import com.codingapi.tx.datasource.ILCNTransactionControl;
-import com.codingapi.tx.datasource.service.DataSourceService;
 import org.springframework.stereotype.Component;
 
 
@@ -18,10 +17,6 @@ public class LCNNoTransactionDataSource implements ILCNTransactionControl{
         return false;
     }
 
-    @Override
-    public void setDataSourceService(DataSourceService dataSourceService) {
-
-    }
 
     @Override
     public boolean hasTransaction() {

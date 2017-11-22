@@ -16,7 +16,7 @@ import java.util.Map;
  * <p>motan拦截器</p>
  *
  * @author 张峰 zfvip_it@163.com
- * @createTime: 2017/11/17 15:38
+ *  2017/11/17 15:38
  */
 @SpiMeta(name = "transaction")
 @Activation(key = {MotanConstants.NODE_TYPE_SERVICE, MotanConstants.NODE_TYPE_REFERER})

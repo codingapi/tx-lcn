@@ -1,6 +1,7 @@
 package com.codingapi.tm.api.service;
 
 import com.codingapi.tm.compensate.model.TxModel;
+import com.codingapi.tm.model.ModelName;
 import com.codingapi.tm.model.TxState;
 import com.lorne.core.framework.exception.ServiceException;
 
@@ -15,7 +16,7 @@ public interface ApiAdminService {
 
     String loadNotifyJson();
 
-    List<String> modelList();
+    List<ModelName> modelList();
 
 
     List<String> modelTimes(String model);

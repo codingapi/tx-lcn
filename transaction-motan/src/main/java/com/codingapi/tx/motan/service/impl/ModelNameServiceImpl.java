@@ -15,7 +15,7 @@ import java.net.UnknownHostException;
  * <p>类说明</p>
  *
  * @author 张峰 zfvip_it@163.com
- * @createTime: 2017/11/17 13:30
+ * 2017/11/17 13:30
  */
 @Service
 public class ModelNameServiceImpl implements ModelNameService {
@@ -64,7 +64,7 @@ public class ModelNameServiceImpl implements ModelNameService {
     /**
      * 超时时间
      *
-     * @return
+     * @return  超时时间
      */
     public String getTimeOut() {
         return basicServiceConfigBean.getRequestTimeout().toString();

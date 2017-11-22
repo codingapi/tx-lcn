@@ -4,6 +4,7 @@ import com.codingapi.tm.api.service.ApiAdminService;
 import com.codingapi.tm.api.service.ApiModelService;
 import com.codingapi.tm.compensate.model.TxModel;
 import com.codingapi.tm.model.ModelInfo;
+import com.codingapi.tm.model.ModelName;
 import com.codingapi.tm.model.TxState;
 import com.lorne.core.framework.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/modelList", method = RequestMethod.GET)
-    public List<String> modelList() {
+    public List<ModelName> modelList() {
         return apiAdminService.modelList();
     }
 

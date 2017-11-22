@@ -6,7 +6,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>transaction-motan</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <name>transaction-motan</name>
     <url>https://github.com/codingapi/tx-lcn</url>
@@ -51,14 +51,14 @@
     </distributionManagement>
 
 
-
     <properties>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compile.source>1.7</maven.compile.source>
         <maven.compile.target>1.7</maven.compile.target>
         <maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.7</java.version>
+
         <motan>1.0.0</motan>
     </properties>
 
@@ -66,7 +66,7 @@
         <dependency>
             <groupId>com.codingapi</groupId>
             <artifactId>tx-client</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
 
         <!-- motan config start-->
@@ -149,6 +149,20 @@
                         <id>attach-javadocs</id>
                         <goals>
                             <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
                         </goals>
                     </execution>
                 </executions>

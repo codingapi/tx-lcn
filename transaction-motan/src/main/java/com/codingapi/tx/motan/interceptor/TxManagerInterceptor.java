@@ -11,7 +11,7 @@ import javax.annotation.Resource;
  * <p>类说明</p>
  *
  * @author 张峰 zfvip_it@163.com
- * @createTime: 2017/11/17 15:42
+ * 2017/11/17 15:42
  */
 @Component
 public class TxManagerInterceptor {

@@ -2,6 +2,7 @@ package com.codingapi.tm.compensate.service;
 
 import com.codingapi.tm.compensate.model.TransactionCompensateMsg;
 import com.codingapi.tm.compensate.model.TxModel;
+import com.codingapi.tm.model.ModelName;
 import com.codingapi.tm.netty.model.TxGroup;
 import com.lorne.core.framework.exception.ServiceException;
 
@@ -14,7 +15,7 @@ public interface CompensateService {
 
     boolean saveCompensateMsg(TransactionCompensateMsg transactionCompensateMsg);
 
-    List<String> loadModelList();
+    List<ModelName> loadModelList();
 
     List<String> loadCompensateTimes(String model);
 

@@ -4,6 +4,7 @@ import com.codingapi.tm.api.service.ApiAdminService;
 import com.codingapi.tm.compensate.model.TxModel;
 import com.codingapi.tm.compensate.service.CompensateService;
 import com.codingapi.tm.manager.service.EurekaService;
+import com.codingapi.tm.model.ModelName;
 import com.codingapi.tm.model.TxState;
 import com.codingapi.tm.redis.service.RedisServerService;
 import com.lorne.core.framework.exception.ServiceException;
@@ -39,7 +40,7 @@ public class ApiAdminServiceImpl implements ApiAdminService {
     }
 
     @Override
-    public List<String> modelList() {
+    public List<ModelName> modelList() {
         return compensateService.loadModelList();
     }
 
