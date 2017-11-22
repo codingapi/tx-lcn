@@ -75,6 +75,7 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
         logger.info("try connection -->" + ctx);
 
         nettyControlService.uploadModelInfo();
+
         //通道激活后进行心跳检查
         SocketUtils.sendMsg(ctx, heartJson);
     }
@@ -85,7 +86,7 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
      *
      * @param ctx
      * @param evt
-     * @throws Exception
+     * @throws Exception 异常数据
      */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
