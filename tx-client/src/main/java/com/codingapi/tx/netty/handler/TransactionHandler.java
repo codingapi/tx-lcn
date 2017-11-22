@@ -42,7 +42,6 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
     }
 
 
-
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
 
@@ -50,7 +49,7 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
 
         logger.info("TxManager-response->" + json);
 
-        nettyControlService.executeService(ctx,json);
+        nettyControlService.executeService(ctx, json);
     }
 
     @Override
@@ -76,9 +75,18 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
         logger.info("try connection -->" + ctx);
 
         nettyControlService.uploadModelInfo();
+        //通道激活后进行心跳检查
+        SocketUtils.sendMsg(ctx, heartJson);
     }
 
 
+    /**
+     * 当客户端的所有ChannelHandler中4s内没有write事件，则会触发userEventTriggered方法
+     *
+     * @param ctx
+     * @param evt
+     * @throws Exception
+     */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         //心跳配置
