@@ -125,10 +125,10 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
             logger.info("lcn datasource transaction control ");
 
             //只读操作，直接返回connection
-            if(txTransactionLocal.isReadOnly()){
-                logger.info("readonly transaction ");
-                return connection;
-            }
+//            if(txTransactionLocal.isReadOnly()){
+//                logger.info("readonly transaction ");
+//                return connection;
+//            }
 
             //补偿的情况的
             if (TxCompensateLocal.current() != null) {

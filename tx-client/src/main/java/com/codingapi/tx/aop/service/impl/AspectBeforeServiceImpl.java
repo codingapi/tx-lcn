@@ -11,7 +11,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
 
@@ -35,16 +34,11 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
 
         TxTransaction transaction = thisMethod.getAnnotation(TxTransaction.class);
 
-        Transactional transactional = thisMethod.getAnnotation(Transactional.class);
-        if (transactional == null) {
-            transactional = clazz.getAnnotation(Transactional.class);
-        }
-
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
         TransactionInvocation invocation = new TransactionInvocation(clazz, thisMethod.getName(), thisMethod.toString(), args, method.getParameterTypes());
 
-        TxTransactionInfo info = new TxTransactionInfo(transaction,transactional,txTransactionLocal,invocation,groupId,maxTimeOut);
+        TxTransactionInfo info = new TxTransactionInfo(transaction,txTransactionLocal,invocation,groupId,maxTimeOut);
 
         TransactionServer server = transactionServerFactoryService.createTransactionServer(info);
 

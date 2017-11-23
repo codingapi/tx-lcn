@@ -1,7 +1,5 @@
 package com.codingapi.tx.aop.bean;
 
-import org.springframework.transaction.annotation.Transactional;
-
 /**
  * 分布式事务远程调用控制对象
  * Created by lorne on 2017/6/5.
@@ -22,10 +20,7 @@ public class TxTransactionLocal {
 
     private String type;
 
-    private boolean readOnly;
-
-    private Transactional transactional;
-
+    private boolean autoCommit = true;
 
     public boolean isHasIsGroup() {
         return hasIsGroup;
@@ -90,25 +85,11 @@ public class TxTransactionLocal {
         return type;
     }
 
-
-
-    public boolean isReadOnly() {
-        return readOnly;
+    public boolean isAutoCommit() {
+        return autoCommit;
     }
 
-    public Transactional getTransactional() {
-        return transactional;
-    }
-
-    public void setTransactional(Transactional transactional) {
-        this.transactional = transactional;
-
-        //set readOnly
-        if(transactional==null){
-            //没有配置事务注解的时候当做只读来处理
-            readOnly = true;
-        }else{
-            readOnly = transactional.readOnly();
-        }
+    public void setAutoCommit(boolean autoCommit) {
+        this.autoCommit = autoCommit;
     }
 }
