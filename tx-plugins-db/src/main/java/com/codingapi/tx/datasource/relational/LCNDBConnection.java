@@ -28,7 +28,7 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
     private Logger logger = LoggerFactory.getLogger(LCNDBConnection.class);
 
-    private volatile int state = 0;
+    private volatile int state = 1;
 
     private Connection connection;
 
@@ -46,6 +46,7 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
 
     public LCNDBConnection(Connection connection, DataSourceService dataSourceService, TxTransactionLocal transactionLocal, ICallClose<LCNDBConnection> runnable) {
+        logger.info("init lcn connection ! ");
         this.connection = connection;
         this.runnable = runnable;
         this.dataSourceService = dataSourceService;
@@ -102,6 +103,10 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
     @Override
     public void close() throws SQLException {
 
+        if(connection==null||connection.isClosed()){
+            return;
+        }
+
         if(hasClose){
             hasClose = false;
             return;
@@ -136,6 +141,7 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
             if (state == 1) {
                 if (hasGroup) {
                     //加入队列的连接，仅操作连接对象，不处理事务
+                    logger.info("connection hasGroup -> "+hasGroup);
                     return;
                 }
 
@@ -215,14 +221,13 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
 
-        if(!autoCommit){
-            logger.info("setAutoCommit - >" +autoCommit);
+        if(!autoCommit) {
+            logger.info("setAutoCommit - >" + autoCommit);
             connection.setAutoCommit(autoCommit);
 
             TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
             txTransactionLocal.setAutoCommit(autoCommit);
         }
-
     }
 
 

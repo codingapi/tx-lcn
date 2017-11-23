@@ -12,9 +12,20 @@ public class TxTransactionLocal {
 
     private int maxTimeOut;
 
+    /**
+     * 是否同一个模块被多次请求
+     */
     private boolean hasIsGroup = false;
 
+    /**
+     * 是否是发起方模块
+     */
     private boolean hasStart = false;
+
+    /**
+     * 是否单模块下多次业务调用
+     */
+    private boolean hasMoreService = false;
 
     private String kid;
 
@@ -54,6 +65,13 @@ public class TxTransactionLocal {
         this.groupId = groupId;
     }
 
+    public boolean isHasMoreService() {
+        return hasMoreService;
+    }
+
+    public void setHasMoreService(boolean hasMoreService) {
+        this.hasMoreService = hasMoreService;
+    }
 
     public TxTransactionLocal() {
 

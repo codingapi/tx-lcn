@@ -2,7 +2,6 @@ package com.codingapi.tx.aop.bean;
 
 import com.codingapi.tx.annotation.TxTransaction;
 import com.codingapi.tx.model.TransactionInvocation;
-import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -14,24 +13,29 @@ public class TxTransactionInfo {
 
     private TxTransaction transaction;
 
-   // private Transactional transactional;
 
     private TxTransactionLocal txTransactionLocal;
 
+    /**
+     * 事务组Id
+     */
     private String txGroupId;
 
+    /**
+     * 最大超时时间（发起方模块的）
+     */
     private int maxTimeOut;
+
 
     private TransactionInvocation invocation;
 
 
-    public TxTransactionInfo(TxTransaction transaction, TxTransactionLocal txTransactionLocal,TransactionInvocation invocation, String txGroupId, int maxTimeOut) {
+    public TxTransactionInfo(TxTransaction transaction, TxTransactionLocal txTransactionLocal, TransactionInvocation invocation, String txGroupId, int maxTimeOut) {
         this.transaction = transaction;
         this.txTransactionLocal = txTransactionLocal;
         this.txGroupId = txGroupId;
         this.maxTimeOut = maxTimeOut;
         this.invocation = invocation;
-       // this.transactional = transactional;
     }
 
     public int getMaxTimeOut() {
@@ -56,7 +60,4 @@ public class TxTransactionInfo {
         return invocation;
     }
 
-   // public Transactional getTransactional() {
-//        return transactional;
-//    }
 }
