@@ -6,7 +6,7 @@
 
 	<groupId>com.codingapi</groupId>
 	<artifactId>transaction-springcloud</artifactId>
-	<version>1.0.1</version>
+	<version>4.0.1</version>
 
 	<name>transaction-springcloud</name>
 	<url>https://github.com/codingapi/tx-lcn</url>
@@ -70,7 +70,7 @@
 		<dependency>
 			<groupId>com.codingapi</groupId>
 			<artifactId>tx-client</artifactId>
-			<version>1.0.1</version>
+			<version>4.0.1</version>
 		</dependency>
 
 		<dependency>
