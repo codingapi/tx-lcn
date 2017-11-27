@@ -5,7 +5,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>tx-plugins-db</artifactId>
-    <version>4.0.1</version>
+    <version>4.0.2-SNAPSHOT</version>
 
     <name>tx-plugins-db</name>
     <url>https://github.com/codingapi/tx-lcn</url>
@@ -62,13 +62,12 @@
     </properties>
 
 
-
     <dependencies>
 
         <dependency>
             <groupId>com.codingapi</groupId>
             <artifactId>tx-client</artifactId>
-            <version>4.0.1</version>
+            <version>4.0.2-SNAPSHOT</version>
         </dependency>
 
 
