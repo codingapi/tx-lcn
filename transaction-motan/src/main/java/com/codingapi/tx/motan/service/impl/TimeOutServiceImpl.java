@@ -20,8 +20,8 @@ public class TimeOutServiceImpl implements TimeOutService {
     private BasicServiceConfigBean basicServiceConfigBean;
 
 
-    public void loadOutTime() {
-        int timeOut = basicServiceConfigBean.getRequestTimeout();
+    public void loadOutTime(int timeOut) {
+        int finalTimeOut = (null != basicServiceConfigBean.getRequestTimeout() ? basicServiceConfigBean.getRequestTimeout() : timeOut);
         Constants.maxOutTime = timeOut;
     }
 }

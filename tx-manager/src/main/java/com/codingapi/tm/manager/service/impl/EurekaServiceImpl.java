@@ -85,6 +85,7 @@ public class EurekaServiceImpl implements EurekaService{
         state.setNotifyUrl(configReader.getCompensateNotifyUrl());
         state.setCompensate(configReader.isCompensateAuto());
         state.setCompensateTryTime(configReader.getCompensateTryTime());
+        state.setAutoCompensateLimit(configReader.getAutoCompensateLimit());
         state.setSlbList(getServices());
         return state;
     }

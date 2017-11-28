@@ -181,6 +181,7 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
         //start 结束就是全部事务的结束表示,考虑start挂掉的情况
         Timer timer = new Timer();
+        logger.info("maxOutTime:" + getMaxOutTime());
         timer.schedule(new TimerTask() {
             @Override
             public void run() {

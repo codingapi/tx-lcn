@@ -63,6 +63,11 @@ public class TxState {
      * slb list
      */
     private List<String> slbList;
+    
+    /**
+     * 自动补偿间隔时间
+     */
+    private int autoCompensateLimit;
 
 
     public String getIp() {
@@ -152,4 +157,14 @@ public class TxState {
     public void setNotifyUrl(String notifyUrl) {
         this.notifyUrl = notifyUrl;
     }
+
+	public int getAutoCompensateLimit() {
+		return autoCompensateLimit;
+	}
+
+	public void setAutoCompensateLimit(int autoCompensateLimit) {
+		this.autoCompensateLimit = autoCompensateLimit;
+	}
+    
+    
 }
