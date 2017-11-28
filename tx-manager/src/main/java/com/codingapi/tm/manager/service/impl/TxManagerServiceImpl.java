@@ -97,10 +97,12 @@ public class TxManagerServiceImpl implements TxManagerService {
         String key = configReader.getKeyPrefix() + groupId;
         TxGroup txGroup = redisServerService.getTxGroupByKey(key);
         if (txGroup==null) {
+            logger.info("cleanNotifyTransaction - > txGroup is null ");
             return res;
         }
 
-        if(txGroup.getState()==0){
+        if(txGroup.getHasOver()==0){
+            logger.info("cleanNotifyTransaction - > groupId "+groupId+" not over !");
             return 0;
         }
 
@@ -150,6 +152,7 @@ public class TxManagerServiceImpl implements TxManagerService {
         }
         txGroup.setState(state);
         txGroup.setHasOver(1);
+        redisServerService.saveTransaction(key,txGroup.toJsonString());
         return transactionConfirmService.confirm(txGroup);
     }
 
