@@ -91,98 +91,52 @@ public class TxManagerServiceImpl implements TxManagerService {
 
 
     @Override
-    public  int getTransaction(String groupId, String taskId) {
-        boolean inNotify = false;
+    public int cleanNotifyTransaction(String groupId, String taskId) {
+        int res = 0;
+        logger.info("start-cleanNotifyTransaction->groupId:"+groupId+",taskId:"+taskId);
         String key = configReader.getKeyPrefix() + groupId;
         TxGroup txGroup = redisServerService.getTxGroupByKey(key);
         if (txGroup==null) {
-            String notifyKey = configReader.getKeyPrefixNotify() + groupId;
-            txGroup = redisServerService.getTxGroupByKey(notifyKey);
-            inNotify = true;
-            if(txGroup==null){
-                return 0;
-            }
+            return res;
         }
 
-        if(txGroup.getHasOver()==0){
-            long nowTime = System.currentTimeMillis();
-            long startTime =  txGroup.getStartTime();
-            //超时清理数据
-            if(nowTime-startTime>(configReader.getRedisSaveMaxTime()*1000)){
-                if(inNotify){
-                    redisServerService.deleteKey(key);
-                }else{
-                    String notifyKey = configReader.getKeyPrefixNotify() + groupId;
-                    redisServerService.deleteKey(notifyKey);
-                }
-                return 0;
-            }
-            return -1;
-        }
-        boolean res = txGroup.getState() == 1;
-        if(!res) {
+        if(txGroup.getState()==0){
             return 0;
         }
 
-        for (TxInfo info : txGroup.getList()) {
-            if (info.getKid().equals(taskId)) {
-                return info.getNotify()==0?1:0;
-            }
-        }
-
-        return 0;
-    }
-
-
-    @Override
-    public boolean clearTransaction(String groupId, String taskId, int isGroup) {
-        logger.info("start-clearTransaction->groupId:"+groupId+",taskId:"+taskId);
-        boolean isNotify = false;
-        String key = configReader.getKeyPrefix() + groupId;
-        TxGroup txGroup = redisServerService.getTxGroupByKey(key);
-        if (txGroup==null) {
-            String notifyKey = configReader.getKeyPrefixNotify() + groupId;
-            txGroup = redisServerService.getTxGroupByKey(notifyKey);
-            isNotify=true;
-            if (txGroup==null) {
-                return false;
-            }
-        }
-        boolean res = txGroup.getState() == 1;
-
+        //更新数据
         boolean hasSet = false;
         for (TxInfo info : txGroup.getList()) {
             if (info.getKid().equals(taskId)) {
-                info.setNotify(1);
-                hasSet = true;
+                if(info.getNotify()==0&&info.getIsGroup()==0) {
+                    info.setNotify(1);
+                    hasSet = true;
+                    res = 1;
+
+                    break;
+                }
             }
         }
 
-        if(hasSet&&res) {
-            String notifyKey = configReader.getKeyPrefixNotify() + groupId;
-            redisServerService.saveTransaction(notifyKey, txGroup.toJsonString());
-        }
-
+        //判断是否都结束
         boolean isOver = true;
         for (TxInfo info : txGroup.getList()) {
-            if(isGroup==1) {
-                if (info.getIsGroup() == 0 && info.getNotify() == 0) {
-                    isOver = false;
-                    break;
-                }
-            }else{
-                if (info.getNotify() == 0) {
-                    isOver = false;
-                    break;
-                }
+            if (info.getIsGroup() == 0 && info.getNotify() == 0) {
+                isOver = false;
+                break;
             }
         }
 
-        if (isOver&&!isNotify) {
+        if (isOver) {
             redisServerService.deleteKey(key);
         }
 
-        logger.info("end-clearTransaction->groupId:"+groupId+",taskId:"+taskId+",res:"+res);
+        //有更新的数据，需要修改记录
+        if(!isOver&&hasSet) {
+            redisServerService.saveTransaction(key, txGroup.toJsonString());
+        }
+
+        logger.info("end-cleanNotifyTransaction->groupId:"+groupId+",taskId:"+taskId+",res(1:commit,0:rollback):"+res);
         return res;
     }
 
@@ -202,15 +156,10 @@ public class TxManagerServiceImpl implements TxManagerService {
 
     @Override
     public void dealTxGroup(TxGroup txGroup, boolean hasOk) {
-        if (!hasOk) {
-            //未通知成功
-            if (txGroup.getState() == 1) {
-                String notifyKey = configReader.getKeyPrefixNotify() + txGroup.getGroupId();
-                redisServerService.saveTransaction(notifyKey, txGroup.toJsonString());
-            }
+        if(hasOk) {
+            String key = configReader.getKeyPrefix() + txGroup.getGroupId();
+            redisServerService.deleteKey(key);
         }
-        String key = configReader.getKeyPrefix() + txGroup.getGroupId();
-        redisServerService.deleteKey(key);
     }
 
 

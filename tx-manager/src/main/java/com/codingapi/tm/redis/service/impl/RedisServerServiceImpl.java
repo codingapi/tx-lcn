@@ -30,7 +30,7 @@ public class RedisServerServiceImpl implements RedisServerService{
 
 
     public String loadNotifyJson() {
-        Set<String> keys =  redisTemplate.keys(configReader.getKeyPrefixNotify()+"*");
+        Set<String> keys =  redisTemplate.keys(configReader.getKeyPrefixCompensate()+"*");
         ValueOperations<String,String> value =  redisTemplate.opsForValue();
         JSONArray jsonArray = new JSONArray();
         for(String key:keys){

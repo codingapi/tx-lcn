@@ -57,11 +57,27 @@ public class CompensateServiceImpl implements CompensateService {
         String key = configReader.getKeyPrefix() + transactionCompensateMsg.getGroupId();
         TxGroup txGroup = redisServerService.getTxGroupByKey(key);
         if (txGroup == null) {
-            key = configReader.getKeyPrefixNotify() + transactionCompensateMsg.getGroupId();
-            txGroup = redisServerService.getTxGroupByKey(key);
+//            key = configReader.getKeyPrefixNotify() + transactionCompensateMsg.getGroupId();
+//            txGroup = redisServerService.getTxGroupByKey(key);
+            //todo  待完善
         }
         if(txGroup!=null) {
             redisServerService.deleteKey(key);
+
+            //已经全部通知的模块不做补偿处理
+            boolean hasNoNotify = false;
+            for(TxInfo txInfo:txGroup.getList()){
+                if(txInfo.getNotify()==0){
+                    hasNoNotify = true;
+                }
+            }
+
+            if(!hasNoNotify){
+                //事务已经执行完毕的
+                return true;
+            }
+
+
 
             transactionCompensateMsg.setTxGroup(txGroup);
 

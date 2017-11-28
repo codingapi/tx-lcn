@@ -25,16 +25,11 @@ public class TxManagerController {
     }
 
 
-    @RequestMapping("/clearTransaction")
-    public boolean clearTransaction(@RequestParam("groupId") String groupId,@RequestParam("taskId") String taskId,@RequestParam("isGroup") int isGroup) {
-        return apiTxManagerService.clearTransaction(groupId,taskId,isGroup);
+    @RequestMapping("/cleanNotifyTransaction")
+    public int cleanNotifyTransaction(@RequestParam("groupId") String groupId,@RequestParam("taskId") String taskId) {
+        return apiTxManagerService.cleanNotifyTransaction(groupId,taskId);
     }
 
-
-    @RequestMapping("/getTransaction")
-    public int getTransaction(@RequestParam("groupId") String groupId,@RequestParam("taskId") String taskId) {
-        return apiTxManagerService.getTransaction(groupId,taskId);
-    }
 
     @RequestMapping("/sendMsg")
     public String sendMsg(@RequestParam("msg") String msg,@RequestParam("model") String model) {

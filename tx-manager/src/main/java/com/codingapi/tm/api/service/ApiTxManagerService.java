@@ -32,15 +32,7 @@ public interface ApiTxManagerService {
      * @param isGroup   是否合并事务
      * @return  事务状态
      */
-    boolean clearTransaction(String groupId, String taskId, int isGroup);
-
-    /**
-     * 检查事务数据
-     * @param groupId   事务组Id
-     * @param taskId    任务Id
-     * @return  事务状态
-     */
-    int getTransaction(String groupId, String taskId);
+    int cleanNotifyTransaction(String groupId, String taskId);
 
 
     /**
