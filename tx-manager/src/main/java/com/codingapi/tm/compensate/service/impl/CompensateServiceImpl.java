@@ -57,52 +57,65 @@ public class CompensateServiceImpl implements CompensateService {
         String key = configReader.getKeyPrefix() + transactionCompensateMsg.getGroupId();
         TxGroup txGroup = redisServerService.getTxGroupByKey(key);
         if (txGroup == null) {
-//            key = configReader.getKeyPrefixNotify() + transactionCompensateMsg.getGroupId();
-//            txGroup = redisServerService.getTxGroupByKey(key);
-        }
-        if(txGroup!=null) {
-            redisServerService.deleteKey(key);
-
-            transactionCompensateMsg.setTxGroup(txGroup);
-
-            final String json = JSON.toJSONString(transactionCompensateMsg);
-
-            logger.info("Compensate->" + json);
-
-            final String compensateKey = compensateDao.saveCompensateMsg(transactionCompensateMsg);
-
-            //调整自动补偿机制，若开启了自动补偿，需要通知业务返回success，方可执行自动补偿
-            threadPool.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        String groupId = transactionCompensateMsg.getGroupId();
-                        JSONObject requestJson = new JSONObject();
-                        requestJson.put("action", "compensate");
-                        requestJson.put("groupId", groupId);
-                        requestJson.put("json", json);
-
-                        String url = configReader.getCompensateNotifyUrl();
-                        logger.error("Compensate Callback Address->" + url);
-                        String res = HttpUtils.postJson(url, requestJson.toJSONString());
-                        logger.error("Compensate Callback Result->" + res);
-                        if (configReader.isCompensateAuto()) {
-                            //自动补偿,是否自动执行补偿
-                            if (res.contains("success")||res.contains("SUCCESS")) {
-                                //自动补偿
-                                autoCompensate(compensateKey, transactionCompensateMsg);
-                            }
-                        }
-                    } catch (Exception e) {
-                        logger.error("Compensate Callback Fails->" + e.getMessage());
-                    }
-                }
-            });
-
-            return StringUtils.isNotEmpty(compensateKey);
-        }else {
             return false;
         }
+
+        redisServerService.deleteKey(key);
+
+        //已经全部通知的模块不做补偿处理
+        boolean hasNoNotify = false;
+
+        for(TxInfo txInfo:txGroup.getList()){
+            if(txInfo.getNotify()==0){
+                hasNoNotify = true;
+            }
+        }
+
+        if(!hasNoNotify){
+            //事务已经执行完毕的
+            logger.info("TxGroup had notify ! ");
+            return true;
+        }
+
+
+        transactionCompensateMsg.setTxGroup(txGroup);
+
+        final String json = JSON.toJSONString(transactionCompensateMsg);
+
+        logger.info("Compensate->" + json);
+
+        final String compensateKey = compensateDao.saveCompensateMsg(transactionCompensateMsg);
+
+        //调整自动补偿机制，若开启了自动补偿，需要通知业务返回success，方可执行自动补偿
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String groupId = transactionCompensateMsg.getGroupId();
+                    JSONObject requestJson = new JSONObject();
+                    requestJson.put("action", "compensate");
+                    requestJson.put("groupId", groupId);
+                    requestJson.put("json", json);
+
+                    String url = configReader.getCompensateNotifyUrl();
+                    logger.error("Compensate Callback Address->" + url);
+                    String res = HttpUtils.postJson(url, requestJson.toJSONString());
+                    logger.error("Compensate Callback Result->" + res);
+                    if (configReader.isCompensateAuto()) {
+                        //自动补偿,是否自动执行补偿
+                        if (res.contains("success")||res.contains("SUCCESS")) {
+                            //自动补偿
+                            autoCompensate(compensateKey, transactionCompensateMsg);
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error("Compensate Callback Fails->" + e.getMessage());
+                }
+            }
+        });
+
+        return StringUtils.isNotEmpty(compensateKey);
+
 
     }
 
