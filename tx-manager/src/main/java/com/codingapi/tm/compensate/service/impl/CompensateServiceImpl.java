@@ -67,7 +67,7 @@ public class CompensateServiceImpl implements CompensateService {
 
             final String json = JSON.toJSONString(transactionCompensateMsg);
 
-            logger.info("补偿->" + json);
+            logger.info("Compensate->" + json);
 
             final String compensateKey = compensateDao.saveCompensateMsg(transactionCompensateMsg);
 
@@ -83,9 +83,9 @@ public class CompensateServiceImpl implements CompensateService {
                         requestJson.put("json", json);
 
                         String url = configReader.getCompensateNotifyUrl();
-                        logger.error("补偿回调地址->" + url);
+                        logger.error("Compensate Callback Address->" + url);
                         String res = HttpUtils.postJson(url, requestJson.toJSONString());
-                        logger.error("补偿回调结果->" + res);
+                        logger.error("Compensate Callback Result->" + res);
                         if (configReader.isCompensateAuto()) {
                             //自动补偿,是否自动执行补偿
                             if (res.contains("success")||res.contains("SUCCESS")) {
@@ -94,7 +94,7 @@ public class CompensateServiceImpl implements CompensateService {
                             }
                         }
                     } catch (Exception e) {
-                        logger.error("补偿回调失败->" + e.getMessage());
+                        logger.error("Compensate Callback Fails->" + e.getMessage());
                     }
                 }
             });
@@ -109,16 +109,16 @@ public class CompensateServiceImpl implements CompensateService {
 
     public void autoCompensate(final String compensateKey, TransactionCompensateMsg transactionCompensateMsg) {
         final String json = JSON.toJSONString(transactionCompensateMsg);
-        logger.info("自动补偿->" + json);
+        logger.info("Auto Compensate->" + json);
         //自动补偿业务执行...
         final int tryTime = configReader.getCompensateTryTime();
         boolean autoExecuteRes = false;
         try {
             int executeCount = 0;
             autoExecuteRes = _executeCompensate(json);
-            logger.info("自动补偿结果->" + autoExecuteRes + ",json->" + json);
+            logger.info("Automatic Compensate Result->" + autoExecuteRes + ",json->" + json);
             while (!autoExecuteRes) {
-                logger.info("try补偿(补偿失败,进入补偿队列)->" + autoExecuteRes + ",json->" + json);
+                logger.info("Compensate Failure, Entering Compensate Queue->" + autoExecuteRes + ",json->" + json);
                 executeCount++;
                 if(executeCount==3){
                     autoExecuteRes = false;
@@ -138,7 +138,7 @@ public class CompensateServiceImpl implements CompensateService {
             }
 
         }catch (Exception e){
-            logger.error("自动补偿失败,msg:"+e.getLocalizedMessage());
+            logger.error("Auto Compensate Fails,msg:"+e.getLocalizedMessage());
             //推送数据给第三方通知
             autoExecuteRes = false;
         }
@@ -151,9 +151,9 @@ public class CompensateServiceImpl implements CompensateService {
         requestJson.put("resState",autoExecuteRes);
 
         String url = configReader.getCompensateNotifyUrl();
-        logger.error("补偿结果回调地址->" + url);
+        logger.error("Compensate Result Callback Address->" + url);
         String res = HttpUtils.postJson(url, requestJson.toJSONString());
-        logger.error("补偿结果回调结果->" + res);
+        logger.error("Compensate Result Callback Result->" + res);
 
     }
 
@@ -264,7 +264,7 @@ public class CompensateServiceImpl implements CompensateService {
             }
         }
 
-        logger.info("加载补偿以后->"+JSON.toJSONString(txGroup));
+        logger.info("Compensate Loaded->"+JSON.toJSONString(txGroup));
     }
 
     private TxGroup getCompensateByGroupId(String groupId) {
@@ -283,7 +283,7 @@ public class CompensateServiceImpl implements CompensateService {
 
         String json = compensateDao.getCompensate(path);
         if (json == null) {
-            throw new ServiceException("不存在该数据");
+            throw new ServiceException("no data existing");
         }
 
         boolean hasOk = _executeCompensate(json);
@@ -304,7 +304,7 @@ public class CompensateServiceImpl implements CompensateService {
 
         ModelInfo modelInfo = ModelInfoManager.getInstance().getModelByModel(model);
         if (modelInfo == null) {
-            throw new ServiceException("当前模块不在线.");
+            throw new ServiceException("current model offline.");
         }
 
         String data = jsonObject.getString("data");

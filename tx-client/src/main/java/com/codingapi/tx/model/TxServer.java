@@ -12,6 +12,7 @@ public class TxServer {
     private String host;
     private int heart;
     private int delay;
+    private int autoCompensateLimit;
 
     public int getPort() {
         return port;
@@ -45,10 +46,18 @@ public class TxServer {
     public void setDelay(int delay) {
         this.delay = delay;
     }
+    
+    public int getAutoCompensateLimit() {
+		return autoCompensateLimit;
+	}
 
-    @Override
+	public void setAutoCompensateLimit(int autoCompensateLimit) {
+		this.autoCompensateLimit = autoCompensateLimit;
+	}
+
+	@Override
     public String toString() {
-        return "host:" + host + ",port:" + port + ",heart:" + heart + ",delay:" + delay;
+        return "host:" + host + ",port:" + port + ",heart:" + heart + ",delay:" + delay + "autoCompensateLimit:" + autoCompensateLimit;
     }
 
     public static TxServer parser(String json) {
@@ -59,6 +68,7 @@ public class TxServer {
             txServer.setHost(jsonObject.getString("ip"));
             txServer.setHeart(jsonObject.getInteger("heart"));
             txServer.setDelay(jsonObject.getInteger("delay"));
+            txServer.setAutoCompensateLimit(jsonObject.getInteger("autoCompensateLimit"));
             return txServer;
         } catch (Exception e) {
             e.printStackTrace();

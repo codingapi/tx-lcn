@@ -5,5 +5,5 @@ package com.codingapi.tx.listener.service;
  */
 public interface TimeOutService {
 
-    void loadOutTime();
+    void loadOutTime(int timeOut);
 }

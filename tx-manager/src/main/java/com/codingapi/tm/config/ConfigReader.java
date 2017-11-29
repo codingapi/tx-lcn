@@ -35,6 +35,9 @@ public class ConfigReader {
 
     @Value("${tm.compensate.tryTime}")
     private int compensateTryTime;
+    
+    @Value("${tm.auto.compensate.limit}")
+    private int autoCompensateLimit;
 
 
 
@@ -97,4 +100,10 @@ public class ConfigReader {
     public int getCompensateTryTime() {
         return compensateTryTime;
     }
+
+	public int getAutoCompensateLimit() {
+		return autoCompensateLimit;
+	}
+    
+    
 }
