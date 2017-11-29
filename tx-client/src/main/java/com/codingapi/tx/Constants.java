@@ -2,6 +2,9 @@ package com.codingapi.tx;
 
 import com.codingapi.tx.model.TxServer;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Created by lorne on 2017/6/8.
  */
@@ -25,5 +28,10 @@ public class Constants {
      * 模块唯一标示
      */
     public static String uniqueKey;
+
+    /**
+     * 模块调用信息的缓存对象
+     */
+    public static Map<String,Object> cacheModelInfo = new ConcurrentHashMap<>();
 
 }

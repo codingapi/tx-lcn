@@ -1,5 +1,7 @@
 package com.codingapi.tx.aop.bean;
 
+import com.codingapi.tx.Constants;
+
 /**
  * 分布式事务远程调用控制对象
  * Created by lorne on 2017/6/5.
@@ -91,6 +93,18 @@ public class TxTransactionLocal {
     }
 
     public static void setCurrent(TxTransactionLocal current) {
+        //删除缓存的数据
+        if(current==null){
+            TxTransactionLocal old =  currentLocal.get();
+            if(old!=null) {
+                String keyPrefix = old.getGroupId();
+                for(String key:Constants.cacheModelInfo.keySet()){
+                    if(key.startsWith(keyPrefix)){
+                        Constants.cacheModelInfo.remove(key);
+                    }
+                }
+            }
+        }
         currentLocal.set(current);
     }
 
