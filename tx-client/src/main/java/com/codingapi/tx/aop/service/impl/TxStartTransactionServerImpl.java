@@ -50,7 +50,6 @@ public class TxStartTransactionServerImpl implements TransactionServer {
             TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
             txTransactionLocal.setGroupId(groupId);
             txTransactionLocal.setHasStart(true);
-            txTransactionLocal.setTransactional(info.getTransactional());
             txTransactionLocal.setMaxTimeOut(Constants.maxOutTime);
             TxTransactionLocal.setCurrent(txTransactionLocal);
             Object obj = point.proceed();
@@ -72,7 +71,6 @@ public class TxStartTransactionServerImpl implements TransactionServer {
                         public void run0() {
                             //记录补偿日志
                             txManagerService.sendCompensateMsg(groupId, time, info);
-
                         }
                     }).start();
 

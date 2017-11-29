@@ -6,7 +6,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>transaction-motan</artifactId>
-    <version>4.0.1</version>
+    <version>4.0.2-SNAPSHOT</version>
 
     <name>transaction-motan</name>
     <url>https://github.com/codingapi/tx-lcn</url>
@@ -66,7 +66,7 @@
         <dependency>
             <groupId>com.codingapi</groupId>
             <artifactId>tx-client</artifactId>
-            <version>4.0.1</version>
+            <version>4.0.2-SNAPSHOT</version>
         </dependency>
 
         <!-- motan config start-->

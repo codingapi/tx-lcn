@@ -57,8 +57,8 @@ public class CompensateServiceImpl implements CompensateService {
         String key = configReader.getKeyPrefix() + transactionCompensateMsg.getGroupId();
         TxGroup txGroup = redisServerService.getTxGroupByKey(key);
         if (txGroup == null) {
-            key = configReader.getKeyPrefixNotify() + transactionCompensateMsg.getGroupId();
-            txGroup = redisServerService.getTxGroupByKey(key);
+//            key = configReader.getKeyPrefixNotify() + transactionCompensateMsg.getGroupId();
+//            txGroup = redisServerService.getTxGroupByKey(key);
         }
         if(txGroup!=null) {
             redisServerService.deleteKey(key);

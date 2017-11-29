@@ -9,9 +9,10 @@ import com.codingapi.tx.aop.service.TransactionServerFactoryService;
 import com.codingapi.tx.model.TransactionInvocation;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
 
@@ -25,6 +26,9 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
     private TransactionServerFactoryService transactionServerFactoryService;
 
 
+    private Logger logger = LoggerFactory.getLogger(AspectBeforeServiceImpl.class);
+
+
     public Object around(String groupId,int maxTimeOut, ProceedingJoinPoint point) throws Throwable {
 
         MethodSignature signature = (MethodSignature) point.getSignature();
@@ -35,16 +39,19 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
 
         TxTransaction transaction = thisMethod.getAnnotation(TxTransaction.class);
 
-        Transactional transactional = thisMethod.getAnnotation(Transactional.class);
-        if (transactional == null) {
-            transactional = clazz.getAnnotation(Transactional.class);
+        TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
+
+
+        if(txTransactionLocal!=null){
+            //在同一次事务下，调用多个业务模块。
+            txTransactionLocal.setHasMoreService(true);
         }
 
-        TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
+        logger.info("around--> groupId-> " +groupId+",txTransactionLocal->"+txTransactionLocal);
 
         TransactionInvocation invocation = new TransactionInvocation(clazz, thisMethod.getName(), thisMethod.toString(), args, method.getParameterTypes());
 
-        TxTransactionInfo info = new TxTransactionInfo(transaction,transactional,txTransactionLocal,invocation,groupId,maxTimeOut);
+        TxTransactionInfo info = new TxTransactionInfo(transaction,txTransactionLocal,invocation,groupId,maxTimeOut);
 
         TransactionServer server = transactionServerFactoryService.createTransactionServer(info);
 

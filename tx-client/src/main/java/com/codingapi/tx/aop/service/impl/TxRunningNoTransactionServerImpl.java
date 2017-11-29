@@ -32,7 +32,6 @@ public class TxRunningNoTransactionServerImpl implements TransactionServer {
         txTransactionLocal.setGroupId(txGroupId);
         txTransactionLocal.setHasStart(false);
         txTransactionLocal.setKid(kid);
-        txTransactionLocal.setTransactional(info.getTransactional());
         txTransactionLocal.setMaxTimeOut(info.getMaxTimeOut());
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
