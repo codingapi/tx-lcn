@@ -57,19 +57,12 @@ public class LCNRedisConnection implements RedisConnection,ILCNResource<RedisCon
         return groupId;
     }
 
-    public int getMaxOutTime() {
-        return maxOutTime;
-    }
 
     @Override
     public void setHasIsGroup(boolean isGroup) {
         hasGroup = isGroup;
     }
 
-    @Override
-    public RedisConnection get() {
-        return redisConnection;
-    }
 
     public LCNRedisConnection(RedisConnection redisConnection, DataSourceService dataSourceService, TxTransactionLocal transactionLocal, ICallClose<LCNRedisConnection> runnable) {
         this.redisConnection = redisConnection;
@@ -124,7 +117,6 @@ public class LCNRedisConnection implements RedisConnection,ILCNResource<RedisCon
         return null;
     }
 
-    @Override
     public void transaction() throws Exception {
         if (waitTask == null) {
             redisConnection.close();
@@ -140,7 +132,7 @@ public class LCNRedisConnection implements RedisConnection,ILCNResource<RedisCon
                 System.out.println("自动回滚->" + getGroupId());
                 dataSourceService.schedule(getGroupId(),  waitTask);
             }
-        }, getMaxOutTime());
+        }, maxOutTime);
 
         System.out.println("transaction-awaitTask->" + getGroupId());
         waitTask.awaitTask();

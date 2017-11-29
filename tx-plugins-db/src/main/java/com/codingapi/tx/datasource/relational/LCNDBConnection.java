@@ -63,16 +63,8 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
         hasGroup = isGroup;
     }
 
-    public int getMaxOutTime() {
-        return maxOutTime;
-    }
-
     private boolean hasClose = false;
 
-    @Override
-    public Connection get() {
-        return connection;
-    }
 
     @Override
     public void commit() throws SQLException {
@@ -172,7 +164,6 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
     }
 
 
-    @Override
     public void transaction() throws SQLException {
         if (waitTask == null) {
             connection.rollback();
@@ -183,14 +174,14 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
         //start 结束就是全部事务的结束表示,考虑start挂掉的情况
         Timer timer = new Timer();
-        logger.info("maxOutTime:" + getMaxOutTime());
+        logger.info("maxOutTime:" + maxOutTime);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 System.out.println("auto execute ,groupId:" + getGroupId());
                 dataSourceService.schedule(getGroupId(), waitTask);
             }
-        }, getMaxOutTime());
+        }, maxOutTime);
 
         System.out.println("transaction is wait for TxManager notify, groupId : " + getGroupId());
 
