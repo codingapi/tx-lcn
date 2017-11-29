@@ -22,6 +22,12 @@ import java.util.Map;
 @Activation(key = {MotanConstants.NODE_TYPE_SERVICE, MotanConstants.NODE_TYPE_REFERER})
 public class TransactionFilter implements Filter {
 
+    /**
+     * 实现新浪的filter接口 rpc传参数
+     * @param caller caller
+     * @param request 请求
+     * @return Response
+     */
     public Response filter(Caller<?> caller, Request request) {
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
         if (txTransactionLocal != null) {
