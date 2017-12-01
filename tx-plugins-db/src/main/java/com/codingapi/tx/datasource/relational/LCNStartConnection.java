@@ -23,25 +23,19 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
 
     private Connection connection;
 
-    private TxTransactionLocal txTransactionLocal;
-
     private ICallClose<ILCNResource> subNowCount;
 
     private String groupId;
 
     private TxTask waitTask;
 
-    private boolean isGroup;
-
-    private boolean hasClose = false;
-
     private volatile int state = 1;
 
-    public LCNStartConnection(Connection connection,TxTransactionLocal txTransactionLocal, ICallClose<ILCNResource> subNowCount) {
+    public LCNStartConnection(Connection connection, ICallClose<ILCNResource> subNowCount) {
         this.connection = connection;
-        this.txTransactionLocal = txTransactionLocal;
         this.subNowCount = subNowCount;
 
+        TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
         groupId =  txTransactionLocal.getGroupId();
         TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(txTransactionLocal.getGroupId(),txTransactionLocal.getType());
         waitTask = taskGroup.getCurrent();
@@ -59,31 +53,21 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
         return groupId;
     }
 
-    @Override
-    public void setHasIsGroup(boolean isGroup) {
-        this.isGroup = isGroup;
-    }
-
-
 
     @Override
     public void commit() throws SQLException {
-        connection.commit();
+        logger.info("commit label");
 
         state = 1;
 
-        close();
-        hasClose = true;
     }
 
     @Override
     public void rollback() throws SQLException {
-        connection.rollback();
+        logger.info("rollback label");
 
         state=0;
 
-        close();
-        hasClose = true;
     }
 
     @Override
@@ -93,25 +77,37 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
             return;
         }
 
-        if(hasClose){
-            hasClose = false;
+
+        if(connection.getAutoCommit()) {
+
+            closeConnection();
+
+            //没有开启事务控制
+
+            logger.info("now transaction over ! ");
+
             return;
         }
 
 
-        if(isGroup){
-            //加入队列的连接，仅操作连接对象，不处理事务
-            logger.info("start connection hasGroup -> "+isGroup);
-
-            return;
-        }
 
         if(state==0){
+            connection.rollback();
             closeConnection();
             return;
         }
 
-        startRunnable();
+        if(state == 1) {
+            TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
+            boolean isGroup = (txTransactionLocal != null) ? txTransactionLocal.isHasIsGroup() : false;
+            if (isGroup) {
+                //加入队列的连接，仅操作连接对象，不处理事务
+                logger.info("start connection hasGroup -> " + isGroup);
+
+                return;
+            }
+            startRunnable();
+        }
     }
 
     @Override
@@ -152,6 +148,12 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
 
 
 
+    @Override
+    public void setAutoCommit(boolean autoCommit) throws SQLException {
+        setAutoCommitMethod(autoCommit,logger,connection);
+    }
+
+
 
     /**
      * default
@@ -180,10 +182,6 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
         return connection.nativeSQL(sql);
     }
 
-    @Override
-    public void setAutoCommit(boolean autoCommit) throws SQLException {
-        connection.setAutoCommit(autoCommit);
-    }
 
     @Override
     public boolean getAutoCommit() throws SQLException {

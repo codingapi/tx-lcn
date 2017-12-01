@@ -58,12 +58,6 @@ public class LCNRedisConnection implements RedisConnection,ILCNResource<RedisCon
     }
 
 
-    @Override
-    public void setHasIsGroup(boolean isGroup) {
-        hasGroup = isGroup;
-    }
-
-
     public LCNRedisConnection(RedisConnection redisConnection, DataSourceService dataSourceService, TxTransactionLocal transactionLocal, ICallClose<LCNRedisConnection> runnable) {
         this.redisConnection = redisConnection;
         this.runnable = runnable;

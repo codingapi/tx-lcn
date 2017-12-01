@@ -25,11 +25,5 @@ public interface ILCNResource<T> {
     String getGroupId();
 
 
-    /**
-     * 是否是重复调用执行
-     * @param isGroup 是否是组合
-     */
-    void setHasIsGroup(boolean isGroup);
-
 
 }

@@ -77,10 +77,6 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
         }
         ILCNResource old = pools.get(txTransactionLocal.getGroupId());
         if (old != null) {
-            old.setHasIsGroup(true);
-
-            txTransactionLocal.setHasIsGroup(true);
-            TxTransactionLocal.setCurrent(txTransactionLocal);
             return old;
         }
         return null;
@@ -135,10 +131,9 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
             }
 
             if(StringUtils.isNotEmpty(txTransactionLocal.getGroupId())){
-                if (!txTransactionLocal.isHasStart()) {
-                    logger.info("lcn transaction ");
-                    return createConnection(txTransactionLocal, connection);
-                }
+
+                logger.info("lcn transaction ");
+                return createConnection(txTransactionLocal, connection);
             }
 
 
