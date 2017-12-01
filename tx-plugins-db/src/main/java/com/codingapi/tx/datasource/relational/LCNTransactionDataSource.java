@@ -34,10 +34,17 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
     @Override
     protected Connection createLcnConnection(Connection connection, TxTransactionLocal txTransactionLocal) {
         nowCount++;
-        LCNDBConnection lcn = new LCNDBConnection(connection, dataSourceService, txTransactionLocal, subNowCount);
-        pools.put(txTransactionLocal.getGroupId(), lcn);
-        logger.info("get new connection ->" + txTransactionLocal.getGroupId());
-        return lcn;
+        if(txTransactionLocal.isHasStart()){
+            LCNStartConnection lcnStartConnection = new LCNStartConnection(connection,txTransactionLocal,subNowCount);
+            logger.info("get new start connection - > "+txTransactionLocal.getGroupId());
+            pools.put(txTransactionLocal.getGroupId(), lcnStartConnection);
+            return lcnStartConnection;
+        }else {
+            LCNDBConnection lcn = new LCNDBConnection(connection, dataSourceService, txTransactionLocal, subNowCount);
+            pools.put(txTransactionLocal.getGroupId(), lcn);
+            logger.info("get new connection ->" + txTransactionLocal.getGroupId());
+            return lcn;
+        }
     }
 
 
@@ -59,7 +66,7 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
     public Connection getConnection() throws SQLException {
         initDbType();
 
-        Connection connection = loadConnection();
+        Connection connection =(Connection)loadConnection();
         if(connection==null) {
              connection = initLCNConnection(dataSource.getConnection());
             if(connection==null){
@@ -76,7 +83,7 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
 
         initDbType();
 
-        Connection connection = loadConnection();
+        Connection connection = (Connection)loadConnection();
         if(connection==null) {
             return initLCNConnection(dataSource.getConnection(username, password));
         }else {

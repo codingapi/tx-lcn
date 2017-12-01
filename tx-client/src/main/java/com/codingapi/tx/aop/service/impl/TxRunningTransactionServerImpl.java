@@ -66,7 +66,7 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
 
                 TxGroup resTxGroup = txManagerService.addTransactionGroup(txGroupId, kid, isHasIsGroup, methodStr);
 
-                //已经进入过该模块的
+                //已经进入过该模块的，不再执行此方法
                 if(!isHasIsGroup) {
                     String type = txTransactionLocal.getType();
 

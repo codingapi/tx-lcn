@@ -3,7 +3,6 @@ package com.codingapi.tx.datasource.relational;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.ICallClose;
 import com.codingapi.tx.datasource.ILCNResource;
-import com.codingapi.tx.datasource.service.DataSourceService;
 import com.codingapi.tx.framework.task.TaskGroup;
 import com.codingapi.tx.framework.task.TaskGroupManager;
 import com.codingapi.tx.framework.task.TxTask;
@@ -13,61 +12,63 @@ import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executor;
 
-
 /**
- * create by lorne on 2017/7/29
+ * create by lorne on 2017/12/1
  */
+public class LCNStartConnection extends AbstractTransactionThread implements Connection,ILCNResource<Connection>{
 
-public class LCNDBConnection extends AbstractTransactionThread implements Connection,ILCNResource<Connection> {
-
-
-    private Logger logger = LoggerFactory.getLogger(LCNDBConnection.class);
-
-    private volatile int state = 1;
+    private Logger logger = LoggerFactory.getLogger(LCNStartConnection.class);
 
     private Connection connection;
 
-    private DataSourceService dataSourceService;
+    private TxTransactionLocal txTransactionLocal;
 
-    private ICallClose<ILCNResource> runnable;
-
-    private int maxOutTime;
-
-    private boolean hasGroup = false;
+    private ICallClose<ILCNResource> subNowCount;
 
     private String groupId;
 
     private TxTask waitTask;
 
+    private boolean isGroup;
+
     private boolean hasClose = false;
 
+    private volatile int state = 1;
 
-    public LCNDBConnection(Connection connection, DataSourceService dataSourceService, TxTransactionLocal transactionLocal, ICallClose<ILCNResource> runnable) {
-        logger.info("init lcn connection ! ");
+    public LCNStartConnection(Connection connection,TxTransactionLocal txTransactionLocal, ICallClose<ILCNResource> subNowCount) {
         this.connection = connection;
-        this.runnable = runnable;
-        this.dataSourceService = dataSourceService;
-        groupId = transactionLocal.getGroupId();
-        maxOutTime = transactionLocal.getMaxTimeOut();
+        this.txTransactionLocal = txTransactionLocal;
+        this.subNowCount = subNowCount;
 
-
-        TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(transactionLocal.getKid(),transactionLocal.getType());
+        groupId =  txTransactionLocal.getGroupId();
+        TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(txTransactionLocal.getGroupId(),txTransactionLocal.getType());
         waitTask = taskGroup.getCurrent();
+
+        logger.info("lcn start connection init ok .");
     }
 
+    @Override
+    public TxTask getWaitTask() {
+        return waitTask;
+    }
 
+    @Override
+    public String getGroupId() {
+        return groupId;
+    }
+
+    @Override
     public void setHasIsGroup(boolean isGroup) {
-        hasGroup = isGroup;
+        this.isGroup = isGroup;
     }
+
 
 
     @Override
     public void commit() throws SQLException {
-        logger.info("commit label");
+        connection.commit();
 
         state = 1;
 
@@ -77,18 +78,12 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
 
     @Override
     public void rollback() throws SQLException {
-        logger.info("rollback label");
+        connection.rollback();
 
-        state = 0;
+        state=0;
 
         close();
         hasClose = true;
-    }
-
-    protected void closeConnection() throws SQLException {
-        runnable.close(this);
-        connection.close();
-        logger.info("lcnConnection closed groupId:"+ groupId);
     }
 
     @Override
@@ -103,42 +98,20 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
             return;
         }
 
-        if(connection.getAutoCommit()){
 
-            closeConnection();
-
-            //没有开启事务控制
-
-            logger.info("now transaction over ! ");
+        if(isGroup){
+            //加入队列的连接，仅操作连接对象，不处理事务
+            logger.info("start connection hasGroup -> "+isGroup);
 
             return;
-        }else {
-
-            logger.info("now transaction state is " + state + ", (1:commit,0:rollback) groupId:" + groupId);
-
-            if (state == 0) {
-                //再嵌套时，第一次成功后面出现回滚。
-                if (waitTask != null && waitTask.isAwait() && !waitTask.isRemove()) {
-                    //通知第一个连接回滚事务。
-                    waitTask.setState(0);
-                    waitTask.signalTask();
-                } else {
-                    connection.rollback();
-                    closeConnection();
-                }
-
-                logger.info("rollback transaction ,groupId:" + groupId);
-            }
-            if (state == 1) {
-                if (hasGroup) {
-                    //加入队列的连接，仅操作连接对象，不处理事务
-                    logger.info("connection hasGroup -> "+hasGroup);
-                    return;
-                }
-
-                startRunnable();
-            }
         }
+
+        if(state==0){
+            closeConnection();
+            return;
+        }
+
+        startRunnable();
     }
 
     @Override
@@ -146,34 +119,20 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
         connection.rollback();
     }
 
-    public void transaction() throws SQLException {
+    public void transaction()throws SQLException{
         if (waitTask == null) {
             connection.rollback();
-            System.out.println(" waitTask is null");
+            System.out.println(" start waitTask is null");
             return;
         }
 
-
-        //start 结束就是全部事务的结束表示,考虑start挂掉的情况
-        Timer timer = new Timer();
-        logger.info("maxOutTime:" + maxOutTime);
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                System.out.println("auto execute ,groupId:" + getGroupId());
-                dataSourceService.schedule(getGroupId(), waitTask);
-            }
-        }, maxOutTime);
-
-        System.out.println("transaction is wait for TxManager notify, groupId : " + getGroupId());
+        System.out.println(" start transaction is wait for TxManager notify, groupId : " + getGroupId());
 
         waitTask.awaitTask();
 
-        timer.cancel();
-
         int rs = waitTask.getState();
 
-        System.out.println("lcn transaction over, res -> groupId:"+getGroupId()+" and  state is "+rs+", about state (1:commit 0:rollback -1:network error -2:network time out)");
+        System.out.println(" lcn start transaction over, res -> groupId:"+getGroupId()+" and  state is "+rs+", about state (1:commit 0:rollback)");
 
         if (rs == 1) {
             connection.commit();
@@ -184,30 +143,22 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
 
     }
 
-    public String getGroupId() {
-        return groupId;
-    }
+    protected void closeConnection() throws SQLException{
 
-    public TxTask getWaitTask() {
-        return waitTask;
-    }
+        subNowCount.close(this);
 
-    @Override
-    public void setAutoCommit(boolean autoCommit) throws SQLException {
-
-        if(!autoCommit) {
-            logger.info("setAutoCommit - >" + autoCommit);
-            connection.setAutoCommit(autoCommit);
-
-            TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
-            txTransactionLocal.setAutoCommit(autoCommit);
-        }
+        connection.close();
     }
 
 
 
 
-    /*****default*******/
+    /**
+     * default
+     */
+
+
+
 
     @Override
     public Statement createStatement() throws SQLException {
@@ -229,6 +180,10 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
         return connection.nativeSQL(sql);
     }
 
+    @Override
+    public void setAutoCommit(boolean autoCommit) throws SQLException {
+        connection.setAutoCommit(autoCommit);
+    }
 
     @Override
     public boolean getAutoCommit() throws SQLException {

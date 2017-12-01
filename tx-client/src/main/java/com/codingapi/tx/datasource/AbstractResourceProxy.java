@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements ILCNTransactionControl {
 
 
-    protected Map<String, T> pools = new ConcurrentHashMap<>();
+    protected Map<String, ILCNResource> pools = new ConcurrentHashMap<>();
 
 
     private Logger logger = LoggerFactory.getLogger(AbstractResourceProxy.class);
@@ -51,10 +51,10 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
     protected volatile int nowCount = 0;
 
     // not thread
-    protected ICallClose<T> subNowCount = new ICallClose<T>() {
+    protected ICallClose<ILCNResource> subNowCount = new ICallClose<ILCNResource>() {
 
         @Override
-        public void close(T connection) {
+        public void close(ILCNResource connection) {
             Task waitTask = connection.getWaitTask();
             if (waitTask != null) {
                 if (!waitTask.isRemove()) {
@@ -67,7 +67,7 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
         }
     };
 
-    protected T loadConnection(){
+    protected ILCNResource loadConnection(){
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
         logger.info("loadConnection !");
@@ -75,7 +75,7 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
         if(txTransactionLocal==null||txTransactionLocal.isHasMoreService()){
             return null;
         }
-        T old = pools.get(txTransactionLocal.getGroupId());
+        ILCNResource old = pools.get(txTransactionLocal.getGroupId());
         if (old != null) {
             old.setHasIsGroup(true);
 

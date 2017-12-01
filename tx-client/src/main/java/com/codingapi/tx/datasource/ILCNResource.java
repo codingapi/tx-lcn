@@ -20,14 +20,14 @@ public interface ILCNResource<T> {
 
     /**
      * 事务组id
-     * @return
+     * @return  事务组Id
      */
     String getGroupId();
 
 
     /**
      * 是否是重复调用执行
-     * @param isGroup
+     * @param isGroup 是否是组合
      */
     void setHasIsGroup(boolean isGroup);
 

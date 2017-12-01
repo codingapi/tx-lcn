@@ -5,6 +5,8 @@ import com.codingapi.tx.aop.bean.TxCompensateLocal;
 import com.codingapi.tx.aop.bean.TxTransactionInfo;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.aop.service.TransactionServer;
+import com.codingapi.tx.framework.task.TaskGroupManager;
+import com.codingapi.tx.framework.task.TxTask;
 import com.codingapi.tx.framework.thread.HookRunnable;
 import com.codingapi.tx.model.TxGroup;
 import com.codingapi.tx.netty.service.MQTxManagerService;
@@ -53,7 +55,15 @@ public class TxStartTransactionServerImpl implements TransactionServer {
             txTransactionLocal.setMaxTimeOut(Constants.maxOutTime);
             TxTransactionLocal.setCurrent(txTransactionLocal);
             Object obj = point.proceed();
+
             state = 1;
+
+            //控制本地事务的数据提交
+            String type = txTransactionLocal.getType();
+            TxTask waitTask = TaskGroupManager.getInstance().getTask(txGroup.getGroupId(), type);
+            waitTask.setState(state);
+            waitTask.signalTask();
+
             return obj;
         } catch (Throwable e) {
             throw e;
