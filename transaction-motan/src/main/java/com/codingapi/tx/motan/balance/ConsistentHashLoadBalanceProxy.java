@@ -7,6 +7,8 @@ import com.weibo.api.motan.core.extension.SpiMeta;
 import com.weibo.api.motan.rpc.Referer;
 import com.weibo.api.motan.rpc.Request;
 
+import java.util.List;
+
 /**
  * <p>一致性 Hash，相同参数的请求总是发到同一提供者</p>
  *
@@ -22,5 +24,11 @@ public class ConsistentHashLoadBalanceProxy extends ConsistentHashLoadBalance {
     @Override
     protected Referer doSelect(Request request) {
         return lcnBalanceProxy.proxy(super.doSelect(request));
+    }
+
+    @Override
+    protected void doSelectToHolder(Request request, List refersHolder) {
+        super.doSelectToHolder(request, refersHolder);
+        refersHolder.set(0, lcnBalanceProxy.proxy(super.doSelect(request)));
     }
 }

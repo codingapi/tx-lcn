@@ -7,6 +7,8 @@ import com.weibo.api.motan.core.extension.SpiMeta;
 import com.weibo.api.motan.rpc.Referer;
 import com.weibo.api.motan.rpc.Request;
 
+import java.util.List;
+
 /**
  * <p>轮循，按公约后的权重设置轮循比率</p>
  *
@@ -22,5 +24,11 @@ public class RoundRobinLoadBalanceProxy extends RoundRobinLoadBalance {
     @Override
     protected Referer doSelect(Request request) {
         return lcnBalanceProxy.proxy(super.doSelect(request));
+    }
+
+    @Override
+    protected void doSelectToHolder(Request request, List refersHolder) {
+        super.doSelectToHolder(request, refersHolder);
+        refersHolder.set(0, lcnBalanceProxy.proxy(super.doSelect(request)));
     }
 }
