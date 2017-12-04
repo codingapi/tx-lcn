@@ -5,7 +5,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>tx-client</artifactId>
-    <version>4.0.1</version>
+    <version>4.0.2</version>
 
     <name>tx-client</name>
     <url>https://github.com/codingapi/tx-lcn</url>
@@ -131,11 +131,6 @@
             <version>${org.springframework-version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-            <version>${org.springframework-version}</version>
-        </dependency>
 
         <dependency>
             <groupId>com.caucho</groupId>

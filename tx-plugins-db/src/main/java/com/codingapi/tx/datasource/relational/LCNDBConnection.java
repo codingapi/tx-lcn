@@ -28,7 +28,7 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
     private Logger logger = LoggerFactory.getLogger(LCNDBConnection.class);
 
-    private volatile int state = 0;
+    private volatile int state = 1;
 
     private Connection connection;
 
@@ -42,12 +42,11 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
     private String groupId;
 
-    private boolean readOnly;
-
     private TxTask waitTask;
 
 
     public LCNDBConnection(Connection connection, DataSourceService dataSourceService, TxTransactionLocal transactionLocal, ICallClose<LCNDBConnection> runnable) {
+        logger.info("init lcn connection ! ");
         this.connection = connection;
         this.runnable = runnable;
         this.dataSourceService = dataSourceService;
@@ -77,13 +76,8 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
     @Override
     public void commit() throws SQLException {
-        if(readOnly){
-            connection.commit();
-            return;
-        }
-
-
         logger.info("commit label");
+
         state = 1;
 
         close();
@@ -92,11 +86,6 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
     @Override
     public void rollback() throws SQLException {
-        if(readOnly){
-            connection.rollback();
-            return;
-        }
-
         logger.info("rollback label");
 
         state = 0;
@@ -113,8 +102,8 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
     @Override
     public void close() throws SQLException {
-        if(readOnly){
-            connection.close();
+
+        if(connection==null||connection.isClosed()){
             return;
         }
 
@@ -122,51 +111,64 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
             hasClose = false;
             return;
         }
-        logger.info("now transaction state is" + state + ", (1:commit,0:rollback) groupId:" + groupId);
 
-        if (state == 0) {
-            //再嵌套时，第一次成功后面出现回滚。
-            if(waitTask!=null&&waitTask.isAwait()&&!waitTask.isRemove()) {
-                //通知第一个连接回滚事务。
-                waitTask.setState(0);
-                waitTask.signalTask();
-            }else {
-                connection.rollback();
-                closeConnection();
+        if(connection.getAutoCommit()){
+
+            closeConnection();
+
+            //没有开启事务控制
+
+            logger.info("now transaction over ! ");
+
+            return;
+        }else {
+
+            logger.info("now transaction state is " + state + ", (1:commit,0:rollback) groupId:" + groupId);
+
+            if (state == 0) {
+                //再嵌套时，第一次成功后面出现回滚。
+                if (waitTask != null && waitTask.isAwait() && !waitTask.isRemove()) {
+                    //通知第一个连接回滚事务。
+                    waitTask.setState(0);
+                    waitTask.signalTask();
+                } else {
+                    connection.rollback();
+                    closeConnection();
+                }
+
+                logger.info("rollback transaction ,groupId:" + groupId);
             }
+            if (state == 1) {
+                if (hasGroup) {
+                    //加入队列的连接，仅操作连接对象，不处理事务
+                    logger.info("connection hasGroup -> "+hasGroup);
+                    return;
+                }
 
-            logger.info("rollback transaction ,groupId:" +groupId);
-        }
-        if (state == 1) {
-            if (hasGroup) {
-                //加入队列的连接，仅操作连接对象，不处理事务
-                return;
-            }
-
-            Runnable runnable = new HookRunnable() {
-                @Override
-                public void run0() {
-                    try {
-                        transaction();
-                    } catch (Exception e) {
+                Runnable runnable = new HookRunnable() {
+                    @Override
+                    public void run0() {
                         try {
-                            connection.rollback();
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
-                    } finally {
-                        try {
-                            closeConnection();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
+                            transaction();
+                        } catch (Exception e) {
+                            try {
+                                connection.rollback();
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                        } finally {
+                            try {
+                                closeConnection();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
-                }
-            };
-            Thread thread = new Thread(runnable);
-            thread.start();
+                };
+                Thread thread = new Thread(runnable);
+                thread.start();
+            }
         }
-
     }
 
 
@@ -219,7 +221,14 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
-        connection.setAutoCommit(false);
+
+        if(!autoCommit) {
+            logger.info("setAutoCommit - >" + autoCommit);
+            connection.setAutoCommit(autoCommit);
+
+            TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
+            txTransactionLocal.setAutoCommit(autoCommit);
+        }
     }
 
 
@@ -266,7 +275,6 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
     @Override
     public void setReadOnly(boolean readOnly) throws SQLException {
-        this.readOnly = readOnly;
         connection.setReadOnly(readOnly);
     }
 

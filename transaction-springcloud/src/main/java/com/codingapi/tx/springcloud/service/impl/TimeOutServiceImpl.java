@@ -13,11 +13,8 @@ public class TimeOutServiceImpl implements TimeOutService {
 
     @Override
     public void loadOutTime(int timeOut) {
-        //todo 暂时写死
-        /*int timeOut = 20*1000;
-        Constants.maxOutTime = timeOut;*/
     	//从txManager取
-    	if(timeOut < 0){
+    	if(timeOut <= 0){
     		Constants.maxOutTime = 20*1000;
     	} else {
     		Constants.maxOutTime = timeOut*1000;

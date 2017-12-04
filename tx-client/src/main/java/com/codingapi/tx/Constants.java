@@ -20,9 +20,9 @@ public class Constants {
 
 
     /**
-     * 最大模块超时时间
+     * 最大模块超时时间（毫秒）
      */
-    public static int maxOutTime = 10;
+    public static int maxOutTime = 10000;
 
     /**
      * 模块唯一标示

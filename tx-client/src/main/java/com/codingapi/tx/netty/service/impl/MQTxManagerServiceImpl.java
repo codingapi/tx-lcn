@@ -88,7 +88,7 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
     }
 
     @Override
-    public int checkTransactionInfo(String groupId, String taskId) {
+    public int cleanNotifyTransaction(String groupId, String taskId) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("g", groupId);
         jsonObject.put("t", taskId);
@@ -101,26 +101,26 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
         }
     }
 
+//
+//    @Override
+//    public int getTransaction(String groupId, String waitTaskId) {
+//
+//        String json = managerHelper.httpGet(configReader.getTxUrl() + "getTransaction?groupId=" + groupId + "&taskId=" + waitTaskId);
+//        if (json == null) {
+//            return -2;
+//        }
+//        json = json.trim();
+//        try {
+//            return Integer.parseInt(json);
+//        }catch (Exception e){
+//            return -2;
+//        }
+//    }
+
 
     @Override
-    public int getTransaction(String groupId, String waitTaskId) {
-
-        String json = managerHelper.httpGet(configReader.getTxUrl() + "getTransaction?groupId=" + groupId + "&taskId=" + waitTaskId);
-        if (json == null) {
-            return -2;
-        }
-        json = json.trim();
-        try {
-            return Integer.parseInt(json);
-        }catch (Exception e){
-            return -2;
-        }
-    }
-
-
-    @Override
-    public int clearTransaction(String groupId, String waitTaskId, boolean isGroup) {
-        String url = configReader.getTxUrl() + "clearTransaction?groupId=" + groupId + "&taskId=" + waitTaskId + "&isGroup=" + (isGroup ? 1 : 0);
+    public int cleanNotifyTransactionHttp(String groupId, String waitTaskId) {
+        String url = configReader.getTxUrl() + "cleanNotifyTransactionHttp?groupId=" + groupId + "&taskId=" + waitTaskId;
         String clearRes = managerHelper.httpGet(url);
         if(clearRes==null){
             return -1;

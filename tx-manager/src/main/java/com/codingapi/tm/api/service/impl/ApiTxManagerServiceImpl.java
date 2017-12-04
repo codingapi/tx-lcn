@@ -10,7 +10,6 @@ import com.codingapi.tm.manager.service.TxManagerSenderService;
 import com.codingapi.tm.manager.service.TxManagerService;
 import com.codingapi.tm.model.TxServer;
 import com.codingapi.tm.model.TxState;
-import com.codingapi.tm.redis.service.RedisServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,14 +44,10 @@ public class ApiTxManagerServiceImpl implements ApiTxManagerService {
 
 
     @Override
-    public boolean clearTransaction(String groupId, String taskId, int isGroup) {
-        return managerService.clearTransaction(groupId,taskId,isGroup);
+    public int cleanNotifyTransaction(String groupId, String taskId) {
+        return managerService.cleanNotifyTransaction(groupId,taskId);
     }
 
-    @Override
-    public int getTransaction(String groupId, String taskId) {
-        return managerService.getTransaction(groupId, taskId);
-    }
 
     @Override
     public boolean sendCompensateMsg(long currentTime, String groupId, String model, String address, String uniqueKey, String className, String methodStr, String data, int time) {

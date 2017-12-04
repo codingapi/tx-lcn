@@ -51,7 +51,6 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
         txTransactionLocal.setGroupId(txGroupId);
         txTransactionLocal.setHasStart(false);
         txTransactionLocal.setKid(kid);
-        txTransactionLocal.setTransactional(info.getTransactional());
         txTransactionLocal.setMaxTimeOut(info.getMaxTimeOut());
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
@@ -61,7 +60,7 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
             Object res = point.proceed();
 
             //写操作 处理
-            if(!txTransactionLocal.isReadOnly()) {
+            if(!txTransactionLocal.isAutoCommit()) {
 
                 String methodStr = info.getInvocation().getMethodStr();
 

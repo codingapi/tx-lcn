@@ -26,15 +26,6 @@ public interface TxManagerService {
     TxGroup addTransactionGroup(String groupId, String taskId,int isGroup, String modelName, String methodStr);
 
 
-    /**
-     *
-     * @param groupId
-     * @param taskId
-     * @return  1 存在 0不存在 -1 未结束
-     */
-    int getTransaction(String groupId, String taskId);
-
-
     boolean closeTransactionGroup(String groupId,int state);
 
 
@@ -43,7 +34,13 @@ public interface TxManagerService {
     void deleteTxGroup(TxGroup txGroup);
 
 
-    boolean clearTransaction(String groupId, String taskId, int isGroup);
+    /**
+     * 检查事务组数据
+     * @param groupId   事务组id
+     * @param taskId    任务id
+     * @return  本次请求的是否提交 1提交 0回滚
+     */
+    int cleanNotifyTransaction(String groupId, String taskId);
 
 
 

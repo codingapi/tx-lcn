@@ -70,7 +70,9 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
     protected T loadConnection(){
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
-        if(txTransactionLocal==null){
+        logger.info("loadConnection !");
+
+        if(txTransactionLocal==null||txTransactionLocal.isHasMoreService()){
             return null;
         }
         T old = pools.get(txTransactionLocal.getGroupId());
@@ -117,18 +119,14 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
 
 
     protected C initLCNConnection(C connection) {
+        logger.info("initLCNConnection");
         C lcnConnection = connection;
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
-        if (txTransactionLocal != null) {
+        if (txTransactionLocal != null&&!txTransactionLocal.isHasMoreService()) {
 
             logger.info("lcn datasource transaction control ");
 
-            //只读操作，直接返回connection
-            if(txTransactionLocal.isReadOnly()){
-                logger.info("readonly transaction ");
-                return connection;
-            }
 
             //补偿的情况的
             if (TxCompensateLocal.current() != null) {
@@ -145,6 +143,7 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
 
 
         }
+        logger.info("load default connection !");
         return lcnConnection;
     }
 

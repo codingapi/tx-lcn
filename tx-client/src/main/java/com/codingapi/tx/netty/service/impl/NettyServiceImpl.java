@@ -35,7 +35,7 @@ public class NettyServiceImpl implements NettyService {
 
     @Autowired
     private NettyControlService nettyControlService;
-    
+
     @Autowired
     private TimeOutService timeOutService;
 
@@ -62,7 +62,7 @@ public class NettyServiceImpl implements NettyService {
         int autoCompensateLimit = Constants.txServer.getAutoCompensateLimit();
 
         final TransactionHandler transactionHandler = new TransactionHandler(nettyControlService, delay);
-        
+
         timeOutService.loadOutTime(autoCompensateLimit);
         workerGroup = new NioEventLoopGroup();
         try {
@@ -102,16 +102,7 @@ public class NettyServiceImpl implements NettyService {
             });
 
         } catch (Exception e) {
-            e.printStackTrace();
-
-//            isStarting = false;
-//
-//            //断开重新连接机制
-//            close();
-//
-//            if (e instanceof ConnectTimeoutException) {
-//                start();
-//            }
+            logger.error(e.getLocalizedMessage());
         }
     }
 
@@ -126,11 +117,6 @@ public class NettyServiceImpl implements NettyService {
         }
     }
 
-//
-//    @Override
-//    public String sendMsg(Request request) {
-//        return transactionHandler.sendMsg(request);
-//    }
 
     @Override
     public boolean checkState() {

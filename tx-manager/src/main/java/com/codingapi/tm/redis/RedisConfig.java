@@ -3,8 +3,6 @@ package com.codingapi.tm.redis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -16,7 +14,7 @@ import redis.clients.jedis.JedisPoolConfig;
  * Created by lorne on 2017/7/5.
  */
 
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+@EnableAutoConfiguration
 public class RedisConfig {
 
     private static Logger logger = LoggerFactory.getLogger(RedisConfig.class);

@@ -50,26 +50,25 @@ public interface MQTxManagerService {
      * @param taskId    任务id
      * @return  事务状态
      */
-    int checkTransactionInfo(String groupId, String taskId);
+    int cleanNotifyTransaction(String groupId, String taskId);
 
 
-    /**
-     * 检查事务状态   通过http请求
-     * @param groupId 事务组id
-     * @param waitTaskId 任务id
-     * @return 事务状态
-     */
-    int getTransaction(String groupId, String waitTaskId);
+//    /**
+//     * 检查事务状态   通过http请求
+//     * @param groupId 事务组id
+//     * @param waitTaskId 任务id
+//     * @return 事务状态
+//     */
+//    int getTransaction(String groupId, String waitTaskId);
 
 
     /**
      * 检查并清理事务数据
      * @param groupId   事务组id
      * @param waitTaskId    任务id
-     * @param isGroup   是否合并事务
      * @return  事务状态
      */
-    int clearTransaction(String groupId, String waitTaskId, boolean isGroup);
+    int cleanNotifyTransactionHttp(String groupId, String waitTaskId);
 
     /**
      * 记录补偿事务数据到tm
