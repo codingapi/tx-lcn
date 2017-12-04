@@ -61,7 +61,7 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
             Object res = point.proceed();
 
             //写操作 处理
-            if(!txTransactionLocal.isAutoCommit()) {
+            if(!txTransactionLocal.isReadOnly()) {
 
                 String methodStr = info.getInvocation().getMethodStr();
 

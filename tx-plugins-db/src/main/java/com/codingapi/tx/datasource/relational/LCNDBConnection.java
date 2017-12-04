@@ -27,6 +27,8 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
 
     private Logger logger = LoggerFactory.getLogger(LCNDBConnection.class);
 
+    private ThreadLocal<Boolean> isClose = new ThreadLocal<>();
+
     private volatile int state = 1;
 
     private Connection connection;
@@ -60,17 +62,37 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
 
     @Override
     public void commit() throws SQLException {
+
+//        if(connection.getAutoCommit()){
+//            connection.commit();
+//            return;
+//        }
+
         logger.info("commit label");
 
         state = 1;
+
+        close();
+
+        isClose.set(true);
 
     }
 
     @Override
     public void rollback() throws SQLException {
+
+//        if(connection.getAutoCommit()){
+//            connection.rollback();
+//            return;
+//        }
+
         logger.info("rollback label");
 
         state = 0;
+
+        close();
+
+        isClose.set(true);
     }
 
     protected void closeConnection() throws SQLException {
@@ -82,25 +104,30 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
     @Override
     public void close() throws SQLException {
 
+        if(isClose.get()!=null&& isClose.get()){
+            return;
+        }
+
         if(connection==null||connection.isClosed()){
             return;
         }
 
 
-        if(connection.getAutoCommit()) {
-
-            closeConnection();
-
-            //没有开启事务控制
-
-            logger.info("now transaction over ! ");
-
-            return;
-        }
+//        if(connection.getAutoCommit()) {
+//
+//            closeConnection();
+//
+//            //没有开启事务控制
+//
+//            logger.info("now transaction over ! ");
+//
+//            return;
+//        }
 
         logger.info("now transaction state is " + state + ", (1:commit,0:rollback) groupId:" + groupId);
 
-        if (state == 0) {
+
+        if (state==0) {
             //再嵌套时，第一次成功后面出现回滚。
 //            if (waitTask != null && waitTask.isAwait() && !waitTask.isRemove()) {
 //                //通知第一个连接回滚事务。
@@ -111,12 +138,13 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
 //                closeConnection();
 //            }
 
-            connection.rollback();
+
+            rollbackConnection();
             closeConnection();
 
             logger.info("rollback transaction ,groupId:" + groupId);
         }
-        if (state == 1) {
+        if (state==1) {
             TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
             boolean hasGroup = (txTransactionLocal!=null)?txTransactionLocal.isHasIsGroup():false;
             if (hasGroup) {
@@ -137,7 +165,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
 
     public void transaction() throws SQLException {
         if (waitTask == null) {
-            connection.rollback();
+            rollbackConnection();
             System.out.println(" waitTask is null");
             return;
         }
@@ -167,7 +195,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
         if (rs == 1) {
             connection.commit();
         } else {
-            connection.rollback();
+            rollbackConnection();
         }
         waitTask.remove();
 
@@ -183,7 +211,19 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
 
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
-        setAutoCommitMethod(autoCommit,logger,connection);
+        connection.setAutoCommit(false);
+    }
+
+    @Override
+    public void setReadOnly(boolean readOnly) throws SQLException {
+
+        if(readOnly) {
+            logger.info("setReadOnly - >" + readOnly);
+            connection.setReadOnly(readOnly);
+
+            TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
+            txTransactionLocal.setReadOnly(readOnly);
+        }
     }
 
 
@@ -227,10 +267,6 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
         return connection.getMetaData();
     }
 
-    @Override
-    public void setReadOnly(boolean readOnly) throws SQLException {
-        connection.setReadOnly(readOnly);
-    }
 
     @Override
     public boolean isReadOnly() throws SQLException {

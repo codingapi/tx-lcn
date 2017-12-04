@@ -31,6 +31,10 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
 
     private volatile int state = 1;
 
+    private ThreadLocal<Boolean> isClose = new ThreadLocal<>();
+
+//    private ThreadLocal<Integer> state = new ThreadLocal<>();
+
     public LCNStartConnection(Connection connection, ICallClose<ILCNResource> subNowCount) {
         this.connection = connection;
         this.subNowCount = subNowCount;
@@ -56,43 +60,61 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
 
     @Override
     public void commit() throws SQLException {
+//        if(connection.getAutoCommit()) {
+//            connection.commit();
+//            return;
+//        }
         logger.info("commit label");
 
-        state = 1;
+        state=1;
 
+        close();
+
+        isClose.set(true);
     }
 
     @Override
     public void rollback() throws SQLException {
+//        if(connection.getAutoCommit()) {
+//            connection.rollback();
+//            return;
+//        }
         logger.info("rollback label");
 
         state=0;
 
+        close();
+
+        isClose.set(true);
     }
 
     @Override
     public void close() throws SQLException {
 
+        if(isClose.get()!=null&& isClose.get()){
+            return;
+        }
+
         if(connection==null||connection.isClosed()){
             return;
         }
 
-
-        if(connection.getAutoCommit()) {
-
-            closeConnection();
-
-            //没有开启事务控制
-
-            logger.info("now transaction over ! ");
-
-            return;
-        }
+//
+//        if(connection.getAutoCommit()) {
+//
+//            closeConnection();
+//
+//            //没有开启事务控制
+//
+//            logger.info("now transaction over ! ");
+//
+//            return;
+//        }
 
 
 
         if(state==0){
-            connection.rollback();
+            rollbackConnection();
             closeConnection();
             return;
         }
@@ -117,7 +139,7 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
 
     public void transaction()throws SQLException{
         if (waitTask == null) {
-            connection.rollback();
+            rollbackConnection();
             System.out.println(" start waitTask is null");
             return;
         }
@@ -133,7 +155,7 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
         if (rs == 1) {
             connection.commit();
         } else {
-            connection.rollback();
+            rollbackConnection();
         }
         waitTask.remove();
 
@@ -150,7 +172,7 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
 
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
-        setAutoCommitMethod(autoCommit,logger,connection);
+        connection.setAutoCommit(false);
     }
 
 

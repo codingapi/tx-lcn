@@ -1,10 +1,7 @@
 package com.codingapi.tx.datasource.relational;
 
-import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.framework.thread.HookRunnable;
-import org.slf4j.Logger;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -36,17 +33,6 @@ public abstract class AbstractTransactionThread {
         };
         Thread thread = new Thread(runnable);
         thread.start();
-    }
-
-
-    protected void setAutoCommitMethod(boolean autoCommit, Logger logger, Connection connection) throws SQLException {
-        if(!autoCommit) {
-            logger.info("setAutoCommit - >" + autoCommit);
-            connection.setAutoCommit(autoCommit);
-
-            TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
-            txTransactionLocal.setAutoCommit(autoCommit);
-        }
     }
 
 

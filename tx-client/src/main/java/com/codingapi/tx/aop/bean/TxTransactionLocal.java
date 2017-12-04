@@ -33,7 +33,9 @@ public class TxTransactionLocal {
 
     private String type;
 
-    private boolean autoCommit = true;
+    //private boolean autoCommit = true;
+
+    private boolean readOnly = false;
 
     public boolean isHasIsGroup() {
         return hasIsGroup;
@@ -117,11 +119,19 @@ public class TxTransactionLocal {
         return type;
     }
 
-    public boolean isAutoCommit() {
-        return autoCommit;
+    public boolean isReadOnly() {
+        return readOnly;
     }
 
-    public void setAutoCommit(boolean autoCommit) {
-        this.autoCommit = autoCommit;
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
+
+    //    public boolean isAutoCommit() {
+//        return autoCommit;
+//    }
+//
+//    public void setAutoCommit(boolean autoCommit) {
+//        this.autoCommit = autoCommit;
+//    }
 }
