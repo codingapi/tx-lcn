@@ -1,6 +1,8 @@
 package com.codingapi.tx.datasource.relational;
 
 import com.codingapi.tx.datasource.ICallClose;
+import com.alibaba.fastjson.JSONObject;
+import com.codingapi.tx.Constants;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.ILCNResource;
 import com.codingapi.tx.datasource.service.DataSourceService;
@@ -12,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Timer;
@@ -43,6 +46,8 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
     private String groupId;
 
     private TxTask waitTask;
+    
+    private List<String> cachedModelList;
 
 
     public LCNDBConnection(Connection connection, DataSourceService dataSourceService, TxTransactionLocal transactionLocal, ICallClose<LCNDBConnection> runnable) {
@@ -52,7 +57,8 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
         this.dataSourceService = dataSourceService;
         groupId = transactionLocal.getGroupId();
         maxOutTime = transactionLocal.getMaxTimeOut();
-
+        cachedModelList = transactionLocal.getCachedModelList();
+        
 
         TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(transactionLocal.getKid(),transactionLocal.getType());
         waitTask = taskGroup.getCurrent();
@@ -202,6 +208,12 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
         System.out.println("lcn transaction over, res -> groupId:"+getGroupId()+" and  state is "+rs+", about state (1:commit 0:rollback -1:network error -2:network time out)");
 
+        System.out.println("delete the completed cached list:" + JSONObject.toJSONString(cachedModelList) + ", groupId:" + getGroupId());
+        
+        for(String key : cachedModelList){
+        	Constants.cacheModelInfo.remove(key);
+        }
+        
         if (rs == 1) {
             connection.commit();
         } else {

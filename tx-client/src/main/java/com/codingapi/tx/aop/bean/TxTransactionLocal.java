@@ -120,4 +120,12 @@ public class TxTransactionLocal {
     public void setAutoCommit(boolean autoCommit) {
         this.autoCommit = autoCommit;
     }
+    
+    public List<String> getCachedModelList(){
+    	return cachedModelList;
+    }
+    
+    public void setCachedModelList(List<String> cachedModelList){
+    	this.cachedModelList = cachedModelList;
+    }
 }
