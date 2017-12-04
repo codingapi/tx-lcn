@@ -1,5 +1,8 @@
 package com.codingapi.tx.aop.bean;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -25,6 +28,8 @@ public class TxTransactionLocal {
     private boolean readOnly;
 
     private Transactional transactional;
+    
+    private List<String> cachedModelList = new ArrayList<String>();
 
 
     public boolean isHasIsGroup() {
