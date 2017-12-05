@@ -197,13 +197,15 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
             //回滚操作只发送通过不需要等待确认
             for (TxInfo txInfo : txGroup.getList()) {
                 if(txInfo.getChannel()!=null) {
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("a", "t");
-                    jsonObject.put("c", checkSate);
-                    jsonObject.put("t", txInfo.getKid());
-                    String key = KidUtils.generateShortUuid();
-                    jsonObject.put("k", key);
-                    txInfo.getChannel().send(jsonObject.toJSONString());
+                    if (txInfo.getIsGroup() == 0) {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("a", "t");
+                        jsonObject.put("c", checkSate);
+                        jsonObject.put("t", txInfo.getKid());
+                        String key = KidUtils.generateShortUuid();
+                        jsonObject.put("k", key);
+                        txInfo.getChannel().send(jsonObject.toJSONString());
+                    }
                 }
             }
             txManagerService.deleteTxGroup(txGroup);
