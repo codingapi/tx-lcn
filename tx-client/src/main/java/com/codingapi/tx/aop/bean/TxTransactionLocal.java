@@ -1,6 +1,15 @@
 package com.codingapi.tx.aop.bean;
 
-import com.codingapi.tx.Constants;
+import com.alibaba.fastjson.JSONObject;
+import com.codingapi.tx.framework.utils.SocketManager;
+import com.codingapi.tx.model.Request;
+import com.lorne.core.framework.utils.encode.Base64Utils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 分布式事务远程调用控制对象
@@ -8,11 +17,15 @@ import com.codingapi.tx.Constants;
  */
 public class TxTransactionLocal {
 
+    private Logger logger = LoggerFactory.getLogger(TxTransactionLocal.class);
+
     private final static ThreadLocal<TxTransactionLocal> currentLocal = new ThreadLocal<TxTransactionLocal>();
 
     private String groupId;
 
     private int maxTimeOut;
+
+    private Map<String,byte[]> cacheModelInfo = new ConcurrentHashMap<>();
 
     /**
      * 是否同一个模块被多次请求
@@ -91,19 +104,40 @@ public class TxTransactionLocal {
     }
 
     public static void setCurrent(TxTransactionLocal current) {
-        //删除缓存的数据
-        if(current==null){
-            TxTransactionLocal old =  currentLocal.get();
-            if(old!=null) {
-                String keyPrefix = old.getGroupId();
-                for(String key:Constants.cacheModelInfo.keySet()){
-                    if(key.startsWith(keyPrefix)){
-                        Constants.cacheModelInfo.remove(key);
-                    }
-                }
+        currentLocal.set(current);
+    }
+
+
+    public void putLoadBalance(String key, byte[] bytes){
+        cacheModelInfo.put(key,bytes);
+        //与TxManager通讯
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("g", getGroupId());
+        jsonObject.put("k", key);
+        jsonObject.put("d", Base64Utils.encode(bytes));
+        logger.info("putLoadBalance--> start ");
+        Request request = new Request("plb", jsonObject.toString());
+        String json =  SocketManager.getInstance().sendMsg(request);
+        logger.info("putLoadBalance--> end ,res ->"+json);
+    }
+
+
+    public byte[] getLoadBalance(String key){
+        byte[] old =  cacheModelInfo.get(key);
+        if(old==null){
+            //与TxManager通讯
+            logger.info("getLoadBalance--> start");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("g", getGroupId());
+            jsonObject.put("k", key);
+            Request request = new Request("glb", jsonObject.toString());
+            String json =  SocketManager.getInstance().sendMsg(request);
+            logger.info("getLoadBalance--> end ,res - >" + json);
+            if(StringUtils.isNotEmpty(json)){
+                return Base64Utils.decode(json);
             }
         }
-        currentLocal.set(current);
+        return null;
     }
 
 

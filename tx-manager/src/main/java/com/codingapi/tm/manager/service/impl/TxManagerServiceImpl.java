@@ -3,6 +3,7 @@ package com.codingapi.tm.manager.service.impl;
 
 import com.codingapi.tm.Constants;
 import com.codingapi.tm.manager.ModelInfoManager;
+import com.codingapi.tm.manager.service.LoadBalanceService;
 import com.codingapi.tm.manager.service.TxManagerSenderService;
 import com.codingapi.tm.manager.service.TxManagerService;
 import com.codingapi.tm.config.ConfigReader;
@@ -36,6 +37,9 @@ public class TxManagerServiceImpl implements TxManagerService {
     private TxManagerSenderService transactionConfirmService;
 
 
+    @Autowired
+    private LoadBalanceService loadBalanceService;
+
 
     private Logger logger = LoggerFactory.getLogger(TxManagerServiceImpl.class);
 
@@ -61,8 +65,8 @@ public class TxManagerServiceImpl implements TxManagerService {
 
     @Override
     public TxGroup addTransactionGroup(String groupId, String taskId, int isGroup, String modelName, String methodStr) {
-        String key = configReader.getKeyPrefix() + groupId;
-        TxGroup txGroup = redisServerService.getTxGroupByKey(key);
+        String key = getTxGroupKey(groupId);
+        TxGroup txGroup = getTxGroup(groupId);
         if (txGroup==null) {
             return null;
         }
@@ -90,8 +94,8 @@ public class TxManagerServiceImpl implements TxManagerService {
 
     @Override
     public boolean rollbackTransactionGroup(String groupId) {
-        String key = configReader.getKeyPrefix() + groupId;
-        TxGroup txGroup = redisServerService.getTxGroupByKey(key);
+        String key = getTxGroupKey(groupId);
+        TxGroup txGroup = getTxGroup(groupId);
         if (txGroup==null) {
             return false;
         }
@@ -104,8 +108,8 @@ public class TxManagerServiceImpl implements TxManagerService {
     public int cleanNotifyTransaction(String groupId, String taskId) {
         int res = 0;
         logger.info("start-cleanNotifyTransaction->groupId:"+groupId+",taskId:"+taskId);
-        String key = configReader.getKeyPrefix() + groupId;
-        TxGroup txGroup = redisServerService.getTxGroupByKey(key);
+        String key = getTxGroupKey(groupId);
+        TxGroup txGroup = getTxGroup(groupId);
         if (txGroup==null) {
             logger.info("cleanNotifyTransaction - > txGroup is null ");
             return res;
@@ -145,7 +149,7 @@ public class TxManagerServiceImpl implements TxManagerService {
         }
 
         if (isOver) {
-            redisServerService.deleteKey(key);
+            deleteTxGroup(txGroup);
         }
 
         //有更新的数据，需要修改记录
@@ -160,8 +164,8 @@ public class TxManagerServiceImpl implements TxManagerService {
 
     @Override
     public int closeTransactionGroup(String groupId,int state) {
-        String key = configReader.getKeyPrefix() + groupId;
-        TxGroup txGroup = redisServerService.getTxGroupByKey(key);
+        String key = getTxGroupKey(groupId);
+        TxGroup txGroup = getTxGroup(groupId);
         if(txGroup==null){
             return 0;
         }
@@ -182,10 +186,23 @@ public class TxManagerServiceImpl implements TxManagerService {
 
     @Override
     public void deleteTxGroup(TxGroup txGroup) {
-        String key = configReader.getKeyPrefix() + txGroup.getGroupId();
+        String groupId = txGroup.getGroupId();
+
+        String key = getTxGroupKey(groupId);
         redisServerService.deleteKey(key);
+
+        loadBalanceService.remove(groupId);
     }
 
 
+    @Override
+    public TxGroup getTxGroup(String groupId) {
+        String key = getTxGroupKey(groupId);
+        return redisServerService.getTxGroupByKey(key);
+    }
 
+    @Override
+    public String getTxGroupKey(String groupId) {
+        return configReader.getKeyPrefix() + groupId;
+    }
 }

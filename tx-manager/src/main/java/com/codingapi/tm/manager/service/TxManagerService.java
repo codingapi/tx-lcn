@@ -37,7 +37,28 @@ public interface TxManagerService {
 
     void dealTxGroup(TxGroup txGroup, boolean hasOk );
 
+
+    /**
+     * 删除事务组
+     * @param txGroup 事务组
+     */
     void deleteTxGroup(TxGroup txGroup);
+
+
+    /**
+     * 获取事务组信息
+     * @param groupId    事务组id
+     * @return  事务组
+     */
+    TxGroup getTxGroup(String groupId);
+
+
+    /**
+     * 获取事务组的key
+     * @param groupId 事务组id
+     * @return key
+     */
+    String getTxGroupKey(String groupId);
 
 
     /**
