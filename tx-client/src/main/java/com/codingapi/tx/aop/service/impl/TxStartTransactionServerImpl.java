@@ -86,10 +86,12 @@ public class TxStartTransactionServerImpl implements TransactionServer {
 
                         int rs = txManagerService.closeTransactionGroup(groupId, resState);
 
+                        int lastState = rs==-1?0:resState;
+
                         //控制本地事务的数据提交
                         final TxTask waitTask = TaskGroupManager.getInstance().getTask(groupId, type);
                         if(waitTask!=null){
-                            waitTask.setState(resState);
+                            waitTask.setState(lastState);
                             waitTask.signalTask();
                         }
 
@@ -97,24 +99,25 @@ public class TxStartTransactionServerImpl implements TransactionServer {
                         if (compensateLocal == null) {
                             long end = System.currentTimeMillis();
                             long time = end - start;
-                            if (resState == 1 && rs == 0) {
+                            if (lastState == 1 && rs == 0) {
                                 //记录补偿日志
                                 txManagerService.sendCompensateMsg(groupId, time, info);
                             }
                         }
 
+                        task.setState(lastState);
                         task.signalTask();
                     }
                 }
             }).start();
 
             task.awaitTask();
-
+            int lastState =task.getState();
             task.remove();
 
             TxTransactionLocal.setCurrent(null);
             logger.info("<---end start transaction");
-            logger.info("start transaction over, res -> groupId:" + groupId + ", now state:" + (resState == 1 ? "commit" : "rollback"));
+            logger.info("start transaction over, res -> groupId:" + groupId + ", now state:" + (lastState == 1 ? "commit" : "rollback"));
 
         }
     }

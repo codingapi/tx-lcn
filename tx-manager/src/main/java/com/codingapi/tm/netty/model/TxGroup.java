@@ -28,6 +28,11 @@ public class TxGroup {
     private int isCommit;
 
 
+    /**
+     * 是否强制回滚(1:开启，0:关闭)
+     */
+    private int rollback = 0 ;
+
     private List<TxInfo> list;
 
     public TxGroup() {
@@ -95,6 +100,14 @@ public class TxGroup {
         this.hasOver = hasOver;
     }
 
+    public int getRollback() {
+        return rollback;
+    }
+
+    public void setRollback(int rollback) {
+        this.rollback = rollback;
+    }
+
     public static TxGroup parser(String json) {
         try {
             JSONObject jsonObject = JSONObject.parseObject(json);
@@ -104,6 +117,7 @@ public class TxGroup {
             txGroup.setNowTime(jsonObject.getLong("nt"));
             txGroup.setState(jsonObject.getInteger("s"));
             txGroup.setIsCommit(jsonObject.getInteger("i"));
+            txGroup.setRollback(jsonObject.getInteger("r"));
             txGroup.setHasOver(jsonObject.getInteger("o"));
             JSONArray array = jsonObject.getJSONArray("l");
             int length = array.size();
@@ -138,6 +152,7 @@ public class TxGroup {
         jsonObject.put("nt", getNowTime());
         jsonObject.put("s", getState());
         jsonObject.put("i", getIsCommit());
+        jsonObject.put("r", getRollback());
         jsonObject.put("o",getHasOver());
         if(noList) {
             JSONArray jsonArray = new JSONArray();

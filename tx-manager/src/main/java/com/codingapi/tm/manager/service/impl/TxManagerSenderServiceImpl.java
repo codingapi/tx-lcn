@@ -59,19 +59,24 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
     private CompensateService compensateService;
 
     @Override
-    public boolean confirm(TxGroup txGroup) {
+    public int confirm(TxGroup txGroup) {
         //绑定管道对象，检查网络
         setChannel(txGroup.getList());
 
         //事务不满足直接回滚事务
         if (txGroup.getState()==0) {
             transaction(txGroup, 0);
-            return false;
+            return 0;
+        }
+
+        if(txGroup.getRollback()==1){
+            transaction(txGroup, 0);
+            return -1;
         }
 
         boolean hasOk =  transaction(txGroup, 1);
         txManagerService.dealTxGroup(txGroup,hasOk);
-        return hasOk;
+        return hasOk?1:0;
     }
 
 

@@ -39,7 +39,7 @@ public interface MQTxManagerService {
      *
      * @param groupId   事务组id
      * @param state     提交或者回滚 1提交0回滚
-     * @return 1 成功 0失败
+     * @return 1 成功 0失败 -1 事务强制回滚
      */
     int closeTransactionGroup(String groupId, int state);
 
@@ -52,14 +52,6 @@ public interface MQTxManagerService {
      */
     int cleanNotifyTransaction(String groupId, String taskId);
 
-
-//    /**
-//     * 检查事务状态   通过http请求
-//     * @param groupId 事务组id
-//     * @param waitTaskId 任务id
-//     * @return 事务状态
-//     */
-//    int getTransaction(String groupId, String waitTaskId);
 
 
     /**

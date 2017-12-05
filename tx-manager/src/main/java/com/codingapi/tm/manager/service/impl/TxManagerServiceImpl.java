@@ -88,7 +88,17 @@ public class TxManagerServiceImpl implements TxManagerService {
         return txGroup;
     }
 
-
+    @Override
+    public boolean rollbackTransactionGroup(String groupId) {
+        String key = configReader.getKeyPrefix() + groupId;
+        TxGroup txGroup = redisServerService.getTxGroupByKey(key);
+        if (txGroup==null) {
+            return false;
+        }
+        txGroup.setRollback(1);
+        redisServerService.saveTransaction(key, txGroup.toJsonString());
+        return true;
+    }
 
     @Override
     public int cleanNotifyTransaction(String groupId, String taskId) {
@@ -103,6 +113,11 @@ public class TxManagerServiceImpl implements TxManagerService {
 
         if(txGroup.getHasOver()==0){
             logger.info("cleanNotifyTransaction - > groupId "+groupId+" not over !");
+            return 0;
+        }
+
+        if(txGroup.getRollback()==1){
+            logger.info("cleanNotifyTransaction - > groupId "+groupId+" only rollback !");
             return 0;
         }
 
@@ -144,11 +159,11 @@ public class TxManagerServiceImpl implements TxManagerService {
 
 
     @Override
-    public boolean closeTransactionGroup(String groupId,int state) {
+    public int closeTransactionGroup(String groupId,int state) {
         String key = configReader.getKeyPrefix() + groupId;
         TxGroup txGroup = redisServerService.getTxGroupByKey(key);
         if(txGroup==null){
-            return false;
+            return 0;
         }
         txGroup.setState(state);
         txGroup.setHasOver(1);
@@ -160,8 +175,7 @@ public class TxManagerServiceImpl implements TxManagerService {
     @Override
     public void dealTxGroup(TxGroup txGroup, boolean hasOk) {
         if(hasOk) {
-            String key = configReader.getKeyPrefix() + txGroup.getGroupId();
-            redisServerService.deleteKey(key);
+            deleteTxGroup(txGroup);
         }
     }
 

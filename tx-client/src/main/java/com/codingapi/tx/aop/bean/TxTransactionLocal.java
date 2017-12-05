@@ -28,17 +28,11 @@ public class TxTransactionLocal {
      * 时候已经获取到连接对象
      */
     private boolean hasConnection = false;
-//
-//    /**
-//     * 是否单模块下多次业务调用
-//     */
-//    private boolean hasMoreService = false;
+
 
     private String kid;
 
     private String type;
-
-    //private boolean autoCommit = true;
 
     private boolean readOnly = false;
 
@@ -73,15 +67,6 @@ public class TxTransactionLocal {
     public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
-
-//    public boolean isHasMoreService() {
-//        return hasMoreService;
-//    }
-//
-//    public void setHasMoreService(boolean hasMoreService) {
-//        this.hasMoreService = hasMoreService;
-//    }
-
 
     public boolean isHasConnection() {
         return hasConnection;
@@ -138,11 +123,4 @@ public class TxTransactionLocal {
         this.readOnly = readOnly;
     }
 
-    //    public boolean isAutoCommit() {
-//        return autoCommit;
-//    }
-//
-//    public void setAutoCommit(boolean autoCommit) {
-//        this.autoCommit = autoCommit;
-//    }
 }

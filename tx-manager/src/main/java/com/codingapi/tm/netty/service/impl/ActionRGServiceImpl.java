@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * 关闭事务组
+ * 强制回滚事务组
  * create by lorne on 2017/11/11
  */
-@Service(value = "ctg")
-public class ActionCTGServiceImpl implements IActionService{
+@Service(value = "rg")
+public class ActionRGServiceImpl implements IActionService{
 
 
     @Autowired
@@ -19,9 +19,10 @@ public class ActionCTGServiceImpl implements IActionService{
 
     @Override
     public String execute(String modelName,String key,JSONObject params ) {
+        String res = "";
         String groupId = params.getString("g");
-        int state = params.getInteger("s");
-        String res = String.valueOf(txManagerService.closeTransactionGroup(groupId,state));
+        boolean bs = txManagerService.rollbackTransactionGroup(groupId);
+        res = bs ? "1" : "0";
         return res;
     }
 }
