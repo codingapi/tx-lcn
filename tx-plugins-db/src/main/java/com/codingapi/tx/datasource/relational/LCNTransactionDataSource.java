@@ -38,11 +38,13 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
             LCNStartConnection lcnStartConnection = new LCNStartConnection(connection,subNowCount);
             logger.info("get new start connection - > "+txTransactionLocal.getGroupId());
             pools.put(txTransactionLocal.getGroupId(), lcnStartConnection);
+            txTransactionLocal.setHasConnection(true);
             return lcnStartConnection;
         }else {
             LCNDBConnection lcn = new LCNDBConnection(connection, dataSourceService, subNowCount);
-            pools.put(txTransactionLocal.getGroupId(), lcn);
             logger.info("get new connection ->" + txTransactionLocal.getGroupId());
+            pools.put(txTransactionLocal.getGroupId(), lcn);
+            txTransactionLocal.setHasConnection(true);
             return lcn;
         }
     }
@@ -85,7 +87,11 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
 
         Connection connection = (Connection)loadConnection();
         if(connection==null) {
-            return initLCNConnection(dataSource.getConnection(username, password));
+            connection =  initLCNConnection(dataSource.getConnection(username, password));
+            if(connection==null){
+                throw new SQLException("connection was overload");
+            }
+            return connection;
         }else {
             return connection;
         }

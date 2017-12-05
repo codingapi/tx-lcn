@@ -63,11 +63,6 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
     @Override
     public void commit() throws SQLException {
 
-//        if(connection.getAutoCommit()){
-//            connection.commit();
-//            return;
-//        }
-
         logger.info("commit label");
 
         state = 1;
@@ -80,11 +75,6 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
 
     @Override
     public void rollback() throws SQLException {
-
-//        if(connection.getAutoCommit()){
-//            connection.rollback();
-//            return;
-//        }
 
         logger.info("rollback label");
 
@@ -113,31 +103,9 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
         }
 
 
-//        if(connection.getAutoCommit()) {
-//
-//            closeConnection();
-//
-//            //没有开启事务控制
-//
-//            logger.info("now transaction over ! ");
-//
-//            return;
-//        }
-
         logger.info("now transaction state is " + state + ", (1:commit,0:rollback) groupId:" + groupId);
 
-
         if (state==0) {
-            //再嵌套时，第一次成功后面出现回滚。
-//            if (waitTask != null && waitTask.isAwait() && !waitTask.isRemove()) {
-//                //通知第一个连接回滚事务。
-//                waitTask.setState(0);
-//                waitTask.signalTask();
-//            } else {
-//                connection.rollback();
-//                closeConnection();
-//            }
-
 
             rollbackConnection();
             closeConnection();
@@ -152,7 +120,6 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
                 logger.info("connection hasGroup -> "+hasGroup);
                 return;
             }
-
             startRunnable();
         }
 

@@ -1,6 +1,8 @@
 package com.codingapi.tx.datasource.relational;
 
 import com.codingapi.tx.framework.thread.HookRunnable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 
@@ -9,8 +11,16 @@ import java.sql.SQLException;
  */
 public abstract class AbstractTransactionThread {
 
+    private volatile boolean hasStartTransaction = false;
+
+    private Logger logger = LoggerFactory.getLogger(AbstractTransactionThread.class);
 
     protected void startRunnable(){
+        if(hasStartTransaction){
+            logger.info("start connection is wait ! ");
+            return;
+        }
+        hasStartTransaction = true;
         Runnable runnable = new HookRunnable() {
             @Override
             public void run0() {

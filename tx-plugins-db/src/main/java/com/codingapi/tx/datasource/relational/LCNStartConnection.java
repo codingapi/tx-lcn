@@ -33,7 +33,6 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
 
     private ThreadLocal<Boolean> isClose = new ThreadLocal<>();
 
-//    private ThreadLocal<Integer> state = new ThreadLocal<>();
 
     public LCNStartConnection(Connection connection, ICallClose<ILCNResource> subNowCount) {
         this.connection = connection;
@@ -60,10 +59,7 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
 
     @Override
     public void commit() throws SQLException {
-//        if(connection.getAutoCommit()) {
-//            connection.commit();
-//            return;
-//        }
+
         logger.info("commit label");
 
         state=1;
@@ -75,10 +71,7 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
 
     @Override
     public void rollback() throws SQLException {
-//        if(connection.getAutoCommit()) {
-//            connection.rollback();
-//            return;
-//        }
+
         logger.info("rollback label");
 
         state=0;
@@ -98,20 +91,6 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
         if(connection==null||connection.isClosed()){
             return;
         }
-
-//
-//        if(connection.getAutoCommit()) {
-//
-//            closeConnection();
-//
-//            //没有开启事务控制
-//
-//            logger.info("now transaction over ! ");
-//
-//            return;
-//        }
-
-
 
         if(state==0){
             rollbackConnection();
@@ -180,9 +159,6 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
     /**
      * default
      */
-
-
-
 
     @Override
     public Statement createStatement() throws SQLException {

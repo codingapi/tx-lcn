@@ -34,7 +34,7 @@ public class LCNRedisConnection implements RedisConnection,ILCNResource<RedisCon
 
     private DataSourceService dataSourceService;
 
-    private ICallClose<LCNRedisConnection> runnable;
+    private ICallClose<ILCNResource> runnable;
 
     private int maxOutTime;
 
@@ -58,7 +58,7 @@ public class LCNRedisConnection implements RedisConnection,ILCNResource<RedisCon
     }
 
 
-    public LCNRedisConnection(RedisConnection redisConnection, DataSourceService dataSourceService, TxTransactionLocal transactionLocal, ICallClose<LCNRedisConnection> runnable) {
+    public LCNRedisConnection(RedisConnection redisConnection, DataSourceService dataSourceService, TxTransactionLocal transactionLocal, ICallClose<ILCNResource> runnable) {
         this.redisConnection = redisConnection;
         this.runnable = runnable;
         this.dataSourceService = dataSourceService;

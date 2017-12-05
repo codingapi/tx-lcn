@@ -25,9 +25,14 @@ public class TxTransactionLocal {
     private boolean hasStart = false;
 
     /**
-     * 是否单模块下多次业务调用
+     * 时候已经获取到连接对象
      */
-    private boolean hasMoreService = false;
+    private boolean hasConnection = false;
+//
+//    /**
+//     * 是否单模块下多次业务调用
+//     */
+//    private boolean hasMoreService = false;
 
     private String kid;
 
@@ -69,17 +74,23 @@ public class TxTransactionLocal {
         this.groupId = groupId;
     }
 
-    public boolean isHasMoreService() {
-        return hasMoreService;
+//    public boolean isHasMoreService() {
+//        return hasMoreService;
+//    }
+//
+//    public void setHasMoreService(boolean hasMoreService) {
+//        this.hasMoreService = hasMoreService;
+//    }
+
+
+    public boolean isHasConnection() {
+        return hasConnection;
     }
 
-    public void setHasMoreService(boolean hasMoreService) {
-        this.hasMoreService = hasMoreService;
+    public void setHasConnection(boolean hasConnection) {
+        this.hasConnection = hasConnection;
     }
 
-    public TxTransactionLocal() {
-
-    }
 
     public int getMaxTimeOut() {
         return maxTimeOut;
