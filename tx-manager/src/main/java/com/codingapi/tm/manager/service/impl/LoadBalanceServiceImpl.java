@@ -29,7 +29,7 @@ public class LoadBalanceServiceImpl implements LoadBalanceService {
     @Override
     public LoadBalanceInfo get(String groupId, String key) {
         String groupName = getLoadBalanceGroupName(groupId);
-        byte[] bytes = redisServerService.getLoadBalance(groupName,key);
+        String bytes = redisServerService.getLoadBalance(groupName,key);
         if(bytes==null) {
             return null;
         }

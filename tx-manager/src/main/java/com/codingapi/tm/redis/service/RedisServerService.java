@@ -25,10 +25,10 @@ public interface RedisServerService {
 
     void deleteKey(String key);
 
-    void saveLoadBalance(String groupName,String key,byte[] data);
+    void saveLoadBalance(String groupName,String key,String data);
 
 
-    byte[] getLoadBalance(String groupName,String key);
+    String getLoadBalance(String groupName,String key);
 
 
 }

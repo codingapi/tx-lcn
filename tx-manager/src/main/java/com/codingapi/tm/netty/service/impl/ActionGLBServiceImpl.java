@@ -30,7 +30,7 @@ public class ActionGLBServiceImpl implements IActionService{
         if(loadBalanceInfo==null){
             res = "";
         }else{
-            res = Base64Utils.encode(loadBalanceInfo.getData());
+            res = loadBalanceInfo.getData();
         }
         return res;
     }

@@ -28,7 +28,7 @@ public class ActionPLBServiceImpl implements IActionService{
         String data = params.getString("d");
 
         LoadBalanceInfo loadBalanceInfo = new LoadBalanceInfo();
-        loadBalanceInfo.setData(Base64Utils.decode(data));
+        loadBalanceInfo.setData(data);
         loadBalanceInfo.setKey(k);
         loadBalanceInfo.setGroupId(groupId);
         boolean ok =  loadBalanceService.put(loadBalanceInfo);

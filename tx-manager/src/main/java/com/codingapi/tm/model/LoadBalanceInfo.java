@@ -10,7 +10,7 @@ public class LoadBalanceInfo {
 
     private String key;
 
-    private byte[] data;
+    private String data;
 
 
     public String getGroupId() {
@@ -29,11 +29,11 @@ public class LoadBalanceInfo {
         this.key = key;
     }
 
-    public byte[] getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(byte[] data) {
+    public void setData(String data) {
         this.data = data;
     }
 }

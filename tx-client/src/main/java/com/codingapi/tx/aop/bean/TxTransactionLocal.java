@@ -3,7 +3,6 @@ package com.codingapi.tx.aop.bean;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.tx.framework.utils.SocketManager;
 import com.codingapi.tx.model.Request;
-import com.lorne.core.framework.utils.encode.Base64Utils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,7 @@ public class TxTransactionLocal {
 
     private int maxTimeOut;
 
-    private Map<String,byte[]> cacheModelInfo = new ConcurrentHashMap<>();
+    private Map<String,String> cacheModelInfo = new ConcurrentHashMap<>();
 
     /**
      * 是否同一个模块被多次请求
@@ -108,13 +107,13 @@ public class TxTransactionLocal {
     }
 
 
-    public void putLoadBalance(String key, byte[] bytes){
-        cacheModelInfo.put(key,bytes);
+    public void putLoadBalance(String key, String data){
+        cacheModelInfo.put(key,data);
         //与TxManager通讯
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("g", getGroupId());
         jsonObject.put("k", key);
-        jsonObject.put("d", Base64Utils.encode(bytes));
+        jsonObject.put("d", data);
         logger.info("putLoadBalance--> start ");
         Request request = new Request("plb", jsonObject.toString());
         String json =  SocketManager.getInstance().sendMsg(request);
@@ -122,8 +121,9 @@ public class TxTransactionLocal {
     }
 
 
-    public byte[] getLoadBalance(String key){
-        byte[] old =  cacheModelInfo.get(key);
+    public String getLoadBalance(String key){
+        String old =  cacheModelInfo.get(key);
+        logger.info("cacheModelInfo->"+old);
         if(old==null){
             //与TxManager通讯
             logger.info("getLoadBalance--> start");
@@ -134,10 +134,10 @@ public class TxTransactionLocal {
             String json =  SocketManager.getInstance().sendMsg(request);
             logger.info("getLoadBalance--> end ,res - >" + json);
             if(StringUtils.isNotEmpty(json)){
-                return Base64Utils.decode(json);
+                return json;
             }
         }
-        return null;
+        return old;
     }
 
 

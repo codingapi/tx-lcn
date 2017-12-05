@@ -17,6 +17,6 @@ public class LeastActiveLoadBalanceProxy extends LeastActiveLoadBalance{
 
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) {
-        return lcnBalanceProxy.proxy(super.select(invokers, url, invocation));
+        return lcnBalanceProxy.proxy(invokers,super.select(invokers, url, invocation));
     }
 }

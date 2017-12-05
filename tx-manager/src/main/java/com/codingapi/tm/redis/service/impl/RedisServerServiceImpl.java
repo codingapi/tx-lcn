@@ -101,15 +101,15 @@ public class RedisServerServiceImpl implements RedisServerService{
     }
 
     @Override
-    public void saveLoadBalance(String groupName, String key, byte[] data) {
-        HashOperations<String, String, byte[]> value = redisTemplate.opsForHash();
+    public void saveLoadBalance(String groupName, String key, String data) {
+        HashOperations<String, String, String> value = redisTemplate.opsForHash();
         value.put(groupName,key,data);
     }
 
 
     @Override
-    public byte[] getLoadBalance(String groupName, String key) {
-        HashOperations<String, String, byte[]> value = redisTemplate.opsForHash();
+    public String getLoadBalance(String groupName, String key) {
+        HashOperations<String, String, String> value = redisTemplate.opsForHash();
         return value.get(groupName,key);
     }
 }

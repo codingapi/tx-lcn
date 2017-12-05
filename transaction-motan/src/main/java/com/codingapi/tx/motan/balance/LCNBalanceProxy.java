@@ -1,7 +1,6 @@
 package com.codingapi.tx.motan.balance;
 
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
-import com.codingapi.tx.framework.utils.serializer.SerializerHelper;
 import com.lorne.core.framework.utils.encode.MD5Util;
 import com.weibo.api.motan.rpc.Referer;
 import org.slf4j.Logger;
@@ -14,8 +13,6 @@ import org.slf4j.LoggerFactory;
  * 2017/12/1 10:21
  */
 public class LCNBalanceProxy<T> {
-
-    private SerializerHelper<Referer> serializerHelper = new SerializerHelper<>();
 
     private Logger logger = LoggerFactory.getLogger(LCNBalanceProxy.class);
 
@@ -36,12 +33,12 @@ public class LCNBalanceProxy<T> {
 
         String key = MD5Util.md5((groupId + "_" + uniqueKey).getBytes());
 
-        Referer old = serializerHelper.parser(txTransactionLocal.getLoadBalance(key),Referer.class);
+        Referer old = null;//serializerHelper.parser(txTransactionLocal.getLoadBalance(key),Referer.class);
         if (old != null) {
             logger.info("LCNBalanceProxy - > load old referer ");
             return old;
         }
-        txTransactionLocal.putLoadBalance(key, serializerHelper.serialize(referer));
+       // txTransactionLocal.putLoadBalance(key, serializerHelper.serialize(referer));
 
         logger.info("LCNBalanceProxy - > load new referer ");
 
