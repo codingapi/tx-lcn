@@ -23,12 +23,12 @@ public class RandomLoadBalanceProxy extends RandomLoadBalance {
 
     @Override
     protected Referer doSelect(Request request) {
-        return lcnBalanceProxy.proxy(super.doSelect(request));
+        return lcnBalanceProxy.proxy(getReferers(),super.doSelect(request));
     }
 
     @Override
     protected void doSelectToHolder(Request request, List refersHolder) {
         super.doSelectToHolder(request, refersHolder);
-        refersHolder.set(0, lcnBalanceProxy.proxy(super.doSelect(request)));
+        refersHolder.set(0, lcnBalanceProxy.proxy(getReferers(),super.doSelect(request)));
     }
 }

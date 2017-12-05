@@ -3,8 +3,11 @@ package com.codingapi.tx.motan.balance;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.lorne.core.framework.utils.encode.MD5Util;
 import com.weibo.api.motan.rpc.Referer;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * <p>LCN负载均衡代理</p>
@@ -12,37 +15,74 @@ import org.slf4j.LoggerFactory;
  * @author 张峰 zfvip_it@163.com
  * 2017/12/1 10:21
  */
-public class LCNBalanceProxy<T> {
+public class LCNBalanceProxy {
 
     private Logger logger = LoggerFactory.getLogger(LCNBalanceProxy.class);
 
-    protected Referer<T> proxy(Referer<T> referer) {
+    protected Referer proxy(List<Referer> referers,Referer referer) {
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
         if (txTransactionLocal == null) {
             return referer;
         }
 
+        try {
+            logger.info("LCNBalanceProxy - > start");
 
-        logger.info("LCNBalanceProxy - > start");
+            String groupId = txTransactionLocal.getGroupId();
 
-        String groupId = txTransactionLocal.getGroupId();
+            String uniqueKey = referer.getInterface().getName();
 
-        String uniqueKey = referer.getInterface().getName();
+            logger.info("LCNBalanceProxy - > uniqueKey - >" + uniqueKey);
 
-        logger.info("LCNBalanceProxy - > uniqueKey - >" + uniqueKey);
+            String key = MD5Util.md5((groupId + "_" + uniqueKey).getBytes());
 
-        String key = MD5Util.md5((groupId + "_" + uniqueKey).getBytes());
+            Referer old = getReferer(txTransactionLocal,referers,key);
+            if (old != null) {
+                logger.info("LCNBalanceProxy - > load old referer ");
 
-        Referer old = null;//serializerHelper.parser(txTransactionLocal.getLoadBalance(key),Referer.class);
-        if (old != null) {
-            logger.info("LCNBalanceProxy - > load old referer ");
-            return old;
+                return old;
+            }
+
+            putReferer(key,txTransactionLocal,referer);
+
+            logger.info("LCNBalanceProxy - > load new referer ");
+
+            return referer;
+        }finally {
+            logger.info("LCNBalanceProxy - > end");
         }
-       // txTransactionLocal.putLoadBalance(key, serializerHelper.serialize(referer));
+    }
 
-        logger.info("LCNBalanceProxy - > load new referer ");
 
-        logger.info("LCNBalanceProxy - > end");
-        return referer;
+    private void putReferer(String key,TxTransactionLocal txTransactionLocal,Referer referer){
+        String serviceName =  referer.getUrl().getModule();
+        String address = referer.getUrl().getHost()+":"+referer.getUrl().getPort();
+
+        String md5 = MD5Util.md5((address+serviceName).getBytes());
+
+        logger.info("putReferer->address->"+address+",md5-->"+md5);
+
+        txTransactionLocal.putLoadBalance(key,md5);
+    }
+
+
+    private  Referer getReferer(TxTransactionLocal txTransactionLocal,List<Referer> referers,String key){
+        String val = txTransactionLocal.getLoadBalance(key);
+        if(StringUtils.isEmpty(val)){
+            return null;
+        }
+        for(Referer invoker:referers){
+            String serviceName =  invoker.getUrl().getModule();
+            String address = invoker.getUrl().getHost()+":"+invoker.getUrl().getPort();
+
+            String md5 = MD5Util.md5((address+serviceName).getBytes());
+
+            logger.info("getReferer->address->"+address+",md5-->"+md5);
+
+            if(val.equals(md5)){
+                return invoker;
+            }
+        }
+        return null;
     }
 }
