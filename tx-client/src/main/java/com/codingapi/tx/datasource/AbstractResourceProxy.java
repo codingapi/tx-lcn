@@ -30,18 +30,6 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
     protected DataSourceService dataSourceService;
 
 
-    @Override
-    public boolean hasGroup(String group){
-        return pools.containsKey(group);
-    }
-
-
-    @Override
-    public boolean hasTransaction() {
-        return true;
-    }
-
-
     //default size
     protected volatile int maxCount = 5;
 
@@ -49,6 +37,10 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
     protected int maxWaitTime = 30;
 
     protected volatile int nowCount = 0;
+
+
+
+
 
     // not thread
     protected ICallClose<ILCNResource> subNowCount = new ICallClose<ILCNResource>() {
@@ -66,6 +58,15 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
             nowCount--;
         }
     };
+
+
+    protected abstract C createLcnConnection(C connection, TxTransactionLocal txTransactionLocal);
+
+    protected abstract void initDbType();
+
+    protected abstract C getRollback(C connection);
+
+
 
     protected ILCNResource loadConnection(){
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
@@ -91,12 +92,6 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
         return null;
     }
 
-    protected abstract C createLcnConnection(C connection, TxTransactionLocal txTransactionLocal);
-
-
-    protected abstract void initDbType();
-
-    protected abstract C getRollback(C connection);
 
     private C createConnection(TxTransactionLocal txTransactionLocal, C connection){
         if (nowCount == maxCount) {
@@ -149,6 +144,17 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
     }
 
 
+    @Override
+    public boolean hasGroup(String group){
+        return pools.containsKey(group);
+    }
+
+
+    @Override
+    public boolean hasTransaction() {
+        return true;
+    }
+
 
     public void setMaxWaitTime(int maxWaitTime) {
         this.maxWaitTime = maxWaitTime;
@@ -157,7 +163,5 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
     public void setMaxCount(int maxCount) {
         this.maxCount = maxCount;
     }
-
-
 
 }
