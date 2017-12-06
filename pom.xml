@@ -5,7 +5,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>tx-lcn</artifactId>
-    <version>4.0.2</version>
+    <version>4.0.3</version>
     <packaging>pom</packaging>
 
     <name>tx-lcn</name>
