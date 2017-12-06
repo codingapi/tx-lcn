@@ -6,6 +6,8 @@ import com.codingapi.tx.aop.bean.TxCompensateLocal;
 import com.codingapi.tx.aop.bean.TxTransactionInfo;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.aop.service.TransactionServer;
+import com.codingapi.tx.framework.task.TaskGroupManager;
+import com.codingapi.tx.framework.task.TxTask;
 import com.codingapi.tx.framework.thread.HookRunnable;
 import com.codingapi.tx.model.TxGroup;
 import com.codingapi.tx.netty.service.MQTxManagerService;
@@ -13,6 +15,9 @@ import com.lorne.core.framework.exception.ServiceException;
 
 import java.util.List;
 
+import com.lorne.core.framework.utils.KidUtils;
+import com.lorne.core.framework.utils.task.ConditionUtils;
+import com.lorne.core.framework.utils.task.Task;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,12 +40,15 @@ public class TxStartTransactionServerImpl implements TransactionServer {
 
 
     @Override
-    public Object execute(ProceedingJoinPoint point, final TxTransactionInfo info) throws Throwable {
+    public Object execute(ProceedingJoinPoint point,final TxTransactionInfo info) throws Throwable {
         //分布式事务开始执行
 
         logger.info("--->begin start transaction");
 
-        long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
+
+        int state = 0;
+
         //创建事务组
         TxGroup txGroup = txManagerService.createTransactionGroup();
 
@@ -48,52 +56,117 @@ public class TxStartTransactionServerImpl implements TransactionServer {
         if (txGroup == null) {
             throw new ServiceException("create TxGroup error");
         }
+
         final String groupId = txGroup.getGroupId();
-        int state = 0;
+
+        TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
+        txTransactionLocal.setGroupId(groupId);
+        txTransactionLocal.setHasStart(true);
+        txTransactionLocal.setMaxTimeOut(Constants.maxOutTime);
+        TxTransactionLocal.setCurrent(txTransactionLocal);
+
         try {
-            TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
-            txTransactionLocal.setGroupId(groupId);
-            txTransactionLocal.setHasStart(true);
-            txTransactionLocal.setMaxTimeOut(Constants.maxOutTime);
-            TxTransactionLocal.setCurrent(txTransactionLocal);
             Object obj = point.proceed();
             state = 1;
             return obj;
         } catch (Throwable e) {
+            state = rollbackException(info,e);
             throw e;
         } finally {
-            int rs  = txManagerService.closeTransactionGroup(groupId, state);
 
             TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
-            
+
             List<String> keyList = txTransactionLocal.getCachedModelList();
-            
+
             System.out.println("delete the complete cached list:" + JSONObject.toJSONString(keyList) + ", groupId:" + groupId);
-            
+
             for(String key:keyList){
             	Constants.cacheModelInfo.remove(key);
             }
-            
+
             long end = System.currentTimeMillis();
+            final int resState = state;
+            final String type = txTransactionLocal.getType();
 
-            final long time = end - start;
+            //确保返回数据之前，业务已经都执行完毕.
+            final Task task = ConditionUtils.getInstance().createTask(KidUtils.getKid());
 
-            if (TxCompensateLocal.current() == null) {
-                if (state == 1 && rs == 0) {
-                    new Thread(new HookRunnable() {
-                        @Override
-                        public void run0() {
-                            //记录补偿日志
-                            txManagerService.sendCompensateMsg(groupId, time, info);
+            final TxCompensateLocal compensateLocal =  TxCompensateLocal.current();
+
+            //hook 保护确保下面的代码可以正常执行，当遇到挂机的情况时也会执行完下面代码
+            new Thread(new HookRunnable() {
+                @Override
+                public void run0() {
+                    if(task.isAwait()) {
+
+                        int rs = txManagerService.closeTransactionGroup(groupId, resState);
+
+                        int lastState = rs==-1?0:resState;
+
+                        //控制本地事务的数据提交
+                        final TxTask waitTask = TaskGroupManager.getInstance().getTask(groupId, type);
+                        if(waitTask!=null){
+                            waitTask.setState(lastState);
+                            waitTask.signalTask();
                         }
-                    }).start();
 
+
+                        if (compensateLocal == null) {
+                            long end = System.currentTimeMillis();
+                            long time = end - start;
+                            if (lastState == 1 && rs == 0) {
+                                //记录补偿日志
+                                txManagerService.sendCompensateMsg(groupId, time, info);
+                            }
+                        }
+
+                        task.setState(lastState);
+                        task.signalTask();
+                    }
                 }
-            }
+            }).start();
+
+            task.awaitTask();
+            int lastState =task.getState();
+            task.remove();
+
             TxTransactionLocal.setCurrent(null);
             logger.info("<---end start transaction");
-            logger.info("start transaction over, res -> groupId:"+txGroup.getGroupId()+",now state:"+(state==1?"commit":"rollback"));
+            logger.info("start transaction over, res -> groupId:" + groupId + ", now state:" + (lastState == 1 ? "commit" : "rollback"));
+
         }
     }
 
+
+    private int  rollbackException(TxTransactionInfo info,Throwable throwable){
+
+        //spring 事务机制默认回滚异常.
+        if(RuntimeException.class.isAssignableFrom(throwable.getClass())){
+            return 0;
+        }
+
+        if(Error.class.isAssignableFrom(throwable.getClass())){
+            return 0;
+        }
+
+        //回滚异常检测.
+        for(Class<? extends Throwable> rollbackFor:info.getTransaction().rollbackFor()){
+
+            //存在关系
+            if(rollbackFor.isAssignableFrom(throwable.getClass())){
+                return 0;
+            }
+
+        }
+
+        //不回滚异常检测.
+        for(Class<? extends Throwable> rollbackFor:info.getTransaction().noRollbackFor()){
+
+            //存在关系
+            if(rollbackFor.isAssignableFrom(throwable.getClass())){
+                return 1;
+            }
+        }
+        return 1;
+    }
 }

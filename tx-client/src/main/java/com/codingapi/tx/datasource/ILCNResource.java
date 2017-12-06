@@ -11,17 +11,19 @@ import com.codingapi.tx.framework.task.TxTask;
  */
 public interface ILCNResource<T> {
 
-    void close() throws Exception;
 
+    /**
+     * 用于关闭时检查是否未删除
+     * @return TxTask任务对象
+     */
     TxTask getWaitTask();
 
+    /**
+     * 事务组id
+     * @return  事务组Id
+     */
     String getGroupId();
 
-    void transaction() throws Exception;
 
-    void setHasIsGroup(boolean isGroup);
 
-    T get();
-
-    int getMaxOutTime();
 }

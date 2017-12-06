@@ -40,22 +40,26 @@ public class ConfigReader {
     private int autoCompensateLimit;
 
 
-
     /**
      * 事务默认数据的位置，有最大时间
      */
     private final String key_prefix = "tx_manager_default_";
 
-//    /**
-//     * 事务存在问题，临时暂存的位置，用于等待网络超时和补偿请求之前的存储位置，有最大时间
-//     */
-//    private final String key_prefix_notify = "tx_manager_notify_";
+    /**
+     * 负载均衡模块存储信息
+     */
+    private final String key_prefix_loadbalance = "loadbalance_";
+
 
     /**
      * 补偿事务永久存储数据
      */
     private final String key_prefix_compensate = "compensate_";
 
+
+    public String getKeyPrefixLoadbalance() {
+        return key_prefix_loadbalance;
+    }
 
     public String getCompensateNotifyUrl() {
         return compensateNotifyUrl;
@@ -64,10 +68,6 @@ public class ConfigReader {
     public String getKeyPrefix() {
         return key_prefix;
     }
-
-//    public String getKeyPrefixNotify() {
-//        return key_prefix_notify;
-//    }
 
     public String getKeyPrefixCompensate() {
         return key_prefix_compensate;

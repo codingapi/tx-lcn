@@ -7,7 +7,7 @@ import com.codingapi.tm.netty.model.TxGroup;
  */
 public interface TxManagerSenderService {
 
-    boolean confirm(TxGroup group);
+    int confirm(TxGroup group);
 
     String sendMsg(String model, String msg, int delay);
 

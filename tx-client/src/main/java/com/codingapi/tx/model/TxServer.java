@@ -46,7 +46,7 @@ public class TxServer {
     public void setDelay(int delay) {
         this.delay = delay;
     }
-    
+
     public int getAutoCompensateLimit() {
 		return autoCompensateLimit;
 	}
@@ -57,7 +57,7 @@ public class TxServer {
 
 	@Override
     public String toString() {
-        return "host:" + host + ",port:" + port + ",heart:" + heart + ",delay:" + delay + "autoCompensateLimit:" + autoCompensateLimit;
+        return "host:" + host + ",port:" + port + ",heart:" + heart + ",delay:" + delay + ",autoCompensateLimit:" + autoCompensateLimit;
     }
 
     public static TxServer parser(String json) {

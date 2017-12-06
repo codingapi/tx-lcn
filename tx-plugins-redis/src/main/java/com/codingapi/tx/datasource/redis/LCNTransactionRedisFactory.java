@@ -55,7 +55,7 @@ public class LCNTransactionRedisFactory extends AbstractResourceProxy<RedisConne
 
         initDbType();
 
-        RedisConnection redisConnection = loadConnection();
+        RedisConnection redisConnection = (RedisConnection) loadConnection();
         if(redisConnection==null) {
             redisConnection =  initLCNConnection(redisConnectionFactory.getConnection());
             if(redisConnection==null){

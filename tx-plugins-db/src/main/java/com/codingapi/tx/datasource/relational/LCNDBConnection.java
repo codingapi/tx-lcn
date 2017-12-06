@@ -4,12 +4,12 @@ import com.codingapi.tx.datasource.ICallClose;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.tx.Constants;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
+import com.codingapi.tx.datasource.ICallClose;
 import com.codingapi.tx.datasource.ILCNResource;
 import com.codingapi.tx.datasource.service.DataSourceService;
 import com.codingapi.tx.framework.task.TaskGroup;
 import com.codingapi.tx.framework.task.TaskGroupManager;
 import com.codingapi.tx.framework.task.TxTask;
-import com.codingapi.tx.framework.thread.HookRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +26,12 @@ import java.util.concurrent.Executor;
  * create by lorne on 2017/7/29
  */
 
-public class LCNDBConnection implements Connection,ILCNResource<Connection> {
+public class LCNDBConnection extends AbstractTransactionThread implements Connection,ILCNResource<Connection> {
 
 
     private Logger logger = LoggerFactory.getLogger(LCNDBConnection.class);
+
+    private ThreadLocal<Boolean> isClose = new ThreadLocal<>();
 
     private volatile int state = 1;
 
@@ -37,67 +39,59 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
     private DataSourceService dataSourceService;
 
-    private ICallClose<LCNDBConnection> runnable;
+    private ICallClose<ILCNResource> runnable;
 
     private int maxOutTime;
-
-    private boolean hasGroup = false;
 
     private String groupId;
 
     private TxTask waitTask;
-    
+
     private List<String> cachedModelList;
 
 
+    public LCNDBConnection(Connection connection, DataSourceService dataSourceService, ICallClose<ILCNResource> runnable) {
+        logger.info("init lcn connection ! ");
     public LCNDBConnection(Connection connection, DataSourceService dataSourceService, TxTransactionLocal transactionLocal, ICallClose<LCNDBConnection> runnable) {
         logger.info("init lcn connection ! ");
         this.connection = connection;
         this.runnable = runnable;
         this.dataSourceService = dataSourceService;
+        TxTransactionLocal transactionLocal = TxTransactionLocal.current();
         groupId = transactionLocal.getGroupId();
         maxOutTime = transactionLocal.getMaxTimeOut();
         cachedModelList = transactionLocal.getCachedModelList();
-        
+
 
         TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(transactionLocal.getKid(),transactionLocal.getType());
         waitTask = taskGroup.getCurrent();
     }
 
 
-    public void setHasIsGroup(boolean isGroup) {
-        hasGroup = isGroup;
-    }
-
-    public int getMaxOutTime() {
-        return maxOutTime;
-    }
-
-    private boolean hasClose = false;
-
-    @Override
-    public Connection get() {
-        return connection;
-    }
 
     @Override
     public void commit() throws SQLException {
+
         logger.info("commit label");
 
         state = 1;
 
         close();
-        hasClose = true;
+
+        isClose.set(true);
+
     }
 
     @Override
     public void rollback() throws SQLException {
+
         logger.info("rollback label");
 
         state = 0;
 
         close();
-        hasClose = true;
+
+        isClose.set(true);
     }
 
     protected void closeConnection() throws SQLException {
@@ -109,79 +103,45 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
     @Override
     public void close() throws SQLException {
 
+        if(isClose.get()!=null&& isClose.get()){
+            return;
+        }
+
         if(connection==null||connection.isClosed()){
             return;
         }
 
-        if(hasClose){
-            hasClose = false;
-            return;
-        }
 
-        if(connection.getAutoCommit()){
+        logger.info("now transaction state is " + state + ", (1:commit,0:rollback) groupId:" + groupId);
 
+        if (state==0) {
+
+            rollbackConnection();
             closeConnection();
 
-            //没有开启事务控制
-
-            logger.info("now transaction over ! ");
-
-            return;
-        }else {
-
-            logger.info("now transaction state is " + state + ", (1:commit,0:rollback) groupId:" + groupId);
-
-            if (state == 0) {
-                //再嵌套时，第一次成功后面出现回滚。
-                if (waitTask != null && waitTask.isAwait() && !waitTask.isRemove()) {
-                    //通知第一个连接回滚事务。
-                    waitTask.setState(0);
-                    waitTask.signalTask();
-                } else {
-                    connection.rollback();
-                    closeConnection();
-                }
-
-                logger.info("rollback transaction ,groupId:" + groupId);
-            }
-            if (state == 1) {
-                if (hasGroup) {
-                    //加入队列的连接，仅操作连接对象，不处理事务
-                    logger.info("connection hasGroup -> "+hasGroup);
-                    return;
-                }
-
-                Runnable runnable = new HookRunnable() {
-                    @Override
-                    public void run0() {
-                        try {
-                            transaction();
-                        } catch (Exception e) {
-                            try {
-                                connection.rollback();
-                            } catch (SQLException e1) {
-                                e1.printStackTrace();
-                            }
-                        } finally {
-                            try {
-                                closeConnection();
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                };
-                Thread thread = new Thread(runnable);
-                thread.start();
-            }
+            logger.info("rollback transaction ,groupId:" + groupId);
         }
+        if (state==1) {
+            TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
+            boolean hasGroup = (txTransactionLocal!=null)?txTransactionLocal.isHasIsGroup():false;
+            if (hasGroup) {
+                //加入队列的连接，仅操作连接对象，不处理事务
+                logger.info("connection hasGroup -> "+hasGroup);
+                return;
+            }
+            startRunnable();
+        }
+
     }
 
-
     @Override
+    protected void rollbackConnection() throws SQLException {
+        connection.rollback();
+    }
+
     public void transaction() throws SQLException {
         if (waitTask == null) {
-            connection.rollback();
+            rollbackConnection();
             System.out.println(" waitTask is null");
             return;
         }
@@ -189,14 +149,14 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
         //start 结束就是全部事务的结束表示,考虑start挂掉的情况
         Timer timer = new Timer();
-        logger.info("maxOutTime:" + getMaxOutTime());
+        logger.info("maxOutTime:" + maxOutTime);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 System.out.println("auto execute ,groupId:" + getGroupId());
                 dataSourceService.schedule(getGroupId(), waitTask);
             }
-        }, getMaxOutTime());
+        }, maxOutTime);
 
         System.out.println("transaction is wait for TxManager notify, groupId : " + getGroupId());
 
@@ -209,15 +169,15 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
         System.out.println("lcn transaction over, res -> groupId:"+getGroupId()+" and  state is "+rs+", about state (1:commit 0:rollback -1:network error -2:network time out)");
 
         System.out.println("delete the completed cached list:" + JSONObject.toJSONString(cachedModelList) + ", groupId:" + getGroupId());
-        
+
         for(String key : cachedModelList){
         	Constants.cacheModelInfo.remove(key);
         }
-        
+
         if (rs == 1) {
             connection.commit();
         } else {
-            connection.rollback();
+            rollbackConnection();
         }
         waitTask.remove();
 
@@ -233,16 +193,20 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
 
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
-
-        if(!autoCommit) {
-            logger.info("setAutoCommit - >" + autoCommit);
-            connection.setAutoCommit(autoCommit);
-
-            TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
-            txTransactionLocal.setAutoCommit(autoCommit);
-        }
+        connection.setAutoCommit(false);
     }
 
+    @Override
+    public void setReadOnly(boolean readOnly) throws SQLException {
+
+        if(readOnly) {
+            logger.info("setReadOnly - >" + readOnly);
+            connection.setReadOnly(readOnly);
+
+            TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
+            txTransactionLocal.setReadOnly(readOnly);
+        }
+    }
 
 
 
@@ -285,10 +249,6 @@ public class LCNDBConnection implements Connection,ILCNResource<Connection> {
         return connection.getMetaData();
     }
 
-    @Override
-    public void setReadOnly(boolean readOnly) throws SQLException {
-        connection.setReadOnly(readOnly);
-    }
 
     @Override
     public boolean isReadOnly() throws SQLException {

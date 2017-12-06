@@ -19,7 +19,11 @@ public class TimeOutServiceImpl implements TimeOutService {
 
     @Override
     public void loadOutTime(int timeOut) {
-        int finalTimeOut = (null != providerConfig.getTimeout()) ? providerConfig.getTimeout() : (timeOut * 1000);
-        Constants.maxOutTime = finalTimeOut;
+        try {
+            int providerTimeOut = providerConfig.getTimeout();
+            Constants.maxOutTime = providerTimeOut;
+        }catch (Exception e){
+            Constants.maxOutTime = timeOut * 1000;
+        }
     }
 }
