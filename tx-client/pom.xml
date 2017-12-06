@@ -5,7 +5,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>tx-client</artifactId>
-    <version>4.0.2</version>
+    <version>4.0.3</version>
 
     <name>tx-client</name>
     <url>https://github.com/codingapi/tx-lcn</url>
