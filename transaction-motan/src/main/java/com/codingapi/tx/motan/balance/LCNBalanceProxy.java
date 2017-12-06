@@ -55,7 +55,7 @@ public class LCNBalanceProxy {
 
 
     private void putReferer(String key,TxTransactionLocal txTransactionLocal,Referer referer){
-        String serviceName =  referer.getUrl().getModule();
+        String serviceName = referer.getInterface().getName();
         String address = referer.getUrl().getHost()+":"+referer.getUrl().getPort();
 
         String md5 = MD5Util.md5((address+serviceName).getBytes());
@@ -72,7 +72,7 @@ public class LCNBalanceProxy {
             return null;
         }
         for(Referer invoker:referers){
-            String serviceName =  invoker.getUrl().getModule();
+            String serviceName = invoker.getInterface().getName();
             String address = invoker.getUrl().getHost()+":"+invoker.getUrl().getPort();
 
             String md5 = MD5Util.md5((address+serviceName).getBytes());
