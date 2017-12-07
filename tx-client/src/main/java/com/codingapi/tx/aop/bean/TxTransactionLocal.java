@@ -1,9 +1,5 @@
 package com.codingapi.tx.aop.bean;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.tx.framework.utils.SocketManager;
 import com.codingapi.tx.model.Request;
@@ -35,6 +31,9 @@ public class TxTransactionLocal {
      */
     private boolean hasIsGroup = false;
 
+    /**
+     * 是否是发起方模块
+     */
     private boolean hasStart = false;
 
     /**
@@ -48,7 +47,6 @@ public class TxTransactionLocal {
     private String type;
 
     private boolean readOnly = false;
-    private List<String> cachedModelList = new ArrayList<String>();
 
     public boolean isHasIsGroup() {
         return hasIsGroup;
@@ -157,14 +155,6 @@ public class TxTransactionLocal {
 
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
-    }
-
-    public List<String> getCachedModelList(){
-    	return cachedModelList;
-    }
-
-    public void setCachedModelList(List<String> cachedModelList){
-    	this.cachedModelList = cachedModelList;
     }
 
 }

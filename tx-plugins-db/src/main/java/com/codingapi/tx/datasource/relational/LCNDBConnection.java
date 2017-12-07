@@ -1,8 +1,5 @@
 package com.codingapi.tx.datasource.relational;
 
-import com.codingapi.tx.datasource.ICallClose;
-import com.alibaba.fastjson.JSONObject;
-import com.codingapi.tx.Constants;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.ICallClose;
 import com.codingapi.tx.datasource.ILCNResource;
@@ -14,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Timer;
@@ -47,12 +43,8 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
 
     private TxTask waitTask;
 
-    private List<String> cachedModelList;
-
 
     public LCNDBConnection(Connection connection, DataSourceService dataSourceService, ICallClose<ILCNResource> runnable) {
-        logger.info("init lcn connection ! ");
-    public LCNDBConnection(Connection connection, DataSourceService dataSourceService, TxTransactionLocal transactionLocal, ICallClose<LCNDBConnection> runnable) {
         logger.info("init lcn connection ! ");
         this.connection = connection;
         this.runnable = runnable;
@@ -60,7 +52,6 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
         TxTransactionLocal transactionLocal = TxTransactionLocal.current();
         groupId = transactionLocal.getGroupId();
         maxOutTime = transactionLocal.getMaxTimeOut();
-        cachedModelList = transactionLocal.getCachedModelList();
 
 
         TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(transactionLocal.getKid(),transactionLocal.getType());
@@ -167,12 +158,6 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
         int rs = waitTask.getState();
 
         System.out.println("lcn transaction over, res -> groupId:"+getGroupId()+" and  state is "+rs+", about state (1:commit 0:rollback -1:network error -2:network time out)");
-
-        System.out.println("delete the completed cached list:" + JSONObject.toJSONString(cachedModelList) + ", groupId:" + getGroupId());
-
-        for(String key : cachedModelList){
-        	Constants.cacheModelInfo.remove(key);
-        }
 
         if (rs == 1) {
             connection.commit();

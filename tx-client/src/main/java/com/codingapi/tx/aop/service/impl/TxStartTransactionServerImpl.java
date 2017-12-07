@@ -1,6 +1,5 @@
 package com.codingapi.tx.aop.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.codingapi.tx.Constants;
 import com.codingapi.tx.aop.bean.TxCompensateLocal;
 import com.codingapi.tx.aop.bean.TxTransactionInfo;
@@ -12,9 +11,6 @@ import com.codingapi.tx.framework.thread.HookRunnable;
 import com.codingapi.tx.model.TxGroup;
 import com.codingapi.tx.netty.service.MQTxManagerService;
 import com.lorne.core.framework.exception.ServiceException;
-
-import java.util.List;
-
 import com.lorne.core.framework.utils.KidUtils;
 import com.lorne.core.framework.utils.task.ConditionUtils;
 import com.lorne.core.framework.utils.task.Task;
@@ -74,17 +70,6 @@ public class TxStartTransactionServerImpl implements TransactionServer {
             throw e;
         } finally {
 
-            TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
-
-            List<String> keyList = txTransactionLocal.getCachedModelList();
-
-            System.out.println("delete the complete cached list:" + JSONObject.toJSONString(keyList) + ", groupId:" + groupId);
-
-            for(String key:keyList){
-            	Constants.cacheModelInfo.remove(key);
-            }
-
-            long end = System.currentTimeMillis();
             final int resState = state;
             final String type = txTransactionLocal.getType();
 

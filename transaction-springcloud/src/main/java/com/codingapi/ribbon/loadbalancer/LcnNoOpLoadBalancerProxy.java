@@ -6,6 +6,9 @@ import org.slf4j.LoggerFactory;
 import com.netflix.loadbalancer.NoOpLoadBalancer;
 import com.netflix.loadbalancer.Server;
 
+/**
+ * created by foxdd 2017-12-05
+ */
 public class LcnNoOpLoadBalancerProxy extends NoOpLoadBalancer {
 	
 	private Logger logger = LoggerFactory.getLogger(LcnNoOpLoadBalancerProxy.class);

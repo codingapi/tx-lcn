@@ -7,6 +7,9 @@ import com.codingapi.tx.Constants;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.netflix.loadbalancer.Server;
 
+/**
+ * created by foxdd 2017-12-05
+ */
 public class LcnLoadBalancerRule {
 	
 	private Logger logger = LoggerFactory.getLogger(LcnLoadBalancerRule.class);
@@ -29,7 +32,6 @@ public class LcnLoadBalancerRule {
 		if(cachedServer == null){
 			logger.info("The server of key:" + key + " has not been cached yet!");
 			Constants.cacheModelInfo.put(key, server);
-			txTransactionLocal.getCachedModelList().add(key);
 			return server;
 		} else{
 			logger.info("The cached server info, host:" + cachedServer.getHost() + ", port:" + cachedServer.getPort());

@@ -12,6 +12,9 @@ import com.netflix.loadbalancer.ServerListFilter;
 import com.netflix.loadbalancer.ServerListUpdater;
 import com.netflix.loadbalancer.ZoneAwareLoadBalancer;
 
+/**
+ * created by foxdd 2017-12-05
+ */
 public class LcnZoneAwareLoadBalancerProxy<T extends Server> extends ZoneAwareLoadBalancer<T> {
 	
 	private Logger logger = LoggerFactory.getLogger(LcnZoneAwareLoadBalancerProxy.class);
