@@ -23,7 +23,8 @@ public class LcnLoadBalancerRule {
 		}
 		
 		String groupId = txTransactionLocal.getGroupId();
-		
+
+		//取出组件的appName
 		String appName = server.getMetaInfo().getAppName();
 		
 		String key = groupId + "_" + appName;
