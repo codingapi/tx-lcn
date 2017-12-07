@@ -59,19 +59,24 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
     private CompensateService compensateService;
 
     @Override
-    public boolean confirm(TxGroup txGroup) {
+    public int confirm(TxGroup txGroup) {
         //绑定管道对象，检查网络
         setChannel(txGroup.getList());
 
         //事务不满足直接回滚事务
         if (txGroup.getState()==0) {
             transaction(txGroup, 0);
-            return false;
+            return 0;
+        }
+
+        if(txGroup.getRollback()==1){
+            transaction(txGroup, 0);
+            return -1;
         }
 
         boolean hasOk =  transaction(txGroup, 1);
         txManagerService.dealTxGroup(txGroup,hasOk);
-        return hasOk;
+        return hasOk?1:0;
     }
 
 
@@ -192,13 +197,15 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
             //回滚操作只发送通过不需要等待确认
             for (TxInfo txInfo : txGroup.getList()) {
                 if(txInfo.getChannel()!=null) {
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("a", "t");
-                    jsonObject.put("c", checkSate);
-                    jsonObject.put("t", txInfo.getKid());
-                    String key = KidUtils.generateShortUuid();
-                    jsonObject.put("k", key);
-                    txInfo.getChannel().send(jsonObject.toJSONString());
+                    if (txInfo.getIsGroup() == 0) {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("a", "t");
+                        jsonObject.put("c", checkSate);
+                        jsonObject.put("t", txInfo.getKid());
+                        String key = KidUtils.generateShortUuid();
+                        jsonObject.put("k", key);
+                        txInfo.getChannel().send(jsonObject.toJSONString());
+                    }
                 }
             }
             txManagerService.deleteTxGroup(txGroup);

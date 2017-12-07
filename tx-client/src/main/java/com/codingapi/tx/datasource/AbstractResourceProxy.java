@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements ILCNTransactionControl {
 
 
-    protected Map<String, T> pools = new ConcurrentHashMap<>();
+    protected Map<String, ILCNResource> pools = new ConcurrentHashMap<>();
 
 
     private Logger logger = LoggerFactory.getLogger(AbstractResourceProxy.class);
@@ -28,18 +28,6 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
 
     @Autowired
     protected DataSourceService dataSourceService;
-
-
-    @Override
-    public boolean hasGroup(String group){
-        return pools.containsKey(group);
-    }
-
-
-    @Override
-    public boolean hasTransaction() {
-        return true;
-    }
 
 
     //default size
@@ -50,11 +38,15 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
 
     protected volatile int nowCount = 0;
 
+
+
+
+
     // not thread
-    protected ICallClose<T> subNowCount = new ICallClose<T>() {
+    protected ICallClose<ILCNResource> subNowCount = new ICallClose<ILCNResource>() {
 
         @Override
-        public void close(T connection) {
+        public void close(ILCNResource connection) {
             Task waitTask = connection.getWaitTask();
             if (waitTask != null) {
                 if (!waitTask.isRemove()) {
@@ -67,31 +59,39 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
         }
     };
 
-    protected T loadConnection(){
+
+    protected abstract C createLcnConnection(C connection, TxTransactionLocal txTransactionLocal);
+
+    protected abstract void initDbType();
+
+    protected abstract C getRollback(C connection);
+
+
+
+    protected ILCNResource loadConnection(){
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
-        logger.info("loadConnection !");
-
-        if(txTransactionLocal==null||txTransactionLocal.isHasMoreService()){
+        if(txTransactionLocal==null){
+            logger.info("loadConnection -> null !");
             return null;
         }
-        T old = pools.get(txTransactionLocal.getGroupId());
-        if (old != null) {
-            old.setHasIsGroup(true);
 
-            txTransactionLocal.setHasIsGroup(true);
-            TxTransactionLocal.setCurrent(txTransactionLocal);
+        //是否获取旧连接的条件：同一个模块下被多次调用时第一次的事务操作
+        ILCNResource old = pools.get(txTransactionLocal.getGroupId());
+        if (old != null) {
+
+            if(txTransactionLocal.isHasConnection()){
+                logger.info("connection is had , transaction get a new connection .");
+                return null;
+            }
+
+            logger.info("loadConnection -> old !");
+            txTransactionLocal.setHasConnection(true);
             return old;
         }
         return null;
     }
 
-    protected abstract C createLcnConnection(C connection, TxTransactionLocal txTransactionLocal);
-
-
-    protected abstract void initDbType();
-
-    protected abstract C getRollback(C connection);
 
     private C createConnection(TxTransactionLocal txTransactionLocal, C connection){
         if (nowCount == maxCount) {
@@ -123,10 +123,9 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
         C lcnConnection = connection;
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
-        if (txTransactionLocal != null&&!txTransactionLocal.isHasMoreService()) {
+        if (txTransactionLocal != null&&!txTransactionLocal.isHasConnection()) {
 
             logger.info("lcn datasource transaction control ");
-
 
             //补偿的情况的
             if (TxCompensateLocal.current() != null) {
@@ -135,18 +134,26 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
             }
 
             if(StringUtils.isNotEmpty(txTransactionLocal.getGroupId())){
-                if (!txTransactionLocal.isHasStart()) {
-                    logger.info("lcn transaction ");
-                    return createConnection(txTransactionLocal, connection);
-                }
+
+                logger.info("lcn transaction ");
+                return createConnection(txTransactionLocal, connection);
             }
-
-
         }
         logger.info("load default connection !");
         return lcnConnection;
     }
 
+
+    @Override
+    public boolean hasGroup(String group){
+        return pools.containsKey(group);
+    }
+
+
+    @Override
+    public boolean hasTransaction() {
+        return true;
+    }
 
 
     public void setMaxWaitTime(int maxWaitTime) {
@@ -156,7 +163,5 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
     public void setMaxCount(int maxCount) {
         this.maxCount = maxCount;
     }
-
-
 
 }

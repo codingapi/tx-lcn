@@ -41,12 +41,6 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
 
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
-
-        if(txTransactionLocal!=null){
-            //在同一次事务下，调用多个业务模块。
-            txTransactionLocal.setHasMoreService(true);
-        }
-
         logger.info("around--> groupId-> " +groupId+",txTransactionLocal->"+txTransactionLocal);
 
         TransactionInvocation invocation = new TransactionInvocation(clazz, thisMethod.getName(), thisMethod.toString(), args, method.getParameterTypes());

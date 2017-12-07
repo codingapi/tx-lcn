@@ -24,4 +24,11 @@ public interface RedisServerService {
     String getValueByKey(String key);
 
     void deleteKey(String key);
+
+    void saveLoadBalance(String groupName,String key,String data);
+
+
+    String getLoadBalance(String groupName,String key);
+
+
 }

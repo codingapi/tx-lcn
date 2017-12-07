@@ -51,7 +51,7 @@ public class ActionTServiceImpl implements IActionService {
         } else {
             res = "0";
         }
-
+        logger.info("accept notify response res ->" + res);
         return res;
     }
 

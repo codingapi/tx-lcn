@@ -51,6 +51,7 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
         txTransactionLocal.setGroupId(txGroupId);
         txTransactionLocal.setHasStart(false);
         txTransactionLocal.setKid(kid);
+        txTransactionLocal.setHasIsGroup(isHasIsGroup);
         txTransactionLocal.setMaxTimeOut(info.getMaxTimeOut());
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
@@ -60,13 +61,13 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
             Object res = point.proceed();
 
             //写操作 处理
-            if(!txTransactionLocal.isAutoCommit()) {
+            if(!txTransactionLocal.isReadOnly()) {
 
                 String methodStr = info.getInvocation().getMethodStr();
 
                 TxGroup resTxGroup = txManagerService.addTransactionGroup(txGroupId, kid, isHasIsGroup, methodStr);
 
-                //已经进入过该模块的
+                //已经进入过该模块的，不再执行此方法
                 if(!isHasIsGroup) {
                     String type = txTransactionLocal.getType();
 

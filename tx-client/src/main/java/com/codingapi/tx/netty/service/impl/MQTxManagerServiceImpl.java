@@ -101,22 +101,6 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
         }
     }
 
-//
-//    @Override
-//    public int getTransaction(String groupId, String waitTaskId) {
-//
-//        String json = managerHelper.httpGet(configReader.getTxUrl() + "getTransaction?groupId=" + groupId + "&taskId=" + waitTaskId);
-//        if (json == null) {
-//            return -2;
-//        }
-//        json = json.trim();
-//        try {
-//            return Integer.parseInt(json);
-//        }catch (Exception e){
-//            return -2;
-//        }
-//    }
-
 
     @Override
     public int cleanNotifyTransactionHttp(String groupId, String waitTaskId) {

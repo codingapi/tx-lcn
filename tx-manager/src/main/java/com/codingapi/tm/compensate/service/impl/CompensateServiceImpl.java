@@ -9,11 +9,11 @@ import com.codingapi.tm.compensate.service.CompensateService;
 import com.codingapi.tm.config.ConfigReader;
 import com.codingapi.tm.manager.ModelInfoManager;
 import com.codingapi.tm.manager.service.TxManagerSenderService;
+import com.codingapi.tm.manager.service.TxManagerService;
 import com.codingapi.tm.model.ModelInfo;
 import com.codingapi.tm.model.ModelName;
 import com.codingapi.tm.netty.model.TxGroup;
 import com.codingapi.tm.netty.model.TxInfo;
-import com.codingapi.tm.redis.service.RedisServerService;
 import com.lorne.core.framework.exception.ServiceException;
 import com.lorne.core.framework.utils.DateUtil;
 import com.lorne.core.framework.utils.encode.Base64Utils;
@@ -41,26 +41,26 @@ public class CompensateServiceImpl implements CompensateService {
     private CompensateDao compensateDao;
 
     @Autowired
-    private RedisServerService redisServerService;
-
-    @Autowired
     private ConfigReader configReader;
 
     @Autowired
     private TxManagerSenderService managerSenderService;
+
+    @Autowired
+    private TxManagerService managerService;
+
 
     private Executor threadPool = Executors.newFixedThreadPool(20);
 
     @Override
     public boolean saveCompensateMsg(TransactionCompensateMsg transactionCompensateMsg) {
 
-        String key = configReader.getKeyPrefix() + transactionCompensateMsg.getGroupId();
-        TxGroup txGroup = redisServerService.getTxGroupByKey(key);
+        TxGroup txGroup =managerService.getTxGroup(transactionCompensateMsg.getGroupId());
         if (txGroup == null) {
             return false;
         }
 
-        redisServerService.deleteKey(key);
+        managerService.deleteTxGroup(txGroup);
 
         //已经全部通知的模块不做补偿处理
         boolean hasNoNotify = false;

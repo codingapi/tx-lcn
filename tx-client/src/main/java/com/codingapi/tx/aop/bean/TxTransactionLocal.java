@@ -1,16 +1,30 @@
 package com.codingapi.tx.aop.bean;
 
+import com.alibaba.fastjson.JSONObject;
+import com.codingapi.tx.framework.utils.SocketManager;
+import com.codingapi.tx.model.Request;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * 分布式事务远程调用控制对象
  * Created by lorne on 2017/6/5.
  */
 public class TxTransactionLocal {
 
+    private Logger logger = LoggerFactory.getLogger(TxTransactionLocal.class);
+
     private final static ThreadLocal<TxTransactionLocal> currentLocal = new ThreadLocal<TxTransactionLocal>();
 
     private String groupId;
 
     private int maxTimeOut;
+
+    private Map<String,String> cacheModelInfo = new ConcurrentHashMap<>();
 
     /**
      * 是否同一个模块被多次请求
@@ -23,15 +37,16 @@ public class TxTransactionLocal {
     private boolean hasStart = false;
 
     /**
-     * 是否单模块下多次业务调用
+     * 时候已经获取到连接对象
      */
-    private boolean hasMoreService = false;
+    private boolean hasConnection = false;
+
 
     private String kid;
 
     private String type;
 
-    private boolean autoCommit = true;
+    private boolean readOnly = false;
 
     public boolean isHasIsGroup() {
         return hasIsGroup;
@@ -65,17 +80,14 @@ public class TxTransactionLocal {
         this.groupId = groupId;
     }
 
-    public boolean isHasMoreService() {
-        return hasMoreService;
+    public boolean isHasConnection() {
+        return hasConnection;
     }
 
-    public void setHasMoreService(boolean hasMoreService) {
-        this.hasMoreService = hasMoreService;
+    public void setHasConnection(boolean hasConnection) {
+        this.hasConnection = hasConnection;
     }
 
-    public TxTransactionLocal() {
-
-    }
 
     public int getMaxTimeOut() {
         return maxTimeOut;
@@ -95,6 +107,40 @@ public class TxTransactionLocal {
     }
 
 
+    public void putLoadBalance(String key, String data){
+        cacheModelInfo.put(key,data);
+        //与TxManager通讯
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("g", getGroupId());
+        jsonObject.put("k", key);
+        jsonObject.put("d", data);
+        logger.info("putLoadBalance--> start ");
+        Request request = new Request("plb", jsonObject.toString());
+        String json =  SocketManager.getInstance().sendMsg(request);
+        logger.info("putLoadBalance--> end ,res ->"+json);
+    }
+
+
+    public String getLoadBalance(String key){
+        String old =  cacheModelInfo.get(key);
+        logger.info("cacheModelInfo->"+old);
+        if(old==null){
+            //与TxManager通讯
+            logger.info("getLoadBalance--> start");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("g", getGroupId());
+            jsonObject.put("k", key);
+            Request request = new Request("glb", jsonObject.toString());
+            String json =  SocketManager.getInstance().sendMsg(request);
+            logger.info("getLoadBalance--> end ,res - >" + json);
+            if(StringUtils.isNotEmpty(json)){
+                return json;
+            }
+        }
+        return old;
+    }
+
+
     public void setType(String type) {
         this.type = type;
     }
@@ -103,11 +149,12 @@ public class TxTransactionLocal {
         return type;
     }
 
-    public boolean isAutoCommit() {
-        return autoCommit;
+    public boolean isReadOnly() {
+        return readOnly;
     }
 
-    public void setAutoCommit(boolean autoCommit) {
-        this.autoCommit = autoCommit;
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
+
 }

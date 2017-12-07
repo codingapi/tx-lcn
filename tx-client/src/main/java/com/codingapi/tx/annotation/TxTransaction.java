@@ -11,4 +11,10 @@ import java.lang.annotation.*;
 @Documented
 public @interface TxTransaction {
 
+
+    Class<? extends Throwable>[] rollbackFor() default {};
+
+
+    Class<? extends Throwable>[] noRollbackFor() default {};
+
 }

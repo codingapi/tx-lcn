@@ -5,7 +5,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>tx-plugins-redis</artifactId>
-    <version>4.0.2</version>
+    <version>4.0.3</version>
 
     <name>tx-plugins-redis</name>
     <description>tx-plugins-redis project for Spring Boot</description>
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>com.codingapi</groupId>
             <artifactId>tx-client</artifactId>
-            <version>4.0.2</version>
+            <version>4.0.3</version>
         </dependency>
 
         <dependency>

@@ -7,6 +7,7 @@ import com.codingapi.tm.netty.model.TxGroup;
 import com.codingapi.tm.redis.service.RedisServerService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -97,5 +98,18 @@ public class RedisServerServiceImpl implements RedisServerService{
     @Override
     public void deleteKey(String key) {
         redisTemplate.delete(key);
+    }
+
+    @Override
+    public void saveLoadBalance(String groupName, String key, String data) {
+        HashOperations<String, String, String> value = redisTemplate.opsForHash();
+        value.put(groupName,key,data);
+    }
+
+
+    @Override
+    public String getLoadBalance(String groupName, String key) {
+        HashOperations<String, String, String> value = redisTemplate.opsForHash();
+        return value.get(groupName,key);
     }
 }

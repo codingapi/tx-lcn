@@ -19,12 +19,9 @@ public class ActionCTGServiceImpl implements IActionService{
 
     @Override
     public String execute(String modelName,String key,JSONObject params ) {
-        String res = "";
         String groupId = params.getString("g");
         int state = params.getInteger("s");
-        boolean bs = txManagerService.closeTransactionGroup(groupId,state);
-
-        res = bs ? "1" : "0";
+        String res = String.valueOf(txManagerService.closeTransactionGroup(groupId,state));
         return res;
     }
 }
