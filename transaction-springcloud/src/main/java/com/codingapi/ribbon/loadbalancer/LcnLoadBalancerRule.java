@@ -35,8 +35,8 @@ public class LcnLoadBalancerRule {
 			String key = MD5Util.md5((groupId + "_" + appName).getBytes());
 
 			Server oldServer =getServer(txTransactionLocal,servers,key);
-			if(oldServer == null){
-				logger.info("The server of key:" + key + " has not been cached yet!");
+			if(oldServer != null){
+				logger.info("LCNBalanceProxy - > load old server ");
 				return server;
 			}
 
