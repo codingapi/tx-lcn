@@ -39,7 +39,7 @@ public class LcnLoadBalancerRule {
 
 		if(cachedServer == null){
 			logger.info("The server of key:" + key + " has not been cached yet!");
-			Constants.cacheModelInfo.put(key, server);
+			putInvoker(key, txTransactionLocal, server);
 			return server;
 		} else{
 			logger.info("The cached server info, host:" + cachedServer.getHost() + ", port:" + cachedServer.getPort());
