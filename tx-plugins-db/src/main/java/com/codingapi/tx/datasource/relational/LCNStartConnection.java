@@ -17,7 +17,7 @@ import java.util.concurrent.Executor;
 /**
  * create by lorne on 2017/12/1
  */
-public class LCNStartConnection extends AbstractTransactionThread implements Connection,ILCNResource<Connection>{
+public class LCNStartConnection extends AbstractTransactionThread implements LCNConnection{
 
     private Logger logger = LoggerFactory.getLogger(LCNStartConnection.class);
 
@@ -151,7 +151,9 @@ public class LCNStartConnection extends AbstractTransactionThread implements Con
 
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
-        connection.setAutoCommit(false);
+        if(connection!=null) {
+            connection.setAutoCommit(false);
+        }
     }
 
 
