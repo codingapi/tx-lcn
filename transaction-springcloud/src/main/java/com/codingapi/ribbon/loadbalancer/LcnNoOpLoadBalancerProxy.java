@@ -22,7 +22,7 @@ public class LcnNoOpLoadBalancerProxy extends NoOpLoadBalancer {
 	@Override
 	public Server chooseServer(Object key){
 		logger.info("enter chooseServer method, key:" + key);
-		return lcnLoadBalancerRule.proxy(super.chooseServer(key));
+		return lcnLoadBalancerRule.proxy(getAllServers(),super.chooseServer(key));
 	}
 
 }
