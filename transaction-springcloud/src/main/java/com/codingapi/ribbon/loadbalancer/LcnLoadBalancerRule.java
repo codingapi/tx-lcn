@@ -1,11 +1,15 @@
 package com.codingapi.ribbon.loadbalancer;
 
+import com.lorne.core.framework.utils.encode.MD5Util;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codingapi.tx.Constants;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.netflix.loadbalancer.Server;
+
+import java.util.List;
 
 /**
  * created by foxdd 2017-12-05
@@ -14,7 +18,7 @@ public class LcnLoadBalancerRule {
 	
 	private Logger logger = LoggerFactory.getLogger(LcnLoadBalancerRule.class);
 	
-	public Server proxy(Server server){
+	public Server proxy(List<Server> qualifiedServers, Server server){
 		logger.info("LCNloadBalancer proxy -> map-size -> " + Constants.cacheModelInfo.size());
 		logger.info("The selected server info, host:" + server.getHost() + ", port:" + server.getPort());
 		TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
@@ -26,10 +30,13 @@ public class LcnLoadBalancerRule {
 
 		//取出组件的appName
 		String appName = server.getMetaInfo().getAppName();
+
+		logger.info("The model named " + appName + " is going to be called, groupId:" + groupId);
+
+		String key = MD5Util.md5((groupId + "_" + appName).getBytes());
 		
-		String key = groupId + "_" + appName;
-		
-		Server cachedServer = (Server) Constants.cacheModelInfo.get(key);
+		Server cachedServer = getInvoker(txTransactionLocal, qualifiedServers, key);
+
 		if(cachedServer == null){
 			logger.info("The server of key:" + key + " has not been cached yet!");
 			Constants.cacheModelInfo.put(key, server);
@@ -39,6 +46,41 @@ public class LcnLoadBalancerRule {
 			return cachedServer;
 		}
 		
+	}
+
+
+	private void putInvoker(String key,TxTransactionLocal txTransactionLocal,Server server){
+		String appName = server.getMetaInfo().getAppName();
+
+		String address = server.getHost() + ":" + server.getPort();
+
+		String md5 = MD5Util.md5((address+appName).getBytes());
+
+		logger.info("putServer->address->"+address+",md5-->"+md5);
+
+		txTransactionLocal.putLoadBalance(key,md5);
+	}
+
+
+	private Server getInvoker(TxTransactionLocal txTransactionLocal, List<Server> servers,String key){
+		String val = txTransactionLocal.getLoadBalance(key);
+		if(StringUtils.isEmpty(val)){
+			return null;
+		}
+		for(Server server:servers){
+			String appName =  server.getMetaInfo().getAppName();
+			//格式统一为host:port
+			String address = server.getHost() + ":" + server.getPort();
+
+			String md5 = MD5Util.md5((address+appName).getBytes());
+
+			logger.info("getServer->address->"+address+",md5-->"+md5);
+
+			if(val.equals(md5)){
+				return server;
+			}
+		}
+		return null;
 	}
 	
 }

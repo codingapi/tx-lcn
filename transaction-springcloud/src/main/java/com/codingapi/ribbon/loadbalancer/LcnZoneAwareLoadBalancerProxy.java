@@ -1,28 +1,24 @@
 package com.codingapi.ribbon.loadbalancer;
 
+import com.netflix.client.config.IClientConfig;
+import com.netflix.loadbalancer.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.netflix.client.config.IClientConfig;
-import com.netflix.loadbalancer.IPing;
-import com.netflix.loadbalancer.IRule;
-import com.netflix.loadbalancer.Server;
-import com.netflix.loadbalancer.ServerList;
-import com.netflix.loadbalancer.ServerListFilter;
-import com.netflix.loadbalancer.ServerListUpdater;
-import com.netflix.loadbalancer.ZoneAwareLoadBalancer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * created by foxdd 2017-12-05
  */
-public class LcnZoneAwareLoadBalancerProxy<T extends Server> extends ZoneAwareLoadBalancer<T> {
+public class LcnZoneAwareLoadBalancerProxy extends ZoneAwareLoadBalancer<Server> {
 	
 	private Logger logger = LoggerFactory.getLogger(LcnZoneAwareLoadBalancerProxy.class);
 	
 	LcnLoadBalancerRule lcnLoadBalancerRule = new LcnLoadBalancerRule();
 	
 	public LcnZoneAwareLoadBalancerProxy(IClientConfig clientConfig, IRule rule,
-            IPing ping, ServerList<T> serverList, ServerListFilter<T> filter,
+            IPing ping, ServerList<Server> serverList, ServerListFilter<Server> filter,
             ServerListUpdater serverListUpdater) {
 		super(clientConfig, rule, ping, serverList, filter, serverListUpdater);
 	}
@@ -30,7 +26,10 @@ public class LcnZoneAwareLoadBalancerProxy<T extends Server> extends ZoneAwareLo
 	@Override
 	public Server chooseServer(Object key){
 		logger.info("enter chooseServer method, key:" + key);
-		return lcnLoadBalancerRule.proxy(super.chooseServer(key));
+		List<Server> serverList = new ArrayList<Server>();
+		serverList = super.getServerListImpl().getUpdatedListOfServers();
+		serverList = super.getFilter().getFilteredListOfServers(serverList);
+		return lcnLoadBalancerRule.proxy(serverList, super.chooseServer(key));
 	}
 
 }
