@@ -9,7 +9,7 @@
 
 ## 官方网址
 
-[www.txlcn.org](https://www.txlcn.org)
+[https://www.txlcn.org](https://www.txlcn.org)
 
 
 ## 框架特点
@@ -26,7 +26,7 @@
 
 ## 原理介绍
 
-[原理介绍](https://github.com/codingapi/tx-lcn/wiki)  [视频讲解](http://www.txlcn.org/v4/index.html)
+[原理介绍](https://github.com/codingapi/tx-lcn/wiki)  [视频讲解](https://www.txlcn.org/v4/index.html)
 
 ## 目录说明
 
