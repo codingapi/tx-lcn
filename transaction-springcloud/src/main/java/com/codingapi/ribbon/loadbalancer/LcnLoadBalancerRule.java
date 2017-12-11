@@ -1,13 +1,11 @@
 package com.codingapi.ribbon.loadbalancer;
 
+import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.lorne.core.framework.utils.encode.MD5Util;
+import com.netflix.loadbalancer.Server;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.codingapi.tx.Constants;
-import com.codingapi.tx.aop.bean.TxTransactionLocal;
-import com.netflix.loadbalancer.Server;
 
 import java.util.List;
 
@@ -19,7 +17,6 @@ public class LcnLoadBalancerRule {
 	private Logger logger = LoggerFactory.getLogger(LcnLoadBalancerRule.class);
 	
 	public Server proxy(List<Server> qualifiedServers, Server server){
-		logger.info("LCNloadBalancer proxy -> map-size -> " + Constants.cacheModelInfo.size());
 		logger.info("The selected server info, host:" + server.getHost() + ", port:" + server.getPort());
 		TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 		if(txTransactionLocal == null){
