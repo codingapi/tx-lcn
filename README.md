@@ -111,6 +111,8 @@ tx-plugins-redis 是LCN 对于redis模块的插件支持（功能暂未实现）
 
 ## maven 中心库地址
 
+
+
 ```
 
 
@@ -155,6 +157,10 @@ tx-plugins-redis 是LCN 对于redis模块的插件支持（功能暂未实现）
 </dependency>    
         
 ```
+
+依赖gradle等形式，见中心库   
+
+[http://mvnrepository.com/search?q=codingapi](http://mvnrepository.com/search?q=codingapi)
 
 
 ## demo演示教程
