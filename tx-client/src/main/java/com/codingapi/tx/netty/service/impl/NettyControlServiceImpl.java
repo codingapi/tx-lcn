@@ -3,9 +3,11 @@ package com.codingapi.tx.netty.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.tx.control.service.TransactionControlService;
 import com.codingapi.tx.framework.utils.SocketManager;
+import com.codingapi.tx.listener.service.ModelNameService;
 import com.codingapi.tx.netty.service.MQTxManagerService;
 import com.codingapi.tx.netty.service.NettyControlService;
 import com.codingapi.tx.netty.service.NettyService;
+import com.codingapi.tx.netty.utils.IpAddressUtils;
 import com.lorne.core.framework.utils.task.ConditionUtils;
 import com.lorne.core.framework.utils.task.IBack;
 import com.lorne.core.framework.utils.task.Task;
@@ -36,6 +38,9 @@ public class NettyControlServiceImpl implements NettyControlService {
     @Autowired
     private MQTxManagerService mqTxManagerService;
 
+    @Autowired
+    private ModelNameService modelNameService;
+
 
     private Executor threadPool = Executors.newFixedThreadPool(100);
 
@@ -56,7 +61,7 @@ public class NettyControlServiceImpl implements NettyControlService {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (!SocketManager.getInstance().isNetState()) {
+                while (!SocketManager.getInstance().isNetState()|| !IpAddressUtils.isIpAddress(modelNameService.getIpAddress())) {
                     try {
                         Thread.sleep(1000 * 5);
                     } catch (InterruptedException e) {

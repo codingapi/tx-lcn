@@ -3,7 +3,6 @@ package com.codingapi.tx.listener.service.impl;
 import com.codingapi.tx.Constants;
 import com.codingapi.tx.listener.service.InitService;
 import com.codingapi.tx.listener.service.ModelNameService;
-import com.codingapi.tx.listener.service.TimeOutService;
 import com.codingapi.tx.netty.service.NettyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +20,6 @@ public class InitServiceImpl implements InitService {
     @Autowired
     private NettyService nettyService;
 
-    @Autowired
-    private TimeOutService timeOutService;
-
 
     @Autowired
     private ModelNameService modelNameService;
@@ -40,9 +36,6 @@ public class InitServiceImpl implements InitService {
 
         nettyService.start();
         logger.info("socket-start..");
-
-        //timeOutService.loadOutTime();
-
 
     }
 }

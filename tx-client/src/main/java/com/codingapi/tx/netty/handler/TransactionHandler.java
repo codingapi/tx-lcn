@@ -58,13 +58,14 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-        super.channelUnregistered(ctx);
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+
+        logger.info("connection -->" + ctx);
 
         SocketManager.getInstance().setNetState(false);
         //链接断开,重新连接
         nettyControlService.restart();
-
     }
 
     @Override
@@ -72,12 +73,12 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
         super.channelActive(ctx);
         SocketManager.getInstance().setCtx(ctx);
 
-        logger.info("try connection -->" + ctx);
-
-        nettyControlService.uploadModelInfo();
+        logger.info("disconnection -->" + ctx);
 
         //通道激活后进行心跳检查
         SocketUtils.sendMsg(ctx, heartJson);
+
+        nettyControlService.uploadModelInfo();
     }
 
 

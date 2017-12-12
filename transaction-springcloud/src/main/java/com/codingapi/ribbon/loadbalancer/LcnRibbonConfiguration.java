@@ -32,10 +32,6 @@ public class LcnRibbonConfiguration {
 		return new LcnZoneAwareLoadBalancerProxy(config, rule, ping, serverList,
 				serverListFilter, serverListUpdater);
 	}
-	
-	/*@Bean
-	public IRule ribbonRule(){
-		return new LcnRandomRuleProxy();
-	}*/
+
 
 }
