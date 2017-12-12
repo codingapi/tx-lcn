@@ -61,19 +61,20 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
 
-        logger.info("connection -->" + ctx);
+        logger.info("disconnection  -->" + ctx);
 
         SocketManager.getInstance().setNetState(false);
         //链接断开,重新连接
         nettyControlService.restart();
     }
 
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         SocketManager.getInstance().setCtx(ctx);
 
-        logger.info("disconnection -->" + ctx);
+        logger.info("connection -->" + ctx);
 
         //通道激活后进行心跳检查
         SocketUtils.sendMsg(ctx, heartJson);
