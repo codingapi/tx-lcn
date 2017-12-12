@@ -23,9 +23,12 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
     private org.slf4j.Logger logger = LoggerFactory.getLogger(LCNTransactionDataSource.class);
 
 
-    private DataSource dataSource;
+    protected DataSource dataSource;
 
 
+    protected DataSource getDataSource() {
+        return dataSource;
+    }
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -70,7 +73,7 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
 
         Connection connection =(Connection)loadConnection();
         if(connection==null) {
-             connection = initLCNConnection(dataSource.getConnection());
+             connection = initLCNConnection(getDataSource().getConnection());
             if(connection==null){
                 throw new SQLException("connection was overload");
             }
@@ -87,7 +90,7 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
 
         Connection connection = (Connection)loadConnection();
         if(connection==null) {
-            connection =  initLCNConnection(dataSource.getConnection(username, password));
+            connection =  initLCNConnection(getDataSource().getConnection(username, password));
             if(connection==null){
                 throw new SQLException("connection was overload");
             }
@@ -102,36 +105,36 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
 
     @Override
     public PrintWriter getLogWriter() throws SQLException {
-        return dataSource.getLogWriter();
+        return getDataSource().getLogWriter();
     }
 
     @Override
     public void setLogWriter(PrintWriter out) throws SQLException {
-        dataSource.setLogWriter(out);
+        getDataSource().setLogWriter(out);
     }
 
     @Override
     public void setLoginTimeout(int seconds) throws SQLException {
-        dataSource.setLoginTimeout(seconds);
+        getDataSource().setLoginTimeout(seconds);
     }
 
     @Override
     public int getLoginTimeout() throws SQLException {
-        return dataSource.getLoginTimeout();
+        return getDataSource().getLoginTimeout();
     }
 
     @Override
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-        return dataSource.getParentLogger();
+        return getDataSource().getParentLogger();
     }
 
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        return dataSource.unwrap(iface);
+        return getDataSource().unwrap(iface);
     }
 
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return dataSource.isWrapperFor(iface);
+        return getDataSource().isWrapperFor(iface);
     }
 }

@@ -22,7 +22,7 @@ import java.util.concurrent.Executor;
  * create by lorne on 2017/7/29
  */
 
-public class LCNDBConnection extends AbstractTransactionThread implements Connection,ILCNResource<Connection> {
+public class LCNDBConnection extends AbstractTransactionThread implements LCNConnection {
 
 
     private Logger logger = LoggerFactory.getLogger(LCNDBConnection.class);
@@ -178,7 +178,9 @@ public class LCNDBConnection extends AbstractTransactionThread implements Connec
 
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
-        connection.setAutoCommit(false);
+        if(connection!=null) {
+            connection.setAutoCommit(false);
+        }
     }
 
     @Override
