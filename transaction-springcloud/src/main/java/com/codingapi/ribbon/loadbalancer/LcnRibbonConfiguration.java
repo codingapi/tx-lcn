@@ -29,7 +29,7 @@ public class LcnRibbonConfiguration {
 	public ILoadBalancer ribbonLoadBalancer(IClientConfig config,
 			ServerList<Server> serverList, ServerListFilter<Server> serverListFilter,
 			IRule rule, IPing ping, ServerListUpdater serverListUpdater) {
-		return new LcnZoneAwareLoadBalancerProxy<>(config, rule, ping, serverList,
+		return new LcnZoneAwareLoadBalancerProxy(config, rule, ping, serverList,
 				serverListFilter, serverListUpdater);
 	}
 	

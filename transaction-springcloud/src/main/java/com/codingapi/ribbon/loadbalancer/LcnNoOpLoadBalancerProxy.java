@@ -6,6 +6,9 @@ import org.slf4j.LoggerFactory;
 import com.netflix.loadbalancer.NoOpLoadBalancer;
 import com.netflix.loadbalancer.Server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * created by foxdd 2017-12-05
  */
@@ -22,7 +25,10 @@ public class LcnNoOpLoadBalancerProxy extends NoOpLoadBalancer {
 	@Override
 	public Server chooseServer(Object key){
 		logger.info("enter chooseServer method, key:" + key);
-		return lcnLoadBalancerRule.proxy(getAllServers(),super.chooseServer(key));
+
+		List<Server> serverList = new ArrayList<Server>();
+		return lcnLoadBalancerRule.proxy(serverList, super.chooseServer(key));
+
 	}
 
 }
