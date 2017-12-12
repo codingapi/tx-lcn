@@ -109,6 +109,54 @@ tx-plugins-redis 是LCN 对于redis模块的插件支持（功能暂未实现）
     public void d(){}
 ```
 
+## maven 中心库地址
+
+```
+
+
+<dependency>
+    <groupId>com.codingapi</groupId>
+    <artifactId>tx-client</artifactId>
+    <version>${lcn.last.version}</version>
+</dependency>
+
+
+<dependency>
+    <groupId>com.codingapi</groupId>
+    <artifactId>tx-plugins-db</artifactId>
+    <version>${lcn.last.version}</version>
+</dependency>
+
+
+<dependency>
+    <groupId>com.codingapi</groupId>
+    <artifactId>tx-plugins-nodb</artifactId>
+    <version>${lcn.last.version}</version>
+</dependency>
+
+
+<dependency>
+    <groupId>com.codingapi</groupId>
+    <artifactId>transaction-dubbo</artifactId>
+    <version>${lcn.last.version}</version>
+</dependency>      
+
+<dependency>
+    <groupId>com.codingapi</groupId>
+    <artifactId>transaction-motan</artifactId>
+    <version>${lcn.last.version}</version>
+</dependency>  
+
+
+<dependency>
+    <groupId>com.codingapi</groupId>
+    <artifactId>transaction-springcloud</artifactId>
+    <version>${lcn.last.version}</version>
+</dependency>    
+        
+```
+
+
 ## demo演示教程
 
 每个demo下有区分为 jdbc/hibernate/mybatis不同框架的版本demo
