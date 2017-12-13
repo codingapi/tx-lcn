@@ -3,7 +3,7 @@ package com.codingapi.tm.manager.service.impl;
 import com.codingapi.tm.Constants;
 import com.codingapi.tm.config.ConfigReader;
 import com.codingapi.tm.framework.utils.SocketManager;
-import com.codingapi.tm.manager.service.EurekaService;
+import com.codingapi.tm.manager.service.MicroService;
 import com.codingapi.tm.model.TxServer;
 import com.codingapi.tm.model.TxState;
 import com.netflix.appinfo.InstanceInfo;
@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
  * create by lorne on 2017/11/11
  */
 @Service
-public class EurekaServiceImpl implements EurekaService{
+public class MicroServiceImpl implements MicroService {
 
 
     @Autowired
@@ -39,11 +39,14 @@ public class EurekaServiceImpl implements EurekaService{
     private DiscoveryClient discoveryClient;
 
 
+    @Autowired
+    private EurekaClient eurekaClient;
 
-    private final static String  tmKey = "tx-manager";
+
+
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(EurekaServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(MicroServiceImpl.class);
 
 
     private boolean isIp(String ipAddress) {
@@ -53,9 +56,6 @@ public class EurekaServiceImpl implements EurekaService{
         return matcher.matches();
     }
 
-
-    @Autowired
-    private EurekaClient eurekaClient;
 
     public List<InstanceInfo> getConfigServiceInstances() {
         Application application = eurekaClient.getApplication(tmKey);
