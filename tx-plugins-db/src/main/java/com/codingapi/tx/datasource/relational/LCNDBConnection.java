@@ -43,6 +43,8 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
 
     private TxTask waitTask;
 
+    private boolean readOnly = false;
+
 
     public LCNDBConnection(Connection connection, DataSourceService dataSourceService, ICallClose<ILCNResource> runnable) {
         logger.info("init lcn connection ! ");
@@ -102,6 +104,11 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
             return;
         }
 
+        if(readOnly){
+            closeConnection();
+            logger.info("now transaction is readOnly , groupId:" + groupId);
+            return;
+        }
 
         logger.info("now transaction state is " + state + ", (1:commit,0:rollback) groupId:" + groupId);
 
@@ -187,6 +194,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
     public void setReadOnly(boolean readOnly) throws SQLException {
 
         if(readOnly) {
+            this.readOnly = readOnly;
             logger.info("setReadOnly - >" + readOnly);
             connection.setReadOnly(readOnly);
 
