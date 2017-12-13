@@ -34,7 +34,7 @@
     </developers>
 
     <properties>
-        <motan.versoin>1.0.0</motan.versoin>
+        <motan.versoin>1.1.0</motan.versoin>
     </properties>
 
     <dependencies>
@@ -50,22 +50,10 @@
             <artifactId>motan-core</artifactId>
             <version>${motan.versoin}</version>
         </dependency>
-        <dependency>
-            <groupId>com.weibo</groupId>
-            <artifactId>motan-transport-netty</artifactId>
-            <version>${motan.versoin}</version>
-        </dependency>
 
-        <!-- only needed for spring-based features -->
         <dependency>
             <groupId>com.weibo</groupId>
             <artifactId>motan-springsupport</artifactId>
-            <version>${motan.versoin}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.weibo</groupId>
-            <artifactId>motan-registry-zookeeper</artifactId>
             <version>${motan.versoin}</version>
         </dependency>
         <!-- motan config end-->
