@@ -26,12 +26,10 @@ public class LcnZoneAwareLoadBalancerProxy extends ZoneAwareLoadBalancer<Server>
 	@Override
 	public Server chooseServer(Object key){
 		logger.info("enter chooseServer method, key:" + key);
-
-		List<Server> serverList = new ArrayList<Server>();
-		//获取处理之后的serverlist
-		serverList = super.getServerListImpl().getUpdatedListOfServers();
-		//获取过滤之后的serverlist
-		serverList = super.getFilter().getFilteredListOfServers(serverList);
+        List<Server> serverList = super.getReachableServers();
+		if(serverList.size() <= 1){
+		    return super.chooseServer(key);
+        }
 		return lcnLoadBalancerRule.proxy(serverList, super.chooseServer(key));
 
 	}
