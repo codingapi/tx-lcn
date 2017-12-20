@@ -48,7 +48,7 @@ public class TxCoreServerHandler extends ChannelInboundHandlerAdapter { // (1)
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) throws Exception {
         final String json = SocketUtils.getJson(msg);
-        logger.info("接受->"+json);
+        logger.info("request->"+json);
         threadPool.execute(new Runnable() {
             @Override
             public void run() {

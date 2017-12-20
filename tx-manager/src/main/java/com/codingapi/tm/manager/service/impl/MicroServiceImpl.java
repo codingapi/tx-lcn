@@ -60,7 +60,7 @@ public class MicroServiceImpl implements MicroService {
     public List<InstanceInfo> getConfigServiceInstances() {
         Application application = eurekaClient.getApplication(tmKey);
         if (application == null) {
-            logger.error("获取eureka服务失败！");
+            logger.error("get eureka server error!");
         }
         return application != null ? application.getInstances() : new ArrayList<>();
     }

@@ -132,6 +132,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- 手动打包时，将下面的plugin注释掉 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>

@@ -1,8 +1,6 @@
 package com.codingapi.tx.listener.service.impl;
 
-import com.codingapi.tx.Constants;
 import com.codingapi.tx.listener.service.InitService;
-import com.codingapi.tx.listener.service.ModelNameService;
 import com.codingapi.tx.netty.service.NettyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,19 +18,8 @@ public class InitServiceImpl implements InitService {
     @Autowired
     private NettyService nettyService;
 
-
-    @Autowired
-    private ModelNameService modelNameService;
-
-
     @Override
     public void start() {
-
-        /**
-         * 设置模块唯一标示
-         */
-
-        Constants.uniqueKey = modelNameService.getUniqueKey();
 
         nettyService.start();
         logger.info("socket-start..");
