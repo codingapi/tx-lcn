@@ -5,7 +5,6 @@ import com.netflix.loadbalancer.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ public class LcnZoneAwareLoadBalancerProxy extends ZoneAwareLoadBalancer<Server>
 	public Server chooseServer(Object key){
 		logger.info("enter chooseServer method, key:" + key);
         List<Server> serverList = super.getReachableServers();
-		if(serverList.size() <= 0){
+        if(null == serverList || serverList.isEmpty()){
 		    return super.chooseServer(key);
         }
 		return lcnLoadBalancerRule.proxy(serverList, super.chooseServer(key));
