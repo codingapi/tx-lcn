@@ -108,6 +108,8 @@ public class TxStartTransactionServerImpl implements TransactionServer {
                             if(waitTask.getState()== TaskState.connectionError.getCode()){
                                 //本地执行失败.
                                 executeConnectionError = 1;
+
+                                lastState = 0;
                             }
                         }
 

@@ -35,6 +35,8 @@ public class LCNStartConnection extends AbstractTransactionThread implements LCN
 
     private boolean isCompensate = false;
 
+    private int startState = 0;
+
     private ThreadLocal<Boolean> isClose = new ThreadLocal<>();
 
 
@@ -53,6 +55,8 @@ public class LCNStartConnection extends AbstractTransactionThread implements LCN
 
             TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(groupId,txCompensateLocal.getType());
             waitTask = taskGroup.getCurrent();
+
+            startState = txCompensateLocal.getStartState();
         }else{
             isCompensate = false;
             logger.info("transaction is start-connection.");
@@ -153,8 +157,8 @@ public class LCNStartConnection extends AbstractTransactionThread implements LCN
             if (rs == 1) {
                 if(isCompensate) {
                     //补偿时需要根据补偿数据决定提交还是回滚.
-                    int starState = TxCompensateLocal.current().getStartState();
-                    if(starState==1) {
+                    rs = startState;
+                    if(rs==1) {
                         connection.commit();
                     }else{
                         connection.rollback();
@@ -165,7 +169,7 @@ public class LCNStartConnection extends AbstractTransactionThread implements LCN
             } else {
                 rollbackConnection();
             }
-            System.out.println(" lcn start transaction over, res -> groupId:"+getGroupId()+" and  state is "+rs+", about state (1:commit 0:rollback)");
+            System.out.println(" lcn start transaction over, res -> groupId:"+getGroupId()+" and  state is "+(rs==1?"commit":"rollback"));
 
         }catch (SQLException e){
 
