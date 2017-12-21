@@ -5,7 +5,6 @@ import com.netflix.loadbalancer.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,12 +25,10 @@ public class LcnZoneAwareLoadBalancerProxy extends ZoneAwareLoadBalancer<Server>
 	@Override
 	public Server chooseServer(Object key){
 		logger.info("enter chooseServer method, key:" + key);
-
-		List<Server> serverList = new ArrayList<Server>();
-		//获取处理之后的serverlist
-		serverList = super.getServerListImpl().getUpdatedListOfServers();
-		//获取过滤之后的serverlist
-		serverList = super.getFilter().getFilteredListOfServers(serverList);
+        List<Server> serverList = super.getReachableServers();
+        if(null == serverList || serverList.isEmpty()){
+		    return super.chooseServer(key);
+        }
 		return lcnLoadBalancerRule.proxy(serverList, super.chooseServer(key));
 
 	}
