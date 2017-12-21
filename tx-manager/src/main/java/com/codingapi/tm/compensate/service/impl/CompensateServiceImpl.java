@@ -62,20 +62,22 @@ public class CompensateServiceImpl implements CompensateService {
 
         managerService.deleteTxGroup(txGroup);
 
-        //已经全部通知的模块不做补偿处理
-        boolean hasNoNotify = false;
+        //会出现启动模块失败的情况，因此不能校验其他模块是否通知成功，因为只是发起方失败时。也需要提交补偿
 
-        for(TxInfo txInfo:txGroup.getList()){
-            if(txInfo.getNotify()==0){
-                hasNoNotify = true;
-            }
-        }
-
-        if(!hasNoNotify){
-            //事务已经执行完毕的
-            logger.info("TxGroup had notify ! ");
-            return true;
-        }
+//        //已经全部通知的模块不做补偿处理
+//        boolean hasNoNotify = false;
+//
+//        for(TxInfo txInfo:txGroup.getList()){
+//            if(txInfo.getNotify()==0){
+//                hasNoNotify = true;
+//            }
+//        }
+//
+//        if(!hasNoNotify){
+//            //事务已经执行完毕的
+//            logger.info("TxGroup had notify ! ");
+//            return true;
+//        }
 
 
         transactionCompensateMsg.setTxGroup(txGroup);
@@ -315,6 +317,8 @@ public class CompensateServiceImpl implements CompensateService {
 
         String model = jsonObject.getString("model");
 
+        int startError = jsonObject.getInteger("startError");
+
         ModelInfo modelInfo = ModelInfoManager.getInstance().getModelByModel(model);
         if (modelInfo == null) {
             throw new ServiceException("current model offline.");
@@ -324,7 +328,7 @@ public class CompensateServiceImpl implements CompensateService {
 
         String groupId = jsonObject.getString("groupId");
 
-        String res = managerSenderService.sendCompensateMsg(modelInfo.getChannelName(), groupId, data);
+        String res = managerSenderService.sendCompensateMsg(modelInfo.getChannelName(), groupId, data,startError);
 
         return "1".equals(res);
     }

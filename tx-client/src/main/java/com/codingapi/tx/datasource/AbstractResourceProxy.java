@@ -1,7 +1,7 @@
 package com.codingapi.tx.datasource;
 
 
-import com.codingapi.tx.aop.bean.TxCompensateLocal;
+//import com.codingapi.tx.aop.bean.TxCompensateLocal;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.service.DataSourceService;
 import com.lorne.core.framework.utils.task.Task;
@@ -64,8 +64,8 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
 
     protected abstract void initDbType();
 
-    protected abstract C getRollback(C connection);
-
+//    protected abstract C getCompensateConnection(C connection,TxCompensateLocal txCompensateLocal);
+//
 
 
     protected ILCNResource loadConnection(){
@@ -128,10 +128,10 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
             logger.info("lcn datasource transaction control ");
 
             //补偿的情况的
-            if (TxCompensateLocal.current() != null) {
-                logger.info("rollback transaction ");
-                return getRollback(connection);
-            }
+//            if (TxCompensateLocal.current() != null) {
+//                logger.info("rollback transaction ");
+//                return getCompensateConnection(connection,TxCompensateLocal.current());
+//            }
 
             if(StringUtils.isNotEmpty(txTransactionLocal.getGroupId())){
 

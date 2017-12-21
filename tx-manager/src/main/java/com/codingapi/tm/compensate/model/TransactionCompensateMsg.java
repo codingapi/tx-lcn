@@ -16,6 +16,7 @@ public class TransactionCompensateMsg {
     private String methodStr;
     private String data;
     private int time;
+    private int startError;
 
     private TxGroup txGroup;
 
@@ -24,7 +25,7 @@ public class TransactionCompensateMsg {
 
     public TransactionCompensateMsg(long currentTime, String groupId, String model, String address,
                                     String uniqueKey, String className,
-                                    String methodStr, String data, int time, int state) {
+                                    String methodStr, String data, int time, int state,int startError) {
         this.currentTime = currentTime;
         this.groupId = groupId;
         this.model = model;
@@ -35,8 +36,16 @@ public class TransactionCompensateMsg {
         this.time = time;
         this.address = address;
         this.state = state;
+        this.startError = startError;
     }
 
+    public int getStartError() {
+        return startError;
+    }
+
+    public void setStartError(int startError) {
+        this.startError = startError;
+    }
 
     public int getState() {
         return state;

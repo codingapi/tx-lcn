@@ -32,10 +32,11 @@ public class CompensateServiceImpl implements CompensateService {
     }
 
     @Override
-    public boolean invoke(TransactionInvocation invocation, String groupId) {
+    public boolean invoke(TransactionInvocation invocation, String groupId, int startState) {
 
         TxCompensateLocal compensateLocal = new TxCompensateLocal();
         compensateLocal.setGroupId(groupId);
+        compensateLocal.setStartState(startState);
 
         TxCompensateLocal.setCurrent(compensateLocal);
 

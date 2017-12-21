@@ -46,9 +46,10 @@ public interface ApiTxManagerService {
      * @param methodStr    事务启动方法
      * @param data      切面数据
      * @param time      执行时间
+     * @param startError 启动模块异常
      * @return  是否保存成功
      */
-    boolean sendCompensateMsg(long currentTime, String groupId, String model, String address, String uniqueKey, String className, String methodStr, String data, int time);
+    boolean sendCompensateMsg(long currentTime, String groupId, String model, String address, String uniqueKey, String className, String methodStr, String data, int time,int startError);
 
     /**
      * 获取服务器状态

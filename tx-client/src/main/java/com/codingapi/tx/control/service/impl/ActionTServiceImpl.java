@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.codingapi.tx.control.service.IActionService;
 import com.codingapi.tx.framework.task.TaskGroup;
 import com.codingapi.tx.framework.task.TaskGroupManager;
+import com.codingapi.tx.framework.task.TaskState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -64,7 +65,9 @@ public class ActionTServiceImpl implements IActionService {
         while (true) {
             if (task.isRemove()) {
 
-                if (task.getState() == 0 || task.getState() == 1) {
+                if (task.getState() == TaskState.rollback.getCode()
+                    || task.getState() == TaskState.commit.getCode()) {
+
                     res = "1";
                 } else {
                     res = "0";
