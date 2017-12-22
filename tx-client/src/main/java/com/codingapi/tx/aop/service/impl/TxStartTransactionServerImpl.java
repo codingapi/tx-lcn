@@ -6,6 +6,7 @@ import com.codingapi.tx.aop.bean.TxTransactionInfo;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.aop.service.TransactionServer;
 import com.codingapi.tx.framework.task.TaskGroupManager;
+import com.codingapi.tx.framework.task.TaskState;
 import com.codingapi.tx.framework.task.TxTask;
 import com.codingapi.tx.framework.thread.HookRunnable;
 import com.codingapi.tx.model.TxGroup;
@@ -88,20 +89,37 @@ public class TxStartTransactionServerImpl implements TransactionServer {
 
                         int lastState = rs==-1?0:resState;
 
+                        int executeConnectionError = 0;
+
                         //控制本地事务的数据提交
                         final TxTask waitTask = TaskGroupManager.getInstance().getTask(groupId, type);
                         if(waitTask!=null){
                             waitTask.setState(lastState);
                             waitTask.signalTask();
+
+                            while (!waitTask.isRemove()){
+                                try {
+                                    Thread.sleep(1);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            if(waitTask.getState()== TaskState.connectionError.getCode()){
+                                //本地执行失败.
+                                executeConnectionError = 1;
+
+                                lastState = 0;
+                            }
                         }
 
 
                         if (compensateLocal == null) {
                             long end = System.currentTimeMillis();
                             long time = end - start;
-                            if (lastState == 1 && rs == 0) {
+                            if (executeConnectionError == 1||(lastState == 1 && rs == 0)) {
                                 //记录补偿日志
-                                txManagerService.sendCompensateMsg(groupId, time, info);
+                                txManagerService.sendCompensateMsg(groupId, time, info,executeConnectionError);
                             }
                         }
 

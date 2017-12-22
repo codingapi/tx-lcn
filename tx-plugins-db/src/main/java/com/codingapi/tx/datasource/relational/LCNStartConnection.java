@@ -1,10 +1,12 @@
 package com.codingapi.tx.datasource.relational;
 
+import com.codingapi.tx.aop.bean.TxCompensateLocal;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.ICallClose;
 import com.codingapi.tx.datasource.ILCNResource;
 import com.codingapi.tx.framework.task.TaskGroup;
 import com.codingapi.tx.framework.task.TaskGroupManager;
+import com.codingapi.tx.framework.task.TaskState;
 import com.codingapi.tx.framework.task.TxTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,10 @@ public class LCNStartConnection extends AbstractTransactionThread implements LCN
 
     private volatile int state = 1;
 
+    private boolean isCompensate = false;
+
+    private int startState = 0;
+
     private ThreadLocal<Boolean> isClose = new ThreadLocal<>();
 
 
@@ -38,10 +44,28 @@ public class LCNStartConnection extends AbstractTransactionThread implements LCN
         this.connection = connection;
         this.subNowCount = subNowCount;
 
-        TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
-        groupId =  txTransactionLocal.getGroupId();
-        TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(txTransactionLocal.getGroupId(),txTransactionLocal.getType());
-        waitTask = taskGroup.getCurrent();
+
+
+        if(TxCompensateLocal.current()!=null){
+            isCompensate = true;
+            logger.info("transaction is compensate-connection.");
+
+            TxCompensateLocal txCompensateLocal = TxCompensateLocal.current();
+            groupId =  txCompensateLocal.getGroupId();
+
+            TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(groupId,txCompensateLocal.getType());
+            waitTask = taskGroup.getCurrent();
+
+            startState = txCompensateLocal.getStartState();
+        }else{
+            isCompensate = false;
+            logger.info("transaction is start-connection.");
+            TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
+            groupId = txTransactionLocal.getGroupId();
+
+            TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(groupId, txTransactionLocal.getType());
+            waitTask = taskGroup.getCurrent();
+        }
 
         logger.info("lcn start connection init ok .");
     }
@@ -129,13 +153,31 @@ public class LCNStartConnection extends AbstractTransactionThread implements LCN
 
         int rs = waitTask.getState();
 
-        System.out.println(" lcn start transaction over, res -> groupId:"+getGroupId()+" and  state is "+rs+", about state (1:commit 0:rollback)");
+        try {
+            if (rs == 1) {
+                if(isCompensate) {
+                    //补偿时需要根据补偿数据决定提交还是回滚.
+                    rs = startState;
+                    if(rs==1) {
+                        connection.commit();
+                    }else{
+                        connection.rollback();
+                    }
+                }else{
+                    connection.commit();
+                }
+            } else {
+                rollbackConnection();
+            }
+            System.out.println(" lcn start transaction over, res -> groupId:"+getGroupId()+" and  state is "+(rs==1?"commit":"rollback"));
 
-        if (rs == 1) {
-            connection.commit();
-        } else {
-            rollbackConnection();
+        }catch (SQLException e){
+
+            waitTask.setState(TaskState.connectionError.getCode());
+
+            System.out.println(" lcn start transaction over,but connection is closed,  res -> groupId:"+getGroupId());
         }
+
         waitTask.remove();
 
     }

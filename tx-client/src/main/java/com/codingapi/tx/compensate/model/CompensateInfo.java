@@ -16,6 +16,7 @@ public class CompensateInfo {
     private String address;
     private long time;
     private String resJson;
+    private int startError;
 
     private int state;
 
@@ -24,7 +25,7 @@ public class CompensateInfo {
         String postParam = "model=" + modelName + "&uniqueKey=" + uniqueKey + "" +
             "&address=" + address + "&currentTime=" + currentTime +
             "&data=" + data + "&time=" + time + "&groupId=" + groupId + "" +
-            "&className=" + className + "&methodStr=" + methodStr;
+            "&className=" + className + "&methodStr=" + methodStr+"&startError="+startError;
         return postParam;
     }
 
@@ -33,7 +34,7 @@ public class CompensateInfo {
 
     public CompensateInfo(long currentTime, String modelName, String uniqueKey, String data,
                           String methodStr, String className, String groupId, String address,
-                          long time) {
+                          long time,int startError) {
         this.currentTime = currentTime;
         this.modelName = modelName;
         this.uniqueKey = uniqueKey;
@@ -44,8 +45,17 @@ public class CompensateInfo {
         this.address = address;
         this.time = time;
         this.state = 0;
+        this.startError =startError;
     }
 
+
+    public int getStartError() {
+        return startError;
+    }
+
+    public void setStartError(int startError) {
+        this.startError = startError;
+    }
 
     public int getState() {
         return state;
