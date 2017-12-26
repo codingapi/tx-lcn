@@ -15,6 +15,7 @@
     <version>${lcn.last.version}</version>
 
     <name>tx-plugins-redis</name>
+    <url>https://github.com/codingapi/tx-lcn</url>
     <description>tx-plugins-redis project for Spring Boot</description>
 
 

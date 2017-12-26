@@ -2,10 +2,8 @@ package com.codingapi.tm.netty.service.impl;
 
 import com.codingapi.tm.Constants;
 import com.codingapi.tm.config.ConfigReader;
-import com.codingapi.tm.manager.service.TxManagerService;
 import com.codingapi.tm.netty.handler.TxCoreServerHandler;
 import com.codingapi.tm.netty.service.NettyServerService;
-
 import com.codingapi.tm.netty.service.NettyService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -15,7 +13,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -66,8 +63,7 @@ public class NettyServerServiceImpl implements NettyServerService {
                         public void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast("timeout", new IdleStateHandler(heartTime, heartTime, heartTime, TimeUnit.SECONDS));
 
-                            ch.pipeline().addLast(new LengthFieldPrepender(4, false));
-                            ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+                            ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 1, 1, 0, 0));
 
                             ch.pipeline().addLast(txCoreServerHandler);
                         }

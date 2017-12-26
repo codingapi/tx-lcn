@@ -9,6 +9,8 @@
     <packaging>pom</packaging>
 
     <name>tx-lcn</name>
+    <url>https://github.com/codingapi/tx-lcn</url>
+    <description>tx-lcn project for LCN</description>
 
     <modules>
         <module>tx-client</module>
@@ -126,7 +128,9 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- 手动打包时，将下面的plugin注释掉 -->
+
+             <!--手动打包时，将下面的plugin注释掉-->
+
             <!--<plugin>-->
                 <!--<groupId>org.apache.maven.plugins</groupId>-->
                 <!--<artifactId>maven-gpg-plugin</artifactId>-->
@@ -141,6 +145,7 @@
                     <!--</execution>-->
                 <!--</executions>-->
             <!--</plugin>-->
+
         </plugins>
     </build>
 
