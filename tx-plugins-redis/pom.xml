@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.codingapi</groupId>
         <artifactId>tx-lcn</artifactId>
-        <version>4.0.0</version>
+        <version>4.0.3.M1</version>
     </parent>
 
     <groupId>com.codingapi</groupId>
@@ -15,6 +15,7 @@
     <version>${lcn.last.version}</version>
 
     <name>tx-plugins-redis</name>
+    <url>https://github.com/codingapi/tx-lcn</url>
     <description>tx-plugins-redis project for Spring Boot</description>
 
 
