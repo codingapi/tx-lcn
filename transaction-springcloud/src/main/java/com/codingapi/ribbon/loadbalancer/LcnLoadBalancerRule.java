@@ -45,7 +45,7 @@ public class LcnLoadBalancerRule {
 			Server oldServer =getServer(txTransactionLocal,servers,key);
 			if(oldServer != null){
 				logger.info("LCNBalanceProxy - > load old server ");
-				return server;
+				return oldServer;
 			}
 
 			putServer(key, txTransactionLocal, server);
