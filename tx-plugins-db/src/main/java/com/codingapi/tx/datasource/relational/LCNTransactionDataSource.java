@@ -3,14 +3,13 @@ package com.codingapi.tx.datasource.relational;
 import com.codingapi.tx.aop.bean.TxCompensateLocal;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.AbstractResourceProxy;
+import com.codingapi.tx.datasource.ILCNConnection;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.util.logging.Logger;
 
 
 /**
@@ -18,7 +17,8 @@ import java.util.logging.Logger;
  * create by lorne on 2017/7/29
  */
 
-public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,LCNDBConnection> implements DataSource {
+
+public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,LCNDBConnection> implements ILCNConnection {
 
 
     private org.slf4j.Logger logger = LoggerFactory.getLogger(LCNTransactionDataSource.class);
@@ -54,11 +54,6 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
     }
 
 
-//    @Override
-//    protected Connection getCompensateConnection(Connection connection, TxCompensateLocal txCompensateLocal) {
-//        return new LCNCompensateDBConnection(connection,txCompensateLocal);
-//    }
-
     @Override
     protected void initDbType() {
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
@@ -74,12 +69,12 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
     }
 
     @Override
-    public Connection getConnection() throws SQLException {
+    public Connection getConnection(ProceedingJoinPoint point) throws Throwable {
         initDbType();
 
         Connection connection =(Connection)loadConnection();
         if(connection==null) {
-             connection = initLCNConnection(getDataSource().getConnection());
+            connection = initLCNConnection((Connection) point.proceed());
             if(connection==null){
                 throw new SQLException("connection was overload");
             }
@@ -87,60 +82,5 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
         }else {
             return connection;
         }
-    }
-
-    @Override
-    public Connection getConnection(String username, String password) throws SQLException {
-
-        initDbType();
-
-        Connection connection = (Connection)loadConnection();
-        if(connection==null) {
-            connection =  initLCNConnection(getDataSource().getConnection(username, password));
-            if(connection==null){
-                throw new SQLException("connection was overload");
-            }
-            return connection;
-        }else {
-            return connection;
-        }
-    }
-
-
-    /**default**/
-
-    @Override
-    public PrintWriter getLogWriter() throws SQLException {
-        return getDataSource().getLogWriter();
-    }
-
-    @Override
-    public void setLogWriter(PrintWriter out) throws SQLException {
-        getDataSource().setLogWriter(out);
-    }
-
-    @Override
-    public void setLoginTimeout(int seconds) throws SQLException {
-        getDataSource().setLoginTimeout(seconds);
-    }
-
-    @Override
-    public int getLoginTimeout() throws SQLException {
-        return getDataSource().getLoginTimeout();
-    }
-
-    @Override
-    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-        return getDataSource().getParentLogger();
-    }
-
-    @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        return getDataSource().unwrap(iface);
-    }
-
-    @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return getDataSource().isWrapperFor(iface);
     }
 }

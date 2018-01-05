@@ -5,10 +5,12 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>tx-lcn</artifactId>
-    <version>4.0.3.M1</version>
+    <version>0.0.3.M2</version>
     <packaging>pom</packaging>
 
     <name>tx-lcn</name>
+    <url>https://github.com/codingapi/tx-lcn</url>
+    <description>tx-lcn project for LCN</description>
 
     <modules>
         <module>tx-client</module>
@@ -29,10 +31,10 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compile.source>1.7</maven.compile.source>
         <maven.compile.target>1.7</maven.compile.target>
-        <java.version>1.8</java.version>
+        <java.version>1.7</java.version>
         <maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>
 
-        <lcn.last.version>4.0.3.M1</lcn.last.version>
+        <lcn.last.version>4.0.3.M2</lcn.last.version>
     </properties>
 
 
@@ -126,7 +128,9 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- 手动打包时，将下面的plugin注释掉 -->
+
+             <!--手动打包时，将下面的plugin注释掉-->
+
             <!--<plugin>-->
                 <!--<groupId>org.apache.maven.plugins</groupId>-->
                 <!--<artifactId>maven-gpg-plugin</artifactId>-->
@@ -141,6 +145,7 @@
                     <!--</execution>-->
                 <!--</executions>-->
             <!--</plugin>-->
+
         </plugins>
     </build>
 

@@ -1,7 +1,6 @@
 package com.codingapi.tx.datasource;
 
 
-//import com.codingapi.tx.aop.bean.TxCompensateLocal;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.service.DataSourceService;
 import com.lorne.core.framework.utils.task.Task;
