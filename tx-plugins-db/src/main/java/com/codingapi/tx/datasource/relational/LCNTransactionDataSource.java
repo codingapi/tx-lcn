@@ -6,6 +6,7 @@ import com.codingapi.tx.datasource.AbstractResourceProxy;
 import com.codingapi.tx.datasource.ILCNConnection;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,7 +17,7 @@ import java.sql.SQLException;
  * create by lorne on 2017/7/29
  */
 
-
+@Component
 public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,LCNDBConnection> implements ILCNConnection {
 
 
