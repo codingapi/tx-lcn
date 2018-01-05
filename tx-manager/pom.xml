@@ -5,7 +5,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>tx-manager</artifactId>
-    <version>4.0.3.M1</version>
+    <version>4.0.3.M2</version>
     <packaging>jar</packaging>
 
     <name>tx-manager</name>
