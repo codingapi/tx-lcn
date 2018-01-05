@@ -57,7 +57,7 @@ public class CompensateDaoImpl implements CompensateDao {
     public List<String> loadCompensateTimes(String model) {
         String key = configReader.getKeyPrefixCompensate() + model + "_*";
         List<String> keys = redisServerService.getKeys(key);
-        List<String> times = new ArrayList<>();
+        List<String> times = new ArrayList<String>();
         for (String k : keys) {
             if(k.length()>36) {
                 String time = k.substring(k.length() - 24, k.length() - 14);

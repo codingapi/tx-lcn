@@ -71,7 +71,7 @@ public class RedisServerServiceImpl implements RedisServerService{
     @Override
     public List<String> getKeys(String key) {
         Set<String> keys = redisTemplate.keys(key);
-        List<String> list = new ArrayList<>();
+        List<String> list = new ArrayList<String>();
         for (String k : keys) {
             list.add(k);
         }

@@ -36,7 +36,7 @@ public class TxGroup {
     private List<TxInfo> list;
 
     public TxGroup() {
-        list = new ArrayList<>();
+        list = new ArrayList<TxInfo>();
     }
 
     public String getGroupId() {

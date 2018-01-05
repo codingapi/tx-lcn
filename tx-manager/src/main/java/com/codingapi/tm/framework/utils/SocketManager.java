@@ -59,7 +59,7 @@ public class SocketManager {
 
     private SocketManager() {
         clients = new CopyOnWriteArrayList<Channel>();
-        lines = new ConcurrentHashMap<>();
+        lines = new ConcurrentHashMap<String, String>();
     }
 
     public void addClient(Channel client) {

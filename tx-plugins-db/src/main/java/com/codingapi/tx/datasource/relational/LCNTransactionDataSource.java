@@ -7,7 +7,6 @@ import com.codingapi.tx.datasource.ILCNConnection;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.LoggerFactory;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -24,16 +23,6 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
     private org.slf4j.Logger logger = LoggerFactory.getLogger(LCNTransactionDataSource.class);
 
 
-    protected DataSource dataSource;
-
-
-    protected DataSource getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
 
     @Override
     protected Connection createLcnConnection(Connection connection, TxTransactionLocal txTransactionLocal) {

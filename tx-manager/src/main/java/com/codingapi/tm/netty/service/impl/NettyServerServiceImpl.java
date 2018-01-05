@@ -51,7 +51,7 @@ public class NettyServerServiceImpl implements NettyServerService {
 
     @Override
     public void start() {
-        int heartTime = configReader.getTransactionNettyHeartTime()+10;
+        final int heartTime = configReader.getTransactionNettyHeartTime()+10;
         txCoreServerHandler = new TxCoreServerHandler(nettyService);
         bossGroup = new NioEventLoopGroup(50); // (1)
         workerGroup = new NioEventLoopGroup();

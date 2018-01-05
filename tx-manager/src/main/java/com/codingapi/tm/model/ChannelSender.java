@@ -44,7 +44,7 @@ public class ChannelSender {
             SocketUtils.sendMsg(channel,msg);
         }else{
             String url = String.format("http://%s/tx/manager/sendMsg",address);
-            String res = HttpUtils.post(url,"msg="+msg+"&model="+modelName);
+            final String res = HttpUtils.post(url,"msg="+msg+"&model="+modelName);
             if(StringUtils.isNotEmpty(res)){
                 if(task!=null) {
                     task.setBack(new IBack() {

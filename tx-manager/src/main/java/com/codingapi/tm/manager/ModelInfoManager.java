@@ -11,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ModelInfoManager {
 
 
-    private List<ModelInfo> modelInfos = new CopyOnWriteArrayList<>();
+    private List<ModelInfo> modelInfos = new CopyOnWriteArrayList<ModelInfo>();
 
     private static ModelInfoManager manager = null;
 

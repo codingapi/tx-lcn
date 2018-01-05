@@ -53,7 +53,7 @@ public class CompensateServiceImpl implements CompensateService {
     private Executor threadPool = Executors.newFixedThreadPool(20);
 
     @Override
-    public boolean saveCompensateMsg(TransactionCompensateMsg transactionCompensateMsg) {
+    public boolean saveCompensateMsg(final TransactionCompensateMsg transactionCompensateMsg) {
 
         TxGroup txGroup =managerService.getTxGroup(transactionCompensateMsg.getGroupId());
         if (txGroup == null) {
@@ -178,7 +178,7 @@ public class CompensateServiceImpl implements CompensateService {
     public List<ModelName> loadModelList() {
         List<String> keys =  compensateDao.loadCompensateKeys();
 
-        Map<String,Integer> models = new HashMap<>();
+        Map<String,Integer> models = new HashMap<String, Integer>();
 
         for(String key:keys){
             if(key.length()>36){

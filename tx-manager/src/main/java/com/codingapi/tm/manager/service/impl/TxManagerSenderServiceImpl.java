@@ -112,7 +112,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
      *
      * @param checkSate
      */
-    private boolean transaction(TxGroup txGroup, final int checkSate) {
+    private boolean transaction(final TxGroup txGroup, final int checkSate) {
 
 
         if (checkSate == 1) {
@@ -122,7 +122,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                 compensateService.reloadCompensate(txGroup);
             }
 
-            CountDownLatchHelper<Boolean> countDownLatchHelper = new CountDownLatchHelper<>();
+            CountDownLatchHelper<Boolean> countDownLatchHelper = new CountDownLatchHelper<Boolean>();
             for (final TxInfo txInfo : txGroup.getList()) {
                 if (txInfo.getIsGroup() == 0) {
                     countDownLatchHelper.addExecute(new IExecute<Boolean>() {
@@ -226,7 +226,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
     }
 
     @Override
-    public String sendMsg(String model, String msg, int delay) {
+    public String sendMsg(final String model,final String msg, int delay) {
         JSONObject jsonObject = JSON.parseObject(msg);
         String key = jsonObject.getString("k");
 
@@ -299,7 +299,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
     }
 
 
-    private ScheduledFuture schedule(String key, int delayTime) {
+    private ScheduledFuture schedule(final String key, int delayTime) {
         ScheduledFuture future = executorService.schedule(new Runnable() {
             @Override
             public void run() {

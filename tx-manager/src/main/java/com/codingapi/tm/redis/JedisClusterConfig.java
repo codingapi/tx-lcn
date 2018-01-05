@@ -30,7 +30,7 @@ public class JedisClusterConfig {
     @Bean
     public JedisCluster jedisClusterFactory() {
         String[] serverArray = redisProperties.getNodes().split(",");
-        Set<HostAndPort> nodes = new HashSet<>();
+        Set<HostAndPort> nodes = new HashSet<HostAndPort>();
         for (String ipPort: serverArray) {
             String[] ipPortPair = ipPort.split(":");
             nodes.add(new HostAndPort(ipPortPair[0].trim(),Integer.valueOf(ipPortPair[1].trim())));

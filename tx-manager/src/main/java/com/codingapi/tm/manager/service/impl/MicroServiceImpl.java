@@ -62,7 +62,7 @@ public class MicroServiceImpl implements MicroService {
         if (application == null) {
             logger.error("get eureka server error!");
         }
-        return application != null ? application.getInstances() : new ArrayList<>();
+        return application != null ? application.getInstances() : new ArrayList<InstanceInfo>();
     }
 
     @Override
