@@ -47,7 +47,7 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
 
         String json = SocketUtils.getJson(msg);
 
-        logger.info("TxManager-response->" + json);
+        logger.debug("TxManager-response->" + json);
 
         nettyControlService.executeService(ctx, json);
     }
@@ -101,7 +101,7 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
             } else if (event.state() == IdleState.WRITER_IDLE) {
                 //表示已经多久没有发送数据了
                 SocketUtils.sendMsg(ctx, heartJson);
-                logger.info("hart data --->" + heartJson);
+                logger.debug("hart data --->" + heartJson);
             } else if (event.state() == IdleState.ALL_IDLE) {
                 //表示已经多久既没有收到也没有发送数据了
             }

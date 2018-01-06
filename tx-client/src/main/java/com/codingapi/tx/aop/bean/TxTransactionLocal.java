@@ -114,25 +114,25 @@ public class TxTransactionLocal {
         jsonObject.put("g", getGroupId());
         jsonObject.put("k", key);
         jsonObject.put("d", data);
-        logger.info("putLoadBalance--> start ");
+        logger.debug("putLoadBalance--> start ");
         Request request = new Request("plb", jsonObject.toString());
         String json =  SocketManager.getInstance().sendMsg(request);
-        logger.info("putLoadBalance--> end ,res ->"+json);
+        logger.debug("putLoadBalance--> end ,res ->"+json);
     }
 
 
     public String getLoadBalance(String key){
         String old =  cacheModelInfo.get(key);
-        logger.info("cacheModelInfo->"+old);
+        logger.debug("cacheModelInfo->"+old);
         if(old==null){
             //与TxManager通讯
-            logger.info("getLoadBalance--> start");
+            logger.debug("getLoadBalance--> start");
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("g", getGroupId());
             jsonObject.put("k", key);
             Request request = new Request("glb", jsonObject.toString());
             String json =  SocketManager.getInstance().sendMsg(request);
-            logger.info("getLoadBalance--> end ,res - >" + json);
+            logger.debug("getLoadBalance--> end ,res - >" + json);
             if(StringUtils.isNotEmpty(json)){
                 return json;
             }
