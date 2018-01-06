@@ -30,7 +30,7 @@ public class ActionCServiceImpl implements IActionService {
 
         String cmd = resObj.toJSONString();
 
-        logger.info("accept compensate data ->" + cmd);
+        logger.debug("accept compensate data ->" + cmd);
 
 
         String data = resObj.getString("d");

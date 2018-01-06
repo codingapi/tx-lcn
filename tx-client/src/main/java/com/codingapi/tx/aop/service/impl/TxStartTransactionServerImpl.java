@@ -40,7 +40,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
     public Object execute(ProceedingJoinPoint point,final TxTransactionInfo info) throws Throwable {
         //分布式事务开始执行
 
-        logger.info("--->begin start transaction");
+        logger.debug("--->begin start transaction");
 
         final long start = System.currentTimeMillis();
 
@@ -134,8 +134,8 @@ public class TxStartTransactionServerImpl implements TransactionServer {
             task.remove();
 
             TxTransactionLocal.setCurrent(null);
-            logger.info("<---end start transaction");
-            logger.info("start transaction over, res -> groupId:" + groupId + ", now state:" + (lastState == 1 ? "commit" : "rollback"));
+            logger.debug("<---end start transaction");
+            logger.debug("start transaction over, res -> groupId:" + groupId + ", now state:" + (lastState == 1 ? "commit" : "rollback"));
 
         }
     }

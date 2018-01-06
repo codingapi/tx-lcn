@@ -9,6 +9,8 @@ import com.weibo.api.motan.rpc.Caller;
 import com.weibo.api.motan.rpc.Request;
 import com.weibo.api.motan.rpc.Response;
 import com.weibo.api.motan.rpc.RpcContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -22,6 +24,8 @@ import java.util.Map;
 @Activation(key = {MotanConstants.NODE_TYPE_SERVICE, MotanConstants.NODE_TYPE_REFERER})
 public class TransactionFilter implements Filter {
 
+    private Logger logger = LoggerFactory.getLogger(TransactionFilter.class);
+
     /**
      * 实现新浪的filter接口 rpc传参数
      * @param caller caller
@@ -31,8 +35,12 @@ public class TransactionFilter implements Filter {
     public Response filter(Caller<?> caller, Request request) {
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
         if (txTransactionLocal != null) {
+
             request.setAttachment("tx-group", txTransactionLocal.getGroupId());
             request.setAttachment("tx-maxTimeOut", String.valueOf(txTransactionLocal.getMaxTimeOut()));
+
+            logger.info("LCN-dubbo TxGroup info -> groupId:"+ txTransactionLocal.getGroupId()+",maxTimeOut:"+txTransactionLocal.getMaxTimeOut());
+
         } else {
             Map<String, String> map = request.getAttachments();
             if (map != null && !map.isEmpty()) {
@@ -44,6 +52,8 @@ public class TransactionFilter implements Filter {
                 }
             }
         }
+
+
         return caller.call(request);
     }
 }

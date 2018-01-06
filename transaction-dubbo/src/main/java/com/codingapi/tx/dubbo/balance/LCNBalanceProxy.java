@@ -25,13 +25,13 @@ public class LCNBalanceProxy {
         }
 
         try {
-            logger.info("LCNBalanceProxy - > start");
+            logger.debug("LCNBalanceProxy - > start");
 
             String groupId = txTransactionLocal.getGroupId();
 
             String uniqueKey = invoker.getUrl().getServiceInterface();
 
-            logger.info("LCNBalanceProxy - > uniqueKey - >" + uniqueKey);
+            logger.debug("LCNBalanceProxy - > uniqueKey - >" + uniqueKey);
 
             String key = MD5Util.md5((groupId + "_" + uniqueKey).getBytes());
 
@@ -39,17 +39,17 @@ public class LCNBalanceProxy {
             Invoker old = getInvoker(txTransactionLocal, invokers, key);
 
             if (old != null) {
-                logger.info("LCNBalanceProxy - > load old invoker ");
+                logger.debug("LCNBalanceProxy - > load old invoker ");
 
                 return old;
             }
             putInvoker(key, txTransactionLocal, invoker);
 
-            logger.info("LCNBalanceProxy - > load new invoker ");
+            logger.debug("LCNBalanceProxy - > load new invoker ");
 
             return invoker;
         }finally {
-            logger.info("LCNBalanceProxy - > end");
+            logger.debug("LCNBalanceProxy - > end");
         }
     }
 
@@ -60,7 +60,7 @@ public class LCNBalanceProxy {
 
         String md5 = MD5Util.md5((address+serviceName).getBytes());
 
-        logger.info("putInvoker->address->"+address+",md5-->"+md5);
+        logger.debug("putInvoker->address->"+address+",md5-->"+md5);
 
         txTransactionLocal.putLoadBalance(key,md5);
     }
@@ -77,7 +77,7 @@ public class LCNBalanceProxy {
 
            String md5 = MD5Util.md5((address+serviceName).getBytes());
 
-           logger.info("getInvoker->address->"+address+",md5-->"+md5);
+           logger.debug("getInvoker->address->"+address+",md5-->"+md5);
 
            if(val.equals(md5)){
                return invoker;

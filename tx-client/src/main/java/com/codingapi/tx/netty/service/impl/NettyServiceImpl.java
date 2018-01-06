@@ -83,7 +83,7 @@ public class NettyServiceImpl implements NettyService {
                 }
             });
             // Start the client.
-            logger.info("连接manager-socket服务-> host:" + host + ",port:" + port);
+            logger.info("connection txManager-socket-> host:" + host + ",port:" + port);
             ChannelFuture future = b.connect(host, port); // (5)
 
             future.addListener(new ChannelFutureListener() {
@@ -121,14 +121,14 @@ public class NettyServiceImpl implements NettyService {
     @Override
     public boolean checkState() {
         if (!SocketManager.getInstance().isNetState()) {
-            logger.error("socket服务尚未建立连接成功,将在此等待2秒.");
+            logger.error("socket not connection wait 2 seconds.");
             try {
                 Thread.sleep(1000 * 2);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             if (!SocketManager.getInstance().isNetState()) {
-                logger.error("socket还未连接成功,请检查TxManager服务后再试.");
+                logger.error("socket not connection,check txManager server .");
                 return false;
             }
         }

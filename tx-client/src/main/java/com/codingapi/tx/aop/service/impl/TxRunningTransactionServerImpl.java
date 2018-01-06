@@ -41,7 +41,7 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
 
         String kid = KidUtils.generateShortUuid();
         String txGroupId = info.getTxGroupId();
-        logger.info("--->begin running transaction,groupId:" + txGroupId);
+        logger.debug("--->begin running transaction,groupId:" + txGroupId);
         long t1 = System.currentTimeMillis();
 
         boolean isHasIsGroup =  transactionControl.hasGroup(txGroupId);
@@ -97,7 +97,7 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
         } finally {
             TxTransactionLocal.setCurrent(null);
             long t2 = System.currentTimeMillis();
-            logger.info("<---end running transaction,groupId:" + txGroupId+",execute time:"+(t2-t1));
+            logger.debug("<---end running transaction,groupId:" + txGroupId+",execute time:"+(t2-t1));
 
         }
     }

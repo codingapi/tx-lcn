@@ -29,12 +29,12 @@ public class DataSourceAspect {
     @Around("execution(* javax.sql.DataSource.getConnection(..))")
     public Connection around(ProceedingJoinPoint point)throws Throwable{
 
-        logger.info("getConnection-start---->");
+        logger.debug("getConnection-start---->");
 
         Connection connection = lcnConnection.getConnection(point);
-        logger.info("connection-->"+connection);
+        logger.debug("connection-->"+connection);
 
-        logger.info("getConnection-end---->");
+        logger.debug("getConnection-end---->");
 
         return connection;
     }

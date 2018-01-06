@@ -45,9 +45,9 @@ public class ConfigReader {
                 }
             };
 
-            logger.info("load default txManagerTxUrlService");
+            logger.debug("load default txManagerTxUrlService");
         }else{
-            logger.info("load txManagerTxUrlService");
+            logger.debug("load txManagerTxUrlService");
         }
 
         return txManagerTxUrlService.getTxUrl();

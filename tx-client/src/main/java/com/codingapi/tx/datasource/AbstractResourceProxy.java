@@ -71,7 +71,7 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
         if(txTransactionLocal==null){
-            logger.info("loadConnection -> null !");
+            logger.debug("loadConnection -> null !");
             return null;
         }
 
@@ -80,11 +80,11 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
         if (old != null) {
 
             if(txTransactionLocal.isHasConnection()){
-                logger.info("connection is had , transaction get a new connection .");
+                logger.debug("connection is had , transaction get a new connection .");
                 return null;
             }
 
-            logger.info("loadConnection -> old !");
+            logger.debug("loadConnection -> old !");
             txTransactionLocal.setHasConnection(true);
             return old;
         }
@@ -118,13 +118,13 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
 
 
     protected C initLCNConnection(C connection) {
-        logger.info("initLCNConnection");
+        logger.debug("initLCNConnection");
         C lcnConnection = connection;
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
         if (txTransactionLocal != null&&!txTransactionLocal.isHasConnection()) {
 
-            logger.info("lcn datasource transaction control ");
+            logger.debug("lcn datasource transaction control ");
 
             //补偿的情况的
 //            if (TxCompensateLocal.current() != null) {
@@ -134,11 +134,11 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
 
             if(StringUtils.isNotEmpty(txTransactionLocal.getGroupId())){
 
-                logger.info("lcn transaction ");
+                logger.debug("lcn transaction ");
                 return createConnection(txTransactionLocal, connection);
             }
         }
-        logger.info("load default connection !");
+        logger.debug("load default connection !");
         return lcnConnection;
     }
 

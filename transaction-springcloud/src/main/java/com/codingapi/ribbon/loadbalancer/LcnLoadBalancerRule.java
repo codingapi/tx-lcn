@@ -25,7 +25,7 @@ public class LcnLoadBalancerRule {
 		}
 
 		try{
-			logger.info("LCNBalanceProxy - > start");
+			logger.debug("LCNBalanceProxy - > start");
 
 			String groupId = txTransactionLocal.getGroupId();
 
@@ -38,22 +38,22 @@ public class LcnLoadBalancerRule {
 			//如果只有一个可调用模块，则用当前的，且需要将数据记录到redis中
 			if(servers.size() == 1){
 				putServer(key, txTransactionLocal, server);
-				logger.info("LCNBalanceProxy -> only one server available");
+				logger.debug("LCNBalanceProxy -> only one server available");
 				return server;
 			}
 
 			Server oldServer =getServer(txTransactionLocal,servers,key);
 			if(oldServer != null){
-				logger.info("LCNBalanceProxy - > load old server ");
+				logger.debug("LCNBalanceProxy - > load old server ");
 				return server;
 			}
 
 			putServer(key, txTransactionLocal, server);
-			logger.info("LCNBalanceProxy - > load new server ");
+			logger.debug("LCNBalanceProxy - > load new server ");
 
 			return server;
 		}finally {
-			logger.info("LCNBalanceProxy - > end");
+			logger.debug("LCNBalanceProxy - > end");
 		}
 	}
 
@@ -65,7 +65,7 @@ public class LcnLoadBalancerRule {
 
 		String md5 = MD5Util.md5((address+serviceName).getBytes());
 
-		logger.info("putServer->address->"+address+",md5-->"+md5);
+		logger.debug("putServer->address->"+address+",md5-->"+md5);
 
 		txTransactionLocal.putLoadBalance(key,md5);
 	}
@@ -82,7 +82,7 @@ public class LcnLoadBalancerRule {
 
 			String md5 = MD5Util.md5((address+serviceName).getBytes());
 
-			logger.info("getServer->address->"+address+",md5-->"+md5);
+			logger.debug("getServer->address->"+address+",md5-->"+md5);
 
 			if(val.equals(md5)){
 				return server;

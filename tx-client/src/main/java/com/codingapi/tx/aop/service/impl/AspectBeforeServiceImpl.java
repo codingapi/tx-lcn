@@ -41,7 +41,7 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
 
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
-        logger.info("around--> groupId-> " +groupId+",txTransactionLocal->"+txTransactionLocal);
+        logger.debug("around--> groupId-> " +groupId+",txTransactionLocal->"+txTransactionLocal);
 
         TransactionInvocation invocation = new TransactionInvocation(clazz, thisMethod.getName(), thisMethod.toString(), args, method.getParameterTypes());
 

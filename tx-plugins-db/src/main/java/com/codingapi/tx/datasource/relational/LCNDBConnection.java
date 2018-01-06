@@ -48,7 +48,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
 
 
     public LCNDBConnection(Connection connection, DataSourceService dataSourceService, ICallClose<ILCNResource> runnable) {
-        logger.info("init lcn connection ! ");
+        logger.debug("init lcn connection ! ");
         this.connection = connection;
         this.runnable = runnable;
         this.dataSourceService = dataSourceService;
@@ -66,7 +66,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
     @Override
     public void commit() throws SQLException {
 
-        logger.info("commit label");
+        logger.debug("commit label");
 
         state = 1;
 
@@ -79,7 +79,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
     @Override
     public void rollback() throws SQLException {
 
-        logger.info("rollback label");
+        logger.debug("rollback label");
 
         state = 0;
 
@@ -91,7 +91,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
     protected void closeConnection() throws SQLException {
         runnable.close(this);
         connection.close();
-        logger.info("lcnConnection closed groupId:"+ groupId);
+        logger.debug("lcnConnection closed groupId:"+ groupId);
     }
 
     @Override
@@ -107,25 +107,25 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
 
         if(readOnly){
             closeConnection();
-            logger.info("now transaction is readOnly , groupId:" + groupId);
+            logger.debug("now transaction is readOnly , groupId:" + groupId);
             return;
         }
 
-        logger.info("now transaction state is " + state + ", (1:commit,0:rollback) groupId:" + groupId);
+        logger.debug("now transaction state is " + state + ", (1:commit,0:rollback) groupId:" + groupId);
 
         if (state==0) {
 
             rollbackConnection();
             closeConnection();
 
-            logger.info("rollback transaction ,groupId:" + groupId);
+            logger.debug("rollback transaction ,groupId:" + groupId);
         }
         if (state==1) {
             TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
             boolean hasGroup = (txTransactionLocal!=null)?txTransactionLocal.isHasIsGroup():false;
             if (hasGroup) {
                 //加入队列的连接，仅操作连接对象，不处理事务
-                logger.info("connection hasGroup -> "+hasGroup);
+                logger.debug("connection hasGroup -> "+hasGroup);
                 return;
             }
             startRunnable();
@@ -148,7 +148,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
 
         //start 结束就是全部事务的结束表示,考虑start挂掉的情况
         Timer timer = new Timer();
-        logger.info("maxOutTime:" + maxOutTime);
+        System.out.println(" maxOutTime : "+maxOutTime);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -206,7 +206,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
 
         if(readOnly) {
             this.readOnly = readOnly;
-            logger.info("setReadOnly - >" + readOnly);
+            logger.debug("setReadOnly - >" + readOnly);
             connection.setReadOnly(readOnly);
 
             TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();

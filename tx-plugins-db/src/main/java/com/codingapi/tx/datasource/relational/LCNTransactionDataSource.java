@@ -30,13 +30,13 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
         nowCount++;
         if(txTransactionLocal.isHasStart()){
             LCNStartConnection lcnStartConnection = new LCNStartConnection(connection,subNowCount);
-            logger.info("get new start connection - > "+txTransactionLocal.getGroupId());
+            logger.debug("get new start connection - > "+txTransactionLocal.getGroupId());
             pools.put(txTransactionLocal.getGroupId(), lcnStartConnection);
             txTransactionLocal.setHasConnection(true);
             return lcnStartConnection;
         }else {
             LCNDBConnection lcn = new LCNDBConnection(connection, dataSourceService, subNowCount);
-            logger.info("get new connection ->" + txTransactionLocal.getGroupId());
+            logger.debug("get new connection ->" + txTransactionLocal.getGroupId());
             pools.put(txTransactionLocal.getGroupId(), lcn);
             txTransactionLocal.setHasConnection(true);
             return lcn;

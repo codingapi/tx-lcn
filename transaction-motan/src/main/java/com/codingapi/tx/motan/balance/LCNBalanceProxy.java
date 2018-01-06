@@ -26,30 +26,30 @@ public class LCNBalanceProxy {
         }
 
         try {
-            logger.info("LCNBalanceProxy - > start");
+            logger.debug("LCNBalanceProxy - > start");
 
             String groupId = txTransactionLocal.getGroupId();
 
             String uniqueKey = referer.getInterface().getName();
 
-            logger.info("LCNBalanceProxy - > uniqueKey - >" + uniqueKey);
+            logger.debug("LCNBalanceProxy - > uniqueKey - >" + uniqueKey);
 
             String key = MD5Util.md5((groupId + "_" + uniqueKey).getBytes());
 
             Referer old = getReferer(txTransactionLocal,referers,key);
             if (old != null) {
-                logger.info("LCNBalanceProxy - > load old referer ");
+                logger.debug("LCNBalanceProxy - > load old referer ");
 
                 return old;
             }
 
             putReferer(key,txTransactionLocal,referer);
 
-            logger.info("LCNBalanceProxy - > load new referer ");
+            logger.debug("LCNBalanceProxy - > load new referer ");
 
             return referer;
         }finally {
-            logger.info("LCNBalanceProxy - > end");
+            logger.debug("LCNBalanceProxy - > end");
         }
     }
 
@@ -60,7 +60,7 @@ public class LCNBalanceProxy {
 
         String md5 = MD5Util.md5((address+serviceName).getBytes());
 
-        logger.info("putReferer->address->"+address+",md5-->"+md5);
+        logger.debug("putReferer->address->"+address+",md5-->"+md5);
 
         txTransactionLocal.putLoadBalance(key,md5);
     }
@@ -77,7 +77,7 @@ public class LCNBalanceProxy {
 
             String md5 = MD5Util.md5((address+serviceName).getBytes());
 
-            logger.info("getReferer->address->"+address+",md5-->"+md5);
+            logger.debug("getReferer->address->"+address+",md5-->"+md5);
 
             if(val.equals(md5)){
                 return invoker;

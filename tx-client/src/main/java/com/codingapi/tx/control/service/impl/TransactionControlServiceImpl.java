@@ -47,6 +47,6 @@ public class TransactionControlServiceImpl implements TransactionControlService{
 
         SocketUtils.sendMsg(ctx, data.toString());
 
-        logger.info("send notify data ->" + data.toString());
+        logger.debug("send notify data ->" + data.toString());
     }
 }

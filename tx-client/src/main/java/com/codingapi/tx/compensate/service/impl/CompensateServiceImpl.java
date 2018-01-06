@@ -28,7 +28,7 @@ public class CompensateServiceImpl implements CompensateService {
     @Override
     public void saveLocal(CompensateInfo compensateInfo) {
         String json = JSON.toJSONString(compensateInfo);
-        logger.info("补偿本地记录->" + json);
+        logger.info("local-compensate-logs->" + json);
     }
 
     @Override

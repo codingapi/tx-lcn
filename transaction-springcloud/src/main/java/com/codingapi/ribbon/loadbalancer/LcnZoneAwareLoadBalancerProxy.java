@@ -24,7 +24,7 @@ public class LcnZoneAwareLoadBalancerProxy extends ZoneAwareLoadBalancer<Server>
 
 	@Override
 	public Server chooseServer(Object key){
-		logger.info("enter chooseServer method, key:" + key);
+		logger.debug("enter chooseServer method, key:" + key);
         List<Server> serverList = super.getReachableServers();
         if(null == serverList || serverList.isEmpty()){
 		    return super.chooseServer(key);

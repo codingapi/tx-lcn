@@ -40,9 +40,9 @@ public class NettyDistributeServiceImpl implements NettyDistributeService {
         String json = null;
         while (StringUtils.isEmpty(json)) {
             json = txManagerService.httpGetServer();
-            logger.info("获取manager服务信息->" + json);
+            logger.info("get txManager ->" + json);
             if (StringUtils.isEmpty(json)) {
-                logger.info("TxManager服务器无法访问.");
+                logger.error("TxManager服务器无法访问.");
                 try {
                     Thread.sleep(1000 * 2);
                 } catch (InterruptedException e) {
@@ -53,7 +53,7 @@ public class NettyDistributeServiceImpl implements NettyDistributeService {
 
         TxServer txServer = TxServer.parser(json);
         if (txServer != null) {
-            logger.info("txServer -> " + txServer);
+            logger.debug("txServer -> " + txServer);
             logger.info(txServer.toString());
             Constants.txServer = txServer;
             logger.info(Constants.txServer.toString());

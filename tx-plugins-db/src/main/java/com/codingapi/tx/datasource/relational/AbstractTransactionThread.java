@@ -17,7 +17,7 @@ public abstract class AbstractTransactionThread {
 
     protected void startRunnable(){
         if(hasStartTransaction){
-            logger.info("start connection is wait ! ");
+            logger.debug("start connection is wait ! ");
             return;
         }
         hasStartTransaction = true;
