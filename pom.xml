@@ -5,7 +5,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>tx-lcn</artifactId>
-    <version>4.0.3.M1</version>
+    <version>4.0.3.M2</version>
     <packaging>pom</packaging>
 
     <name>tx-lcn</name>
@@ -31,10 +31,10 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compile.source>1.7</maven.compile.source>
         <maven.compile.target>1.7</maven.compile.target>
-        <java.version>1.8</java.version>
+        <java.version>1.7</java.version>
         <maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>
 
-        <lcn.last.version>4.0.3.M1</lcn.last.version>
+        <lcn.last.version>4.0.3.M2</lcn.last.version>
     </properties>
 
 
