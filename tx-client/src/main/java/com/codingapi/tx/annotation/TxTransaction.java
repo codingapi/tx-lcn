@@ -12,9 +12,17 @@ import java.lang.annotation.*;
 public @interface TxTransaction {
 
 
+    /**
+     * 回滚异常
+     * @return
+     */
     Class<? extends Throwable>[] rollbackFor() default {};
 
 
+    /**
+     * 不回滚异常
+     * @return
+     */
     Class<? extends Throwable>[] noRollbackFor() default {};
 
 }
