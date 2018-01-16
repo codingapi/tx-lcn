@@ -67,8 +67,9 @@ public interface MQTxManagerService {
      * @param groupId   事务组Id
      * @param time  执行时间
      * @param info  事务信息
+     * @param startError 启动模块db执行异常
      */
-    void sendCompensateMsg(String groupId, long time, TxTransactionInfo info);
+    void sendCompensateMsg(String groupId, long time, TxTransactionInfo info,int startError);
 
 
     /**

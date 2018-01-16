@@ -6,6 +6,7 @@ import com.codingapi.tx.datasource.ILCNResource;
 import com.codingapi.tx.datasource.service.DataSourceService;
 import com.codingapi.tx.framework.task.TaskGroup;
 import com.codingapi.tx.framework.task.TaskGroupManager;
+import com.codingapi.tx.framework.task.TaskState;
 import com.codingapi.tx.framework.task.TxTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,13 +165,23 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
 
         int rs = waitTask.getState();
 
-        System.out.println("lcn transaction over, res -> groupId:"+getGroupId()+" and  state is "+rs+", about state (1:commit 0:rollback -1:network error -2:network time out)");
 
-        if (rs == 1) {
-            connection.commit();
-        } else {
-            rollbackConnection();
+        try {
+            if (rs == 1) {
+                connection.commit();
+            } else {
+                rollbackConnection();
+            }
+
+            System.out.println("lcn transaction over, res -> groupId:"+getGroupId()+" and  state is "+(rs==1?"commit":"rollback"));
+
+        }catch (SQLException e){
+            System.out.println("lcn transaction over,but connection is closed, res -> groupId:"+getGroupId());
+
+            waitTask.setState(TaskState.connectionError.getCode());
         }
+
+
         waitTask.remove();
 
     }

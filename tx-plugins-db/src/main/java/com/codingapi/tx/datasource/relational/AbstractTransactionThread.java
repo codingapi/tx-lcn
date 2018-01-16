@@ -27,16 +27,17 @@ public abstract class AbstractTransactionThread {
                 try {
                     transaction();
                 } catch (Exception e) {
+                    logger.error(e.getMessage());
                     try {
                         rollbackConnection();
                     } catch (SQLException e1) {
-                        e1.printStackTrace();
+                        logger.error(e1.getMessage());
                     }
                 } finally {
                     try {
                         closeConnection();
                     } catch (SQLException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
                     }
                 }
             }

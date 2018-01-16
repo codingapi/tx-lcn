@@ -79,6 +79,7 @@ public class NettyServiceImpl implements NettyService {
                     ch.pipeline().addLast(new LengthFieldPrepender(4, false));
                     ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
 
+
                     ch.pipeline().addLast(transactionHandler);
                 }
             });

@@ -1,5 +1,6 @@
 package com.codingapi.tx.datasource.relational;
 
+import com.codingapi.tx.aop.bean.TxCompensateLocal;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.AbstractResourceProxy;
 import org.slf4j.LoggerFactory;
@@ -53,10 +54,10 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
     }
 
 
-    @Override
-    protected Connection getRollback(Connection connection) {
-        return new LCNRollBackDBConnection(connection);
-    }
+//    @Override
+//    protected Connection getCompensateConnection(Connection connection, TxCompensateLocal txCompensateLocal) {
+//        return new LCNCompensateDBConnection(connection,txCompensateLocal);
+//    }
 
     @Override
     protected void initDbType() {
@@ -64,6 +65,11 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
         if(txTransactionLocal!=null) {
             //设置db类型
             txTransactionLocal.setType("datasource");
+        }
+        TxCompensateLocal txCompensateLocal = TxCompensateLocal.current();
+        if(txCompensateLocal!=null){
+            //设置db类型
+            txCompensateLocal.setType("datasource");
         }
     }
 

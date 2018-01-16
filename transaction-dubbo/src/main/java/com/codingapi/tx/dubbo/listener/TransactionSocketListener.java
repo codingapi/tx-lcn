@@ -1,4 +1,4 @@
-package com.codingapi.tx.listener;
+package com.codingapi.tx.dubbo.listener;
 
 import com.codingapi.tx.listener.service.InitService;
 import org.springframework.beans.BeansException;

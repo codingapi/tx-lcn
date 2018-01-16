@@ -215,10 +215,11 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
     }
 
     @Override
-    public String sendCompensateMsg(String model, String groupId, String data) {
+    public String sendCompensateMsg(String model, String groupId, String data,int startState) {
         JSONObject newCmd = new JSONObject();
         newCmd.put("a", "c");
         newCmd.put("d", data);
+        newCmd.put("ss", startState);
         newCmd.put("g", groupId);
         newCmd.put("k", KidUtils.generateShortUuid());
         return sendMsg(model, newCmd.toJSONString(), configReader.getRedisSaveMaxTime());

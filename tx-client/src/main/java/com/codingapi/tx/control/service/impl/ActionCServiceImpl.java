@@ -37,6 +37,8 @@ public class ActionCServiceImpl implements IActionService {
 
         String groupId = resObj.getString("g");
 
+        int startState = resObj.getInteger("ss");
+
         byte[] bytes = Base64Utils.decode(data);
 
         TransactionInvocation invocation = SerializerUtils.parserTransactionInvocation(bytes);
@@ -44,7 +46,7 @@ public class ActionCServiceImpl implements IActionService {
         if (invocation != null) {
             logger.info("compensate method ->" + invocation.getMethodStr());
 
-            boolean res = compensateService.invoke(invocation, groupId);
+            boolean res = compensateService.invoke(invocation, groupId,startState);
 
             logger.info("compensate res ->" + res);
 

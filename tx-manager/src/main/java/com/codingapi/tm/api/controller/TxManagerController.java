@@ -42,8 +42,9 @@ public class TxManagerController {
                                      @RequestParam("currentTime") long currentTime,
                                      @RequestParam("groupId") String groupId, @RequestParam("className") String className,
                                      @RequestParam("time") int time, @RequestParam("data") String data,
-                                     @RequestParam("methodStr") String methodStr, @RequestParam("address") String address) {
-        return apiTxManagerService.sendCompensateMsg(currentTime, groupId, model, address, uniqueKey, className, methodStr, data, time);
+                                     @RequestParam("methodStr") String methodStr, @RequestParam("address") String address,
+                                     @RequestParam("startError") int startError) {
+        return apiTxManagerService.sendCompensateMsg(currentTime, groupId, model, address, uniqueKey, className, methodStr, data, time,startError);
     }
 
 

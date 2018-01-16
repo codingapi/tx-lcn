@@ -1,6 +1,7 @@
 package com.codingapi.tx.datasource.redis;
 
 
+import com.codingapi.tx.aop.bean.TxCompensateLocal;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.AbstractResourceProxy;
 import org.slf4j.Logger;
@@ -35,10 +36,10 @@ public class LCNTransactionRedisFactory extends AbstractResourceProxy<RedisConne
     }
 
 
-    @Override
-    protected RedisConnection getRollback(RedisConnection connection) {
-        return null;
-    }
+//    @Override
+//    protected RedisConnection getCompensateConnection(RedisConnection connection, TxCompensateLocal compensateLocal) {
+//        return null;
+//    }
 
     @Override
     protected void initDbType() {

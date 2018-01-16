@@ -10,6 +10,18 @@ public class TxCompensateLocal {
 
     private String groupId;
 
+    private String type;
+
+    private int startState;
+
+
+    public int getStartState() {
+        return startState;
+    }
+
+    public void setStartState(int startState) {
+        this.startState = startState;
+    }
 
     public String getGroupId() {
         return groupId;
@@ -19,6 +31,14 @@ public class TxCompensateLocal {
         this.groupId = groupId;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public static TxCompensateLocal current() {
         return currentLocal.get();
     }
@@ -26,6 +46,5 @@ public class TxCompensateLocal {
     public static void setCurrent(TxCompensateLocal current) {
         currentLocal.set(current);
     }
-
 
 }

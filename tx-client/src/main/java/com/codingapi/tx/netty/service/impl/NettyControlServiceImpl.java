@@ -7,7 +7,7 @@ import com.codingapi.tx.listener.service.ModelNameService;
 import com.codingapi.tx.netty.service.MQTxManagerService;
 import com.codingapi.tx.netty.service.NettyControlService;
 import com.codingapi.tx.netty.service.NettyService;
-import com.codingapi.tx.netty.utils.IpAddressUtils;
+import com.codingapi.tx.framework.utils.IpAddressUtils;
 import com.lorne.core.framework.utils.task.ConditionUtils;
 import com.lorne.core.framework.utils.task.IBack;
 import com.lorne.core.framework.utils.task.Task;

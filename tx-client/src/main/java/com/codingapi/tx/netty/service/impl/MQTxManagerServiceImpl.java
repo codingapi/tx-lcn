@@ -120,7 +120,7 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
     }
 
     @Override
-    public void sendCompensateMsg(String groupId, long time, TxTransactionInfo info) {
+    public void sendCompensateMsg(String groupId, long time, TxTransactionInfo info,int startError) {
 
         String modelName = modelNameService.getModelName();
         String uniqueKey = modelNameService.getUniqueKey();
@@ -135,7 +135,7 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
         long currentTime = System.currentTimeMillis();
 
 
-        CompensateInfo compensateInfo = new CompensateInfo(currentTime, modelName, uniqueKey, data, methodStr, className, groupId, address, time);
+        CompensateInfo compensateInfo = new CompensateInfo(currentTime, modelName, uniqueKey, data, methodStr, className, groupId, address, time,startError);
 
         String json = managerHelper.httpPost(configReader.getTxUrl() + "sendCompensateMsg", compensateInfo.toParamsString());
 

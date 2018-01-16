@@ -12,6 +12,6 @@ public interface CompensateService {
 
     void saveLocal(CompensateInfo compensateInfo);
 
-    boolean invoke(TransactionInvocation invocation, String groupId);
+    boolean invoke(TransactionInvocation invocation, String groupId, int startState);
 
 }
