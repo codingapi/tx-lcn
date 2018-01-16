@@ -42,8 +42,6 @@ tx-manager 是LCN 分布式事务协调器
 
 tx-plugins-db 是LCN 对关系型数据库的插件支持
 
-tx-plugins-nodb 是LCN 对于无数据库模块的插件支持
-
 tx-plugins-redis 是LCN 对于redis模块的插件支持（功能暂未实现）
 
 

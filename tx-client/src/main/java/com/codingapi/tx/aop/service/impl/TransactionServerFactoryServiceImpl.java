@@ -49,7 +49,7 @@ public class TransactionServerFactoryServiceImpl implements TransactionServerFac
             if (nettyService.checkState()) {
                 return txStartTransactionServer;
             } else {
-                throw new Exception("tx-manager尚未链接成功,请检测tx-manager服务");
+                throw new Exception("tx-manager not connected ,please check tx-manager server ");
             }
         }
 
@@ -68,7 +68,7 @@ public class TransactionServerFactoryServiceImpl implements TransactionServerFac
                     }
                 }
             } else {
-                throw new Exception("tx-manager尚未链接成功,请检测tx-manager服务");
+                throw new Exception("tx-manager not connected ,please check tx-manager server ");
             }
         }
         /*********分布式事务处理逻辑*结束***********/
