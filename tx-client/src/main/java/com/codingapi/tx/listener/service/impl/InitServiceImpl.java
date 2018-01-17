@@ -20,9 +20,17 @@ public class InitServiceImpl implements InitService {
 
     @Override
     public void start() {
-
         nettyService.start();
+        welcome();
         logger.info("socket-start..");
-
     }
+
+    private void welcome(){
+        System.out.println("\t\t**  \t\t ****\t\t**  **");
+        System.out.println("\t\t**  \t\t**   \t\t*** **");
+        System.out.println("\t\t**  \t\t**   \t\t** ***");
+        System.out.println("\t\t*****\t\t ****\t\t**  **");
+        System.out.println("\n\t\tLCN version:4.0.3");
+    }
+
 }
