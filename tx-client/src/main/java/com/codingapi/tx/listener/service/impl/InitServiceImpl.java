@@ -26,11 +26,15 @@ public class InitServiceImpl implements InitService {
     }
 
     private void welcome(){
+        System.out.println();
+        System.out.println();
         System.out.println("\t\t**  \t\t ****\t\t**  **");
         System.out.println("\t\t**  \t\t**   \t\t*** **");
         System.out.println("\t\t**  \t\t**   \t\t** ***");
         System.out.println("\t\t*****\t\t ****\t\t**  **");
-        System.out.println("\n\t\tLCN version:4.0.3");
+        System.out.println();
+        System.out.println("\t\tLCN version:4.0.3");
+        System.out.println();
     }
 
 }
