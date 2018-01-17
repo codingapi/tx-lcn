@@ -35,7 +35,7 @@ public class TransactionAspect implements Ordered {
     @Around("@annotation(com.codingapi.tx.annotation.TransactionRunning)")
     public Object transactionRunning(ProceedingJoinPoint point)throws Throwable{
         logger.debug("annotation-TransactionRunning-start---->");
-        Object obj =  point.proceed();
+        Object obj = txManagerInterceptor.around(point);
         logger.debug("annotation-TransactionRunning-end---->");
         return obj;
     }
