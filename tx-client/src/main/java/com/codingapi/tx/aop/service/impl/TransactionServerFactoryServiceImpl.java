@@ -44,7 +44,7 @@ public class TransactionServerFactoryServiceImpl implements TransactionServerFac
         /*********分布式事务处理逻辑*开始***********/
 
         /** 尽当Transaction注解不为空，其他都为空时。表示分布式事务开始启动 **/
-        if (info.getTransaction() != null && info.getTxTransactionLocal() == null && StringUtils.isEmpty(info.getTxGroupId())) {
+        if (info.getTransaction() != null && info.getTransaction().isStart() && info.getTxTransactionLocal() == null && StringUtils.isEmpty(info.getTxGroupId())) {
             //检查socket通讯是否正常 （当启动事务的主业务方法执行完以后，再执行其他业务方法时将进入txInServiceTransactionServer业务处理）
             if (nettyService.checkState()) {
                 return txStartTransactionServer;
