@@ -1,5 +1,6 @@
 package com.codingapi.tx.aop.service.impl;
 
+import com.codingapi.tx.Constants;
 import com.codingapi.tx.aop.bean.TxTransactionInfo;
 import com.codingapi.tx.model.TxGroup;
 import com.lorne.core.framework.exception.ServiceException;
@@ -52,7 +53,7 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
         txTransactionLocal.setHasStart(false);
         txTransactionLocal.setKid(kid);
         txTransactionLocal.setHasIsGroup(isHasIsGroup);
-        txTransactionLocal.setMaxTimeOut(info.getMaxTimeOut());
+        txTransactionLocal.setMaxTimeOut(Constants.txServer.getAutoCompensateLimit());
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
 

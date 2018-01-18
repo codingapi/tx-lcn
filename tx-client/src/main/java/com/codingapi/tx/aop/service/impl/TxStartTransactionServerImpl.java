@@ -59,7 +59,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
         TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
         txTransactionLocal.setGroupId(groupId);
         txTransactionLocal.setHasStart(true);
-        txTransactionLocal.setMaxTimeOut(Constants.maxOutTime);
+        txTransactionLocal.setMaxTimeOut(Constants.txServer.getAutoCompensateLimit());
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
         try {

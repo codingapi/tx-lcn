@@ -29,7 +29,7 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
     private Logger logger = LoggerFactory.getLogger(AspectBeforeServiceImpl.class);
 
 
-    public Object around(String groupId,int maxTimeOut, ProceedingJoinPoint point) throws Throwable {
+    public Object around(String groupId, ProceedingJoinPoint point) throws Throwable {
 
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
@@ -45,7 +45,7 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
 
         TransactionInvocation invocation = new TransactionInvocation(clazz, thisMethod.getName(), thisMethod.toString(), args, method.getParameterTypes());
 
-        TxTransactionInfo info = new TxTransactionInfo(transaction,txTransactionLocal,invocation,groupId,maxTimeOut);
+        TxTransactionInfo info = new TxTransactionInfo(transaction,txTransactionLocal,invocation,groupId);
 
         TransactionServer server = transactionServerFactoryService.createTransactionServer(info);
 

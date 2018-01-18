@@ -2,7 +2,7 @@ package com.codingapi.tx.netty.service.impl;
 
 import com.codingapi.tx.Constants;
 import com.codingapi.tx.framework.utils.SocketManager;
-import com.codingapi.tx.listener.service.TimeOutService;
+//import com.codingapi.tx.listener.service.TimeOutService;
 import com.codingapi.tx.netty.handler.TransactionHandler;
 import com.codingapi.tx.netty.service.NettyControlService;
 import com.codingapi.tx.netty.service.NettyDistributeService;
@@ -36,8 +36,8 @@ public class NettyServiceImpl implements NettyService {
     @Autowired
     private NettyControlService nettyControlService;
 
-    @Autowired
-    private TimeOutService timeOutService;
+//    @Autowired
+//    private TimeOutService timeOutService;
 
     private EventLoopGroup workerGroup;
 
@@ -59,11 +59,11 @@ public class NettyServiceImpl implements NettyService {
         int port = Constants.txServer.getPort();
         final int heart = Constants.txServer.getHeart();
         int delay = Constants.txServer.getDelay();
-        int autoCompensateLimit = Constants.txServer.getAutoCompensateLimit();
+//        int autoCompensateLimit = Constants.txServer.getAutoCompensateLimit();
 
         final TransactionHandler transactionHandler = new TransactionHandler(nettyControlService, delay);
 
-        timeOutService.loadOutTime(autoCompensateLimit);
+//        timeOutService.loadOutTime(autoCompensateLimit);
         workerGroup = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap(); // (1)

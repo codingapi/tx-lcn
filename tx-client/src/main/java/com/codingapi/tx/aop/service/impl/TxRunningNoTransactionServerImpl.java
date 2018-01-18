@@ -1,5 +1,6 @@
 package com.codingapi.tx.aop.service.impl;
 
+import com.codingapi.tx.Constants;
 import com.codingapi.tx.aop.bean.TxTransactionInfo;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.aop.service.TransactionServer;
@@ -32,7 +33,7 @@ public class TxRunningNoTransactionServerImpl implements TransactionServer {
         txTransactionLocal.setGroupId(txGroupId);
         txTransactionLocal.setHasStart(false);
         txTransactionLocal.setKid(kid);
-        txTransactionLocal.setMaxTimeOut(info.getMaxTimeOut());
+        txTransactionLocal.setMaxTimeOut(Constants.txServer.getAutoCompensateLimit());
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
         try {

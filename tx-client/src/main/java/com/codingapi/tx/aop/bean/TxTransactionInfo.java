@@ -21,27 +21,16 @@ public class TxTransactionInfo {
      */
     private String txGroupId;
 
-    /**
-     * 最大超时时间（发起方模块的）
-     */
-    private int maxTimeOut;
-
 
     private TransactionInvocation invocation;
 
 
-    public TxTransactionInfo(TxTransaction transaction, TxTransactionLocal txTransactionLocal, TransactionInvocation invocation, String txGroupId, int maxTimeOut) {
+    public TxTransactionInfo(TxTransaction transaction, TxTransactionLocal txTransactionLocal, TransactionInvocation invocation, String txGroupId) {
         this.transaction = transaction;
         this.txTransactionLocal = txTransactionLocal;
         this.txGroupId = txGroupId;
-        this.maxTimeOut = maxTimeOut;
         this.invocation = invocation;
     }
-
-    public int getMaxTimeOut() {
-        return maxTimeOut;
-    }
-
 
 
     public TxTransaction getTransaction() {

@@ -15,11 +15,4 @@ public class Constants {
      */
     public static TxServer txServer;
 
-
-    /**
-     * 最大模块超时时间（毫秒）
-     */
-    public static int maxOutTime = 10000;
-
-
 }
