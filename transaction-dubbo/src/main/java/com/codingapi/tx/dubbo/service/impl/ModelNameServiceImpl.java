@@ -2,6 +2,7 @@ package com.codingapi.tx.dubbo.service.impl;
 
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ProviderConfig;
+import com.alibaba.dubbo.config.RegistryConfig;
 import com.lorne.core.framework.utils.encode.MD5Util;
 import com.codingapi.tx.listener.service.ModelNameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,10 @@ public class ModelNameServiceImpl implements ModelNameService {
     @Autowired
     private ProviderConfig providerConfig;
 
-    private String host = null;
+    @Autowired
+    private RegistryConfig registryConfig;
 
+    private String host = null;
 
     @Override
     public String getModelName() {
@@ -52,7 +55,16 @@ public class ModelNameServiceImpl implements ModelNameService {
 
     @Override
     public String getIpAddress() {
-        String address = getIp() + ":" + providerConfig.getPort();
-        return address;
+        return getIp() + ":" + getPort();
+    }
+
+    private int getPort(){
+        if(registryConfig.getPort()!=null){
+            return registryConfig.getPort();
+        }
+        if(providerConfig.getPort()!=null){
+            return providerConfig.getPort();
+        }
+        return 20880;
     }
 }

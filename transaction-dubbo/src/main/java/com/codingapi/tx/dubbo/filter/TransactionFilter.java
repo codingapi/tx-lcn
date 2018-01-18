@@ -18,13 +18,11 @@ public class TransactionFilter implements Filter {
 
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
         String groupId = txTransactionLocal == null ? null : txTransactionLocal.getGroupId();
-        int maxTimeOut = txTransactionLocal == null ? 0 : txTransactionLocal.getMaxTimeOut();
 
-        logger.info("LCN-dubbo TxGroup info -> groupId:"+groupId+",maxTimeOut:"+maxTimeOut);
+        logger.info("LCN-dubbo TxGroup info -> groupId:"+groupId);
 
         if(txTransactionLocal!=null){
             RpcContext.getContext().setAttachment("tx-group",groupId);
-            RpcContext.getContext().setAttachment("tx-maxTimeOut",String.valueOf(maxTimeOut));
         }
 
         return invoker.invoke(invocation);

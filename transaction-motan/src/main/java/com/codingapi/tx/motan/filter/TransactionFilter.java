@@ -37,7 +37,6 @@ public class TransactionFilter implements Filter {
         if (txTransactionLocal != null) {
 
             request.setAttachment("tx-group", txTransactionLocal.getGroupId());
-            request.setAttachment("tx-maxTimeOut", String.valueOf(txTransactionLocal.getMaxTimeOut()));
 
             logger.info("LCN-dubbo TxGroup info -> groupId:"+ txTransactionLocal.getGroupId()+",maxTimeOut:"+txTransactionLocal.getMaxTimeOut());
 
@@ -46,9 +45,6 @@ public class TransactionFilter implements Filter {
             if (map != null && !map.isEmpty()) {
                 if (map.containsKey("tx-group")) {
                     RpcContext.getContext().putAttribute("tx-group", request.getAttachments().get("tx-group"));
-                }
-                if (map.containsKey("tx-maxTimeOut")) {
-                    RpcContext.getContext().putAttribute("tx-maxTimeOut", request.getAttachments().get("tx-maxTimeOut"));
                 }
             }
         }

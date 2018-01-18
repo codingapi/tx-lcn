@@ -19,13 +19,11 @@ public class TransactionRestTemplateInterceptor implements RequestInterceptor {
 
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
         String groupId = txTransactionLocal == null ? null : txTransactionLocal.getGroupId();
-        int maxTimeOut = txTransactionLocal == null ? 0 : txTransactionLocal.getMaxTimeOut();
 
-        logger.info("LCN-SpringCloud TxGroup info -> groupId:"+groupId+",maxTimeOut:"+maxTimeOut);
+        logger.info("LCN-SpringCloud TxGroup info -> groupId:"+groupId);
 
         if (txTransactionLocal != null) {
             requestTemplate.header("tx-group", groupId);
-            requestTemplate.header("tx-maxTimeOut", String.valueOf(maxTimeOut));
         }
     }
 

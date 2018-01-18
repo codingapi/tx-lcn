@@ -23,13 +23,11 @@ public class TransactionHttpRequestInterceptor implements ClientHttpRequestInter
 
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
         String groupId = txTransactionLocal == null ? null : txTransactionLocal.getGroupId();
-        int maxTimeOut = txTransactionLocal == null ? 0 : txTransactionLocal.getMaxTimeOut();
 
-        logger.info("LCN-SpringCloud TxGroup info -> groupId:"+groupId+",maxTimeOut:"+maxTimeOut);
+        logger.info("LCN-SpringCloud TxGroup info -> groupId:"+groupId);
 
         if(txTransactionLocal!=null) {
             request.getHeaders().add("tx-group", groupId);
-            request.getHeaders().add("tx-maxTimeOut", String.valueOf(maxTimeOut));
         }
         return execution.execute(request,body);
     }
