@@ -29,7 +29,7 @@ public class ConfigReader {
         try {
             txManagerTxUrlService =  spring.getBean(TxManagerTxUrlService.class);
         }catch (Exception e){
-            logger.error(e.getLocalizedMessage());
+            logger.debug("load default txManagerTxUrlService ");
         }
 
         if(txManagerTxUrlService == null){

@@ -27,7 +27,7 @@ public class TxManagerHttpRequestHelper {
         try {
             httpRequestService = spring.getBean(TxManagerHttpRequestService.class);
         }catch (Exception e){
-            logger.error(e.getLocalizedMessage());
+            logger.debug("load default httpRequestService ");
         }
 
         if(httpRequestService==null){
