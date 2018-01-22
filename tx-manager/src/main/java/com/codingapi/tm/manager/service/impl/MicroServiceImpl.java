@@ -84,7 +84,7 @@ public class MicroServiceImpl implements MicroService {
         state.setNotifyUrl(configReader.getCompensateNotifyUrl());
         state.setCompensate(configReader.isCompensateAuto());
         state.setCompensateTryTime(configReader.getCompensateTryTime());
-        state.setAutoCompensateLimit(configReader.getAutoCompensateLimit());
+        state.setAutoCompensateLimit(configReader.getCompensateMaxWaitTime());
         state.setSlbList(getServices());
         return state;
     }

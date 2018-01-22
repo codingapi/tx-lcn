@@ -36,8 +36,8 @@ public class ConfigReader {
     @Value("${tm.compensate.tryTime}")
     private int compensateTryTime;
     
-    @Value("${tm.auto.compensate.limit}")
-    private int autoCompensateLimit;
+    @Value("${tm.compensate.maxWaitTime}")
+    private int compensateMaxWaitTime;
 
     /**
      * 事务默认数据的位置，有最大时间
@@ -98,8 +98,8 @@ public class ConfigReader {
         return compensateTryTime;
     }
 
-	public int getAutoCompensateLimit() {
-		return autoCompensateLimit;
+	public int getCompensateMaxWaitTime() {
+		return compensateMaxWaitTime;
 	}
     
     

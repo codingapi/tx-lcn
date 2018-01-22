@@ -9,7 +9,7 @@ public class TxServer {
     private int port;
     private int heart;
     private int delay;
-    private int autoCompensateLimit;
+    private int compensateMaxWaitTime;
 
     public static TxServer format(TxState state) {
         TxServer txServer = new TxServer();
@@ -17,7 +17,7 @@ public class TxServer {
         txServer.setPort(state.getPort());
         txServer.setHeart(state.getTransactionNettyHeartTime());
         txServer.setDelay(state.getTransactionNettyDelayTime());
-        txServer.setAutoCompensateLimit(state.getAutoCompensateLimit());
+        txServer.setCompensateMaxWaitTime(state.getAutoCompensateLimit());
         return txServer;
     }
 
@@ -56,13 +56,13 @@ public class TxServer {
     }
 
 
-	public int getAutoCompensateLimit() {
-		return autoCompensateLimit;
+	public int getCompensateMaxWaitTime() {
+		return compensateMaxWaitTime;
 	}
 
 
-	public void setAutoCompensateLimit(int autoCompensateLimit) {
-		this.autoCompensateLimit = autoCompensateLimit;
+	public void setCompensateMaxWaitTime(int compensateMaxWaitTime) {
+		this.compensateMaxWaitTime = compensateMaxWaitTime;
 	}
     
     

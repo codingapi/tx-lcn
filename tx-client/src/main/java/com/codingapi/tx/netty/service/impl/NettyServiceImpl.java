@@ -59,11 +59,8 @@ public class NettyServiceImpl implements NettyService {
         int port = Constants.txServer.getPort();
         final int heart = Constants.txServer.getHeart();
         int delay = Constants.txServer.getDelay();
-//        int autoCompensateLimit = Constants.txServer.getAutoCompensateLimit();
 
         final TransactionHandler transactionHandler = new TransactionHandler(nettyControlService, delay);
-
-//        timeOutService.loadOutTime(autoCompensateLimit);
         workerGroup = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap(); // (1)
