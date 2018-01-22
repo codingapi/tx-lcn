@@ -28,7 +28,23 @@ public class InitServiceImpl implements InitService {
         Constants.socketPort = configReader.getSocketPort();
         Constants.maxConnection = configReader.getSocketMaxConnection();
         nettyServerService.start();
+
+        welcome();
     }
+
+
+    private void welcome(){
+        System.out.println();
+        System.out.println();
+        System.out.println("\t\t**  \t\t ****\t\t**  **");
+        System.out.println("\t\t**  \t\t**   \t\t*** **");
+        System.out.println("\t\t**  \t\t**   \t\t** ***");
+        System.out.println("\t\t*****\t\t ****\t\t**  **");
+        System.out.println();
+        System.out.println("\t\tLCN-TxManager  version:4.0.3");
+        System.out.println();
+    }
+
 
     @Override
     public void close() {

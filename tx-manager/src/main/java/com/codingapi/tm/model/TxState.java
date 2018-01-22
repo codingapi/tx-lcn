@@ -67,7 +67,7 @@ public class TxState {
     /**
      * 自动补偿间隔时间
      */
-    private int autoCompensateLimit;
+    private int compensateMaxWaitTime;
 
 
     public String getIp() {
@@ -158,12 +158,12 @@ public class TxState {
         this.notifyUrl = notifyUrl;
     }
 
-	public int getAutoCompensateLimit() {
-		return autoCompensateLimit;
+	public int getCompensateMaxWaitTime() {
+		return compensateMaxWaitTime;
 	}
 
-	public void setAutoCompensateLimit(int autoCompensateLimit) {
-		this.autoCompensateLimit = autoCompensateLimit;
+	public void setCompensateMaxWaitTime(int compensateMaxWaitTime) {
+		this.compensateMaxWaitTime = compensateMaxWaitTime;
 	}
     
     

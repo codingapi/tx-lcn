@@ -330,6 +330,8 @@ public class CompensateServiceImpl implements CompensateService {
 
         String res = managerSenderService.sendCompensateMsg(modelInfo.getChannelName(), groupId, data,startError);
 
+        logger.debug("executeCompensate->"+json+",@@->"+res);
+
         return "1".equals(res);
     }
 }

@@ -15,8 +15,20 @@ public interface ILCNTransactionControl {
     boolean hasGroup(String group);
 
     /**
-     * 是否是 事务操作
-     * @return true是，false否
+     * 有无执行过事务操作
+     * @return true 有，false 否
      */
-    boolean hasTransaction();
+    boolean executeTransactionOperation();
+
+
+    /**
+     * 是否没有事务操作  default false
+     * @return true 是 false 否
+     */
+    boolean isNoTransactionOperation();
+
+    /**
+     * 设置开启没有事务操作
+     */
+    void autoNoTransactionOperation();
 }

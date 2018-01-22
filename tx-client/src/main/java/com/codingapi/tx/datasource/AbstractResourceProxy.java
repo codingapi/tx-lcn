@@ -38,6 +38,9 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
     protected volatile int nowCount = 0;
 
 
+    private volatile boolean hasTransaction = false;
+
+    private volatile boolean isNoTransaction = false;
 
 
 
@@ -68,6 +71,10 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
 
 
     protected ILCNResource loadConnection(){
+
+        //说明有db操作.
+        hasTransaction = true;
+
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
         if(txTransactionLocal==null){
@@ -150,10 +157,20 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
 
 
     @Override
-    public boolean hasTransaction() {
-        return true;
+    public boolean executeTransactionOperation() {
+        return hasTransaction;
     }
 
+
+    @Override
+    public boolean isNoTransactionOperation() {
+        return isNoTransaction;
+    }
+
+    @Override
+    public void autoNoTransactionOperation() {
+        isNoTransaction = true;
+    }
 
     public void setMaxWaitTime(int maxWaitTime) {
         this.maxWaitTime = maxWaitTime;

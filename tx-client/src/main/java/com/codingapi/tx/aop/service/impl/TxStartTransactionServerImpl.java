@@ -121,6 +121,12 @@ public class TxStartTransactionServerImpl implements TransactionServer {
                                 //记录补偿日志
                                 txManagerService.sendCompensateMsg(groupId, time, info,executeConnectionError);
                             }
+                        }else{
+                            if(rs==1){
+                                lastState = 1;
+                            }else{
+                                lastState = 0;
+                            }
                         }
 
                         task.setState(lastState);

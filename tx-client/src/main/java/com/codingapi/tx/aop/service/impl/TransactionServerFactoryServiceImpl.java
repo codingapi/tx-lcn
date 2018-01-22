@@ -61,7 +61,7 @@ public class TransactionServerFactoryServiceImpl implements TransactionServerFac
                 if (info.getTxTransactionLocal() != null) {
                     return txDefaultTransactionServer;
                 } else {
-                    if(transactionControl.hasTransaction()) {//有事务业务的操作
+                    if(!transactionControl.isNoTransactionOperation()) { //有事务业务的操作
                         return txRunningTransactionServer;
                     }else {
                         return txRunningNoTransactionServer;

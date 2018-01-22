@@ -17,7 +17,7 @@ public class TxServer {
         txServer.setPort(state.getPort());
         txServer.setHeart(state.getTransactionNettyHeartTime());
         txServer.setDelay(state.getTransactionNettyDelayTime());
-        txServer.setCompensateMaxWaitTime(state.getAutoCompensateLimit());
+        txServer.setCompensateMaxWaitTime(state.getCompensateMaxWaitTime());
         return txServer;
     }
 
