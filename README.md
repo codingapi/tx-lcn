@@ -52,7 +52,7 @@ tx-plugins-redis 是LCN 对于redis模块的插件支持（功能暂未实现）
 ```
 
     @Override
-    @TxTransaction
+    @TxTransaction(isStart=true)
     @Transactional
     public boolean hello() {
         //本地调用
@@ -72,6 +72,7 @@ tx-plugins-redis 是LCN 对于redis模块的插件支持（功能暂未实现）
 
     @Override
     @Transactional
+    @TxTransaction
     public boolean test() {
         //本地调用
         testDao.save();
@@ -82,7 +83,7 @@ tx-plugins-redis 是LCN 对于redis模块的插件支持（功能暂未实现）
 
 如上代码执行完成以后两个模块都将回滚事务。
 
-说明：在使用LCN分布式事务时，只需要将事务的开始方法添加`@TxTransaction`注解即可。详细见demo教程
+说明：在使用LCN分布式事务时，只需要将事务的开始方法添加`@TxTransaction(isStart=true)`注解即可,在参与方添加`@TxTransaction`即可。详细见demo教程
 
 ## 关于@TxTransaction 使用说明
 
@@ -91,19 +92,22 @@ tx-plugins-redis 是LCN 对于redis模块的插件支持（功能暂未实现）
   若存在业务方法：a->b b->c b->d，那么开启分布式事务注解的话，只需要在a方法上添加@TxTransaction即可。
   
 ```
-    @TxTransaction
+    @TxTransaction(isStart=true)
     @Transactional
     public void a(){
         b();
     }
-
+    
+    @TxTransaction
     public void b(){
         c();
         d();
     }
-
+    
+    @TxTransaction
     public void c(){}
-
+    
+    @TxTransaction
     public void d(){}
 ```
 

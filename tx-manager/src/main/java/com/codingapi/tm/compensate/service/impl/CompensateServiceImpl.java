@@ -226,7 +226,7 @@ public class CompensateServiceImpl implements CompensateService {
 
             String groupId = jsonObject.getString("groupId");
 
-            String key = path + "_" + groupId;
+            String key = path + ":" + groupId;
             model.setKey(key);
 
             models.add(model);

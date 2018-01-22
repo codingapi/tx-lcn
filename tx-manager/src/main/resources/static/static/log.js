@@ -4,12 +4,13 @@ var init = function () {
     http.get('/admin/modelList', '加载数据...', function (res) {
 
         var list = $("#list");
+
         list.empty();
         for (var p in res) {
             var v = res[p];
-
+            var name = v['name'].split(':')[1];
             var tr = '<tr>' +
-                '<td><a class="model-name" href="#">' + v['name'] + '</a></td>' +
+                '<td><a class="model-name" href="#">' + name + '</a></td>' +
                 '<td><span>' + v['count'] + '</span></td>' +
                 '</tr>';
             list.append(tr);
@@ -33,7 +34,7 @@ $(document).on("click", ".model-name", function () {
         list.empty();
         for (var p in res) {
             var data = res[p];
-            var name = data.split("_")[0];
+            var name = data.split(":")[0];
             var tr = '<tr><td><a class="model-time" data-data="' + data + '" href="#">' + name + '</a></td></tr>';
             list.append(tr);
         }
@@ -48,7 +49,7 @@ $(document).on("click", ".model-time", function () {
 
     var file = $(this).attr("data-data");
 
-    var path = $('#model').attr("data-model") + "_" + file;
+    var path = $('#model').attr("data-model") + ":" + file;
 
     http.get('/admin/modelInfos?path=' + path, '加载数据...', function (res) {
 

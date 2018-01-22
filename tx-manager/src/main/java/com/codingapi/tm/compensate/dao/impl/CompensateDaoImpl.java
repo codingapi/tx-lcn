@@ -29,7 +29,7 @@ public class CompensateDaoImpl implements CompensateDao {
     @Override
     public String saveCompensateMsg(TransactionCompensateMsg transactionCompensateMsg) {
 
-        String name = String.format("%s%s_%s_%s.json", configReader.getKeyPrefixCompensate(), transactionCompensateMsg.getModel(), DateUtil.getCurrentDateFormat(), transactionCompensateMsg.getGroupId());
+        String name = String.format("%s%s:%s:%s.json", configReader.getKeyPrefixCompensate(), transactionCompensateMsg.getModel(), DateUtil.getCurrentDateFormat(), transactionCompensateMsg.getGroupId());
 
         String json = JSON.toJSONString(transactionCompensateMsg);
 
@@ -55,7 +55,7 @@ public class CompensateDaoImpl implements CompensateDao {
 
     @Override
     public List<String> loadCompensateTimes(String model) {
-        String key = configReader.getKeyPrefixCompensate() + model + "_*";
+        String key = configReader.getKeyPrefixCompensate() + model + ":*";
         List<String> keys = redisServerService.getKeys(key);
         List<String> times = new ArrayList<String>();
         for (String k : keys) {
