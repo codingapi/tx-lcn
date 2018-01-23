@@ -17,10 +17,9 @@ public interface MQTxManagerService {
 
     /**
      * 创建事务组
-     *
-     * @return  事务组TxGroup
+     * @param groupId 事务组id 当为补偿模式时将会自动获取补偿的groupId
      */
-    TxGroup createTransactionGroup();
+    void createTransactionGroup(String groupId);
 
 
     /**

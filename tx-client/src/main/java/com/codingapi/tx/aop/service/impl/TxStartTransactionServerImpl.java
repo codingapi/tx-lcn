@@ -9,9 +9,7 @@ import com.codingapi.tx.framework.task.TaskGroupManager;
 import com.codingapi.tx.framework.task.TaskState;
 import com.codingapi.tx.framework.task.TxTask;
 import com.codingapi.tx.framework.thread.HookRunnable;
-import com.codingapi.tx.model.TxGroup;
 import com.codingapi.tx.netty.service.MQTxManagerService;
-import com.lorne.core.framework.exception.ServiceException;
 import com.lorne.core.framework.utils.KidUtils;
 import com.lorne.core.framework.utils.task.ConditionUtils;
 import com.lorne.core.framework.utils.task.Task;
@@ -46,15 +44,11 @@ public class TxStartTransactionServerImpl implements TransactionServer {
 
         int state = 0;
 
+        final String groupId = KidUtils.generateShortUuid();
+
         //创建事务组
-        TxGroup txGroup = txManagerService.createTransactionGroup();
+        txManagerService.createTransactionGroup(groupId);
 
-        //获取不到模块信息重新连接，本次事务异常返回数据.
-        if (txGroup == null) {
-            throw new ServiceException("create TxGroup error");
-        }
-
-        final String groupId = txGroup.getGroupId();
 
         TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
         txTransactionLocal.setGroupId(groupId);
