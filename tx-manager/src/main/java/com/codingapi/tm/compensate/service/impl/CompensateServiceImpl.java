@@ -14,6 +14,7 @@ import com.codingapi.tm.model.ModelInfo;
 import com.codingapi.tm.model.ModelName;
 import com.codingapi.tm.netty.model.TxGroup;
 import com.codingapi.tm.netty.model.TxInfo;
+import com.google.common.collect.Lists;
 import com.lorne.core.framework.exception.ServiceException;
 import com.lorne.core.framework.utils.DateUtil;
 import com.lorne.core.framework.utils.encode.Base64Utils;
@@ -121,7 +122,7 @@ public class CompensateServiceImpl implements CompensateService {
 
     }
 
-
+    @Override
     public void autoCompensate(final String compensateKey, TransactionCompensateMsg transactionCompensateMsg) {
         final String json = JSON.toJSONString(transactionCompensateMsg);
         logger.info("Auto Compensate->" + json);
@@ -258,14 +259,14 @@ public class CompensateServiceImpl implements CompensateService {
     @Override
     public void reloadCompensate(TxGroup txGroup) {
         TxGroup compensateGroup = getCompensateByGroupId(txGroup.getGroupId());
-        if (compensateGroup != null) {
+        if (compensateGroup != null && compensateGroup.getList() != null && !compensateGroup.getList().isEmpty()) {
+            //引用集合 iterator，方便匹配后剔除列表
+            Iterator<TxInfo> iterator = Lists.newArrayList(compensateGroup.getList()).iterator();
             for (TxInfo txInfo : txGroup.getList()) {
-
-                for (TxInfo cinfo : compensateGroup.getList()) {
+                while (iterator.hasNext()){
+                    TxInfo cinfo = iterator.next();
                     if (cinfo.getModel().equals(txInfo.getModel()) && cinfo.getMethodStr().equals(txInfo.getMethodStr())) {
-
                         //根据之前的数据补偿现在的事务
-
                         int oldNotify = cinfo.getNotify();
 
                         if (oldNotify == 1) {
@@ -273,12 +274,13 @@ public class CompensateServiceImpl implements CompensateService {
                         } else {
                             txInfo.setIsCommit(1);
                         }
+                        //匹配后剔除列表
+                        iterator.remove();
+                        break;
                     }
                 }
-
             }
         }
-
         logger.info("Compensate Loaded->"+JSON.toJSONString(txGroup));
     }
 
