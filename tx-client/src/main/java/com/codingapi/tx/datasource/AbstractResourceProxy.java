@@ -38,7 +38,7 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
     protected volatile int nowCount = 0;
 
 
-    private volatile boolean hasTransaction = false;
+    protected volatile boolean hasTransaction = false;
 
     private volatile boolean isNoTransaction = false;
 
@@ -66,14 +66,9 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
 
     protected abstract void initDbType();
 
-//    protected abstract C getCompensateConnection(C connection,TxCompensateLocal txCompensateLocal);
-//
 
 
     protected ILCNResource loadConnection(){
-
-        //说明有db操作.
-        hasTransaction = true;
 
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 

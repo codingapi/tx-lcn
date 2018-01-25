@@ -60,9 +60,12 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
 
     @Override
     public Connection getConnection(ProceedingJoinPoint point) throws Throwable {
+        //说明有db操作.
+        hasTransaction = true;
+
         initDbType();
 
-        Connection connection =(Connection)loadConnection();
+        Connection connection = (Connection)loadConnection();
         if(connection==null) {
             connection = initLCNConnection((Connection) point.proceed());
             if(connection==null){
