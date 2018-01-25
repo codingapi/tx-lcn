@@ -32,6 +32,15 @@ public class TransactionAspect implements Ordered {
         return obj;
     }
 
+    @Around("this(com.codingapi.tx.annotation.ITxTransaction) && execution( * *(..))")
+    public Object around(ProceedingJoinPoint point)throws Throwable{
+        logger.debug("interface-ITransactionRunning-start---->");
+        Object obj =  txManagerInterceptor.around(point);
+        logger.debug("interface-ITransactionRunning-end---->");
+        return obj;
+    }
+
+
     @Override
     public int getOrder() {
         return HIGHEST_PRECEDENCE;
