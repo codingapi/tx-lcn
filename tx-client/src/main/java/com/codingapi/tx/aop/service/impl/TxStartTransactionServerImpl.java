@@ -8,11 +8,8 @@ import com.codingapi.tx.aop.service.TransactionServer;
 import com.codingapi.tx.framework.task.TaskGroupManager;
 import com.codingapi.tx.framework.task.TaskState;
 import com.codingapi.tx.framework.task.TxTask;
-import com.codingapi.tx.framework.thread.HookRunnable;
 import com.codingapi.tx.netty.service.MQTxManagerService;
 import com.lorne.core.framework.utils.KidUtils;
-import com.lorne.core.framework.utils.task.ConditionUtils;
-import com.lorne.core.framework.utils.task.Task;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +53,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
         txTransactionLocal.setMaxTimeOut(Constants.txServer.getCompensateMaxWaitTime());
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
+
         try {
             Object obj = point.proceed();
             state = 1;
@@ -68,70 +66,55 @@ public class TxStartTransactionServerImpl implements TransactionServer {
             final int resState = state;
             final String type = txTransactionLocal.getType();
 
-            //确保返回数据之前，业务已经都执行完毕.
-            final Task task = ConditionUtils.getInstance().createTask(KidUtils.getKid());
-
             final TxCompensateLocal compensateLocal =  TxCompensateLocal.current();
 
-            //hook 保护确保下面的代码可以正常执行，当遇到挂机的情况时也会执行完下面代码
-            new Thread(new HookRunnable() {
-                @Override
-                public void run0() {
-                    if(task.isAwait()) {
-
-                        int rs = txManagerService.closeTransactionGroup(groupId, resState);
-
-                        int lastState = rs==-1?0:resState;
-
-                        int executeConnectionError = 0;
-
-                        //控制本地事务的数据提交
-                        final TxTask waitTask = TaskGroupManager.getInstance().getTask(groupId, type);
-                        if(waitTask!=null){
-                            waitTask.setState(lastState);
-                            waitTask.signalTask();
-
-                            while (!waitTask.isRemove()){
-                                try {
-                                    Thread.sleep(1);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            if(waitTask.getState()== TaskState.connectionError.getCode()){
-                                //本地执行失败.
-                                executeConnectionError = 1;
-
-                                lastState = 0;
-                            }
-                        }
+            int rs = txManagerService.closeTransactionGroup(groupId, resState);
 
 
-                        if (compensateLocal == null) {
-                            long end = System.currentTimeMillis();
-                            long time = end - start;
-                            if (executeConnectionError == 1||(lastState == 1 && rs == 0)) {
-                                //记录补偿日志
-                                txManagerService.sendCompensateMsg(groupId, time, info,executeConnectionError);
-                            }
-                        }else{
-                            if(rs==1){
-                                lastState = 1;
-                            }else{
-                                lastState = 0;
-                            }
-                        }
+            int lastState = rs==-1?0:resState;
 
-                        task.setState(lastState);
-                        task.signalTask();
+            int executeConnectionError = 0;
+
+            //控制本地事务的数据提交
+            final TxTask waitTask = TaskGroupManager.getInstance().getTask(groupId, type);
+            if(waitTask!=null){
+                waitTask.setState(lastState);
+                waitTask.signalTask();
+
+                while (!waitTask.isRemove()){
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
-            }).start();
 
-            task.awaitTask();
-            int lastState =task.getState();
-            task.remove();
+                if(waitTask.getState()== TaskState.connectionError.getCode()){
+                    //本地执行失败.
+                    executeConnectionError = 1;
+
+                    lastState = 0;
+                }
+            }
+
+
+            if (compensateLocal == null) {
+                long end = System.currentTimeMillis();
+                long time = end - start;
+                if (executeConnectionError == 1||(lastState == 1 && rs == 0)) {
+                    //记录补偿日志
+                    txManagerService.sendCompensateMsg(groupId, time, info,executeConnectionError);
+                }
+            }else{
+                if(rs==1){
+                    lastState = 1;
+                }else{
+                    lastState = 0;
+                }
+            }
+
+
+            long endTime = System.currentTimeMillis();
 
             TxTransactionLocal.setCurrent(null);
             logger.debug("<---end start transaction");

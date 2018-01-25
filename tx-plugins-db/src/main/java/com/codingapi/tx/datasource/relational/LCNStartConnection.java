@@ -173,6 +173,8 @@ public class LCNStartConnection extends AbstractTransactionThread implements LCN
 
         }catch (SQLException e){
 
+            rollbackConnection();
+
             waitTask.setState(TaskState.connectionError.getCode());
 
             System.out.println(" lcn start transaction over,but connection is closed,  res -> groupId:"+getGroupId());

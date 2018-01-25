@@ -94,6 +94,7 @@ public class SocketManager {
         });
     }
 
+
     public String sendMsg(final Request request) {
         final String key = request.getKey();
         if (ctx != null && ctx.channel() != null && ctx.channel().isActive()) {
