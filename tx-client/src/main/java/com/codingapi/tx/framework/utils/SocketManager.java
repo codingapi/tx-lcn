@@ -84,6 +84,17 @@ public class SocketManager {
         logger.info("send-msg->" + request.toMsg());
     }
 
+
+    public void onlySendMsg(final Request request) {
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                SocketUtils.sendMsg(ctx, request.toMsg());
+            }
+        });
+    }
+
+
     public String sendMsg(final Request request) {
         final String key = request.getKey();
         if (ctx != null && ctx.channel() != null && ctx.channel().isActive()) {

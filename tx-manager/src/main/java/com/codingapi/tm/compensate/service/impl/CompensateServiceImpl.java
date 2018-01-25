@@ -284,7 +284,7 @@ public class CompensateServiceImpl implements CompensateService {
         logger.info("Compensate Loaded->"+JSON.toJSONString(txGroup));
     }
 
-    private TxGroup getCompensateByGroupId(String groupId) {
+    public TxGroup getCompensateByGroupId(String groupId) {
         String json = compensateDao.getCompensateByGroupId(groupId);
         if (json == null) {
             return null;

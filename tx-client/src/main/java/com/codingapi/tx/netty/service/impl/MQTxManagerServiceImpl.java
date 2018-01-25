@@ -38,15 +38,16 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
 
     @Override
-    public TxGroup createTransactionGroup() {
+    public void createTransactionGroup(String groupId) {
         JSONObject jsonObject = new JSONObject();
         TxCompensateLocal compensateLocal = TxCompensateLocal.current();
         if (compensateLocal != null) {
             jsonObject.put("g", compensateLocal.getGroupId());
+        }else{
+            jsonObject.put("g", groupId);
         }
         Request request = new Request("cg", jsonObject.toString());
-        String json = SocketManager.getInstance().sendMsg(request);
-        return TxGroup.parser(json);
+        SocketManager.getInstance().onlySendMsg(request);
     }
 
     @Override

@@ -19,9 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 /**
  * Handles a server-side channel.
  */
@@ -35,12 +32,6 @@ public class TxCoreServerHandler extends ChannelInboundHandlerAdapter { // (1)
     private Logger logger = LoggerFactory.getLogger(TxCoreServerHandler.class);
 
 
-    private final static int max_size = 100;
-
-    private Executor  threadPool = Executors.newFixedThreadPool(max_size);
-
-
-
     public TxCoreServerHandler(NettyService nettyService) {
         this.nettyService = nettyService;
     }
@@ -49,12 +40,7 @@ public class TxCoreServerHandler extends ChannelInboundHandlerAdapter { // (1)
     public void channelRead(final ChannelHandlerContext ctx, Object msg) throws Exception {
         final String json = SocketUtils.getJson(msg);
         logger.debug("request->"+json);
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                service(json,ctx);
-            }
-        });
+        service(json,ctx);
     }
 
     private void service(String json,ChannelHandlerContext ctx){

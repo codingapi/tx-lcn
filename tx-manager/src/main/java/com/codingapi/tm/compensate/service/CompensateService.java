@@ -30,4 +30,6 @@ public interface CompensateService {
     boolean hasCompensate();
 
     boolean delCompensate(String path);
+
+    TxGroup  getCompensateByGroupId(String groupId);
 }

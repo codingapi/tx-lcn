@@ -116,8 +116,8 @@ public class TxTransactionLocal {
         jsonObject.put("d", data);
         logger.debug("putLoadBalance--> start ");
         Request request = new Request("plb", jsonObject.toString());
-        String json =  SocketManager.getInstance().sendMsg(request);
-        logger.debug("putLoadBalance--> end ,res ->"+json);
+        SocketManager.getInstance().onlySendMsg(request);
+        logger.debug("putLoadBalance--> end");
     }
 
 

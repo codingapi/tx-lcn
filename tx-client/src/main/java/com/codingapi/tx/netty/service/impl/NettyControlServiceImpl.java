@@ -16,9 +16,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 /**
  * create by lorne on 2017/11/11
  */
@@ -26,23 +23,17 @@ import java.util.concurrent.Executors;
 public class NettyControlServiceImpl implements NettyControlService {
 
 
-
     @Autowired
     private NettyService nettyService;
 
-
     @Autowired
     private TransactionControlService transactionControlService;
-
 
     @Autowired
     private MQTxManagerService mqTxManagerService;
 
     @Autowired
     private ModelNameService modelNameService;
-
-
-    private Executor threadPool = Executors.newFixedThreadPool(100);
 
 
     @Override
@@ -75,24 +66,20 @@ public class NettyControlServiceImpl implements NettyControlService {
 
     @Override
     public void executeService(final ChannelHandlerContext ctx,final String json) {
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                if (StringUtils.isNotEmpty(json)) {
-                    JSONObject resObj = JSONObject.parseObject(json);
-                    if (resObj.containsKey("a")) {
-                        // tm发送数据给tx模块的处理指令
 
-                        transactionControlService.notifyTransactionMsg(ctx,resObj,json);
-                    }else{
-                        //tx发送数据给tm的响应返回数据
+        if (StringUtils.isNotEmpty(json)) {
+            JSONObject resObj = JSONObject.parseObject(json);
+            if (resObj.containsKey("a")) {
+                // tm发送数据给tx模块的处理指令
 
-                        String key = resObj.getString("k");
-                        responseMsg(key,resObj);
-                    }
-                }
+                transactionControlService.notifyTransactionMsg(ctx,resObj,json);
+            }else{
+                //tx发送数据给tm的响应返回数据
+
+                String key = resObj.getString("k");
+                responseMsg(key,resObj);
             }
-        });
+        }
     }
 
 
@@ -100,7 +87,9 @@ public class NettyControlServiceImpl implements NettyControlService {
         if (!"h".equals(key)) {
             final String data = resObj.getString("d");
             Task task = ConditionUtils.getInstance().getTask(key);
+
             if (task != null) {
+
                 if (task.isAwait()) {
                     task.setBack(new IBack() {
                         @Override
@@ -110,6 +99,7 @@ public class NettyControlServiceImpl implements NettyControlService {
                     });
                     task.signalTask();
                 }
+
             }
         } else {
             //心跳数据

@@ -2,6 +2,7 @@ package com.codingapi.tm.manager.service.impl;
 
 
 import com.codingapi.tm.Constants;
+import com.codingapi.tm.compensate.service.CompensateService;
 import com.codingapi.tm.manager.ModelInfoManager;
 import com.codingapi.tm.manager.service.LoadBalanceService;
 import com.codingapi.tm.manager.service.TxManagerSenderService;
@@ -40,6 +41,9 @@ public class TxManagerServiceImpl implements TxManagerService {
     @Autowired
     private LoadBalanceService loadBalanceService;
 
+    @Autowired
+    private CompensateService compensateService;
+
 
     private Logger logger = LoggerFactory.getLogger(TxManagerServiceImpl.class);
 
@@ -47,10 +51,8 @@ public class TxManagerServiceImpl implements TxManagerService {
     @Override
     public TxGroup createTransactionGroup(String groupId) {
         TxGroup txGroup = new TxGroup();
-        if (StringUtils.isNotEmpty(groupId)) {
+        if (compensateService.getCompensateByGroupId(groupId)!=null) {
             txGroup.setIsCommit(1);
-        } else {
-            groupId = KidUtils.generateShortUuid();
         }
 
         txGroup.setStartTime(System.currentTimeMillis());
