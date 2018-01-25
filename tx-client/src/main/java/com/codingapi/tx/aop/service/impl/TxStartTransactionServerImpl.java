@@ -113,9 +113,6 @@ public class TxStartTransactionServerImpl implements TransactionServer {
                 }
             }
 
-
-            long endTime = System.currentTimeMillis();
-
             TxTransactionLocal.setCurrent(null);
             logger.debug("<---end start transaction");
             logger.debug("start transaction over, res -> groupId:" + groupId + ", now state:" + (lastState == 1 ? "commit" : "rollback"));
