@@ -3,13 +3,15 @@ package com.codingapi.tx.dubbo.service.impl;
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ProviderConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
-import com.lorne.core.framework.utils.encode.MD5Util;
 import com.codingapi.tx.listener.service.ModelNameService;
+import com.lorne.core.framework.utils.encode.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Map;
 
 /**
  * Created by lorne on 2017/7/12.
@@ -25,7 +27,21 @@ public class ModelNameServiceImpl implements ModelNameService {
     private ProviderConfig providerConfig;
 
     @Autowired
-    private RegistryConfig registryConfig;
+    private ApplicationContext applicationContext;
+
+    public RegistryConfig getRegistryConfig(){
+        Map<String, RegistryConfig> beans = applicationContext.getBeansOfType(RegistryConfig.class);
+        RegistryConfig registryConfig = null;
+        if(beans!=null){
+            String defaultKey = "default";
+            for(String key:beans.keySet()){
+                defaultKey = key;
+            }
+
+            registryConfig =  beans.get(defaultKey);
+        }
+        return registryConfig;
+    }
 
     private String host = null;
 
@@ -59,11 +75,13 @@ public class ModelNameServiceImpl implements ModelNameService {
     }
 
     private int getPort(){
-        if(registryConfig.getPort()!=null){
-            return registryConfig.getPort();
-        }
         if(providerConfig.getPort()!=null){
             return providerConfig.getPort();
+        }
+
+        RegistryConfig registryConfig = getRegistryConfig();
+        if(registryConfig!=null&&registryConfig.getPort()!=null){
+            return registryConfig.getPort();
         }
         return 20880;
     }
