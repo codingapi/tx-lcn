@@ -118,7 +118,12 @@ public class TxManagerServiceImpl implements TxManagerService {
         }
 
         if(txGroup.getHasOver()==0){
-            logger.info("cleanNotifyTransaction - > groupId "+groupId+" not over !");
+
+            //整个事务回滚.
+            txGroup.setRollback(1);
+            redisServerService.saveTransaction(key, txGroup.toJsonString());
+
+            logger.info("cleanNotifyTransaction - > groupId "+groupId+" not over,all transaction must rollback !");
             return 0;
         }
 
