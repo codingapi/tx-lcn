@@ -2,7 +2,6 @@ package com.codingapi.tx.netty.service.impl;
 
 import com.codingapi.tx.Constants;
 import com.codingapi.tx.framework.utils.SocketManager;
-//import com.codingapi.tx.listener.service.TimeOutService;
 import com.codingapi.tx.netty.handler.TransactionHandler;
 import com.codingapi.tx.netty.service.NettyControlService;
 import com.codingapi.tx.netty.service.NettyDistributeService;
@@ -17,6 +16,7 @@ import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  * Created by lorne on 2017/6/30.
  */
 @Service
-public class NettyServiceImpl implements NettyService {
+public class NettyServiceImpl implements NettyService ,DisposableBean {
 
 
     @Autowired
@@ -36,8 +36,6 @@ public class NettyServiceImpl implements NettyService {
     @Autowired
     private NettyControlService nettyControlService;
 
-//    @Autowired
-//    private TimeOutService timeOutService;
 
     private EventLoopGroup workerGroup;
 
@@ -134,4 +132,9 @@ public class NettyServiceImpl implements NettyService {
     }
 
 
+    @Override
+    public void destroy() throws Exception {
+        close();
+        SocketManager.getInstance().close();
+    }
 }

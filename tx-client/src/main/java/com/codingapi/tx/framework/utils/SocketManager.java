@@ -34,7 +34,7 @@ public class SocketManager {
 
     private static SocketManager manager = null;
 
-    private Executor threadPool = Executors.newFixedThreadPool(max_size);
+    private ExecutorService threadPool = Executors.newFixedThreadPool(max_size);
 
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(max_size);
 
@@ -138,5 +138,14 @@ public class SocketManager {
         }
         return null;
 
+    }
+
+    public void close() {
+        if(threadPool!=null){
+            threadPool.shutdown();
+        }
+        if(executorService!=null){
+            executorService.shutdown();
+        }
     }
 }
