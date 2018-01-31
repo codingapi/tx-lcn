@@ -17,7 +17,7 @@ public class TxInfo extends JsonModel {
     /**
      * 模块管道名称（netty管道名称）
      */
-    private String modelName;
+    private String channelAddress;
 
     /**
      * 是否通知成功
@@ -115,12 +115,12 @@ public class TxInfo extends JsonModel {
         this.channel = channel;
     }
 
-    public String getModelName() {
-        return modelName;
+    public String getChannelAddress() {
+        return channelAddress;
     }
 
-    public void setModelName(String modelName) {
-        this.modelName = modelName;
+    public void setChannelAddress(String channelAddress) {
+        this.channelAddress = channelAddress;
     }
 
     public int getNotify() {
@@ -159,7 +159,7 @@ public class TxInfo extends JsonModel {
     public String toString() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("kid",getKid());
-        jsonObject.put("modelName",getModelName());
+        jsonObject.put("channelAddress", getChannelAddress());
         jsonObject.put("notify",getNotify());
         jsonObject.put("isGroup",getIsGroup());
         jsonObject.put("address",getAddress());

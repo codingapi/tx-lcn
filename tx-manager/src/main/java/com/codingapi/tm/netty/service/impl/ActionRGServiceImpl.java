@@ -18,7 +18,7 @@ public class ActionRGServiceImpl implements IActionService{
     private TxManagerService txManagerService;
 
     @Override
-    public String execute(String modelName,String key,JSONObject params ) {
+    public String execute(String channelAddress, String key, JSONObject params ) {
         String res = "";
         String groupId = params.getString("g");
         boolean bs = txManagerService.rollbackTransactionGroup(groupId);

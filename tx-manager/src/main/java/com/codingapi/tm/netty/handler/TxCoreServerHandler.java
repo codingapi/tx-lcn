@@ -49,11 +49,11 @@ public class TxCoreServerHandler extends ChannelInboundHandlerAdapter { // (1)
             String action = jsonObject.getString("a");
             String key = jsonObject.getString("k");
             JSONObject params = JSONObject.parseObject(jsonObject.getString("p"));
-            String modelName = ctx.channel().remoteAddress().toString();
+            String channelAddress = ctx.channel().remoteAddress().toString();
 
             IActionService actionService =  nettyService.getActionService(action);
 
-            String res = actionService.execute(modelName,key,params);
+            String res = actionService.execute(channelAddress,key,params);
 
             JSONObject resObj = new JSONObject();
             resObj.put("k", key);

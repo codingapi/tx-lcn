@@ -23,7 +23,7 @@ public interface TxManagerService {
      * @return
      */
 
-    TxGroup addTransactionGroup(String groupId, String taskId,int isGroup, String modelName, String methodStr);
+    TxGroup addTransactionGroup(String groupId, String taskId,int isGroup, String channelAddress, String methodStr);
 
 
     /**

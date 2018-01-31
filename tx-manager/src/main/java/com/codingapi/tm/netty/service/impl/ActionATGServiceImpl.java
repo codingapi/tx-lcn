@@ -19,14 +19,14 @@ public class ActionATGServiceImpl implements IActionService{
     private TxManagerService txManagerService;
 
     @Override
-    public String execute(String modelName,String key,JSONObject params ) {
+    public String execute(String channelAddress,String key,JSONObject params ) {
         String res = "";
         String groupId = params.getString("g");
         String taskId = params.getString("t");
         String methodStr = params.getString("ms");
         int isGroup = params.getInteger("s");
 
-        TxGroup txGroup = txManagerService.addTransactionGroup(groupId, taskId, isGroup, modelName, methodStr);
+        TxGroup txGroup = txManagerService.addTransactionGroup(groupId, taskId, isGroup, channelAddress, methodStr);
 
         if(txGroup!=null) {
             txGroup.setNowTime(System.currentTimeMillis());

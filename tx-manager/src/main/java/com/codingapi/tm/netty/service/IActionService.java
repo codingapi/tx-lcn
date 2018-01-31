@@ -8,6 +8,6 @@ import com.alibaba.fastjson.JSONObject;
 public interface IActionService {
 
 
-    String execute(String modelName,String key,JSONObject params);
+    String execute(String channelAddress,String key,JSONObject params);
 
 }

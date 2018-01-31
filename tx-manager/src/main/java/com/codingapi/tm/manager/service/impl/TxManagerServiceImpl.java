@@ -12,8 +12,6 @@ import com.codingapi.tm.model.ModelInfo;
 import com.codingapi.tm.netty.model.TxGroup;
 import com.codingapi.tm.netty.model.TxInfo;
 import com.codingapi.tm.redis.service.RedisServerService;
-import com.lorne.core.framework.utils.KidUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,21 +64,21 @@ public class TxManagerServiceImpl implements TxManagerService {
 
 
     @Override
-    public TxGroup addTransactionGroup(String groupId, String taskId, int isGroup, String modelName, String methodStr) {
+    public TxGroup addTransactionGroup(String groupId, String taskId, int isGroup, String channelAddress, String methodStr) {
         String key = getTxGroupKey(groupId);
         TxGroup txGroup = getTxGroup(groupId);
         if (txGroup==null) {
             return null;
         }
         TxInfo txInfo = new TxInfo();
-        txInfo.setModelName(modelName);
+        txInfo.setChannelAddress(channelAddress);
         txInfo.setKid(taskId);
         txInfo.setAddress(Constants.address);
         txInfo.setIsGroup(isGroup);
         txInfo.setMethodStr(methodStr);
 
 
-        ModelInfo modelInfo =  ModelInfoManager.getInstance().getModelByChannelName(modelName);
+        ModelInfo modelInfo =  ModelInfoManager.getInstance().getModelByChannelName(channelAddress);
         if(modelInfo!=null) {
             txInfo.setUniqueKey(modelInfo.getUniqueKey());
             txInfo.setModelIpAddress(modelInfo.getIpAddress());

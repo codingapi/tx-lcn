@@ -88,7 +88,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
     private void setChannel(List<TxInfo> list) {
         for (TxInfo info : list) {
             if(Constants.address.equals(info.getAddress())){
-                Channel channel = SocketManager.getInstance().getChannelByModelName(info.getModelName());
+                Channel channel = SocketManager.getInstance().getChannelByModelName(info.getChannelAddress());
                 if (channel != null &&channel.isActive()) {
                     ChannelSender sender = new ChannelSender();
                     sender.setChannel(channel);
@@ -98,7 +98,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
             }else{
                 ChannelSender sender = new ChannelSender();
                 sender.setAddress(info.getAddress());
-                sender.setModelName(info.getModelName());
+                sender.setModelName(info.getChannelAddress());
 
                 info.setChannel(sender);
             }

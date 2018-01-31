@@ -125,7 +125,7 @@ public class TxGroup {
                 JSONObject object = array.getJSONObject(i);
                 TxInfo info = new TxInfo();
                 info.setKid(object.getString("k"));
-                info.setModelName(object.getString("m"));
+                info.setChannelAddress(object.getString("ca"));
                 info.setNotify(object.getInteger("n"));
                 info.setIsGroup(object.getInteger("ig"));
                 info.setAddress(object.getString("a"));
@@ -159,7 +159,7 @@ public class TxGroup {
             for (TxInfo info : getList()) {
                 JSONObject item = new JSONObject();
                 item.put("k", info.getKid());
-                item.put("m", info.getModelName());
+                item.put("ca", info.getChannelAddress());
                 item.put("n", info.getNotify());
                 item.put("ig", info.getIsGroup());
                 item.put("a", info.getAddress());

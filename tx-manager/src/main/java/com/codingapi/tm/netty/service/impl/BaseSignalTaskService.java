@@ -10,7 +10,7 @@ import com.lorne.core.framework.utils.task.Task;
  */
 public class BaseSignalTaskService {
 
-    public String execute(String modelName, String key, JSONObject params) {
+    public String execute(String channelAddress, String key, JSONObject params) {
         String res = "";
         final String data = params.getString("d");
         Task task = ConditionUtils.getInstance().getTask(key);

@@ -21,7 +21,7 @@ public class ActionGLBServiceImpl implements IActionService{
 
 
     @Override
-    public String execute(String modelName,String key,JSONObject params ) {
+    public String execute(String channelAddress, String key, JSONObject params ) {
         String res;
         String groupId = params.getString("g");
         String k = params.getString("k");

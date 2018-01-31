@@ -19,7 +19,7 @@ public class ActionHServiceImpl implements IActionService{
     private ConfigReader configReader;
 
     @Override
-    public String execute(String modelName,String key,JSONObject params ) {
+    public String execute(String channelAddress, String key, JSONObject params ) {
         return String.valueOf(configReader.getTransactionNettyDelayTime());
     }
 }

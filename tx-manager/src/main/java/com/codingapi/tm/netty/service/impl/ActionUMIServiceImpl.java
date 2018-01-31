@@ -16,7 +16,7 @@ public class ActionUMIServiceImpl implements IActionService {
 
 
     @Override
-    public String execute(String modelName, String key, JSONObject params) {
+    public String execute(String channelAddress, String key, JSONObject params) {
         String res = "1";
 
         String uniqueKey = params.getString("u");
@@ -25,14 +25,14 @@ public class ActionUMIServiceImpl implements IActionService {
 
 
         ModelInfo modelInfo = new ModelInfo();
-        modelInfo.setChannelName(modelName);
+        modelInfo.setChannelName(channelAddress);
         modelInfo.setIpAddress(ipAddress);
         modelInfo.setModel(model);
         modelInfo.setUniqueKey(uniqueKey);
 
         ModelInfoManager.getInstance().addModelInfo(modelInfo);
 
-        SocketManager.getInstance().onLine(modelName, uniqueKey);
+        SocketManager.getInstance().onLine(channelAddress, uniqueKey);
 
         return res;
     }
