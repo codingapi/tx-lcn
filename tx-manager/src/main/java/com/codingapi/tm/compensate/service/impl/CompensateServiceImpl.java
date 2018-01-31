@@ -58,28 +58,14 @@ public class CompensateServiceImpl implements CompensateService {
 
         TxGroup txGroup =managerService.getTxGroup(transactionCompensateMsg.getGroupId());
         if (txGroup == null) {
-            return false;
+            //仅发起方异常，其他模块正常
+            txGroup = new TxGroup();
+            txGroup.setNowTime(System.currentTimeMillis());
+            txGroup.setGroupId(transactionCompensateMsg.getGroupId());
+            txGroup.setIsCompensate(1);
+        }else {
+            managerService.deleteTxGroup(txGroup);
         }
-
-        managerService.deleteTxGroup(txGroup);
-
-        //会出现启动模块失败的情况，因此不能校验其他模块是否通知成功，因为只是发起方失败时。也需要提交补偿
-
-//        //已经全部通知的模块不做补偿处理
-//        boolean hasNoNotify = false;
-//
-//        for(TxInfo txInfo:txGroup.getList()){
-//            if(txInfo.getNotify()==0){
-//                hasNoNotify = true;
-//            }
-//        }
-//
-//        if(!hasNoNotify){
-//            //事务已经执行完毕的
-//            logger.info("TxGroup had notify ! ");
-//            return true;
-//        }
-
 
         transactionCompensateMsg.setTxGroup(txGroup);
 
@@ -106,7 +92,7 @@ public class CompensateServiceImpl implements CompensateService {
                     logger.error("Compensate Callback Result->" + res);
                     if (configReader.isCompensateAuto()) {
                         //自动补偿,是否自动执行补偿
-                        if (res.contains("success")||res.contains("SUCCESS")) {
+                        if (res.contains("success") || res.contains("SUCCESS")) {
                             //自动补偿
                             autoCompensate(compensateKey, transactionCompensateMsg);
                         }
@@ -118,6 +104,7 @@ public class CompensateServiceImpl implements CompensateService {
         });
 
         return StringUtils.isNotEmpty(compensateKey);
+
 
 
     }
@@ -259,25 +246,35 @@ public class CompensateServiceImpl implements CompensateService {
     @Override
     public void reloadCompensate(TxGroup txGroup) {
         TxGroup compensateGroup = getCompensateByGroupId(txGroup.getGroupId());
-        if (compensateGroup != null && compensateGroup.getList() != null && !compensateGroup.getList().isEmpty()) {
-            //引用集合 iterator，方便匹配后剔除列表
-            Iterator<TxInfo> iterator = Lists.newArrayList(compensateGroup.getList()).iterator();
-            for (TxInfo txInfo : txGroup.getList()) {
-                while (iterator.hasNext()){
-                    TxInfo cinfo = iterator.next();
-                    if (cinfo.getModel().equals(txInfo.getModel()) && cinfo.getMethodStr().equals(txInfo.getMethodStr())) {
-                        //根据之前的数据补偿现在的事务
-                        int oldNotify = cinfo.getNotify();
+        if (compensateGroup != null) {
 
-                        if (oldNotify == 1) {
-                            txInfo.setIsCommit(0);
-                        } else {
-                            txInfo.setIsCommit(1);
+            if(compensateGroup.getList() != null && !compensateGroup.getList().isEmpty()){
+                //引用集合 iterator，方便匹配后剔除列表
+                Iterator<TxInfo> iterator = Lists.newArrayList(compensateGroup.getList()).iterator();
+                for (TxInfo txInfo : txGroup.getList()) {
+                    while (iterator.hasNext()) {
+                        TxInfo cinfo = iterator.next();
+                        if (cinfo.getModel().equals(txInfo.getModel()) && cinfo.getMethodStr().equals(txInfo.getMethodStr())) {
+                            //根据之前的数据补偿现在的事务
+                            int oldNotify = cinfo.getNotify();
+
+                            if (oldNotify == 1) {
+                                //本次回滚
+                                txInfo.setIsCommit(0);
+                            } else {
+                                //本次提交
+                                txInfo.setIsCommit(1);
+                            }
+                            //匹配后剔除列表
+                            iterator.remove();
+                            break;
                         }
-                        //匹配后剔除列表
-                        iterator.remove();
-                        break;
                     }
+                }
+            }else{//当没有List数据只记录了补偿数据时，理解问仅发起方提交其他均回滚
+                for (TxInfo txInfo : txGroup.getList()) {
+                    //本次回滚
+                    txInfo.setIsCommit(0);
                 }
             }
         }

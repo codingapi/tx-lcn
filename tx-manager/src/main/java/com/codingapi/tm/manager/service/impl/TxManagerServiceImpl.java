@@ -50,7 +50,7 @@ public class TxManagerServiceImpl implements TxManagerService {
     public TxGroup createTransactionGroup(String groupId) {
         TxGroup txGroup = new TxGroup();
         if (compensateService.getCompensateByGroupId(groupId)!=null) {
-            txGroup.setIsCommit(1);
+            txGroup.setIsCompensate(1);
         }
 
         txGroup.setStartTime(System.currentTimeMillis());

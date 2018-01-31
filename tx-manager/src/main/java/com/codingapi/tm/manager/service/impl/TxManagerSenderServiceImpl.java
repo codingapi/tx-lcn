@@ -118,7 +118,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
         if (checkSate == 1) {
 
             //补偿请求，加载历史数据
-            if (txGroup.getIsCommit() == 1) {
+            if (txGroup.getIsCompensate() == 1) {
                 compensateService.reloadCompensate(txGroup);
             }
 
@@ -136,7 +136,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                             jsonObject.put("a", "t");
 
 
-                            if (txGroup.getIsCommit() == 1) {   //补偿请求
+                            if (txGroup.getIsCompensate() == 1) {   //补偿请求
                                 jsonObject.put("c", txInfo.getIsCommit());
                             } else { //正常业务
                                 jsonObject.put("c", checkSate);

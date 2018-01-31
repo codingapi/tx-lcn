@@ -18,14 +18,14 @@ public class TxGroup {
 
     private int hasOver;
 
-    private int isCommit;
+    private int isCompensate;
 
-    public int getIsCommit() {
-        return isCommit;
+    public int getIsCompensate() {
+        return isCompensate;
     }
 
-    public void setIsCommit(int isCommit) {
-        this.isCommit = isCommit;
+    public void setIsCompensate(int isCompensate) {
+        this.isCompensate = isCompensate;
     }
 
     public String getGroupId() {
@@ -74,7 +74,7 @@ public class TxGroup {
             txGroup.setStartTime(jsonObject.getLong("st"));
             txGroup.setHasOver(jsonObject.getInteger("o"));
             txGroup.setNowTime(jsonObject.getLong("nt"));
-            txGroup.setIsCommit(jsonObject.getInteger("i"));
+            txGroup.setIsCompensate(jsonObject.getInteger("i"));
             return txGroup;
 
         } catch (Exception e) {
@@ -89,7 +89,7 @@ public class TxGroup {
         jsonObject.put("st", getStartTime());
         jsonObject.put("o",getHasOver());
         jsonObject.put("nt", getNowTime());
-        jsonObject.put("i", getIsCommit());
+        jsonObject.put("i", getIsCompensate());
         JSONArray jsonArray = new JSONArray();
         jsonObject.put("l", jsonArray);
         return jsonObject.toString();

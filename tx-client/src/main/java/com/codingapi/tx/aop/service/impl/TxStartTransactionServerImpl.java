@@ -63,15 +63,11 @@ public class TxStartTransactionServerImpl implements TransactionServer {
             throw e;
         } finally {
 
-            final int resState = state;
             final String type = txTransactionLocal.getType();
 
-            final TxCompensateLocal compensateLocal =  TxCompensateLocal.current();
+            int rs = txManagerService.closeTransactionGroup(groupId, state);
 
-            int rs = txManagerService.closeTransactionGroup(groupId, resState);
-
-
-            int lastState = rs==-1?0:resState;
+            int lastState = rs==-1?0:state;
 
             int executeConnectionError = 0;
 
@@ -97,11 +93,12 @@ public class TxStartTransactionServerImpl implements TransactionServer {
                 }
             }
 
+            final TxCompensateLocal compensateLocal =  TxCompensateLocal.current();
 
             if (compensateLocal == null) {
                 long end = System.currentTimeMillis();
                 long time = end - start;
-                if (executeConnectionError == 1||(lastState == 1 && rs == 0)) {
+                if ((executeConnectionError == 1&&rs == 1)||(lastState == 1 && rs == 0)) {
                     //记录补偿日志
                     txManagerService.sendCompensateMsg(groupId, time, info,executeConnectionError);
                 }
