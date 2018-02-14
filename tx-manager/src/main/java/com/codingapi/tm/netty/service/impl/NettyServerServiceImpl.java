@@ -2,10 +2,8 @@ package com.codingapi.tm.netty.service.impl;
 
 import com.codingapi.tm.Constants;
 import com.codingapi.tm.config.ConfigReader;
-import com.codingapi.tm.manager.service.TxManagerService;
 import com.codingapi.tm.netty.handler.TxCoreServerHandler;
 import com.codingapi.tm.netty.service.NettyServerService;
-
 import com.codingapi.tm.netty.service.NettyService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -21,21 +19,23 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by lorne on 2017/6/30.
  */
 @Service
-public class NettyServerServiceImpl implements NettyServerService {
+public class NettyServerServiceImpl implements NettyServerService,DisposableBean {
 
 
     @Autowired
     private NettyService nettyService;
-
 
     private Logger logger = LoggerFactory.getLogger(NettyServerServiceImpl.class);
 
@@ -44,6 +44,7 @@ public class NettyServerServiceImpl implements NettyServerService {
 
     private TxCoreServerHandler txCoreServerHandler;
 
+    private ExecutorService threadPool = Executors.newFixedThreadPool(100);
 
     @Autowired
     private ConfigReader configReader;
@@ -52,7 +53,7 @@ public class NettyServerServiceImpl implements NettyServerService {
     @Override
     public void start() {
         final int heartTime = configReader.getTransactionNettyHeartTime()+10;
-        txCoreServerHandler = new TxCoreServerHandler(nettyService);
+        txCoreServerHandler = new TxCoreServerHandler(threadPool,nettyService);
         bossGroup = new NioEventLoopGroup(50); // (1)
         workerGroup = new NioEventLoopGroup();
         try {
@@ -92,5 +93,11 @@ public class NettyServerServiceImpl implements NettyServerService {
             bossGroup.shutdownGracefully();
         }
 
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        close();
+        threadPool.shutdown();
     }
 }

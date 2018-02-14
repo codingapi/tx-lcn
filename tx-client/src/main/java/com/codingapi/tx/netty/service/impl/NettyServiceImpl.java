@@ -20,6 +20,8 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -45,6 +47,8 @@ public class NettyServiceImpl implements NettyService ,DisposableBean {
 
     private Logger logger = LoggerFactory.getLogger(NettyServiceImpl.class);
 
+    private ExecutorService threadPool = Executors.newFixedThreadPool(100);
+
     @Override
     public synchronized void start() {
         if (isStarting) {
@@ -58,7 +62,7 @@ public class NettyServiceImpl implements NettyService ,DisposableBean {
         final int heart = Constants.txServer.getHeart();
         int delay = Constants.txServer.getDelay();
 
-        final TransactionHandler transactionHandler = new TransactionHandler(nettyControlService, delay);
+        final TransactionHandler transactionHandler = new TransactionHandler(threadPool,nettyControlService, delay);
         workerGroup = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap(); // (1)
@@ -136,5 +140,6 @@ public class NettyServiceImpl implements NettyService ,DisposableBean {
     public void destroy() throws Exception {
         close();
         SocketManager.getInstance().close();
+        threadPool.shutdown();
     }
 }

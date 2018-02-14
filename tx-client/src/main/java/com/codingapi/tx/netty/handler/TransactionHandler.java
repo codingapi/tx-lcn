@@ -12,6 +12,8 @@ import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.Executor;
+
 /**
  * Created by lorne on 2017/6/30.
  */
@@ -26,8 +28,11 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
 
     private String heartJson;
 
+    private Executor threadPool;
 
-    public TransactionHandler(NettyControlService nettyControlService, int delay) {
+
+    public TransactionHandler(Executor threadPool,NettyControlService nettyControlService, int delay) {
+        this.threadPool = threadPool;
         this.nettyControlService = nettyControlService;
 
         SocketManager.getInstance().setDelay(delay);
@@ -45,11 +50,16 @@ public class TransactionHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
 
-        String json = SocketUtils.getJson(msg);
+        final String json = SocketUtils.getJson(msg);
 
         logger.debug("TxManager-response->" + json);
 
-        nettyControlService.executeService(ctx, json);
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                nettyControlService.executeService(ctx, json);
+            }
+        });
     }
 
     @Override
