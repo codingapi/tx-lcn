@@ -6,12 +6,8 @@ import com.codingapi.tm.framework.utils.SocketManager;
 import com.codingapi.tm.manager.service.MicroService;
 import com.codingapi.tm.model.TxServer;
 import com.codingapi.tm.model.TxState;
-import com.netflix.appinfo.InstanceInfo;
-import com.netflix.discovery.EurekaClient;
-import com.netflix.discovery.shared.Application;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -39,15 +35,6 @@ public class MicroServiceImpl implements MicroService {
     private DiscoveryClient discoveryClient;
 
 
-    @Autowired
-    private EurekaClient eurekaClient;
-
-
-
-
-    /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(MicroServiceImpl.class);
-
 
     private boolean isIp(String ipAddress) {
         String ip = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
@@ -57,19 +44,10 @@ public class MicroServiceImpl implements MicroService {
     }
 
 
-    public List<InstanceInfo> getConfigServiceInstances() {
-        Application application = eurekaClient.getApplication(tmKey);
-        if (application == null) {
-            logger.error("get eureka server error!");
-        }
-        return application != null ? application.getInstances() : new ArrayList<InstanceInfo>();
-    }
 
     @Override
     public TxState getState() {
         TxState state = new TxState();
-
-        //String ipAddress = EurekaServerContextHolder.getInstance().getServerContext().getApplicationInfoManager().getEurekaInstanceConfig().getIpAddress();
         String ipAddress = discoveryClient.getLocalServiceInstance().getHost();
         if(!isIp(ipAddress)){
             ipAddress = "127.0.0.1";
@@ -89,19 +67,11 @@ public class MicroServiceImpl implements MicroService {
         return state;
     }
 
-
     private List<String> getServices(){
         List<String> urls = new ArrayList<>();
-        List<InstanceInfo> instanceInfos =getConfigServiceInstances();
-        for (InstanceInfo instanceInfo : instanceInfos) {
-            String url = instanceInfo.getHomePageUrl();
-            String address = instanceInfo.getIPAddr();
-            if (isIp(address)) {
-                urls.add(url);
-            }else{
-                url = url.replace(address,"127.0.0.1");
-                urls.add(url);
-            }
+        List<ServiceInstance>  serviceInstances = discoveryClient.getInstances(tmKey);
+        for (ServiceInstance instanceInfo : serviceInstances) {
+            urls.add(instanceInfo.getUri().toASCIIString());
         }
         return urls;
     }
