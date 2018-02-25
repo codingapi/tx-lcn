@@ -5,7 +5,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>tx-lcn</artifactId>
-    <version>4.0.3</version>
+    <version>4.1.0</version>
     <packaging>pom</packaging>
 
     <name>tx-lcn</name>
@@ -32,7 +32,7 @@
         <java.version>1.7</java.version>
         <maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>
 
-        <lcn.last.version>4.0.3</lcn.last.version>
+        <lcn.last.version>4.1.0</lcn.last.version>
     </properties>
 
 

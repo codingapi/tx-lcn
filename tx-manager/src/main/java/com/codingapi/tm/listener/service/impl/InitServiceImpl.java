@@ -41,7 +41,7 @@ public class InitServiceImpl implements InitService {
         System.out.println("\t\t**  \t\t**   \t\t** ***");
         System.out.println("\t\t*****\t\t ****\t\t**  **");
         System.out.println();
-        System.out.println("\t\tLCN-TxManager  version:4.0.3");
+        System.out.println("\t\tLCN-TxManager  version:4.1.0");
         System.out.println();
     }
 

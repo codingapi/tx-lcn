@@ -24,12 +24,23 @@ public class ModelNameServiceImpl implements ModelNameService {
     private ApplicationConfig applicationConfig;
 
     @Autowired
-    private ProviderConfig providerConfig;
-
-    @Autowired
     private ApplicationContext applicationContext;
 
-    public RegistryConfig getRegistryConfig(){
+    private ProviderConfig providerConfig(){
+        Map<String, ProviderConfig> beans =   applicationContext.getBeansOfType(ProviderConfig.class);
+        ProviderConfig providerConfig = null;
+        if(beans!=null){
+            String defaultKey = "default";
+            for(String key:beans.keySet()){
+                defaultKey = key;
+            }
+
+            providerConfig =  beans.get(defaultKey);
+        }
+        return providerConfig;
+    }
+
+    private RegistryConfig getRegistryConfig(){
         Map<String, RegistryConfig> beans = applicationContext.getBeansOfType(RegistryConfig.class);
         RegistryConfig registryConfig = null;
         if(beans!=null){
@@ -64,7 +75,7 @@ public class ModelNameServiceImpl implements ModelNameService {
 
     @Override
     public String getUniqueKey() {
-        String address = getIp() + providerConfig.getPort();
+        String address = getIp() + getPort();
         return MD5Util.md5(address.getBytes());
     }
 
@@ -75,8 +86,8 @@ public class ModelNameServiceImpl implements ModelNameService {
     }
 
     private int getPort(){
-        if(providerConfig.getPort()!=null){
-            return providerConfig.getPort();
+        if(providerConfig()!=null&&providerConfig().getPort()!=null){
+            return providerConfig().getPort();
         }
 
         RegistryConfig registryConfig = getRegistryConfig();
