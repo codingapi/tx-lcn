@@ -6,7 +6,7 @@ package com.codingapi.tx.aop.bean;
  */
 public class TxCompensateLocal {
 
-    private final static ThreadLocal<TxCompensateLocal> currentLocal = new ThreadLocal<TxCompensateLocal>();
+    private final static ThreadLocal<TxCompensateLocal> currentLocal = new InheritableThreadLocal<TxCompensateLocal>();
 
     private String groupId;
 
