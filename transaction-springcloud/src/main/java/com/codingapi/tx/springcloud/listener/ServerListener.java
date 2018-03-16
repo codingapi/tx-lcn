@@ -30,4 +30,8 @@ public class ServerListener implements ApplicationListener<EmbeddedServletContai
     public int getPort() {
         return this.serverPort;
     }
+    
+    public void setServerPort(int serverPort) {
+        this.serverPort = serverPort;
+    }
 }
