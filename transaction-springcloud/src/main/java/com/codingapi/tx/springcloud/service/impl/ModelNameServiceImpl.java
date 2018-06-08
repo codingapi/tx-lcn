@@ -24,7 +24,7 @@ public class ModelNameServiceImpl implements ModelNameService {
     @Autowired
     private ServerListener serverListener;
 
-
+    @Value("${spring.cloud.client.ipAddress}")
     private String host = null;
 
     @Override
