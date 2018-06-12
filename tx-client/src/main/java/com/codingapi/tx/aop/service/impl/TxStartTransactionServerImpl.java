@@ -100,7 +100,11 @@ public class TxStartTransactionServerImpl implements TransactionServer {
                 long time = end - start;
                 if ((executeConnectionError == 1&&rs == 1)||(lastState == 1 && rs == 0)) {
                     //记录补偿日志
-                    txManagerService.sendCompensateMsg(groupId, time, info,executeConnectionError);
+                    try {
+                        txManagerService.sendCompensateMsg(groupId, time, info, executeConnectionError);
+                    } catch (Exception e2) {
+                        logger.error("send compensate msg error, req -> groupId:{}, teim:{}, executeConnectionError:{}", groupId, time, executeConnectionError, e2);
+                    }
                 }
             }else{
                 if(rs==1){

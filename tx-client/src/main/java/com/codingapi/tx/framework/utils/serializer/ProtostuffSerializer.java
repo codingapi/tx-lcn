@@ -50,6 +50,8 @@ public class ProtostuffSerializer implements ISerializer {
             ProtostuffIOUtil.writeTo(outputStream, obj, schema, buffer);
         } catch (Exception e) {
             throw new SerializerException(e.getMessage(), e);
+        } catch (Error e) {
+            throw new SerializerException(e.getMessage(), e);
         } finally {
             buffer.clear();
         }
