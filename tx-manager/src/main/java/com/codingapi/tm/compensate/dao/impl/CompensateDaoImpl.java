@@ -50,7 +50,7 @@ public class CompensateDaoImpl implements CompensateDao {
     public boolean hasCompensate() {
         String key = configReader.getKeyPrefixCompensate() + "*";
         List<String> keys = redisServerService.getKeys(key);
-        return keys != null && keys.size() > 0;
+        return !keys.isEmpty();
     }
 
     @Override
@@ -74,8 +74,7 @@ public class CompensateDaoImpl implements CompensateDao {
     public List<String> loadCompensateByModelAndTime(String path) {
         String key = String.format("%s%s*", configReader.getKeyPrefixCompensate(), path);
         List<String> keys = redisServerService.getKeys(key);
-        List<String> values = redisServerService.getValuesByKeys(keys);
-        return values;
+        return redisServerService.getValuesByKeys(keys);
     }
 
     @Override

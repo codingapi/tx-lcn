@@ -2,7 +2,6 @@ package com.codingapi.tm.netty.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.tm.config.ConfigReader;
-import com.codingapi.tm.manager.service.TxManagerService;
 import com.codingapi.tm.netty.service.IActionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

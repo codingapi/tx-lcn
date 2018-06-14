@@ -20,7 +20,7 @@ public class ActionCGServiceImpl implements IActionService{
 
     @Override
     public String execute(String channelAddress, String key, JSONObject params ) {
-        String res = "";
+        String res;
         String groupId = params.getString("g");
         TxGroup txGroup = txManagerService.createTransactionGroup(groupId);
         if(txGroup!=null) {

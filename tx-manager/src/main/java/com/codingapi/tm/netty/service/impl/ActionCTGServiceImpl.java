@@ -21,7 +21,6 @@ public class ActionCTGServiceImpl implements IActionService{
     public String execute(String channelAddress, String key, JSONObject params ) {
         String groupId = params.getString("g");
         int state = params.getInteger("s");
-        String res = String.valueOf(txManagerService.closeTransactionGroup(groupId,state));
-        return res;
+        return String.valueOf(txManagerService.closeTransactionGroup(groupId,state));
     }
 }

@@ -92,7 +92,7 @@ public class CompensateServiceImpl implements CompensateService {
                     logger.error("Compensate Callback Result->" + res);
                     if (configReader.isCompensateAuto()) {
                         //自动补偿,是否自动执行补偿
-                        if (res.contains("success") || res.contains("SUCCESS")) {
+                        if (res.toLowerCase().contains("success")) {
                             //自动补偿
                             autoCompensate(compensateKey, transactionCompensateMsg);
                         }
@@ -180,10 +180,10 @@ public class CompensateServiceImpl implements CompensateService {
         }
         List<ModelName> names = new ArrayList<>();
 
-        for(String key:models.keySet()){
-            int v = models.get(key);
+        for(Map.Entry<String, Integer> entry:models.entrySet()){
+            int v = entry.getValue();
             ModelName modelName = new ModelName();
-            modelName.setName(key);
+            modelName.setName(entry.getKey());
             modelName.setCount(v);
             names.add(modelName);
         }

@@ -19,7 +19,7 @@ public class ActionCKGServiceImpl implements IActionService{
 
     @Override
     public String execute(String channelAddress, String key, JSONObject params ) {
-        String res = "";
+        String res;
         String groupId = params.getString("g");
         String taskId = params.getString("t");
         int bs = txManagerService.cleanNotifyTransaction(groupId,taskId);

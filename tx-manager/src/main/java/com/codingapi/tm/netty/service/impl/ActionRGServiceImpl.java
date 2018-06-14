@@ -19,10 +19,9 @@ public class ActionRGServiceImpl implements IActionService{
 
     @Override
     public String execute(String channelAddress, String key, JSONObject params ) {
-        String res = "";
         String groupId = params.getString("g");
         boolean bs = txManagerService.rollbackTransactionGroup(groupId);
-        res = bs ? "1" : "0";
+        String res = bs ? "1" : "0";
         return res;
     }
 }

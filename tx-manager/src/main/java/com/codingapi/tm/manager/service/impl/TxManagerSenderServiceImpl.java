@@ -236,7 +236,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                while (!task.isAwait() && !Thread.currentThread().interrupted()) {
+                while (!task.isAwait() && !Thread.interrupted()) {
                     try {
                         Thread.sleep(1);
                     } catch (InterruptedException e) {
@@ -274,7 +274,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                while (!task.isAwait() && !Thread.currentThread().interrupted()) {
+                while (!task.isAwait() && !Thread.interrupted()) {
                     try {
                         Thread.sleep(1);
                     } catch (InterruptedException e) {
@@ -300,7 +300,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
 
 
     private ScheduledFuture schedule(final String key, int delayTime) {
-        ScheduledFuture future = executorService.schedule(new Runnable() {
+        return executorService.schedule(new Runnable() {
             @Override
             public void run() {
                 Task task = ConditionUtils.getInstance().getTask(key);
@@ -315,8 +315,6 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                 }
             }
         }, delayTime, TimeUnit.SECONDS);
-
-        return future;
     }
 
 

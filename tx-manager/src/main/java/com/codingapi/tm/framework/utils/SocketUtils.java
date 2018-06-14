@@ -11,6 +11,10 @@ import io.netty.util.ReferenceCountUtil;
  */
 public class SocketUtils {
 
+    private SocketUtils(){
+
+    }
+
     public static String getJson(Object msg) {
         String json;
         try {
