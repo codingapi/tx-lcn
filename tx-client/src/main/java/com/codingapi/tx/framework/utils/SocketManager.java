@@ -73,7 +73,7 @@ public class SocketManager {
     }
 
     private void sleepSend(Task task, Request request) {
-        while (!task.isAwait() && !Thread.currentThread().interrupted()) {
+        while (!task.isAwait() && !Thread.interrupted()) {
             try {
                 Thread.sleep(1);
             } catch (InterruptedException e) {

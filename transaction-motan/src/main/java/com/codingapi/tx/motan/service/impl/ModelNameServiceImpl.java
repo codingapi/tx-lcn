@@ -38,8 +38,7 @@ public class ModelNameServiceImpl implements ModelNameService {
     }
 
     public String getIpAddress() {
-        String address = getIp() + ":" + getPort();
-        return address;
+        return getIp() + ":" + getPort();
     }
 
     private String getIp() {

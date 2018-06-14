@@ -9,7 +9,7 @@ import com.codingapi.tx.framework.task.TxTask;
  *
  * create by lorne on 2017/8/22
  */
-public interface ILCNResource<T> {
+public interface ILCNResource {
 
 
     /**
