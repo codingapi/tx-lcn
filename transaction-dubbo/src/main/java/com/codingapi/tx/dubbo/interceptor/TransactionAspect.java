@@ -1,5 +1,6 @@
 package com.codingapi.tx.dubbo.interceptor;
 
+import com.codingapi.tx.Constants;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -45,7 +46,7 @@ public class TransactionAspect implements Ordered {
 
     @Override
     public int getOrder() {
-        return HIGHEST_PRECEDENCE;
+        return Constants.ASPECT_ORDER;
     }
 
 

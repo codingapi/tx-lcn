@@ -27,6 +27,9 @@
 
         <guava.version>19.0</guava.version>
         <spring-cloud.version>Dalston.SR1</spring-cloud.version>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>true</maven.install.skip>
+
     </properties>
 
     <dependencies>
