@@ -1,6 +1,7 @@
 package com.codingapi.tx.netty.service.impl;
 
 import com.codingapi.tx.Constants;
+import com.codingapi.tx.framework.thread.NamedThreadFactory;
 import com.codingapi.tx.framework.utils.SocketManager;
 import com.codingapi.tx.netty.handler.TransactionHandler;
 import com.codingapi.tx.netty.service.NettyControlService;
@@ -47,7 +48,7 @@ public class NettyServiceImpl implements NettyService ,DisposableBean {
 
     private Logger logger = LoggerFactory.getLogger(NettyServiceImpl.class);
 
-    private ExecutorService threadPool = Executors.newFixedThreadPool(100);
+    private ExecutorService threadPool = Executors.newFixedThreadPool(100,new NamedThreadFactory("receiver"));
 
     @Override
     public synchronized void start() {
