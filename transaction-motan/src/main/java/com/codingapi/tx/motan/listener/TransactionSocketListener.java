@@ -20,7 +20,15 @@ public class TransactionSocketListener implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext event) throws BeansException {
-        initService.start();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 若连接不上txmanager start()方法将阻塞
+                initService.start();
+            }
+        });
+        thread.setName("TxInit-thread");
+        thread.start();
     }
 
 }
