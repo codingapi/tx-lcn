@@ -26,6 +26,7 @@ public class TransactionFilter implements Filter {
 
         if(txTransactionLocal!=null){
             RpcContext.getContext().setAttachment("tx-group",groupId);
+            RpcContext.getContext().setAttachment("tx-mode",txTransactionLocal.getMode().name());
         }
 
         return invoker.invoke(invocation);

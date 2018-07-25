@@ -54,6 +54,7 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
         txTransactionLocal.setKid(kid);
         txTransactionLocal.setHasIsGroup(isHasIsGroup);
         txTransactionLocal.setMaxTimeOut(Constants.txServer.getCompensateMaxWaitTime());
+        txTransactionLocal.setMode(info.getMode());
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
 

@@ -4,8 +4,11 @@ import com.codingapi.tx.aop.bean.TxCompensateLocal;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.AbstractResourceProxy;
 import com.codingapi.tx.datasource.ILCNConnection;
+import com.codingapi.tx.datasource.relational.txc.TxcDBConnection;
+import com.codingapi.tx.datasource.relational.txc.rollback.TxcRollbackService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -23,7 +26,8 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
 
     private org.slf4j.Logger logger = LoggerFactory.getLogger(LCNTransactionDataSource.class);
 
-
+    @Autowired
+    TxcRollbackService txcRollbackService;
 
     @Override
     protected Connection createLcnConnection(Connection connection, TxTransactionLocal txTransactionLocal) {
@@ -41,6 +45,13 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
             txTransactionLocal.setHasConnection(true);
             return lcn;
         }
+    }
+
+    @Override
+    protected Connection createTxcConnection(Connection connection, TxTransactionLocal txTransactionLocal) {
+        Connection txc = new TxcDBConnection(connection, txTransactionLocal, dataSourceService, txcRollbackService);
+        logger.info("get new txc connection ->" + txTransactionLocal.getGroupId());
+        return txc;
     }
 
 

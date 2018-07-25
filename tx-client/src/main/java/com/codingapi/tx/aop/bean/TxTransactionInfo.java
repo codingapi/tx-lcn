@@ -1,6 +1,7 @@
 package com.codingapi.tx.aop.bean;
 
 import com.codingapi.tx.annotation.TxTransaction;
+import com.codingapi.tx.annotation.TxTransactionMode;
 import com.codingapi.tx.model.TransactionInvocation;
 
 
@@ -24,6 +25,7 @@ public class TxTransactionInfo {
 
     private TransactionInvocation invocation;
 
+    private TxTransactionMode mode;
 
     public TxTransactionInfo(TxTransaction transaction, TxTransactionLocal txTransactionLocal, TransactionInvocation invocation, String txGroupId) {
         this.transaction = transaction;
@@ -32,6 +34,13 @@ public class TxTransactionInfo {
         this.invocation = invocation;
     }
 
+    public TxTransactionMode getMode() {
+        return mode;
+    }
+
+    public void setMode(TxTransactionMode mode) {
+        this.mode = mode;
+    }
 
     public TxTransaction getTransaction() {
         return transaction;

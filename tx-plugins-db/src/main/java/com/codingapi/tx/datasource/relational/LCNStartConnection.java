@@ -147,7 +147,7 @@ public class LCNStartConnection extends AbstractTransactionThread implements LCN
             return;
         }
 
-        System.out.println(" start transaction is wait for TxManager notify, groupId : " + getGroupId());
+        logger.info(" start transaction is wait for TxManager notify, groupId : " + getGroupId());
 
         waitTask.awaitTask();
 
@@ -169,7 +169,7 @@ public class LCNStartConnection extends AbstractTransactionThread implements LCN
             } else {
                 rollbackConnection();
             }
-            System.out.println(" lcn start transaction over, res -> groupId:"+getGroupId()+" and  state is "+(rs==1?"commit":"rollback"));
+            logger.info(" lcn start transaction over, res -> groupId:"+getGroupId()+" and  state is "+(rs==1?"commit":"rollback"));
 
         }catch (SQLException e){
 

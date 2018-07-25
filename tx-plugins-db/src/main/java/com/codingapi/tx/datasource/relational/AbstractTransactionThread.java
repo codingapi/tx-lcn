@@ -1,5 +1,6 @@
 package com.codingapi.tx.datasource.relational;
 
+import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.framework.thread.HookRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ public abstract class AbstractTransactionThread {
         Runnable runnable = new HookRunnable() {
             @Override
             public void run0() {
+                TxTransactionLocal.setCurrent(null);
                 try {
                     transaction();
                 } catch (Exception e) {

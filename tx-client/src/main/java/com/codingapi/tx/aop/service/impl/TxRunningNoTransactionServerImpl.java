@@ -34,6 +34,7 @@ public class TxRunningNoTransactionServerImpl implements TransactionServer {
         txTransactionLocal.setHasStart(false);
         txTransactionLocal.setKid(kid);
         txTransactionLocal.setMaxTimeOut(Constants.txServer.getCompensateMaxWaitTime());
+        txTransactionLocal.setMode(info.getMode());
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
         try {
