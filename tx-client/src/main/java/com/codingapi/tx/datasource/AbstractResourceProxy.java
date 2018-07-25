@@ -79,6 +79,10 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
             logger.debug("loadConnection -> null !");
             return null;
         }
+        if (txTransactionLocal.isReadOnly()) {
+            logger.debug("readonly tx don't reuse connection.");
+            return null;
+        }
 
         //是否获取旧连接的条件：同一个模块下被多次调用时第一次的事务操作
         ILCNResource old = pools.get(txTransactionLocal.getGroupId());
@@ -132,7 +136,8 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
         C lcnConnection = connection;
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
-        if (txTransactionLocal != null&&!txTransactionLocal.isHasConnection()) {
+        if (txTransactionLocal != null&&!txTransactionLocal.isHasConnection()
+            && !txTransactionLocal.isReadOnly()) {
 
             logger.debug("lcn datasource transaction control ");
 
