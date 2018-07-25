@@ -44,6 +44,8 @@ public abstract class AbstractTxcConnection extends AbstractTransactionThread
 
     private boolean readOnly = false;
 
+    volatile int state = 1;
+
     private Connection connection;
 
     DataSourceService dataSourceService;
@@ -109,20 +111,23 @@ public abstract class AbstractTxcConnection extends AbstractTransactionThread
 
         connection.commit();
 
-        if (readOnly) {
-            return;
-        }
-        startRunnable();
+        state = 1;
     }
 
     @Override
     public void rollback() throws SQLException {
         connection.rollback();
+        state = 0;
     }
 
     @Override
     public void close() throws SQLException {
         connection.close();
+        // 只有提交才需要 开启线程等待
+        if (readOnly || state == 0) {
+            return;
+        }
+        startRunnable();
     }
 
     @Override
