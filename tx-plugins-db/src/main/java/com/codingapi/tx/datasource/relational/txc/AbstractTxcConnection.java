@@ -125,6 +125,7 @@ public abstract class AbstractTxcConnection extends AbstractTransactionThread
         connection.close();
         // 只有提交才需要 开启线程等待
         if (readOnly || state == 0) {
+            closeConnection();
             return;
         }
         startRunnable();

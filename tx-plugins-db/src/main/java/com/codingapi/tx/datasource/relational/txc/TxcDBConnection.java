@@ -68,7 +68,12 @@ public class TxcDBConnection extends AbstractTxcConnection {
 
     @Override
     protected void closeConnection() throws SQLException {
-        // do nothing
+
+        if (waitTask != null) {
+            if (!waitTask.isRemove()) {
+                waitTask.remove();
+            }
+        }
     }
 
     @Override
