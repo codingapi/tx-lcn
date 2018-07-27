@@ -1,5 +1,6 @@
 package com.codingapi.tx.framework.utils;
 
+import com.codingapi.tx.framework.thread.NamedThreadFactory;
 import com.codingapi.tx.model.Request;
 import com.lorne.core.framework.utils.task.ConditionUtils;
 import com.lorne.core.framework.utils.task.IBack;
@@ -34,7 +35,7 @@ public class SocketManager {
 
     private static SocketManager manager = null;
 
-    private ExecutorService threadPool = Executors.newFixedThreadPool(max_size);
+    private ExecutorService threadPool = Executors.newFixedThreadPool(max_size, new NamedThreadFactory("sender"));
 
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(max_size);
 

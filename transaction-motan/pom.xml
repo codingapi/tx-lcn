@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.codingapi</groupId>
         <artifactId>tx-lcn</artifactId>
-        <version>4.1.0</version>
+        <version>4.2.0-SNAPSHOT</version>
     </parent>
 
     <groupId>com.codingapi</groupId>

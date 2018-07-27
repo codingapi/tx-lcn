@@ -1,5 +1,7 @@
 package com.codingapi.tx.dubbo.filter;
 
+import com.alibaba.dubbo.common.Constants;
+import com.alibaba.dubbo.common.extension.Activate;
 import com.alibaba.dubbo.rpc.*;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import org.slf4j.Logger;
@@ -8,6 +10,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by lorne on 2017/6/30.
  */
+@Activate(group = Constants.CONSUMER, order = -10001)
 public class TransactionFilter implements Filter {
 
 
@@ -23,6 +26,7 @@ public class TransactionFilter implements Filter {
 
         if(txTransactionLocal!=null){
             RpcContext.getContext().setAttachment("tx-group",groupId);
+            RpcContext.getContext().setAttachment("tx-mode",txTransactionLocal.getMode().name());
         }
 
         return invoker.invoke(invocation);
