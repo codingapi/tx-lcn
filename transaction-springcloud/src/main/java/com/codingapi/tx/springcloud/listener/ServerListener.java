@@ -24,7 +24,15 @@ public class ServerListener implements ApplicationListener<WebServerInitializedE
         logger.info("onApplicationEvent -> onApplicationEvent. "+event.getWebServer());
         this.serverPort = event.getWebServer().getPort();
 
-        initService.start();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 若连接不上txmanager start()方法将阻塞
+                initService.start();
+            }
+        });
+        thread.setName("TxInit-thread");
+        thread.start();
     }
 
     public int getPort() {

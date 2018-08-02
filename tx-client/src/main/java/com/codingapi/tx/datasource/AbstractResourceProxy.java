@@ -1,6 +1,7 @@
 package com.codingapi.tx.datasource;
 
 
+import com.codingapi.tx.annotation.TxTransactionMode;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.datasource.service.DataSourceService;
 import com.lorne.core.framework.utils.task.Task;
@@ -64,6 +65,8 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
 
     protected abstract C createLcnConnection(C connection, TxTransactionLocal txTransactionLocal);
 
+    protected abstract C createTxcConnection(C connection, TxTransactionLocal txTransactionLocal);
+
     protected abstract void initDbType();
 
 
@@ -74,6 +77,10 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
 
         if(txTransactionLocal==null){
             logger.debug("loadConnection -> null !");
+            return null;
+        }
+        if (txTransactionLocal.isReadOnly()) {
+            logger.debug("readonly tx don't reuse connection.");
             return null;
         }
 
@@ -95,6 +102,11 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
 
 
     private C createConnection(TxTransactionLocal txTransactionLocal, C connection){
+        if (txTransactionLocal.getMode() != null
+            && txTransactionLocal.getMode() == TxTransactionMode.TX_MODE_TXC) {
+            // txc 模式下没有maxCount的限制 直接创建
+            return createTxcConnection(connection, txTransactionLocal);
+        }
         if (nowCount == maxCount) {
             for (int i = 0; i < maxWaitTime; i++) {
                 for(int j=0;j<100;j++){
@@ -124,7 +136,8 @@ public abstract class AbstractResourceProxy<C,T extends ILCNResource> implements
         C lcnConnection = connection;
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 
-        if (txTransactionLocal != null&&!txTransactionLocal.isHasConnection()) {
+        if (txTransactionLocal != null&&!txTransactionLocal.isHasConnection()
+            && !txTransactionLocal.isReadOnly()) {
 
             logger.debug("lcn datasource transaction control ");
 

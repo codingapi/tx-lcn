@@ -51,6 +51,8 @@ public class TxStartTransactionServerImpl implements TransactionServer {
         txTransactionLocal.setGroupId(groupId);
         txTransactionLocal.setHasStart(true);
         txTransactionLocal.setMaxTimeOut(Constants.txServer.getCompensateMaxWaitTime());
+        txTransactionLocal.setMode(info.getTransaction().mode());
+        txTransactionLocal.setReadOnly(info.getTransaction().readOnly());
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
 

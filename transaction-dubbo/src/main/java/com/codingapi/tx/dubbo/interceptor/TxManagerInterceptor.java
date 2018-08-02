@@ -22,10 +22,12 @@ public class TxManagerInterceptor {
     public Object around(ProceedingJoinPoint point) throws Throwable {
 
         String groupId = null;
+        String mode = null;
         try {
             groupId = RpcContext.getContext().getAttachment("tx-group");
+            mode = RpcContext.getContext().getAttachment("tx-mode");
         }catch (Exception e){}
-        return aspectBeforeService.around(groupId,point);
+        return aspectBeforeService.around(groupId,point,mode);
     }
 
 }

@@ -25,7 +25,7 @@ public class TxRunningNoTransactionServerImpl implements TransactionServer {
 
         String kid = KidUtils.generateShortUuid();
         String txGroupId = info.getTxGroupId();
-        logger.debug("--->begin no db transaction, groupId: " + txGroupId);
+        logger.debug("--->begin readonly transaction, groupId: " + txGroupId);
         long t1 = System.currentTimeMillis();
 
 
@@ -34,6 +34,8 @@ public class TxRunningNoTransactionServerImpl implements TransactionServer {
         txTransactionLocal.setHasStart(false);
         txTransactionLocal.setKid(kid);
         txTransactionLocal.setMaxTimeOut(Constants.txServer.getCompensateMaxWaitTime());
+        txTransactionLocal.setMode(info.getMode());
+        txTransactionLocal.setReadOnly(true);
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
         try {
@@ -43,7 +45,7 @@ public class TxRunningNoTransactionServerImpl implements TransactionServer {
         } finally {
             TxTransactionLocal.setCurrent(null);
             long t2 = System.currentTimeMillis();
-            logger.debug("<---end no db transaction,groupId:" + txGroupId+",execute time:"+(t2-t1));
+            logger.debug("<---end readonly transaction,groupId:" + txGroupId+",execute time:"+(t2-t1));
         }
     }
 

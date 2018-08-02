@@ -157,7 +157,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
             }
         }, maxOutTime);
 
-        System.out.println("transaction is wait for TxManager notify, groupId : " + getGroupId());
+        logger.info("transaction is wait for TxManager notify, groupId {}", getGroupId());
 
         waitTask.awaitTask();
 
@@ -173,10 +173,10 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
                 rollbackConnection();
             }
 
-            System.out.println("lcn transaction over, res -> groupId:"+getGroupId()+" and  state is "+(rs==1?"commit":"rollback"));
+            logger.info("lcn transaction over, res -> groupId:"+getGroupId()+" and  state is "+(rs==1?"commit":"rollback"));
 
         }catch (SQLException e){
-            System.out.println("lcn transaction over,but connection is closed, res -> groupId:"+getGroupId());
+            logger.info("lcn transaction over,but connection is closed, res -> groupId:"+getGroupId());
 
             waitTask.setState(TaskState.connectionError.getCode());
         }

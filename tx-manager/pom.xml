@@ -5,7 +5,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>tx-manager</artifactId>
-    <version>4.1.0</version>
+    <version>4.2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>tx-manager</name>
@@ -27,6 +27,9 @@
 
         <guava.version>19.0</guava.version>
         <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>true</maven.install.skip>
+
     </properties>
 
     <dependencies>
