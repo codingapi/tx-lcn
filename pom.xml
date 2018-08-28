@@ -16,9 +16,7 @@
         <module>tx-client</module>
         <module>tx-manager</module>
 
-        <module>transaction-dubbo</module>
         <module>transaction-springcloud</module>
-        <module>transaction-motan</module>
 
         <module>tx-plugins-db</module>
     </modules>
