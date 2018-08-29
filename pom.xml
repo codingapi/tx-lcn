@@ -5,7 +5,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>tx-lcn</artifactId>
-    <version>4.2.0-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>tx-lcn</name>
@@ -15,9 +15,7 @@
     <modules>
         <module>tx-client</module>
         <module>tx-manager</module>
-
         <module>transaction-springcloud</module>
-
         <module>tx-plugins-db</module>
     </modules>
 
@@ -30,7 +28,7 @@
         <java.version>1.7</java.version>
         <maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>
 
-        <lcn.last.version>4.2.0-SNAPSHOT</lcn.last.version>
+        <lcn.last.version>5.0.0-SNAPSHOT</lcn.last.version>
     </properties>
 
 
