@@ -22,20 +22,26 @@
 
 
     <modules>
-        <module>tx-framework</module>
+        <module>tx-client</module>
+        <module>tx-client-sleuth2-starter</module>
+        <module>tx-client-api</module>
+
         <module>tx-manager</module>
-        <module>example/tx-client-demo</module>
+
+        <module>example/tx-client-demo-start</module>
+        <module>example/tx-client-demo-a</module>
     </modules>
 
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compile.source>1.7</maven.compile.source>
-        <maven.compile.target>1.7</maven.compile.target>
-        <java.version>1.7</java.version>
+        <maven.compile.source>1.8</maven.compile.source>
+        <maven.compile.target>1.8</maven.compile.target>
+        <java.version>1.8</java.version>
         <maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>
 
+        <spring-cloud.version>Finchley.SR1</spring-cloud.version>
         <lcn.last.version>5.0.0-SNAPSHOT</lcn.last.version>
     </properties>
 
@@ -107,13 +113,12 @@
     </dependencies>
 
 
-
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-sleuth</artifactId>
-                <version>2.0.1.RELEASE</version>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
