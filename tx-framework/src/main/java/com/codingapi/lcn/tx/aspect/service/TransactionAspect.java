@@ -2,12 +2,14 @@ package com.codingapi.lcn.tx.aspect.service;
 
 import com.codingapi.lcn.tx.annotation.TxTransaction;
 import com.codingapi.lcn.tx.bean.TransactionInvocation;
+import com.codingapi.lcn.tx.config.TxTransactionConfig;
 import com.codingapi.lcn.tx.threadlocal.TxTransactionLocal;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,10 @@ import java.lang.reflect.Method;
 @Aspect
 @Slf4j
 public class TransactionAspect implements Ordered {
+
+    @Autowired
+    private TxTransactionConfig txTransactionConfig;
+
 
     @Around("@annotation(com.codingapi.lcn.tx.annotation.TxTransaction)")
     public Object transactionRunning(ProceedingJoinPoint point)throws Throwable{
@@ -51,6 +57,6 @@ public class TransactionAspect implements Ordered {
 
     @Override
     public int getOrder() {
-        return 0;
+        return txTransactionConfig.getTransactionAspectOrder();
     }
 }
