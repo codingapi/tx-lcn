@@ -1,6 +1,5 @@
 package com.codingapi.lcn.tx.sleuth2;
 
-import brave.Tracer;
 import com.codingapi.lcn.tx.api.sleuth.ISleuthTransactionApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +14,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class SleuthTransactionApiImpl implements ISleuthTransactionApi {
 
+
     @Autowired
-    private Tracer tracer;
+    private TracerHelper tracerHelper;
 
     @Override
     public boolean isStart() {
         log.info("isStart");
-        String tracerId = tracer.toString();
-        String spanId =  tracer.currentSpan().toString();
+        TracerContext tracerContext = tracerHelper.getTracerContext();
+        log.info("res->{}",tracerContext);
+        String spanId = tracerContext.getSpanId();
+        String tracerId = tracerContext.getTracerId();
         log.info("sleuth info ,spanId->{},tracerId->{}",spanId,tracerId);
-        return false;
+        return spanId.equals(tracerId);
     }
 }

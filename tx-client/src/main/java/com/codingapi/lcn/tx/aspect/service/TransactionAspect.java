@@ -1,7 +1,6 @@
 package com.codingapi.lcn.tx.aspect.service;
 
 import com.codingapi.lcn.tx.annotation.TxTransaction;
-import com.codingapi.lcn.tx.api.sleuth.ISleuthTransactionApi;
 import com.codingapi.lcn.tx.bean.TransactionInvocation;
 import com.codingapi.lcn.tx.config.TxTransactionConfig;
 import com.codingapi.lcn.tx.threadlocal.TxTransactionLocal;
@@ -29,15 +28,10 @@ public class TransactionAspect implements Ordered {
     @Autowired
     private TxTransactionConfig txTransactionConfig;
 
-    @Autowired
-    private ISleuthTransactionApi sleuthTransactionApi;
-
 
     @Around("@annotation(com.codingapi.lcn.tx.annotation.TxTransaction)")
     public Object transactionRunning(ProceedingJoinPoint point)throws Throwable{
         log.info("annotation-TransactionRunning-start---->");
-
-        sleuthTransactionApi.isStart();
 
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
