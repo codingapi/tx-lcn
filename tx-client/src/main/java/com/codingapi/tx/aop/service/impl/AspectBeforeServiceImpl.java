@@ -29,6 +29,18 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
 
     private Logger logger = LoggerFactory.getLogger(AspectBeforeServiceImpl.class);
 
+    protected com.codingapi.tx.aop.bean.TxTransaction getConfigTxTransaction(ProceedingJoinPoint point, Class<?> clazz, Method thisMethod){
+        TxTransaction transaction = thisMethod.getAnnotation(TxTransaction.class);
+
+        com.codingapi.tx.aop.bean.TxTransaction bean=new com.codingapi.tx.aop.bean.TxTransaction();
+        bean.setStart(transaction.isStart());
+        bean.setRollbackFor(transaction.rollbackFor());
+        bean.setNoRollbackFor(transaction.noRollbackFor());
+        bean.setReadOnly(transaction.readOnly());
+        bean.setMode(transaction.mode());
+        return bean;
+    }
+
     @Override
     public Object around(String groupId, ProceedingJoinPoint point, String mode) throws Throwable {
 
@@ -38,7 +50,8 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
         Object[] args = point.getArgs();
         Method thisMethod = clazz.getMethod(method.getName(), method.getParameterTypes());
 
-        TxTransaction transaction = thisMethod.getAnnotation(TxTransaction.class);
+        com.codingapi.tx.aop.bean.TxTransaction transaction = getConfigTxTransaction(point,clazz,thisMethod);
+
 
         TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
 

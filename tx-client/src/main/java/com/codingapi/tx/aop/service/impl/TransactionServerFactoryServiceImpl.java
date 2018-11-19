@@ -71,7 +71,7 @@ public class TransactionServerFactoryServiceImpl implements TransactionServerFac
                     return txDefaultTransactionServer;
                 } else {
                     if(transactionControl.isNoTransactionOperation() // 表示整个应用没有获取过DB连接
-                        || info.getTransaction().readOnly()) { //无事务业务的操作
+                        || info.getTransaction().isReadOnly()) { //无事务业务的操作
                         return txRunningNoTransactionServer;
                     }else {
                         return txRunningTransactionServer;
