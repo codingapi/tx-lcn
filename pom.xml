@@ -16,10 +16,7 @@
         <module>tx-client</module>
         <module>tx-manager</module>
 
-        <!--<module>transaction-dubbo</module>-->
         <module>transaction-springcloud</module>
-        <!--<module>transaction-motan</module>-->
-
         <module>tx-plugins-db</module>
     </modules>
 
@@ -34,8 +31,6 @@
 
         <lcn.last.version>4.2.0-SNAPSHOT</lcn.last.version>
     </properties>
-
-
 
     <licenses>
         <license>
@@ -53,13 +48,6 @@
             <timezone>+8</timezone>
         </developer>
     </developers>
-
-    <scm>
-        <connection>scm:git:https://github.com/codingapi/tx-lcn.git</connection>
-        <developerConnection>scm:git:https://github.com/codingapi/tx-lcn.git</developerConnection>
-        <url>https://github.com/codingapi/tx-lcn</url>
-        <tag>v${project.version}</tag>
-    </scm>
 
     <build>
         <plugins>
@@ -112,24 +100,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-             <!--手动打包时，将下面的plugin注释掉-->
-
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-gpg-plugin</artifactId>-->
-                <!--<version>1.6</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>sign-artifacts</id>-->
-                        <!--<phase>verify</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>sign</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
-
         </plugins>
     </build>
 
