@@ -16,8 +16,6 @@ import java.math.BigDecimal;
 
 /**
  * @author jsy.
- * @title
- * @time 17/12/14.
  */
 
 public class DiffUtils {

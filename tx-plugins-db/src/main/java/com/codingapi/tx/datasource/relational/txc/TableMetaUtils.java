@@ -17,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * [类描述]
  *
  * @author caican
- * @date 17/12/23
  */
 public class TableMetaUtils {
 

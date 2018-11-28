@@ -15,8 +15,6 @@ import java.util.List;
 
 /**
  * @author jsy.
- * @title
- * @time 17/12/25.
  */
 public class InsertRollback extends AbstractRollback{
 

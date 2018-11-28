@@ -11,8 +11,6 @@ import java.util.List;
 
 /**
  * @author jsy.
- * @title
- * @time 17/12/26.
  */
 public abstract class AbstractRollback {
     private Logger logger = LoggerFactory.getLogger(AbstractRollback.class);

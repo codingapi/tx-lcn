@@ -9,7 +9,6 @@
         <version>4.2.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.codingapi</groupId>
     <artifactId>tx-plugins-db</artifactId>
     <version>${lcn.last.version}</version>
 

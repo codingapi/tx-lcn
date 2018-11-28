@@ -20,8 +20,6 @@ import java.util.List;
  * [类描述]
  *
  * @author caican
- * @date 17/11/28
- * @title [confluence页面的title]
  */
 public class ExecutePaser {
 

@@ -14,8 +14,6 @@ import java.util.List;
 
 /**
  * @author jsy.
- * @title
- * @time 17/12/11.
  */
 
 public abstract class AbstractParser<T>{

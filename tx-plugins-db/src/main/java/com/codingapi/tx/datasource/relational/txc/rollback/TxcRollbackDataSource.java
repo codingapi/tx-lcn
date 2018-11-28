@@ -10,8 +10,6 @@ import java.util.Map;
 
 /**
  * @author jsy.
- * @title
- * @time 17/12/26.
  */
 @Component
 public class TxcRollbackDataSource {

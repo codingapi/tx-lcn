@@ -10,8 +10,6 @@ import java.util.List;
 
 /**
  * @author jsy.
- * @title
- * @time 17/12/22.
  */
 public class InsertParser extends AbstractParser<MySqlInsertStatement>{
 

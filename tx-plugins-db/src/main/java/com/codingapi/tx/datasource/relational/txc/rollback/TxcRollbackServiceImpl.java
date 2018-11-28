@@ -12,8 +12,6 @@ import java.sql.SQLException;
 
 /**
  * @author jsy.
- * @title
- * @time 17/12/22.
  */
 @Component
 public class TxcRollbackServiceImpl implements TxcRollbackService {

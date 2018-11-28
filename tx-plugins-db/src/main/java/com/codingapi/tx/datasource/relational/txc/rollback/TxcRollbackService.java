@@ -5,8 +5,6 @@ import com.codingapi.tx.datasource.relational.txc.parser.CommitInfo;
 
 /**
  * @author jsy.
- * @title
- * @time 17/12/22.
  */
 public interface TxcRollbackService {
 
