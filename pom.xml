@@ -32,23 +32,6 @@
         <lcn.last.version>4.2.0-SNAPSHOT</lcn.last.version>
     </properties>
 
-    <licenses>
-        <license>
-            <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-    <developers>
-        <developer>
-            <name>lorne</name>
-            <email>1991wangliang@gmail.com</email>
-            <roles>
-                <role>developer</role>
-            </roles>
-            <timezone>+8</timezone>
-        </developer>
-    </developers>
-
     <build>
         <plugins>
             <plugin>

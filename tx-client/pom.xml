@@ -18,7 +18,6 @@
 
     <description>tx-client project for Spring Boot</description>
 
-
     <properties>
         <org.springframework-version>5.0.8.RELEASE</org.springframework-version>
         <guava.version>19.0</guava.version>
@@ -27,7 +26,6 @@
         <kryo.version>4.0.0</kryo.version>
         <org.slf4j-version>1.7.7</org.slf4j-version>
     </properties>
-
 
     <dependencies>
 
