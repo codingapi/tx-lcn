@@ -5,7 +5,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>springcloud-lcn-demo</artifactId>
-    <version>4.1.0</version>
+    <version>4.2.0</version>
     <packaging>pom</packaging>
 
     <name>springcloud-lcn-demo</name>
