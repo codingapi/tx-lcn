@@ -18,6 +18,8 @@
 
         <module>transaction-springcloud</module>
         <module>tx-plugins-db</module>
+
+        <module>springcloud-lcn-demo</module>
     </modules>
 
     <properties>
