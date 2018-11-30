@@ -44,6 +44,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
         final String groupId = TxCompensateLocal.current()==null?KidUtils.generateShortUuid():TxCompensateLocal.current().getGroupId();
 
         //创建事务组
+        logger.debug("创建事务组并发送消息");
         txManagerService.createTransactionGroup(groupId);
 
         TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
