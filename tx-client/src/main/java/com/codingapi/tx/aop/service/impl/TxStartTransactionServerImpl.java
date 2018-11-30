@@ -35,7 +35,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
     public Object execute(ProceedingJoinPoint point,final TxTransactionInfo info) throws Throwable {
         //分布式事务开始执行
 
-        logger.debug("--->begin start transaction");
+        logger.debug("--->分布式事务开始执行 begin start transaction");
 
         final long start = System.currentTimeMillis();
 
@@ -46,7 +46,6 @@ public class TxStartTransactionServerImpl implements TransactionServer {
         //创建事务组
         txManagerService.createTransactionGroup(groupId);
 
-
         TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
         txTransactionLocal.setGroupId(groupId);
         txTransactionLocal.setHasStart(true);
@@ -54,7 +53,6 @@ public class TxStartTransactionServerImpl implements TransactionServer {
         txTransactionLocal.setMode(info.getTransaction().mode());
         txTransactionLocal.setReadOnly(info.getTransaction().readOnly());
         TxTransactionLocal.setCurrent(txTransactionLocal);
-
 
         try {
             Object obj = point.proceed();
@@ -102,6 +100,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
                 long time = end - start;
                 if ((executeConnectionError == 1&&rs == 1)||(lastState == 1 && rs == 0)) {
                     //记录补偿日志
+                    logger.debug("记录补偿日志");
                     txManagerService.sendCompensateMsg(groupId, time, info,executeConnectionError);
                 }
             }else{
@@ -113,7 +112,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
             }
 
             TxTransactionLocal.setCurrent(null);
-            logger.debug("<---end start transaction");
+            logger.debug("<---分布式事务 end start transaction");
             logger.debug("start transaction over, res -> groupId:" + groupId + ", now state:" + (lastState == 1 ? "commit" : "rollback"));
 
         }

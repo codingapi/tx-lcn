@@ -44,8 +44,6 @@ public class LCNStartConnection extends AbstractTransactionThread implements LCN
         this.connection = connection;
         this.subNowCount = subNowCount;
 
-
-
         if(TxCompensateLocal.current()!=null){
             isCompensate = true;
             logger.info("transaction is compensate-connection.");
@@ -140,6 +138,7 @@ public class LCNStartConnection extends AbstractTransactionThread implements LCN
         connection.rollback();
     }
 
+    @Override
     public void transaction()throws SQLException{
         if (waitTask == null) {
             rollbackConnection();
@@ -184,6 +183,7 @@ public class LCNStartConnection extends AbstractTransactionThread implements LCN
 
     }
 
+    @Override
     protected void closeConnection() throws SQLException{
 
         subNowCount.close(this);
