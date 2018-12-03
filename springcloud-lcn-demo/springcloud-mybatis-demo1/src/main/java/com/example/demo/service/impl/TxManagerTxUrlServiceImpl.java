@@ -8,14 +8,16 @@ import org.springframework.stereotype.Service;
  * create by lorne on 2017/11/18
  */
 @Service
-public class TxManagerTxUrlServiceImpl implements TxManagerTxUrlService{
+public class TxManagerTxUrlServiceImpl implements TxManagerTxUrlService
+{
 
 
     @Value("${tm.manager.url}")
     private String url;
 
     @Override
-    public String getTxUrl() {
+    public String getTxUrl()
+    {
         System.out.println("load tm.manager.url ");
         return url;
     }
