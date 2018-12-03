@@ -100,7 +100,6 @@ public class TxStartTransactionServerImpl implements TransactionServer {
                 long end = System.currentTimeMillis();
                 long time = end - start;
                 if ((executeConnectionError == 1&&rs == 1)||(lastState == 1 && rs == 0)) {
-                    //记录补偿日志
                     logger.debug("记录补偿日志");
                     txManagerService.sendCompensateMsg(groupId, time, info,executeConnectionError);
                 }
