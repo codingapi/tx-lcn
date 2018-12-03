@@ -9,7 +9,9 @@ import com.codingapi.tm.model.TxState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -34,7 +36,11 @@ public class MicroServiceImpl implements MicroService {
     @Autowired
     private DiscoveryClient discoveryClient;
 
-
+    /**
+     * 服务注册
+     */
+    @Autowired
+    private Registration registration;
 
     private boolean isIp(String ipAddress) {
         String ip = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
@@ -43,15 +49,22 @@ public class MicroServiceImpl implements MicroService {
         return matcher.matches();
     }
 
-
-
     @Override
     public TxState getState() {
         TxState state = new TxState();
-        String ipAddress = discoveryClient.getLocalServiceInstance().getHost();
-        if(!isIp(ipAddress)){
+        List<ServiceInstance> list = discoveryClient.getInstances(registration.getServiceId());
+        String ipAddress;
+        if(CollectionUtils.isEmpty(list))
+        {
             ipAddress = "127.0.0.1";
+        }else{
+            ServiceInstance serviceInstance = list.get(0);
+            ipAddress = serviceInstance.getHost();
+            if(!isIp(ipAddress)){
+                ipAddress = "127.0.0.1";
+            }
         }
+
         state.setIp(ipAddress);
         state.setPort(Constants.socketPort);
         state.setMaxConnection(SocketManager.getInstance().getMaxConnection());
