@@ -15,7 +15,7 @@ import java.util.List;
  * Created by lorne on 2017/6/26.
  */
 @Service
-public class DemoServiceImpl implements DemoService ,ITxTransaction{
+public class DemoServiceImpl implements DemoService, ITxTransaction {
 
     @Autowired
     private TestMapper testMapper;
@@ -28,10 +28,7 @@ public class DemoServiceImpl implements DemoService ,ITxTransaction{
     @Override
     @TxTransaction
     @Transactional
-    public int save() {
-
-        int rs = testMapper.save("mybatis-hello-2");
-//        int v = 100/0;
-        return rs;
+    public int save(String id, String name) {
+        return testMapper.save(id, name);
     }
 }

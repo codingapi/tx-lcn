@@ -37,14 +37,12 @@ public class DemoServiceImpl implements DemoService {
     @Override
     @TxTransaction(isStart = true)
     @Transactional
-    public int save() {
+    public int save(String id, String name) {
 
-        int rs1 = testMapper.save("mybatis-hello-1");
+        testMapper.save("mybatis1");
 
-        int rs2 = demo2Client.save();
+        demo2Client.save(id, name);
 
-
-
-        return rs1+rs2;
+        return 2;
     }
 }

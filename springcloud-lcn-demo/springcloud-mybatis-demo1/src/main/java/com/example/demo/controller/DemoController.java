@@ -1,9 +1,12 @@
 package com.example.demo.controller;
 
 
+import com.alibaba.druid.support.json.JSONUtils;
+import com.codingapi.tx.compensate.model.CompensateInfo;
 import com.example.demo.entity.Test;
 import com.example.demo.service.DemoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +33,16 @@ public class DemoController {
 
     @RequestMapping("/save")
     @ResponseBody
-    public int save(){
-        return demoService.save();
+    public int save(String id, String name){
+        return demoService.save(id, name);
+    }
+
+    @GetMapping("notifyResult")
+    public String notifyResult(String jsonStr)
+    {
+        System.out.println("通知地址...");
+        CompensateInfo compensateInfo = (CompensateInfo)JSONUtils.parse(jsonStr);
+        System.out.println(compensateInfo);
+        return null;
     }
 }
