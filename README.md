@@ -146,6 +146,4 @@ tx-plugins-db 是LCN 对关系型数据库的插件支持
 
 ## demo演示教程
 
-每个demo下有区分为 jdbc/hibernate/mybatis不同框架的版本demo
-
 [springcloud版本](https://github.com/yizhishang/tx-lcn/tree/springcloud-2.0.4/springcloud-lcn-demo)
