@@ -114,6 +114,7 @@ public class CompensateServiceImpl implements CompensateService {
         final String json = JSON.toJSONString(transactionCompensateMsg);
         logger.info("Auto Compensate->" + json);
         //自动补偿业务执行...
+        logger.debug("自动补偿业务执行...");
         final int tryTime = configReader.getCompensateTryTime();
         boolean autoExecuteRes = false;
         try {
