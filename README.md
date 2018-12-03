@@ -30,11 +30,7 @@
 
 ## 目录说明
 
-transaction-dubbo LCN dubbo rpc框架扩展支持
-
 transaction-springcloud LCN springcloud rpc框架扩展支持
-
-transaction-motan LCN motan rpc框架扩展支持
 
 tx-client 是LCN核心tx模块端控制框架
 
@@ -148,19 +144,8 @@ tx-plugins-db 是LCN 对关系型数据库的插件支持
         
 ```
 
-依赖gradle等形式，见中心库   
-
-[http://mvnrepository.com/search?q=codingapi](http://mvnrepository.com/search?q=codingapi)
-
-
 ## demo演示教程
 
 每个demo下有区分为 jdbc/hibernate/mybatis不同框架的版本demo
 
-[springcloud版本](https://github.com/codingapi/springcloud-lcn-demo)
-
-[dubbo版本](https://github.com/codingapi/dubbo-lcn-demo)
-
-[motan版本](https://gitee.com/zfvipCase/motan-lcn-demo)
-
-技术交流群：554855843
+[springcloud版本](https://github.com/yizhishang/tx-lcn/tree/springcloud-2.0.4/springcloud-lcn-demo)
