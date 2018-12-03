@@ -38,7 +38,7 @@ eureka.client.service-url.defaultZone=http://127.0.0.1:8761/eureka/
 
 >6.无论事务发起方还是事务参与方的业务方法都需要实现本地事务添加@Transactional注解
 
->7.txmanager启动前要配置redis
+>7.tx-manager启动前要配置redis
 
 
 注意事项：避免事务发起方和调用方操作一张表的数据，会导致锁表
