@@ -30,6 +30,12 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>2.0.0.RELEASE</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.1991wangliang</groupId>
             <artifactId>lorne_core</artifactId>
             <version>1.0.0</version>
