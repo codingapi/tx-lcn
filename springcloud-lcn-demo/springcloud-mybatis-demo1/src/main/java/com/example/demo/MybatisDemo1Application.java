@@ -25,14 +25,13 @@ public class MybatisDemo1Application {
 	@Autowired
 	private Environment env;
 
-
 	@Bean
 	public DataSource dataSource() {
 		DruidDataSource dataSource = new DruidDataSource();
 		dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
 		dataSource.setUrl(env.getProperty("spring.datasource.url"));
-		dataSource.setUsername(env.getProperty("spring.datasource.username"));//用户名
-		dataSource.setPassword(env.getProperty("spring.datasource.password"));//密码
+		dataSource.setUsername(env.getProperty("spring.datasource.username"));
+		dataSource.setPassword(env.getProperty("spring.datasource.password"));
 		dataSource.setInitialSize(10);
 		dataSource.setMaxActive(50);
 		dataSource.setMinIdle(0);
