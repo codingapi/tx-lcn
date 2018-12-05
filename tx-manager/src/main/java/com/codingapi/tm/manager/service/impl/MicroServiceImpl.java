@@ -6,6 +6,8 @@ import com.codingapi.tm.framework.utils.SocketManager;
 import com.codingapi.tm.manager.service.MicroService;
 import com.codingapi.tm.model.TxServer;
 import com.codingapi.tm.model.TxState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -25,6 +27,7 @@ import java.util.regex.Pattern;
 @Service
 public class MicroServiceImpl implements MicroService {
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private RestTemplate restTemplate;
@@ -64,7 +67,7 @@ public class MicroServiceImpl implements MicroService {
                 ipAddress = "127.0.0.1";
             }
         }
-
+        logger.info("ipAddress: {}, port: {}", ipAddress, Constants.socketPort);
         state.setIp(ipAddress);
         state.setPort(Constants.socketPort);
         state.setMaxConnection(SocketManager.getInstance().getMaxConnection());
