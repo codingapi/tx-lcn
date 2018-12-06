@@ -29,9 +29,9 @@
 eureka.client.service-url.defaultZone=http://127.0.0.1:8761/eureka/
 ```
 
->3.事务发起方(事务参与方不需要)中的涉及分布式事务的方法要添加@TxTransaction(isStart = true)注解
+>3.发起方和参与方的业务方法添加@Transactional注解和@TxTransaction注解
 
->4.无论事务发起方还是事务参与方的业务方法都需要实现本地事务添加@Transactional注解和@TxTransaction注解
+>4.发起方中的涉及分布式事务的方法要添加@TxTransaction(isStart = true)注解
 
 >5.tx-manager启动前要配置redis
 
