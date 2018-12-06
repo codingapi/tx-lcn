@@ -14,11 +14,11 @@ public interface MQTxManagerFegin {
     /**
      * 检查并清理事务数据
      * @param groupId   事务组id
-     * @param waitTaskId    任务id
+     * @param taskId    任务id
      * @return  事务状态
      */
-    @GetMapping("/tx/manager/cleanNotifyTransactionHttp")
-    String cleanNotifyTransactionHttp(@RequestParam(value = "groupId") String groupId, @RequestParam(value = "waitTaskId") String waitTaskId);
+    @GetMapping("/tx/manager/cleanNotifyTransaction")
+    String cleanNotifyTransactionHttp(@RequestParam(value = "groupId") String groupId, @RequestParam(value = "taskId") String taskId);
 
     /**
      * 记录补偿事务数据到tm
