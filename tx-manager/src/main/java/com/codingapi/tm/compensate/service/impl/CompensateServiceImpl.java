@@ -279,9 +279,11 @@ public class CompensateServiceImpl implements CompensateService {
                 }
             }
         }
+        logger.info("重新加载补偿数据...");
         logger.info("Compensate Loaded->"+JSON.toJSONString(txGroup));
     }
 
+    @Override
     public TxGroup getCompensateByGroupId(String groupId) {
         String json = compensateDao.getCompensateByGroupId(groupId);
         if (json == null) {

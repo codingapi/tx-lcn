@@ -110,7 +110,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
     /**
      * 事务提交或回归
      *
-     * @param checkSate
+     * @param checkSate 1-提交事务
      */
     private boolean transaction(final TxGroup txGroup, final int checkSate) {
         if (checkSate == 1) {
