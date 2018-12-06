@@ -44,7 +44,7 @@ public class ModelNameServiceImpl implements ModelNameService {
     }
 
     private int getPort() {
-        int port = serverListener.getPort();
+        int port = serverListener.getServerPort();
         int count = 0;
         while (port == 0) {
             try {
@@ -52,7 +52,7 @@ public class ModelNameServiceImpl implements ModelNameService {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            port = serverListener.getPort();
+            port = serverListener.getServerPort();
             count++;
 
             if(count==2000){

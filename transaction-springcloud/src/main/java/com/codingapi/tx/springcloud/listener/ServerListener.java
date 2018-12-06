@@ -4,8 +4,8 @@ import com.codingapi.tx.listener.service.InitService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
-import org.springframework.boot.web.context.WebServerInitializedEvent; 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +15,7 @@ public class ServerListener implements ApplicationListener<WebServerInitializedE
 
     private Logger logger = LoggerFactory.getLogger(ServerListener.class);
 
+    @Value("${server.port}")
     private int serverPort;
 
     @Autowired
@@ -25,22 +26,15 @@ public class ServerListener implements ApplicationListener<WebServerInitializedE
         logger.info("onApplicationEvent -> onApplicationEvent. "+event.getWebServer());
         this.serverPort = event.getWebServer().getPort();
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // 若连接不上txmanager start()方法将阻塞
-                initService.start();
-            }
+        Thread thread = new Thread(() -> {
+            // 若连接不上txmanager start()方法将阻塞
+            initService.start();
         });
         thread.setName("TxInit-thread");
         thread.start();
     }
 
-    public int getPort() {
-        return this.serverPort;
-    }
-    
-    public void setServerPort(int serverPort) {
-        this.serverPort = serverPort;
+    public int getServerPort() {
+        return serverPort;
     }
 }

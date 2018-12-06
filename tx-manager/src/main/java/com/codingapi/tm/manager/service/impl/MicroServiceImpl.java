@@ -55,17 +55,9 @@ public class MicroServiceImpl implements MicroService {
     @Override
     public TxState getState() {
         TxState state = new TxState();
-        List<ServiceInstance> list = discoveryClient.getInstances(registration.getServiceId());
-        String ipAddress;
-        if(CollectionUtils.isEmpty(list))
-        {
+        String ipAddress = registration.getHost();
+        if(!isIp(ipAddress)){
             ipAddress = "127.0.0.1";
-        }else{
-            ServiceInstance serviceInstance = list.get(0);
-            ipAddress = serviceInstance.getHost();
-            if(!isIp(ipAddress)){
-                ipAddress = "127.0.0.1";
-            }
         }
         logger.info("ipAddress: {}, port: {}", ipAddress, Constants.socketPort);
         state.setIp(ipAddress);
