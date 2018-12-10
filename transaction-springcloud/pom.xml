@@ -7,21 +7,15 @@
 	<parent>
 		<groupId>com.codingapi</groupId>
 		<artifactId>tx-lcn</artifactId>
-		<version>4.2.0-SNAPSHOT</version>
+		<version>4.2.0</version>
 	</parent>
 
 	<artifactId>transaction-springcloud</artifactId>
-	<version>${lcn.last.version}</version>
 
 	<name>transaction-springcloud</name>
 	<url>https://github.com/codingapi/tx-lcn</url>
 
 	<description>transaction-springcloud project for Spring Boot</description>
-
-	<properties>
-		<spring-cloud.version>2.0.4.RELEASE</spring-cloud.version>
-		<org.springframework-version>5.0.8.RELEASE</org.springframework-version>
-	</properties>
 
 	<dependencies>
 

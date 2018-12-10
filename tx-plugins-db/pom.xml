@@ -6,11 +6,10 @@
     <parent>
         <groupId>com.codingapi</groupId>
         <artifactId>tx-lcn</artifactId>
-        <version>4.2.0-SNAPSHOT</version>
+        <version>4.2.0</version>
     </parent>
 
     <artifactId>tx-plugins-db</artifactId>
-    <version>${lcn.last.version}</version>
 
     <name>tx-plugins-db</name>
     <url>https://github.com/codingapi/tx-lcn</url>
@@ -35,6 +34,5 @@
             <version>2.8.10</version>
         </dependency>
     </dependencies>
-
 
 </project>

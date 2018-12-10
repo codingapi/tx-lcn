@@ -5,7 +5,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>tx-lcn</artifactId>
-    <version>4.2.0-SNAPSHOT</version>
+    <version>4.2.0</version>
     <packaging>pom</packaging>
 
     <name>tx-lcn</name>
@@ -20,6 +20,7 @@
         <module>tx-plugins-db</module>
 
         <module>springcloud-lcn-demo</module>
+        <module>extensions</module>
     </modules>
 
     <properties>
@@ -31,7 +32,18 @@
         <java.version>1.8</java.version>
         <maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>
 
-        <lcn.last.version>4.2.0-SNAPSHOT</lcn.last.version>
+        <org.aspectj.version>1.8.4</org.aspectj.version>
+        <guava.version>19.0</guava.version>
+        <hessian.version>4.0.38</hessian.version>
+        <protostuff.version>1.1.3</protostuff.version>
+        <kryo.version>4.0.0</kryo.version>
+        <org.slf4j-version>1.7.7</org.slf4j-version>
+
+        <lcn.last.version>4.2.0</lcn.last.version>
+        <spring-cloud.version>2.0.4.RELEASE</spring-cloud.version>
+        <org.springframework-version>5.0.8.RELEASE</org.springframework-version>
+
+        <spring-cloud-starter-openfeign.version>2.0.0.RELEASE</spring-cloud-starter-openfeign.version>
     </properties>
 
     <build>
