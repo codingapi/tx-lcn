@@ -114,26 +114,11 @@ tx-plugins-db 是LCN 对关系型数据库的插件支持
     <version>${lcn.last.version}</version>
 </dependency>
 
-
 <dependency>
     <groupId>com.codingapi</groupId>
     <artifactId>tx-plugins-db</artifactId>
     <version>${lcn.last.version}</version>
 </dependency>
-
-
-<dependency>
-    <groupId>com.codingapi</groupId>
-    <artifactId>transaction-dubbo</artifactId>
-    <version>${lcn.last.version}</version>
-</dependency>      
-
-<dependency>
-    <groupId>com.codingapi</groupId>
-    <artifactId>transaction-motan</artifactId>
-    <version>${lcn.last.version}</version>
-</dependency>  
-
 
 <dependency>
     <groupId>com.codingapi</groupId>
