@@ -30,6 +30,10 @@
 
 ## 目录说明
 
+extensions feign扩展配置类
+
+springcloud-lcn-demo demo案例
+
 transaction-springcloud LCN springcloud rpc框架扩展支持
 
 tx-client 是LCN核心tx模块端控制框架
@@ -44,7 +48,6 @@ tx-plugins-db 是LCN 对关系型数据库的插件支持
 分布式事务发起方：
 
 ```
-
     @Override
     @TxTransaction(isStart=true)
     @Transactional
@@ -57,13 +60,10 @@ tx-plugins-db 是LCN 对关系型数据库的插件支持
         int v = 100/0;
         return true;
     }
-    
-    
 ```
 
 分布式事务被调用方(test2Service的业务实现类)
 ```
-
     @Override
     @Transactional
     @TxTransaction
@@ -72,7 +72,6 @@ tx-plugins-db 是LCN 对关系型数据库的插件支持
         testDao.save();
         return true;
     }
-
 ```
 
 如上代码执行完成以后两个模块都将回滚事务。
