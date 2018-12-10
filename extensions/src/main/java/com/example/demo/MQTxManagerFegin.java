@@ -24,11 +24,11 @@ public interface MQTxManagerFegin {
      * 记录补偿事务数据到tm
      */
     @PostMapping("/tx/manager/sendCompensateMsg")
-    String sendCompensateMsg(@RequestParam("currentTime") long currentTime,@RequestParam("groupId") String groupId,
+    String sendCompensateMsg(@RequestParam("currentTime") long currentTime, @RequestParam("groupId") String groupId,
                              @RequestParam("model") String model, @RequestParam("address") String address,
                              @RequestParam("uniqueKey") String uniqueKey,
-                             @RequestParam("className") String className,@RequestParam("methodStr") String methodStr,
-                             @RequestParam("data") String data,@RequestParam("time") long time,
+                             @RequestParam("className") String className, @RequestParam("methodStr") String methodStr,
+                             @RequestParam("data") String data, @RequestParam("time") long time,
                              @RequestParam("startError") int startError);
 
     /**
