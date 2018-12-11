@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 @Configuration
 @SpringBootApplication
 @EnableEurekaClient
-@EnableFeignClients
+@EnableFeignClients(basePackages = {"com.codingapi.tx"})
 public class MybatisDemo1Application {
 
 	public static void main(String[] args) {

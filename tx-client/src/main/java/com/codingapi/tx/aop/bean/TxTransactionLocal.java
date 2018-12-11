@@ -19,7 +19,7 @@ public class TxTransactionLocal {
 
     private Logger logger = LoggerFactory.getLogger(TxTransactionLocal.class);
 
-    private final static ThreadLocal<TxTransactionLocal> currentLocal = new InheritableThreadLocal<TxTransactionLocal>();
+    private final static ThreadLocal<TxTransactionLocal> currentLocal = new InheritableThreadLocal<>();
 
     private String groupId;
 

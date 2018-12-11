@@ -1,6 +1,6 @@
 package com.codingapi.tx.netty.service.impl;
 
-import com.example.demo.MQTxManagerFegin;
+import com.codingapi.tx.MQTxManagerFegin;
 import com.codingapi.tx.netty.service.MQTxManagerFeginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

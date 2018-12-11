@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.codingapi.tx;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
