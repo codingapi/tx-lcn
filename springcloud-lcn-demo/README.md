@@ -35,7 +35,7 @@ eureka.client.service-url.defaultZone=http://127.0.0.1:8761/eureka/
 
 >5.tx-manager启动前要配置redis
 
->6. springboot启动类添加注解配置@EnableFeignClients(basePackages = {"com.codingapi.tx"})
+>6.springboot启动类添加注解配置@EnableFeignClients(basePackages = {"com.codingapi.tx"})
 
 
 注意事项：避免事务发起方和调用方操作一张表的数据，会导致锁表
