@@ -1,10 +1,12 @@
 package com.example.demo.controller;
 
 
-import com.alibaba.druid.support.json.JSONUtils;
-import com.codingapi.tx.compensate.model.CompensateInfo;
+import com.alibaba.fastjson.JSONObject;
+import com.codingapi.tx.framework.utils.SerializerUtils;
+import com.codingapi.tx.model.TransactionInvocation;
 import com.example.demo.entity.Test;
 import com.example.demo.service.DemoService;
+import com.lorne.core.framework.utils.encode.Base64Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,11 +37,15 @@ public class DemoController {
     }
 
     @PostMapping("notifyResult")
-    public String notifyResult(String jsonStr)
+    public String notifyResult(@RequestBody String jsonStr)
     {
-        System.out.println("通知地址...");
-        CompensateInfo compensateInfo = (CompensateInfo)JSONUtils.parse(jsonStr);
-        System.out.println(compensateInfo);
+        System.out.println("通知地址..." + jsonStr);
+        String data = (String) JSONObject.parseObject(jsonStr).get("json");
+        data = (String) JSONObject.parseObject(data).get("data");
+        byte[] serializers =  Base64Utils.decode(data);
+        TransactionInvocation transactionInvocation = SerializerUtils.parserTransactionInvocation(serializers);
+
+        System.out.println(transactionInvocation.getMethodStr());
         return null;
     }
 }
