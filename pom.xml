@@ -20,7 +20,6 @@
         <module>tx-plugins-db</module>
 
         <module>springcloud-lcn-demo</module>
-        <module>extensions</module>
     </modules>
 
     <properties>
