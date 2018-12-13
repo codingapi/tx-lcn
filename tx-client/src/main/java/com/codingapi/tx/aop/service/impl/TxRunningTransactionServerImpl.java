@@ -26,19 +26,18 @@ import java.util.concurrent.TimeUnit;
 @Service(value = "txRunningTransactionServer")
 public class TxRunningTransactionServerImpl implements TransactionServer {
 
-
     @Autowired
     private MQTxManagerService txManagerService;
 
-
     @Autowired
     private ILCNTransactionControl transactionControl;
-
 
     private Logger logger = LoggerFactory.getLogger(TxRunningTransactionServerImpl.class);
 
     @Override
     public Object execute(final ProceedingJoinPoint point, final TxTransactionInfo info) throws Throwable {
+
+        logger.info("事务参与方...");
 
         String kid = KidUtils.generateShortUuid();
         String txGroupId = info.getTxGroupId();
@@ -46,7 +45,6 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
         long t1 = System.currentTimeMillis();
 
         boolean isHasIsGroup =  transactionControl.hasGroup(txGroupId);
-
 
         TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
         txTransactionLocal.setGroupId(txGroupId);
@@ -56,7 +54,6 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
         txTransactionLocal.setMaxTimeOut(Constants.txServer.getCompensateMaxWaitTime());
         txTransactionLocal.setMode(info.getMode());
         TxTransactionLocal.setCurrent(txTransactionLocal);
-
 
         try {
 

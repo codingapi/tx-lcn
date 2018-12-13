@@ -23,6 +23,8 @@ public class TxRunningNoTransactionServerImpl implements TransactionServer {
     @Override
     public Object execute(final ProceedingJoinPoint point, final TxTransactionInfo info) throws Throwable {
 
+        logger.info("无事务模块...");
+
         String kid = KidUtils.generateShortUuid();
         String txGroupId = info.getTxGroupId();
         logger.debug("--->begin readonly transaction, groupId: " + txGroupId);

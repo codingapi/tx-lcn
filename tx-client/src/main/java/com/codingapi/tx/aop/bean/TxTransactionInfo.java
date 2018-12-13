@@ -12,8 +12,7 @@ import com.codingapi.tx.model.TransactionInvocation;
 public class TxTransactionInfo {
 
 
-    private TxTransaction transaction;
-
+    private TxTransaction txTransaction;
 
     private TxTransactionLocal txTransactionLocal;
 
@@ -27,8 +26,8 @@ public class TxTransactionInfo {
 
     private TxTransactionMode mode;
 
-    public TxTransactionInfo(TxTransaction transaction, TxTransactionLocal txTransactionLocal, TransactionInvocation invocation, String txGroupId) {
-        this.transaction = transaction;
+    public TxTransactionInfo(TxTransaction txTransaction, TxTransactionLocal txTransactionLocal, TransactionInvocation invocation, String txGroupId) {
+        this.txTransaction = txTransaction;
         this.txTransactionLocal = txTransactionLocal;
         this.txGroupId = txGroupId;
         this.invocation = invocation;
@@ -42,8 +41,8 @@ public class TxTransactionInfo {
         this.mode = mode;
     }
 
-    public TxTransaction getTransaction() {
-        return transaction;
+    public TxTransaction getTxTransaction() {
+        return txTransaction;
     }
 
     public TxTransactionLocal getTxTransactionLocal() {

@@ -35,6 +35,8 @@ public class TxStartTransactionServerImpl implements TransactionServer {
     public Object execute(ProceedingJoinPoint point,final TxTransactionInfo info) throws Throwable {
         //分布式事务开始执行
 
+        logger.info("事务发起方...");
+
         logger.debug("--->分布式事务开始执行 begin start transaction");
 
         final long start = System.currentTimeMillis();
@@ -51,8 +53,8 @@ public class TxStartTransactionServerImpl implements TransactionServer {
         txTransactionLocal.setGroupId(groupId);
         txTransactionLocal.setHasStart(true);
         txTransactionLocal.setMaxTimeOut(Constants.txServer.getCompensateMaxWaitTime());
-        txTransactionLocal.setMode(info.getTransaction().mode());
-        txTransactionLocal.setReadOnly(info.getTransaction().readOnly());
+        txTransactionLocal.setMode(info.getTxTransaction().mode());
+        txTransactionLocal.setReadOnly(info.getTxTransaction().readOnly());
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
         try {
@@ -131,7 +133,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
         }
 
         //回滚异常检测.
-        for(Class<? extends Throwable> rollbackFor:info.getTransaction().rollbackFor()){
+        for(Class<? extends Throwable> rollbackFor:info.getTxTransaction().rollbackFor()){
 
             //存在关系
             if(rollbackFor.isAssignableFrom(throwable.getClass())){
@@ -141,7 +143,7 @@ public class TxStartTransactionServerImpl implements TransactionServer {
         }
 
         //不回滚异常检测.
-        for(Class<? extends Throwable> rollbackFor:info.getTransaction().noRollbackFor()){
+        for(Class<? extends Throwable> rollbackFor:info.getTxTransaction().noRollbackFor()){
 
             //存在关系
             if(rollbackFor.isAssignableFrom(throwable.getClass())){
