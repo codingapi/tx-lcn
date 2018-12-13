@@ -13,16 +13,7 @@ import org.springframework.stereotype.Service;
 public class MQTxManagerFeginServiceImpl implements MQTxManagerFeginService {
 
     @Autowired
-    private ApplicationContext spring;
-
-    @Autowired
     private MQTxManagerFegin mqTxManagerFegin;
-
-    public void reloadMqTxManagerFegin() {
-//        if(mqTxManagerFegin == null){
-//            this.mqTxManagerFegin = spring.getBean(MQTxManagerFegin.class);
-//        }
-    }
 
     /**
      * 检查并清理事务数据
@@ -33,7 +24,6 @@ public class MQTxManagerFeginServiceImpl implements MQTxManagerFeginService {
      */
     @Override
     public String cleanNotifyTransactionHttp(String groupId, String waitTaskId) {
-        reloadMqTxManagerFegin();
         return mqTxManagerFegin.cleanNotifyTransactionHttp(groupId, waitTaskId);
     }
 
@@ -42,7 +32,6 @@ public class MQTxManagerFeginServiceImpl implements MQTxManagerFeginService {
      */
     @Override
     public String sendCompensateMsg(long currentTime, String groupId, String model, String address, String uniqueKey, String className, String methodStr, String data, long time,int startError) {
-        reloadMqTxManagerFegin();
         return mqTxManagerFegin.sendCompensateMsg(currentTime, groupId, model, address, uniqueKey, className, methodStr, data, time,startError);
     }
 
@@ -53,7 +42,6 @@ public class MQTxManagerFeginServiceImpl implements MQTxManagerFeginService {
      */
     @Override
     public String getServer() {
-        reloadMqTxManagerFegin();
         return mqTxManagerFegin.getServer();
     }
 
