@@ -13,6 +13,7 @@
     <modules>
         <module>springcloud-mybatis-demo1</module>
         <module>springcloud-mybatis-demo2</module>
+        <module>springcloud-mybatis-demo3</module>
     </modules>
 
     <parent>

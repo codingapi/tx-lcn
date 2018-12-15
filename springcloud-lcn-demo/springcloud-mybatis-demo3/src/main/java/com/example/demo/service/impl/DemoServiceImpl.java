@@ -1,36 +1,25 @@
 package com.example.demo.service.impl;
 
+import com.codingapi.tx.annotation.ITxTransaction;
 import com.codingapi.tx.annotation.TxTransaction;
-import com.example.demo.client.Demo2Client;
-import com.example.demo.client.Demo3Client;
 import com.example.demo.dao.TestMapper;
 import com.example.demo.entity.Test;
 import com.example.demo.service.DemoService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by lorne on 2017/6/26.
  */
 @Service
-public class DemoServiceImpl implements DemoService {
-
-
-    @Autowired
-    private Demo2Client demo2Client;
-
-    @Autowired
-    private Demo3Client demo3Client;
+public class DemoServiceImpl implements DemoService, ITxTransaction {
 
     @Autowired
     private TestMapper testMapper;
-
-    private Logger logger = LoggerFactory.getLogger(DemoServiceImpl.class);
 
     @Override
     public List<Test> list() {
@@ -38,16 +27,11 @@ public class DemoServiceImpl implements DemoService {
     }
 
     @Override
-    @TxTransaction(isStart = true)
+    @TxTransaction
     @Transactional
-    public int save(String id, String name) {
-
-        testMapper.save("mybatis1");
-
-        demo2Client.save(id, name);
-
-        demo3Client.save();
-
-        return 2;
+    public int save() {
+        Random random = new Random();
+        Integer ss = random.nextInt(1000);
+        return testMapper.save(ss + "", "demo3");
     }
 }
