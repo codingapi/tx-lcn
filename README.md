@@ -163,4 +163,6 @@ tx-plugins-db 是LCN 对关系型数据库的插件支持
 
 [motan版本](https://gitee.com/zfvipCase/motan-lcn-demo)
 
+[txc模式](https://github.com/caisirius/test-lcn-dubbo)
+
 技术交流群：554855843
