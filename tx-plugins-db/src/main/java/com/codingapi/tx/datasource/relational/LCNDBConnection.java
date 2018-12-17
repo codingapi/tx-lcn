@@ -187,10 +187,12 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
 
     }
 
+    @Override
     public String getGroupId() {
         return groupId;
     }
 
+    @Override
     public TxTask getWaitTask() {
         return waitTask;
     }
