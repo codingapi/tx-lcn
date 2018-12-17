@@ -88,6 +88,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
         isClose.set(true);
     }
 
+    @Override
     protected void closeConnection() throws SQLException {
         runnable.close(this);
         connection.close();

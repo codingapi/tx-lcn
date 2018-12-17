@@ -52,18 +52,15 @@ public class NettyControlServiceImpl implements NettyControlService {
 
     @Override
     public void uploadModelInfo() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!SocketManager.getInstance().isNetState()|| !IpAddressUtils.isIpAddress(modelNameService.getIpAddress())) {
-                    try {
-                        Thread.sleep(1000 * 5);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        new Thread(() -> {
+            while (!SocketManager.getInstance().isNetState()|| !IpAddressUtils.isIpAddress(modelNameService.getIpAddress())) {
+                try {
+                    Thread.sleep(1000 * 5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                mqTxManagerService.uploadModelInfo();
             }
+            mqTxManagerService.uploadModelInfo();
         }).start();
     }
 
