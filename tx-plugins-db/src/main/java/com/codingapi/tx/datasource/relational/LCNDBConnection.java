@@ -22,7 +22,6 @@ import java.util.concurrent.Executor;
 /**
  * create by lorne on 2017/7/29
  */
-
 public class LCNDBConnection extends AbstractTransactionThread implements LCNConnection {
 
 
@@ -139,6 +138,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
         connection.rollback();
     }
 
+    @Override
     public void transaction() throws SQLException {
         if (waitTask == null) {
             rollbackConnection();
@@ -153,7 +153,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("auto execute ,groupId:" + getGroupId());
+                logger.info("auto execute ,groupId:" + getGroupId());
                 dataSourceService.schedule(getGroupId(), waitTask);
             }
         }, maxOutTime);
