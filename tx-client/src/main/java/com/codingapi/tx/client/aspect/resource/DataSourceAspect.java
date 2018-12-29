@@ -1,0 +1,42 @@
+package com.codingapi.tx.client.aspect.resource;
+
+import com.codingapi.tx.client.config.TxClientConfig;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+/**
+ * create by lorne on 2018/1/5
+ */
+
+
+@Aspect
+@Component
+@Slf4j
+public class DataSourceAspect implements Ordered {
+
+    @Autowired
+    private TxClientConfig txClientConfig;
+
+    @Autowired
+    private AspectBeforeResourceExecutor aspectBeforeResourceExecutor;
+
+
+    @Around("execution(* javax.sql.DataSource.getConnection(..))")
+    public Object around(ProceedingJoinPoint point) throws Throwable {
+        return aspectBeforeResourceExecutor.around(point);
+    }
+
+
+    @Override
+    public int getOrder() {
+        return txClientConfig.getResourceOrder();
+    }
+
+
+}

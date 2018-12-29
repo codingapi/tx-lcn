@@ -1,0 +1,56 @@
+package com.codingapi.tx.manager.db.domain;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+
+/**
+ * Description:
+ * Date: 2018/12/18
+ *
+ * @author ujued
+ */
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class TxException {
+
+    private Long id;
+
+    /**
+     * 事务组ID
+     */
+    private String groupId;
+
+    /**
+     * 事务单元ID
+     */
+    private String unitId;
+
+    /**
+     * 资源管理服务地址
+     */
+    private String modId;
+
+    /**
+     * 事务状态
+     */
+    private short transactionState;
+
+    /**
+     * 上报方 0 TxManager 1 TxClient
+     */
+    private short registrar;
+
+    /**
+     * 异常状态 0 待处理 1已处理
+     */
+    private short exState;
+
+    /**
+     * 发生时间
+     */
+    private Date createTime;
+}
