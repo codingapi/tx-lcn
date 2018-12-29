@@ -1,7 +1,9 @@
 # LCN分布式事务框架v4.0 
 
   "LCN并不生产事务，LCN只是本地事务的协调者"
-  
+
+ > 5.0.0.beta 版本发布 见5.0.0.beta 分支   
+
 
 ## 框架介绍   
 
@@ -165,13 +167,6 @@ tx-plugins-db 是LCN 对关系型数据库的插件支持
 [motan版本](https://gitee.com/zfvipCase/motan-lcn-demo)
 
 [txc模式](https://github.com/caisirius/test-lcn-dubbo)
-
-## 5.0 研发中. 
-1.  将基于springboot 2.0研发,将替换groupId传递机制，由sleuth机制处理。(https://cloud.spring.io/spring-cloud-sleuth/2.0.x/single/spring-cloud-sleuth.html)
-2.  将抽离LCN封装业务，提出业务接口层与通讯层，将可支持自定义分布式事务模式与通讯模式。
-3.  将支持LCN TXC TCC 三种事务模式，且可混合支持。
-4.  优化线程等待机制,提高吞吐量。
-5.  将提供更加完备的官方文档，类似sleuth文档形式。
 
 
 技术交流群：554855843(已满) 970071379(未满)
