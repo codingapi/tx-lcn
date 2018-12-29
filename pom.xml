@@ -343,13 +343,32 @@
 
     <developers>
         <developer>
-            <name>lorne</name>
-            <email>1991wangliang@gmail.com</email>
+            <name>wangliang</name>
+            <email>wangliang@codingapi.com</email>
             <roles>
                 <role>developer</role>
             </roles>
             <timezone>+8</timezone>
         </developer>
+
+        <developer>
+            <name>jingyakun</name>
+            <email>jingyakun@codingapi.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+
+        <developer>
+            <name>houcunlu</name>
+            <email>houcunlu@codingapi.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+
     </developers>
 
     <scm>
