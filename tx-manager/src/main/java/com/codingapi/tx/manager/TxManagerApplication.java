@@ -1,6 +1,5 @@
 package com.codingapi.tx.manager;
 
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
 import com.codingapi.tx.manager.support.TxManagerManagerRefreshing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -26,10 +25,6 @@ public class TxManagerApplication {
         SpringApplication.run(TxManagerApplication.class, args);
     }
 
-    @Bean
-    public ProtostuffSerializer protostuffSerializer() {
-        return new ProtostuffSerializer();
-    }
 
     @Bean
     public Executor executor() {

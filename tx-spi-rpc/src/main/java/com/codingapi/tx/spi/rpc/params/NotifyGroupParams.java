@@ -1,8 +1,10 @@
-package com.codingapi.tx.commons.rpc.params;
+package com.codingapi.tx.spi.rpc.params;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * Description:
@@ -13,12 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class NotifyUnitParams {
+public class NotifyGroupParams implements Serializable {
     private String groupId;
-
-    private String unitId;
-
-    private String unitType;
-
     private int state;
 }

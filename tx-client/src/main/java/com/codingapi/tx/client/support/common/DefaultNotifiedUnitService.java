@@ -6,8 +6,7 @@ import com.codingapi.tx.client.support.rpc.TransactionCmd;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TransactionClearException;
 import com.codingapi.tx.commons.exception.TxClientException;
-import com.codingapi.tx.commons.rpc.params.NotifyUnitParams;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
+import com.codingapi.tx.spi.rpc.params.NotifyUnitParams;
 
 /**
  * Description: 默认RPC命令业务
@@ -19,19 +18,15 @@ public class DefaultNotifiedUnitService implements RpcExecuteService {
 
     private final TransactionCleanTemplate transactionCleanTemplate;
 
-    private final ProtostuffSerializer protostuffSerializer;
 
-    public DefaultNotifiedUnitService(TransactionCleanTemplate transactionCleanTemplate,
-                                      ProtostuffSerializer protostuffSerializer) {
+    public DefaultNotifiedUnitService(TransactionCleanTemplate transactionCleanTemplate) {
         this.transactionCleanTemplate = transactionCleanTemplate;
-        this.protostuffSerializer = protostuffSerializer;
     }
 
     @Override
     public Object execute(TransactionCmd transactionCmd) throws TxClientException {
         try {
-            NotifyUnitParams notifyUnitParams =
-                    protostuffSerializer.deSerialize(transactionCmd.getMsg().getBytes(), NotifyUnitParams.class);
+            NotifyUnitParams notifyUnitParams =transactionCmd.getMsg().loadData(NotifyUnitParams.class);
             transactionCleanTemplate.clean(
                     notifyUnitParams.getGroupId(),
                     notifyUnitParams.getUnitId(),

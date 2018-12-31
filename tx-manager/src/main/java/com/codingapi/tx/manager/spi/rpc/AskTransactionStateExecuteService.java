@@ -2,8 +2,7 @@ package com.codingapi.tx.manager.spi.rpc;
 
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TxManagerException;
-import com.codingapi.tx.commons.rpc.params.AskTransactionStateParams;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
+import com.codingapi.tx.spi.rpc.params.AskTransactionStateParams;
 import com.codingapi.tx.manager.support.group.GroupRelationship;
 import com.codingapi.tx.manager.support.rpc.RpcExecuteService;
 import com.codingapi.tx.manager.support.TransactionCmd;
@@ -24,24 +23,19 @@ public class AskTransactionStateExecuteService implements RpcExecuteService {
 
     private final TxExceptionService compensationService;
 
-    private final ProtostuffSerializer protostuffSerializer;
 
     @Autowired
     private GroupRelationship groupRelationship;
 
     @Autowired
-    public AskTransactionStateExecuteService(TxExceptionService compensationService,
-                                             ProtostuffSerializer protostuffSerializer) {
+    public AskTransactionStateExecuteService(TxExceptionService compensationService ) {
         this.compensationService = compensationService;
-        this.protostuffSerializer = protostuffSerializer;
     }
 
     @Override
     public Object execute(TransactionCmd transactionCmd) throws TxManagerException {
         try {
-            AskTransactionStateParams askTransactionStateParams =
-                    protostuffSerializer.deSerialize(transactionCmd.getMsg().getBytes(),
-                            AskTransactionStateParams.class);
+            AskTransactionStateParams askTransactionStateParams =transactionCmd.getMsg().loadData(AskTransactionStateParams.class);
 
             short state = compensationService.transactionUnitState(askTransactionStateParams.getGroupId(),
                     askTransactionStateParams.getUnitId());

@@ -3,8 +3,7 @@ package com.codingapi.tx.manager.spi.rpc;
 import com.codingapi.tx.commons.exception.JoinGroupException;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TxManagerException;
-import com.codingapi.tx.commons.rpc.params.JoinGroupParams;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
+import com.codingapi.tx.spi.rpc.params.JoinGroupParams;
 import com.codingapi.tx.logger.TxLogger;
 import com.codingapi.tx.manager.support.group.GroupRelationship;
 import com.codingapi.tx.manager.support.group.TransUnit;
@@ -26,16 +25,13 @@ public class JoinGroupExecuteService implements RpcExecuteService {
 
     private final GroupRelationship groupRelationship;
 
-    private final ProtostuffSerializer protostuffSerializer;
 
     private final TxLogger txLogger;
 
 
     @Autowired
-    public JoinGroupExecuteService(GroupRelationship groupRelationship,
-                                   ProtostuffSerializer protostuffSerializer, TxLogger txLogger) {
+    public JoinGroupExecuteService(GroupRelationship groupRelationship, TxLogger txLogger) {
         this.groupRelationship = groupRelationship;
-        this.protostuffSerializer = protostuffSerializer;
         this.txLogger = txLogger;
     }
 
@@ -46,7 +42,7 @@ public class JoinGroupExecuteService implements RpcExecuteService {
 
             txLogger.trace(transactionCmd.getGroupId(),"","","start join group");
 
-            JoinGroupParams joinGroupParams = protostuffSerializer.deSerialize(transactionCmd.getMsg().getBytes(), JoinGroupParams.class);
+            JoinGroupParams joinGroupParams = transactionCmd.getMsg().loadData(JoinGroupParams.class);
             TransUnit transUnit = new TransUnit();
             transUnit.setRemoteKey(transactionCmd.getRemoteKey());
             transUnit.setUnitType(joinGroupParams.getUnitType());

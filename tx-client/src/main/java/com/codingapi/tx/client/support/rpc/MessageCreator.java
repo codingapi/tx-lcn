@@ -1,10 +1,10 @@
 package com.codingapi.tx.client.support.rpc;
 
 import com.codingapi.tx.commons.exception.SerializerException;
-import com.codingapi.tx.commons.rpc.MessageConstants;
-import com.codingapi.tx.commons.rpc.params.*;
+import com.codingapi.tx.commons.util.serializer.SerializerContext;
+import com.codingapi.tx.spi.rpc.MessageConstants;
 import com.codingapi.tx.spi.rpc.dto.MessageDto;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
+import com.codingapi.tx.spi.rpc.params.*;
 
 import java.util.Objects;
 
@@ -15,11 +15,10 @@ import java.util.Objects;
  */
 public class MessageCreator {
 
-    private static final ProtostuffSerializer SERIALIZER = new ProtostuffSerializer();
 
     private static byte[] serialize(Object obj) {
         try {
-            return SERIALIZER.serialize(obj);
+            return SerializerContext.getInstance().serialize(obj);
         } catch (SerializerException e) {
             throw new RuntimeException(e);
         }

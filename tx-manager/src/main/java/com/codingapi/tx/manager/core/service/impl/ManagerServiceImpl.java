@@ -1,6 +1,6 @@
 package com.codingapi.tx.manager.core.service.impl;
 
-import com.codingapi.tx.commons.rpc.params.NotifyConnectParams;
+import com.codingapi.tx.spi.rpc.params.NotifyConnectParams;
 import com.codingapi.tx.manager.core.service.ManagerService;
 import com.codingapi.tx.manager.support.rpc.MessageCreator;
 import com.codingapi.tx.spi.rpc.RpcClient;

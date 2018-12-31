@@ -13,7 +13,7 @@ import java.io.ByteArrayOutputStream;
 /**
  * @author lorne 2017/11/11
  */
-public class ProtostuffSerializer implements ISerializer {
+ class ProtostuffSerializer implements ISerializer {
     private static final SchemaCache cachedSchema = SchemaCache.getInstance();
     private static final Objenesis objenesis = new ObjenesisStd(true);
 

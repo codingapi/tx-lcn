@@ -7,9 +7,9 @@ import com.codingapi.tx.client.support.rpc.MessageCreator;
 import com.codingapi.tx.client.support.rpc.TxMangerReporter;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TransactionClearException;
-import com.codingapi.tx.commons.rpc.params.TxExceptionParams;
+import com.codingapi.tx.commons.util.serializer.SerializerContext;
+import com.codingapi.tx.spi.rpc.params.TxExceptionParams;
 import com.codingapi.tx.commons.util.Transactions;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
 import com.codingapi.tx.logger.TxLogger;
 import com.codingapi.tx.spi.rpc.RpcClient;
 import com.codingapi.tx.spi.rpc.dto.MessageDto;
@@ -50,8 +50,6 @@ public class SimpleDTXChecking implements DTXChecking {
 
     private final RpcClient rpcClient;
 
-    private final ProtostuffSerializer protostuffSerializer;
-
     private final TxClientConfig clientConfig;
 
     private final LCNTransactionBeanHelper transactionBeanHelper;
@@ -64,11 +62,9 @@ public class SimpleDTXChecking implements DTXChecking {
     private TxMangerReporter txMangerReporter;
 
     @Autowired
-    public SimpleDTXChecking(RpcClient rpcClient, ProtostuffSerializer protostuffSerializer,
-                             TxClientConfig clientConfig, LCNTransactionBeanHelper transactionBeanHelper,
+    public SimpleDTXChecking(RpcClient rpcClient,TxClientConfig clientConfig, LCNTransactionBeanHelper transactionBeanHelper,
                              ThreadPoolLogger aspectLogger, TxLogger txLogger) {
         this.rpcClient = rpcClient;
-        this.protostuffSerializer = protostuffSerializer;
         this.clientConfig = clientConfig;
         this.transactionBeanHelper = transactionBeanHelper;
         this.aspectLogger = aspectLogger;
@@ -82,7 +78,7 @@ public class SimpleDTXChecking implements DTXChecking {
             try {
                 String channel = rpcClient.loadRemoteKey();
                 MessageDto messageDto = rpcClient.request(channel, MessageCreator.askTransactionState(groupId, unitId));
-                int state = protostuffSerializer.deSerialize(messageDto.getBytes(), Short.class);
+                int state = SerializerContext.getInstance().deSerialize(messageDto.getBytes(), Short.class);
                 log.info("support > ask transaction state:{}", state);
                 txLogger.trace(groupId, unitId, Transactions.TAG_TASK, "ask transaction state " + state);
                 if (state == -1) {

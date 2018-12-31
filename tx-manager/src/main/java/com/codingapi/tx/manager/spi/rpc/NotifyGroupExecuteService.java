@@ -3,20 +3,20 @@ package com.codingapi.tx.manager.spi.rpc;
 import com.alibaba.fastjson.JSON;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TxManagerException;
-import com.codingapi.tx.commons.rpc.params.NotifyGroupParams;
-import com.codingapi.tx.commons.rpc.params.NotifyUnitParams;
 import com.codingapi.tx.commons.util.Transactions;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
+import com.codingapi.tx.commons.util.serializer.SerializerContext;
 import com.codingapi.tx.logger.TxLogger;
+import com.codingapi.tx.manager.support.TransactionCmd;
 import com.codingapi.tx.manager.support.group.GroupRelationship;
 import com.codingapi.tx.manager.support.group.TransUnit;
 import com.codingapi.tx.manager.support.rpc.MessageCreator;
-import com.codingapi.tx.manager.support.rpc.RpcExecuteService;
 import com.codingapi.tx.manager.support.rpc.RpcExceptionHandler;
-import com.codingapi.tx.manager.support.TransactionCmd;
+import com.codingapi.tx.manager.support.rpc.RpcExecuteService;
 import com.codingapi.tx.spi.rpc.RpcClient;
 import com.codingapi.tx.spi.rpc.dto.MessageDto;
 import com.codingapi.tx.spi.rpc.exception.RpcException;
+import com.codingapi.tx.spi.rpc.params.NotifyGroupParams;
+import com.codingapi.tx.spi.rpc.params.NotifyUnitParams;
 import com.codingapi.tx.spi.rpc.util.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,6 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
 
     private final RpcClient rpcClient;
 
-    private final ProtostuffSerializer protostuffSerializer;
 
     private final RpcExceptionHandler rpcExceptionHandler;
 
@@ -47,11 +46,10 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
 
     @Autowired
     public NotifyGroupExecuteService(GroupRelationship groupRelationship,
-                                     RpcClient rpcClient, ProtostuffSerializer protostuffSerializer,
+                                     RpcClient rpcClient,
                                      RpcExceptionHandler rpcExceptionHandler, TxLogger txLogger) {
         this.groupRelationship = groupRelationship;
         this.rpcClient = rpcClient;
-        this.protostuffSerializer = protostuffSerializer;
         this.rpcExceptionHandler = rpcExceptionHandler;
         this.txLogger = txLogger;
     }
@@ -60,8 +58,7 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
     public Object execute(TransactionCmd transactionCmd) throws TxManagerException {
         try {
             // 解析参数
-            NotifyGroupParams notifyGroupParams =
-                    protostuffSerializer.deSerialize(transactionCmd.getMsg().getBytes(), NotifyGroupParams.class);
+            NotifyGroupParams notifyGroupParams = transactionCmd.getMsg().loadData(NotifyGroupParams.class);
 
             // 保存事务组事务状态
             groupRelationship.setTransactionState(transactionCmd.getGroupId(), (short) notifyGroupParams.getState());
@@ -95,7 +92,7 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
                         log.warn("unit business exception.");
                         rpcExceptionHandler.handleNotifyUnitBusinessException(
                                 Arrays.asList(notifyUnitParams, transactionCmd.getRemoteKey()),
-                                protostuffSerializer.deSerialize(respMsg.getBytes(), Throwable.class));
+                                SerializerContext.getInstance().deSerialize(respMsg.getBytes(), Throwable.class));
                     }
 
 

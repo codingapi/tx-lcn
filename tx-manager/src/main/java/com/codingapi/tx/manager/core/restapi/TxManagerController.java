@@ -1,6 +1,6 @@
 package com.codingapi.tx.manager.core.restapi;
 
-import com.codingapi.tx.commons.rpc.params.NotifyConnectParams;
+import com.codingapi.tx.spi.rpc.params.NotifyConnectParams;
 import com.codingapi.tx.manager.core.service.ManagerService;
 import com.codingapi.tx.spi.rpc.exception.RpcException;
 import org.springframework.beans.factory.annotation.Autowired;

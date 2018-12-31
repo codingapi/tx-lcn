@@ -2,7 +2,7 @@ package com.codingapi.tx.client.aspectlog;
 
 import com.codingapi.tx.commons.bean.TransactionInfo;
 import com.codingapi.tx.commons.exception.SerializerException;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
+import com.codingapi.tx.commons.util.serializer.SerializerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,13 +25,11 @@ public class AsyncH2DThreadPoolLogger implements ThreadPoolLogger {
     private static final ExecutorService executorService =
             Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-    private final ProtostuffSerializer protostuffSerializer;
 
     private final AspectLogHelper txLogHelper;
 
     @Autowired
-    public AsyncH2DThreadPoolLogger(ProtostuffSerializer protostuffSerializer, AspectLogHelper txLogHelper) {
-        this.protostuffSerializer = protostuffSerializer;
+    public AsyncH2DThreadPoolLogger(  AspectLogHelper txLogHelper) {
         this.txLogHelper = txLogHelper;
 
         // 等待线程池任务完成
@@ -51,7 +49,7 @@ public class AsyncH2DThreadPoolLogger implements ThreadPoolLogger {
             log.debug("event-save-start->{}", groupId);
             byte[] bytes;
             try {
-                bytes = protostuffSerializer.serialize(transactionInfo);
+                bytes = SerializerContext.getInstance().serialize(transactionInfo);
             } catch (SerializerException e) {
                 e.printStackTrace();
                 return;

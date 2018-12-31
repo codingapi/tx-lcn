@@ -1,4 +1,4 @@
-package com.codingapi.tx.commons.rpc.params;
+package com.codingapi.tx.spi.rpc.params;
 
 import lombok.Data;
 

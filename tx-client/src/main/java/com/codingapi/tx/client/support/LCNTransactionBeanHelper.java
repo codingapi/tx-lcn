@@ -6,7 +6,7 @@ import com.codingapi.tx.client.support.separate.TXLCNTransactionState;
 import com.codingapi.tx.client.support.resouce.TransactionResourceExecutor;
 import com.codingapi.tx.client.support.rpc.RpcExecuteService;
 import com.codingapi.tx.client.support.common.TransactionCleanService;
-import com.codingapi.tx.commons.rpc.LCNCmdType;
+import com.codingapi.tx.spi.rpc.LCNCmdType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

@@ -8,8 +8,8 @@ import com.codingapi.tx.client.aspectlog.AspectLog;
 import com.codingapi.tx.commons.bean.TransactionInfo;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TxClientException;
-import com.codingapi.tx.commons.rpc.params.GetAspectLogParams;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
+import com.codingapi.tx.commons.util.serializer.SerializerContext;
+import com.codingapi.tx.spi.rpc.params.GetAspectLogParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,8 +24,7 @@ import java.util.Objects;
 @Component("rpc_get-aspect-log")
 public class GetAspectLogService implements RpcExecuteService {
 
-    @Autowired
-    private ProtostuffSerializer protostuffSerializer;
+
 
     @Autowired
     private AspectLogHelper txLogHelper;
@@ -33,12 +32,12 @@ public class GetAspectLogService implements RpcExecuteService {
     @Override
     public Object execute(TransactionCmd transactionCmd) throws TxClientException {
         try {
-            GetAspectLogParams getAspectLogParams = protostuffSerializer.deSerialize(transactionCmd.getMsg().getBytes(), GetAspectLogParams.class);
+            GetAspectLogParams getAspectLogParams =transactionCmd.getMsg().loadData(GetAspectLogParams.class);
             AspectLog txLog = txLogHelper.getTxLog(getAspectLogParams.getGroupId(), getAspectLogParams.getUnitId());
             if (Objects.isNull(txLog)) {
                 throw new TxClientException("non exists aspect log.");
             }
-            return JSON.toJSON(protostuffSerializer.deSerialize(txLog.getBytes(), TransactionInfo.class));
+            return JSON.toJSON(SerializerContext.getInstance().deSerialize(txLog.getBytes(), TransactionInfo.class));
         } catch (SerializerException e) {
             throw new TxClientException(e);
         }

@@ -9,10 +9,10 @@ import com.codingapi.tx.commons.exception.BeforeBusinessException;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TransactionClearException;
 import com.codingapi.tx.commons.exception.TxClientException;
-import com.codingapi.tx.commons.rpc.params.JoinGroupParams;
-import com.codingapi.tx.commons.rpc.params.NotifyGroupParams;
+import com.codingapi.tx.commons.util.serializer.SerializerContext;
+import com.codingapi.tx.spi.rpc.params.JoinGroupParams;
+import com.codingapi.tx.spi.rpc.params.NotifyGroupParams;
 import com.codingapi.tx.commons.util.Transactions;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
 import com.codingapi.tx.logger.TxLogger;
 import com.codingapi.tx.spi.rpc.RpcClient;
 import com.codingapi.tx.spi.rpc.dto.MessageDto;
@@ -44,7 +44,6 @@ public class TransactionControlTemplate {
 
     private final DTXChecking dtxChecking;
 
-    private final ProtostuffSerializer protostuffSerializer;
 
     private final DTXExceptionHandler dtxExceptionHandler;
 
@@ -58,14 +57,12 @@ public class TransactionControlTemplate {
                                       TracerHelper tracerHelper,
                                       ThreadPoolLogger aspectLogger,
                                       DTXChecking dtxChecking,
-                                      ProtostuffSerializer protostuffSerializer,
                                       DTXExceptionHandler dtxExceptionHandler,
                                       TransactionCleanTemplate transactionCleanTemplate) {
         this.rpcClient = rpcClient;
         this.tracerHelper = tracerHelper;
         this.aspectLogger = aspectLogger;
         this.dtxChecking = dtxChecking;
-        this.protostuffSerializer = protostuffSerializer;
         this.dtxExceptionHandler = dtxExceptionHandler;
         this.transactionCleanTemplate = transactionCleanTemplate;
     }
@@ -180,7 +177,7 @@ public class TransactionControlTemplate {
             // 关闭事务组失败
             dtxExceptionHandler.handleNotifyGroupBusinessException(
                     Arrays.asList(notifyGroupParams, unitId, transactionType),
-                    protostuffSerializer.deSerialize(messageDto.getBytes(), Throwable.class)
+                    SerializerContext.getInstance().deSerialize(messageDto.getBytes(), Throwable.class)
             );
         } catch (TransactionClearException e) {
             log.error("clear exception", e);

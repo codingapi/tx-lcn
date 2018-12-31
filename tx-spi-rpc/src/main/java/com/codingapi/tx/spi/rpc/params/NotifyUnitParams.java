@@ -1,21 +1,24 @@
-package com.codingapi.tx.commons.rpc.params;
+package com.codingapi.tx.spi.rpc.params;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 /**
  * Description:
- * Date: 2018/12/29
+ * Date: 2018/12/5
  *
  * @author ujued
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class GetAspectLogParams implements Serializable {
+public class NotifyUnitParams {
     private String groupId;
+
     private String unitId;
+
+    private String unitType;
+
+    private int state;
 }

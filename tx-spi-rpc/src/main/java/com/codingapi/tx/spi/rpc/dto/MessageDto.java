@@ -1,5 +1,7 @@
 package com.codingapi.tx.spi.rpc.dto;
 
+import com.codingapi.tx.commons.exception.SerializerException;
+import com.codingapi.tx.commons.util.serializer.SerializerContext;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,5 +35,9 @@ public class MessageDto implements Serializable {
      */
     private byte[] bytes;
 
+
+    public <T> T loadData(Class<T> tClass) throws SerializerException {
+        return SerializerContext.getInstance().deSerialize(bytes,tClass);
+    }
 
 }

@@ -2,13 +2,12 @@ package com.codingapi.tx.manager.spi.rpc;
 
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TxManagerException;
-import com.codingapi.tx.commons.rpc.params.InitClientParams;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
 import com.codingapi.tx.manager.config.TxManagerConfig;
-import com.codingapi.tx.manager.support.rpc.RpcExecuteService;
 import com.codingapi.tx.manager.support.TransactionCmd;
+import com.codingapi.tx.manager.support.rpc.RpcExecuteService;
 import com.codingapi.tx.spi.rpc.RpcClient;
 import com.codingapi.tx.spi.rpc.exception.RpcException;
+import com.codingapi.tx.spi.rpc.params.InitClientParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,8 +24,6 @@ import org.springframework.stereotype.Service;
 public class InitClientService implements RpcExecuteService {
 
 
-    @Autowired
-    private ProtostuffSerializer protostuffSerializer;
 
     @Autowired
     private RpcClient rpcClient;
@@ -39,7 +36,7 @@ public class InitClientService implements RpcExecuteService {
     public Object execute(TransactionCmd transactionCmd) throws TxManagerException {
         log.info("init client - >{}",transactionCmd);
         try {
-            InitClientParams initClientParams = protostuffSerializer.deSerialize(transactionCmd.getMsg().getBytes(), InitClientParams.class);
+            InitClientParams initClientParams = transactionCmd.getMsg().loadData(InitClientParams.class);
             rpcClient.bindAppName(transactionCmd.getRemoteKey(),initClientParams.getAppName());
             initClientParams.setDtxTime(txManagerConfig.getDtxTime());
             return initClientParams;

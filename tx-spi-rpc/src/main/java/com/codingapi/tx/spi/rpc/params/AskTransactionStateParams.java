@@ -1,4 +1,4 @@
-package com.codingapi.tx.commons.rpc.params;
+package com.codingapi.tx.spi.rpc.params;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,14 +8,14 @@ import java.io.Serializable;
 
 /**
  * Description:
- * Date: 2018/12/5
+ * Date: 2018/12/19
  *
  * @author ujued
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class NotifyGroupParams implements Serializable {
+public class AskTransactionStateParams implements Serializable {
     private String groupId;
-    private int state;
+    private String unitId;
 }

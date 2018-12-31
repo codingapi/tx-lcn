@@ -4,8 +4,7 @@ import com.codingapi.tx.client.support.rpc.RpcExecuteService;
 import com.codingapi.tx.client.support.rpc.TransactionCmd;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TxClientException;
-import com.codingapi.tx.commons.rpc.params.NotifyConnectParams;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
+import com.codingapi.tx.spi.rpc.params.NotifyConnectParams;
 import com.codingapi.tx.spi.rpc.RpcClientInitializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +24,6 @@ import java.net.InetSocketAddress;
 public class RpcNotifyConnectService implements RpcExecuteService {
 
 
-    @Autowired
-    private ProtostuffSerializer protostuffSerializer;
 
     @Autowired
     private RpcClientInitializer rpcClientInitializer;
@@ -37,8 +34,7 @@ public class RpcNotifyConnectService implements RpcExecuteService {
 
             log.info("transactionCmd->{}", transactionCmd);
 
-            NotifyConnectParams notifyConnectParams =
-                    protostuffSerializer.deSerialize(transactionCmd.getMsg().getBytes(), NotifyConnectParams.class);
+            NotifyConnectParams notifyConnectParams = transactionCmd.getMsg().loadData(NotifyConnectParams.class);
 
             log.info("notifyConnectParams->{}", notifyConnectParams);
 

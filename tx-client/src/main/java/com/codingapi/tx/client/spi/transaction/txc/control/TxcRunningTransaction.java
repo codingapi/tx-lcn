@@ -9,7 +9,6 @@ import com.codingapi.tx.client.support.common.template.TransactionControlTemplat
 import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.RollbackInfo;
 import com.codingapi.tx.commons.exception.TransactionClearException;
 import com.codingapi.tx.commons.exception.TxClientException;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,17 +29,14 @@ public class TxcRunningTransaction implements TXLCNTransactionControl {
 
     private final TransactionControlTemplate transactionControlTemplate;
 
-    private final ProtostuffSerializer protostuffSerializer;
 
     @Autowired
     public TxcRunningTransaction(TxcService txcService,
                                  TransactionCleanTemplate transactionCleanTemplate,
-                                 TransactionControlTemplate transactionControlTemplate,
-                                 ProtostuffSerializer protostuffSerializer) {
+                                 TransactionControlTemplate transactionControlTemplate) {
         this.txcService = txcService;
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.transactionControlTemplate = transactionControlTemplate;
-        this.protostuffSerializer = protostuffSerializer;
     }
 
     @Override

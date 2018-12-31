@@ -1,7 +1,7 @@
 package com.codingapi.tx.spi.rpc.util;
 
 import com.codingapi.tx.spi.rpc.dto.MessageDto;
-import com.codingapi.tx.commons.rpc.MessageConstants;
+import com.codingapi.tx.spi.rpc.MessageConstants;
 
 /**
  * Description:

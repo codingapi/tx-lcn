@@ -1,6 +1,6 @@
 package com.codingapi.tx.spi.rpc.netty.handler;
 
-import com.codingapi.tx.commons.rpc.MessageConstants;
+import com.codingapi.tx.spi.rpc.MessageConstants;
 import com.codingapi.tx.commons.util.RandomUtils;
 import com.codingapi.tx.spi.rpc.ClientInitCallBack;
 import com.codingapi.tx.spi.rpc.dto.MessageDto;

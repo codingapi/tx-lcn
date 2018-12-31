@@ -1,12 +1,12 @@
 package com.codingapi.tx.manager.support.rpc;
 
 import com.codingapi.tx.commons.exception.SerializerException;
-import com.codingapi.tx.commons.rpc.MessageConstants;
-import com.codingapi.tx.commons.rpc.params.NotifyConnectParams;
-import com.codingapi.tx.commons.rpc.params.GetAspectLogParams;
+import com.codingapi.tx.commons.util.serializer.SerializerContext;
+import com.codingapi.tx.spi.rpc.MessageConstants;
+import com.codingapi.tx.spi.rpc.params.NotifyConnectParams;
+import com.codingapi.tx.spi.rpc.params.GetAspectLogParams;
 import com.codingapi.tx.spi.rpc.dto.MessageDto;
-import com.codingapi.tx.commons.rpc.params.NotifyUnitParams;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
+import com.codingapi.tx.spi.rpc.params.NotifyUnitParams;
 
 import java.util.Objects;
 
@@ -17,11 +17,10 @@ import java.util.Objects;
  */
 public class MessageCreator {
 
-    private static final ProtostuffSerializer SERIALIZER = new ProtostuffSerializer();
 
     private static byte[] serialize(Object obj) {
         try {
-            return SERIALIZER.serialize(obj);
+            return SerializerContext.getInstance().serialize(obj);
         } catch (SerializerException e) {
             throw new RuntimeException(e);
         }

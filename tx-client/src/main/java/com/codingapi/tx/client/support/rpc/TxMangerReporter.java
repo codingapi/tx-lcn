@@ -1,6 +1,6 @@
 package com.codingapi.tx.client.support.rpc;
 
-import com.codingapi.tx.commons.rpc.params.TxExceptionParams;
+import com.codingapi.tx.spi.rpc.params.TxExceptionParams;
 import com.codingapi.tx.spi.rpc.RpcClient;
 import com.codingapi.tx.spi.rpc.exception.RpcException;
 import lombok.extern.slf4j.Slf4j;

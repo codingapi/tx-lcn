@@ -6,7 +6,7 @@ import com.codingapi.tx.spi.rpc.RpcClient;
 import com.codingapi.tx.spi.rpc.dto.MessageDto;
 import com.codingapi.tx.spi.rpc.dto.RpcCmd;
 import com.codingapi.tx.spi.rpc.exception.RpcException;
-import com.codingapi.tx.commons.rpc.LCNCmdType;
+import com.codingapi.tx.spi.rpc.LCNCmdType;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;

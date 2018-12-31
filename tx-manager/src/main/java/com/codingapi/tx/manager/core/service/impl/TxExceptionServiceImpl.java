@@ -3,20 +3,19 @@ package com.codingapi.tx.manager.core.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TxManagerException;
-import com.codingapi.tx.commons.rpc.params.TxExceptionParams;
 import com.codingapi.tx.commons.util.Transactions;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
 import com.codingapi.tx.logger.TxLogger;
+import com.codingapi.tx.manager.core.restapi.model.ExceptionInfo;
+import com.codingapi.tx.manager.core.restapi.model.ExceptionList;
 import com.codingapi.tx.manager.core.service.TxExceptionService;
 import com.codingapi.tx.manager.core.service.WriteTxExceptionDTO;
 import com.codingapi.tx.manager.db.domain.TxException;
 import com.codingapi.tx.manager.db.mapper.TxExceptionMapper;
-import com.codingapi.tx.manager.core.restapi.model.ExceptionInfo;
-import com.codingapi.tx.manager.core.restapi.model.ExceptionList;
 import com.codingapi.tx.manager.support.rpc.MessageCreator;
 import com.codingapi.tx.spi.rpc.RpcClient;
 import com.codingapi.tx.spi.rpc.dto.MessageDto;
 import com.codingapi.tx.spi.rpc.exception.RpcException;
+import com.codingapi.tx.spi.rpc.params.TxExceptionParams;
 import com.codingapi.tx.spi.rpc.util.MessageUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -45,18 +44,14 @@ public class TxExceptionServiceImpl implements TxExceptionService {
 
     private final RpcClient rpcClient;
 
-    private final ProtostuffSerializer protostuffSerializer;
-
     @Autowired
     private TxLogger txLogger;
 
     @Autowired
     public TxExceptionServiceImpl(TxExceptionMapper txExceptionMapper,
-                                  RpcClient rpcClient,
-                                  ProtostuffSerializer protostuffSerializer) {
+                                  RpcClient rpcClient) {
         this.txExceptionMapper = txExceptionMapper;
         this.rpcClient = rpcClient;
-        this.protostuffSerializer = protostuffSerializer;
     }
 
     @Override
@@ -125,7 +120,7 @@ public class TxExceptionServiceImpl implements TxExceptionService {
             for (String mod : modList) {
                 MessageDto messageDto = rpcClient.request(mod, MessageCreator.getAspectLog(groupId, unitId));
                 if (MessageUtils.statusOk(messageDto)) {
-                    return protostuffSerializer.deSerialize(messageDto.getBytes(), JSONObject.class);
+                    return messageDto.loadData(JSONObject.class);
                 }
             }
             throw new TxManagerException("non exists aspect log");

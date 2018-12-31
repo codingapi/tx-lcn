@@ -4,7 +4,7 @@ import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.FieldCl
 import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.FieldValue;
 import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.ModifiedRecord;
 import com.codingapi.tx.commons.exception.SerializerException;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
+import com.codingapi.tx.commons.util.serializer.SerializerContext;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -50,8 +50,6 @@ public class SqlUtils {
 
     public static final String LOCK_IN_SHARE_MODE = "LOCK IN SHARE MODE";
 
-
-    private static ProtostuffSerializer PROTO_STUFF_SERIALIZER = new ProtostuffSerializer();
 
     /**
      * 从完全标识字段名获取表名
@@ -113,7 +111,7 @@ public class SqlUtils {
      */
     public static byte[] objectToBlob(Object o) {
         try {
-            return PROTO_STUFF_SERIALIZER.serialize(o);
+            return SerializerContext.getInstance().serialize(o);
         } catch (SerializerException e) {
             throw new RuntimeException(e);
         }
@@ -129,7 +127,7 @@ public class SqlUtils {
      */
     public static <T> T blobToObject(byte[] blob, Class<T> type) {
         try {
-            return PROTO_STUFF_SERIALIZER.deSerialize(blob, type);
+            return SerializerContext.getInstance().deSerialize(blob, type);
         } catch (SerializerException e) {
             throw new RuntimeException(e);
         }

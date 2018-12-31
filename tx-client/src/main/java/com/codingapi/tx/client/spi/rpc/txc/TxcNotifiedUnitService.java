@@ -2,7 +2,6 @@ package com.codingapi.tx.client.spi.rpc.txc;
 
 import com.codingapi.tx.client.support.common.DefaultNotifiedUnitService;
 import com.codingapi.tx.client.support.common.template.TransactionCleanTemplate;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class TxcNotifiedUnitService extends DefaultNotifiedUnitService {
 
     @Autowired
-    public TxcNotifiedUnitService(TransactionCleanTemplate transactionCleanTemplate, ProtostuffSerializer protostuffSerializer) {
-        super(transactionCleanTemplate, protostuffSerializer);
+    public TxcNotifiedUnitService(TransactionCleanTemplate transactionCleanTemplate) {
+        super(transactionCleanTemplate);
     }
 }

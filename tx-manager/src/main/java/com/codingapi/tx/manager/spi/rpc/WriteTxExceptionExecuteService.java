@@ -2,12 +2,11 @@ package com.codingapi.tx.manager.spi.rpc;
 
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TxManagerException;
-import com.codingapi.tx.commons.rpc.params.TxExceptionParams;
-import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
-import com.codingapi.tx.manager.support.rpc.RpcExecuteService;
-import com.codingapi.tx.manager.support.TransactionCmd;
 import com.codingapi.tx.manager.core.service.TxExceptionService;
 import com.codingapi.tx.manager.core.service.WriteTxExceptionDTO;
+import com.codingapi.tx.manager.support.TransactionCmd;
+import com.codingapi.tx.manager.support.rpc.RpcExecuteService;
+import com.codingapi.tx.spi.rpc.params.TxExceptionParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,22 +23,18 @@ import java.util.Objects;
 @Slf4j
 public class WriteTxExceptionExecuteService implements RpcExecuteService {
 
-    private final ProtostuffSerializer protostuffSerializer;
 
     private final TxExceptionService compensationService;
 
     @Autowired
-    public WriteTxExceptionExecuteService(ProtostuffSerializer protostuffSerializer,
-                                          TxExceptionService compensationService) {
-        this.protostuffSerializer = protostuffSerializer;
+    public WriteTxExceptionExecuteService(TxExceptionService compensationService) {
         this.compensationService = compensationService;
     }
 
     @Override
     public Object execute(TransactionCmd transactionCmd) throws TxManagerException {
         try {
-            TxExceptionParams txExceptionParams =
-                    protostuffSerializer.deSerialize(transactionCmd.getMsg().getBytes(), TxExceptionParams.class);
+            TxExceptionParams txExceptionParams = transactionCmd.getMsg().loadData(TxExceptionParams.class);
             WriteTxExceptionDTO writeTxExceptionReq = new WriteTxExceptionDTO();
             writeTxExceptionReq.setClientAddress(transactionCmd.getRemoteKey());
             writeTxExceptionReq.setTransactionState(txExceptionParams.getTransactionState());

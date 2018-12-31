@@ -1,7 +1,7 @@
 package com.codingapi.tx.manager.support;
 
 
-import com.codingapi.tx.commons.rpc.LCNCmdType;
+import com.codingapi.tx.spi.rpc.LCNCmdType;
 import com.codingapi.tx.spi.rpc.dto.MessageDto;
 import lombok.Data;
 

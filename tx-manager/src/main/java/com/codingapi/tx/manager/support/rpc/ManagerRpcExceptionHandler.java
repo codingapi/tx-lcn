@@ -1,6 +1,6 @@
 package com.codingapi.tx.manager.support.rpc;
 
-import com.codingapi.tx.commons.rpc.params.NotifyUnitParams;
+import com.codingapi.tx.spi.rpc.params.NotifyUnitParams;
 import com.codingapi.tx.manager.core.service.TxExceptionService;
 import com.codingapi.tx.manager.core.service.WriteTxExceptionDTO;
 import com.codingapi.tx.spi.rpc.RpcClient;
