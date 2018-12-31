@@ -13,7 +13,7 @@ public interface RpcServerInitializer {
 
 
     /**
-     * rpc server init
+     * support server init
      *
      * @param managerProperties   配置信息
      */

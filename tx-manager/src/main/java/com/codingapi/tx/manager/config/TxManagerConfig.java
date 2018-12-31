@@ -22,7 +22,7 @@ public class TxManagerConfig {
     private String managerHost;
 
     /**
-     * rpc  rpcPort
+     * support  rpcPort
      */
     private int rpcPort;
 

@@ -2,7 +2,6 @@ package com.codingapi.tx.spi.rpc.netty;
 
 import com.codingapi.tx.spi.rpc.ClientInitCallBack;
 import com.codingapi.tx.spi.rpc.RpcAnswer;
-import com.codingapi.tx.spi.rpc.dto.RpcCmd;
 import com.codingapi.tx.spi.rpc.netty.bean.RpcCmdContext;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +23,7 @@ import javax.annotation.PostConstruct;
 @Configuration
 @ComponentScan
 @Slf4j
-@ConfigurationProperties("tx-lcn.rpc")
+@ConfigurationProperties("tx-lcn.rpc.netty")
 @Data
 public class RpcNettyConfiguration {
 

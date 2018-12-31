@@ -83,7 +83,7 @@ public class SimpleDTXChecking implements DTXChecking {
                 String channel = rpcClient.loadRemoteKey();
                 MessageDto messageDto = rpcClient.request(channel, MessageCreator.askTransactionState(groupId, unitId));
                 int state = protostuffSerializer.deSerialize(messageDto.getBytes(), Short.class);
-                log.info("rpc > ask transaction state:{}", state);
+                log.info("support > ask transaction state:{}", state);
                 txLogger.trace(groupId, unitId, Transactions.TAG_TASK, "ask transaction state " + state);
                 if (state == -1) {
                     log.error("delay clean transaction error.");

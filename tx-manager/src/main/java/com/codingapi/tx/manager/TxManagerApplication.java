@@ -1,7 +1,7 @@
 package com.codingapi.tx.manager;
 
 import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
-import com.codingapi.tx.manager.rpc.TxManagerManagerRefreshing;
+import com.codingapi.tx.manager.support.TxManagerManagerRefreshing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

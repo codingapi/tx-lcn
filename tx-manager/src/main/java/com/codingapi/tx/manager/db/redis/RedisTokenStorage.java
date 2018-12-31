@@ -1,6 +1,6 @@
 package com.codingapi.tx.manager.db.redis;
 
-import com.codingapi.tx.manager.restapi.auth.sauth.token.TokenStorage;
+import com.codingapi.tx.manager.core.restapi.auth.sauth.token.TokenStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;

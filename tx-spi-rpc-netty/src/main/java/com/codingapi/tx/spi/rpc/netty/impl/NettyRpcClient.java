@@ -55,7 +55,7 @@ public class NettyRpcClient implements RpcClient {
         rpcCmd.setKey(key);
         rpcCmd.setRemoteKey(remoteKey);
         MessageDto result = request(rpcCmd);
-        log.debug("rpc > request > used time: {} ms", System.currentTimeMillis() - startTime);
+        log.debug("cmd request used time: {} ms", System.currentTimeMillis() - startTime);
         return result;
     }
 

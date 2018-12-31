@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @description
  */
 @Data
-@ConfigurationProperties(value = "tx-lcn.log.db")
+@ConfigurationProperties(value = "tx-lcn.aspect.log")
 public class AspectLogDbProperties {
 
     private String filePath;
