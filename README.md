@@ -1,4 +1,4 @@
-# LCN分布式事务框架v4.0
+# LCN分布式事务框架v4.0 for springboot2.0.x
 
   "LCN并不生产事务，LCN只是本地事务的协调者"
 
