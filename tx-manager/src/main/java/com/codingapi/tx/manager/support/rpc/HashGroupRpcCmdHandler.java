@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Description:
@@ -36,6 +37,20 @@ public class HashGroupRpcCmdHandler {
         for (int i = 0; i < this.concurrentLevel; i++) {
             this.executors.add(Executors.newSingleThreadExecutor(r -> new Thread(r, "tx-cmd-executor")));
         }
+
+        // 等待线程池任务完成
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            for(ExecutorService executorService:executors){
+                executorService.shutdown();
+            }
+            for(ExecutorService executorService:executors){
+                try {
+                    executorService.awaitTermination(10, TimeUnit.MINUTES);
+                } catch (InterruptedException ignored) {
+                }
+            }
+        }));
+
     }
 
     public void handleMessage(RpcCmd rpcCmd) {

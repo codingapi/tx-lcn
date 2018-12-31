@@ -5,9 +5,13 @@ import com.codingapi.tx.manager.config.TxManagerConfig;
 import com.codingapi.tx.manager.db.ManagerStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.ConnectException;
 import java.util.List;
 
 /**
@@ -45,11 +49,25 @@ public class TxManagerManagerRefreshing {
             String url = String.format(managerRefreshUrl,address);
             log.info("url->{}",url);
             try {
-                boolean res =  restTemplate.postForObject(String.format(managerRefreshUrl,address), notifyConnectParams,Boolean.class);
-                log.info("manager refresh res->{}",res);
+                ResponseEntity<Boolean> res =  restTemplate.postForEntity(String.format(managerRefreshUrl,address), notifyConnectParams,Boolean.class);
+                if(res.getStatusCode().equals(HttpStatus.OK)||res.getStatusCode().is5xxServerError()) {
+                    log.info("manager refresh res->{}", res);
+                }else{
+                    managerStorage.remove(address);
+                }
             }catch (Exception e){
-                managerStorage.remove(address);
                 log.error("manager refresh error ",e);
+
+                //check exception then remove.
+                if( e instanceof ResourceAccessException){
+                    ResourceAccessException resourceAccessException = (ResourceAccessException)e;
+
+                    if(resourceAccessException.getCause()!=null && resourceAccessException.getCause() instanceof ConnectException){
+                        //can't access .
+                        managerStorage.remove(address);
+                    }
+                }
+
             }
         }
     }
