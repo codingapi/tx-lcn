@@ -32,4 +32,17 @@ public @interface TxTransaction {
      */
     Class<? extends Throwable>[] noRollbackFor() default {};
 
+    /**
+     * 事务模式 仅在事务发起方配置有效
+     * @return
+     */
+    TxTransactionMode mode() default TxTransactionMode.TX_MODE_LCN;
+
+    /**
+     * 标示本服务是否是只读
+     * 若为true : 不会加入事务组; Connection 不会被 Wrap; 事务信息能正常传递
+     * 在本服务无DB操作或仅有查询时请配置 true 将提高性能
+     * 若应用都没有DB配置，此配置无意义不用设值
+     */
+    boolean readOnly() default false;
 }

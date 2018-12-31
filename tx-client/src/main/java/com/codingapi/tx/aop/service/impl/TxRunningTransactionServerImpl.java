@@ -26,19 +26,18 @@ import java.util.concurrent.TimeUnit;
 @Service(value = "txRunningTransactionServer")
 public class TxRunningTransactionServerImpl implements TransactionServer {
 
-
     @Autowired
     private MQTxManagerService txManagerService;
 
-
     @Autowired
     private ILCNTransactionControl transactionControl;
-
 
     private Logger logger = LoggerFactory.getLogger(TxRunningTransactionServerImpl.class);
 
     @Override
     public Object execute(final ProceedingJoinPoint point, final TxTransactionInfo info) throws Throwable {
+
+        logger.info("事务参与方...");
 
         String kid = KidUtils.generateShortUuid();
         String txGroupId = info.getTxGroupId();
@@ -47,15 +46,14 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
 
         boolean isHasIsGroup =  transactionControl.hasGroup(txGroupId);
 
-
         TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
         txTransactionLocal.setGroupId(txGroupId);
         txTransactionLocal.setHasStart(false);
         txTransactionLocal.setKid(kid);
         txTransactionLocal.setHasIsGroup(isHasIsGroup);
         txTransactionLocal.setMaxTimeOut(Constants.txServer.getCompensateMaxWaitTime());
+        txTransactionLocal.setMode(info.getMode());
         TxTransactionLocal.setCurrent(txTransactionLocal);
-
 
         try {
 
@@ -94,6 +92,19 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
 
             return res;
         } catch (Throwable e) {
+            // 这里处理以下情况：当 point.proceed() 业务代码中 db事务正常提交，开始等待，后续处理发生异常。
+            // 由于没有加入事务组，不会收到通知。这里唤醒并回滚
+            if(!isHasIsGroup) {
+                String type = txTransactionLocal.getType();
+                TxTask waitTask = TaskGroupManager.getInstance().getTask(kid, type);
+                // 有一定几率不能唤醒: wait的代码是在另一个线程，有可能线程还没执行到wait，先执行到了这里
+                // TODO 要不要 sleep 1毫秒
+                logger.warn("wake the waitTask: {}", (waitTask != null && waitTask.isAwait()));
+                if (waitTask != null && waitTask.isAwait()) {
+                    waitTask.setState(-1);
+                    waitTask.signalTask();
+                }
+            }
             throw e;
         } finally {
             TxTransactionLocal.setCurrent(null);

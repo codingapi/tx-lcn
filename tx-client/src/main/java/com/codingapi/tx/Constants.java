@@ -15,4 +15,9 @@ public class Constants {
      */
     public static TxServer txServer;
 
+    /**
+     * 主切面的 order值
+     */
+    public static final int ASPECT_ORDER = 1000;
+
 }

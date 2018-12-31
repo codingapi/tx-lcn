@@ -22,7 +22,6 @@ import java.util.concurrent.Executor;
 /**
  * create by lorne on 2017/7/29
  */
-
 public class LCNDBConnection extends AbstractTransactionThread implements LCNConnection {
 
 
@@ -88,6 +87,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
         isClose.set(true);
     }
 
+    @Override
     protected void closeConnection() throws SQLException {
         runnable.close(this);
         connection.close();
@@ -138,6 +138,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
         connection.rollback();
     }
 
+    @Override
     public void transaction() throws SQLException {
         if (waitTask == null) {
             rollbackConnection();
@@ -152,12 +153,12 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("auto execute ,groupId:" + getGroupId());
+                logger.info("auto execute ,groupId:" + getGroupId());
                 dataSourceService.schedule(getGroupId(), waitTask);
             }
         }, maxOutTime);
 
-        System.out.println("transaction is wait for TxManager notify, groupId : " + getGroupId());
+        logger.info("transaction is wait for TxManager notify, groupId {}", getGroupId());
 
         waitTask.awaitTask();
 
@@ -173,10 +174,10 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
                 rollbackConnection();
             }
 
-            System.out.println("lcn transaction over, res -> groupId:"+getGroupId()+" and  state is "+(rs==1?"commit":"rollback"));
+            logger.info("lcn transaction over, res -> groupId:"+getGroupId()+" and  state is "+(rs==1?"commit":"rollback"));
 
         }catch (SQLException e){
-            System.out.println("lcn transaction over,but connection is closed, res -> groupId:"+getGroupId());
+            logger.info("lcn transaction over,but connection is closed, res -> groupId:"+getGroupId());
 
             waitTask.setState(TaskState.connectionError.getCode());
         }
@@ -186,10 +187,12 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
 
     }
 
+    @Override
     public String getGroupId() {
         return groupId;
     }
 
+    @Override
     public TxTask getWaitTask() {
         return waitTask;
     }

@@ -13,6 +13,8 @@ import com.lorne.core.framework.utils.task.IBack;
 import com.lorne.core.framework.utils.task.Task;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class NettyControlServiceImpl implements NettyControlService {
 
+    private Logger logger = LoggerFactory.getLogger(NettyControlServiceImpl.class);
 
     @Autowired
     private NettyService nettyService;
@@ -49,18 +52,15 @@ public class NettyControlServiceImpl implements NettyControlService {
 
     @Override
     public void uploadModelInfo() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!SocketManager.getInstance().isNetState()|| !IpAddressUtils.isIpAddress(modelNameService.getIpAddress())) {
-                    try {
-                        Thread.sleep(1000 * 5);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        new Thread(() -> {
+            while (!SocketManager.getInstance().isNetState()|| !IpAddressUtils.isIpAddress(modelNameService.getIpAddress())) {
+                try {
+                    Thread.sleep(1000 * 5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                mqTxManagerService.uploadModelInfo();
             }
+            mqTxManagerService.uploadModelInfo();
         }).start();
     }
 
@@ -71,12 +71,15 @@ public class NettyControlServiceImpl implements NettyControlService {
             JSONObject resObj = JSONObject.parseObject(json);
             if (resObj.containsKey("a")) {
                 // tm发送数据给tx模块的处理指令
-
+                logger.info("receive cmd -> {}", json);
                 transactionControlService.notifyTransactionMsg(ctx,resObj,json);
             }else{
                 //tx发送数据给tm的响应返回数据
 
                 String key = resObj.getString("k");
+                if (!"h".equals(key)) {
+                    logger.info("receive response -> {}", json);
+                }
                 responseMsg(key,resObj);
             }
         }

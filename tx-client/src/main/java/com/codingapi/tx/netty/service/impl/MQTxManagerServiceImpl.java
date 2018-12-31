@@ -1,18 +1,16 @@
 package com.codingapi.tx.netty.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.codingapi.tx.aop.bean.TxCompensateLocal;
 import com.codingapi.tx.aop.bean.TxTransactionInfo;
 import com.codingapi.tx.compensate.model.CompensateInfo;
 import com.codingapi.tx.compensate.service.CompensateService;
-import com.codingapi.tx.config.ConfigReader;
 import com.codingapi.tx.framework.utils.SerializerUtils;
 import com.codingapi.tx.framework.utils.SocketManager;
 import com.codingapi.tx.listener.service.ModelNameService;
 import com.codingapi.tx.model.Request;
 import com.codingapi.tx.model.TxGroup;
+import com.codingapi.tx.netty.service.MQTxManagerFeginService;
 import com.codingapi.tx.netty.service.MQTxManagerService;
-import com.codingapi.tx.netty.service.TxManagerHttpRequestHelper;
 import com.lorne.core.framework.utils.encode.Base64Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,14 +26,10 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
     private ModelNameService modelNameService;
 
     @Autowired
-    private ConfigReader configReader;
-
-    @Autowired
     private CompensateService compensateService;
 
     @Autowired
-    private TxManagerHttpRequestHelper managerHelper;
-
+    private MQTxManagerFeginService mqTxManagerFeginService;
 
     @Override
     public void createTransactionGroup(String groupId) {
@@ -56,7 +50,6 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
         String json =  SocketManager.getInstance().sendMsg(request);
         return TxGroup.parser(json);
     }
-
 
     @Override
     public int closeTransactionGroup(final String groupId, final int state) {
@@ -100,8 +93,7 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
     @Override
     public int cleanNotifyTransactionHttp(String groupId, String waitTaskId) {
-        String url = configReader.getTxUrl() + "cleanNotifyTransactionHttp?groupId=" + groupId + "&taskId=" + waitTaskId;
-        String clearRes = managerHelper.httpGet(url);
+        String clearRes = mqTxManagerFeginService.cleanNotifyTransactionHttp(groupId, waitTaskId);
         if(clearRes==null){
             return -1;
         }
@@ -111,8 +103,7 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
     @Override
     public String httpGetServer() {
-        String url = configReader.getTxUrl() + "getServer";
-        return managerHelper.httpGet(url);
+        return mqTxManagerFeginService.getServer();
     }
 
     @Override
@@ -133,7 +124,7 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
 
         CompensateInfo compensateInfo = new CompensateInfo(currentTime, modelName, uniqueKey, data, methodStr, className, groupId, address, time,startError);
 
-        String json = managerHelper.httpPost(configReader.getTxUrl() + "sendCompensateMsg", compensateInfo.toParamsString());
+        String json = mqTxManagerFeginService.sendCompensateMsg(currentTime, groupId, modelName, address, uniqueKey, className, methodStr, data, time,startError);
 
         compensateInfo.setResJson(json);
 

@@ -22,11 +22,13 @@ public class TxManagerInterceptor {
 
     public Object around(ProceedingJoinPoint point) throws Throwable {
         String groupId = null;
+        String mode = null;
         try {
             RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
             HttpServletRequest request = requestAttributes == null ? null : ((ServletRequestAttributes) requestAttributes).getRequest();
             groupId = request == null ? null : request.getHeader("tx-group");
+            mode = request == null ? null : request.getHeader("tx-mode");
         }catch (Exception e){}
-        return aspectBeforeService.around(groupId, point);
+        return aspectBeforeService.around(groupId, point, mode);
     }
 }

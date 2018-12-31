@@ -1,6 +1,0 @@
-com.codingapi.tx.motan.balance.ActiveWeightLoadBalanceProxy
-com.codingapi.tx.motan.balance.LocalFirstLoadBalanceProxy
-com.codingapi.tx.motan.balance.RandomLoadBalanceProxy
-com.codingapi.tx.motan.balance.RoundRobinLoadBalanceProxy
-com.codingapi.tx.motan.balance.ConfigurableWeightLoadBalanceProxy
-com.codingapi.tx.motan.balance.ConsistentHashLoadBalanceProxy

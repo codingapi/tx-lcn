@@ -30,11 +30,11 @@
 
 ## 目录说明
 
-transaction-dubbo LCN dubbo rpc框架扩展支持
+extensions feign扩展配置类
+
+springcloud-lcn-demo demo案例
 
 transaction-springcloud LCN springcloud rpc框架扩展支持
-
-transaction-motan LCN motan rpc框架扩展支持
 
 tx-client 是LCN核心tx模块端控制框架
 
@@ -48,7 +48,6 @@ tx-plugins-db 是LCN 对关系型数据库的插件支持
 分布式事务发起方：
 
 ```
-
     @Override
     @TxTransaction(isStart=true)
     @Transactional
@@ -61,13 +60,10 @@ tx-plugins-db 是LCN 对关系型数据库的插件支持
         int v = 100/0;
         return true;
     }
-    
-    
 ```
 
 分布式事务被调用方(test2Service的业务实现类)
 ```
-
     @Override
     @Transactional
     @TxTransaction
@@ -76,7 +72,6 @@ tx-plugins-db 是LCN 对关系型数据库的插件支持
         testDao.save();
         return true;
     }
-
 ```
 
 如上代码执行完成以后两个模块都将回滚事务。
@@ -119,26 +114,11 @@ tx-plugins-db 是LCN 对关系型数据库的插件支持
     <version>${lcn.last.version}</version>
 </dependency>
 
-
 <dependency>
     <groupId>com.codingapi</groupId>
     <artifactId>tx-plugins-db</artifactId>
     <version>${lcn.last.version}</version>
 </dependency>
-
-
-<dependency>
-    <groupId>com.codingapi</groupId>
-    <artifactId>transaction-dubbo</artifactId>
-    <version>${lcn.last.version}</version>
-</dependency>      
-
-<dependency>
-    <groupId>com.codingapi</groupId>
-    <artifactId>transaction-motan</artifactId>
-    <version>${lcn.last.version}</version>
-</dependency>  
-
 
 <dependency>
     <groupId>com.codingapi</groupId>
@@ -148,19 +128,6 @@ tx-plugins-db 是LCN 对关系型数据库的插件支持
         
 ```
 
-依赖gradle等形式，见中心库   
-
-[http://mvnrepository.com/search?q=codingapi](http://mvnrepository.com/search?q=codingapi)
-
-
 ## demo演示教程
 
-每个demo下有区分为 jdbc/hibernate/mybatis不同框架的版本demo
-
-[springcloud版本](https://github.com/codingapi/springcloud-lcn-demo)
-
-[dubbo版本](https://github.com/codingapi/dubbo-lcn-demo)
-
-[motan版本](https://gitee.com/zfvipCase/motan-lcn-demo)
-
-技术交流群：554855843
+[springcloud版本](https://github.com/yizhishang/tx-lcn/tree/springcloud-2.0.4/springcloud-lcn-demo)

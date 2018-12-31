@@ -6,6 +6,8 @@ import com.codingapi.tm.compensate.model.TransactionCompensateMsg;
 import com.codingapi.tm.config.ConfigReader;
 import com.codingapi.tm.redis.service.RedisServerService;
 import com.lorne.core.framework.utils.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import java.util.List;
 @Service
 public class CompensateDaoImpl implements CompensateDao {
 
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private RedisServerService redisServerService;
@@ -33,6 +36,7 @@ public class CompensateDaoImpl implements CompensateDao {
 
         String json = JSON.toJSONString(transactionCompensateMsg);
 
+        logger.debug("保存补偿数据至redis: {}", json);
         redisServerService.saveCompensateMsg(name, json);
 
         return name;

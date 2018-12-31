@@ -6,10 +6,14 @@ import com.codingapi.tm.framework.utils.SocketManager;
 import com.codingapi.tm.manager.service.MicroService;
 import com.codingapi.tm.model.TxServer;
 import com.codingapi.tm.model.TxState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -23,6 +27,7 @@ import java.util.regex.Pattern;
 @Service
 public class MicroServiceImpl implements MicroService {
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private RestTemplate restTemplate;
@@ -34,7 +39,11 @@ public class MicroServiceImpl implements MicroService {
     @Autowired
     private DiscoveryClient discoveryClient;
 
-
+    /**
+     * 服务注册
+     */
+    @Autowired
+    private Registration registration;
 
     private boolean isIp(String ipAddress) {
         String ip = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
@@ -43,15 +52,14 @@ public class MicroServiceImpl implements MicroService {
         return matcher.matches();
     }
 
-
-
     @Override
     public TxState getState() {
         TxState state = new TxState();
-        String ipAddress = discoveryClient.getLocalServiceInstance().getHost();
+        String ipAddress = registration.getHost();
         if(!isIp(ipAddress)){
             ipAddress = "127.0.0.1";
         }
+        logger.info("ipAddress: {}, port: {}", ipAddress, Constants.socketPort);
         state.setIp(ipAddress);
         state.setPort(Constants.socketPort);
         state.setMaxConnection(SocketManager.getInstance().getMaxConnection());

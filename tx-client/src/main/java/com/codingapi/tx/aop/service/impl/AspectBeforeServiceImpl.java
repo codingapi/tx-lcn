@@ -1,6 +1,7 @@
 package com.codingapi.tx.aop.service.impl;
 
 import com.codingapi.tx.annotation.TxTransaction;
+import com.codingapi.tx.annotation.TxTransactionMode;
 import com.codingapi.tx.aop.bean.TxTransactionInfo;
 import com.codingapi.tx.aop.bean.TxTransactionLocal;
 import com.codingapi.tx.aop.service.AspectBeforeService;
@@ -28,8 +29,8 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
 
     private Logger logger = LoggerFactory.getLogger(AspectBeforeServiceImpl.class);
 
-
-    public Object around(String groupId, ProceedingJoinPoint point) throws Throwable {
+    @Override
+    public Object around(String groupId, ProceedingJoinPoint point, String mode) throws Throwable {
 
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
@@ -46,6 +47,11 @@ public class AspectBeforeServiceImpl implements AspectBeforeService {
         TransactionInvocation invocation = new TransactionInvocation(clazz, thisMethod.getName(), thisMethod.toString(), args, method.getParameterTypes());
 
         TxTransactionInfo info = new TxTransactionInfo(transaction,txTransactionLocal,invocation,groupId);
+        try {
+            info.setMode(TxTransactionMode.valueOf(mode));
+        } catch (Exception e) {
+            info.setMode(TxTransactionMode.TX_MODE_LCN);
+        }
 
         TransactionServer server = transactionServerFactoryService.createTransactionServer(info);
 

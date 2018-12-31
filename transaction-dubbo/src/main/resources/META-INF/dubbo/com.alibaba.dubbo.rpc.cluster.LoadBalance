@@ -1,4 +1,0 @@
-lcn_random = com.codingapi.tx.dubbo.balance.RandomLoadBalanceProxy
-lcn_roundrobin = com.codingapi.tx.dubbo.balance.RoundRobinLoadBalanceProxy
-lcn_leastactive = com.codingapi.tx.dubbo.balance.LeastActiveLoadBalanceProxy
-lcn_consistenthash = com.codingapi.tx.dubbo.balance.ConsistentHashLoadBalanceProxy

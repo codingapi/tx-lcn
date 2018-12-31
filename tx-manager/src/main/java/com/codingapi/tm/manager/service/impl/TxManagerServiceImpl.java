@@ -23,8 +23,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class TxManagerServiceImpl implements TxManagerService {
 
-
-
     @Autowired
     private ConfigReader configReader;
 
@@ -42,12 +40,12 @@ public class TxManagerServiceImpl implements TxManagerService {
     @Autowired
     private CompensateService compensateService;
 
-
     private Logger logger = LoggerFactory.getLogger(TxManagerServiceImpl.class);
 
 
     @Override
     public TxGroup createTransactionGroup(String groupId) {
+        logger.info("创建事物组");
         TxGroup txGroup = new TxGroup();
         if (compensateService.getCompensateByGroupId(groupId)!=null) {
             txGroup.setIsCompensate(1);
@@ -65,6 +63,8 @@ public class TxManagerServiceImpl implements TxManagerService {
 
     @Override
     public TxGroup addTransactionGroup(String groupId, String taskId, int isGroup, String channelAddress, String methodStr) {
+
+        logger.info("添加事务组子对象...");
         String key = getTxGroupKey(groupId);
         TxGroup txGroup = getTxGroup(groupId);
         if (txGroup==null) {
@@ -76,7 +76,6 @@ public class TxManagerServiceImpl implements TxManagerService {
         txInfo.setAddress(Constants.address);
         txInfo.setIsGroup(isGroup);
         txInfo.setMethodStr(methodStr);
-
 
         ModelInfo modelInfo =  ModelInfoManager.getInstance().getModelByChannelName(channelAddress);
         if(modelInfo!=null) {
@@ -94,6 +93,7 @@ public class TxManagerServiceImpl implements TxManagerService {
 
     @Override
     public boolean rollbackTransactionGroup(String groupId) {
+        logger.info("设置强制回滚事务...");
         String key = getTxGroupKey(groupId);
         TxGroup txGroup = getTxGroup(groupId);
         if (txGroup==null) {
@@ -106,6 +106,7 @@ public class TxManagerServiceImpl implements TxManagerService {
 
     @Override
     public int cleanNotifyTransaction(String groupId, String taskId) {
+        logger.info("检查事务组数据...");
         int res = 0;
         logger.info("start-cleanNotifyTransaction->groupId:"+groupId+",taskId:"+taskId);
         String key = getTxGroupKey(groupId);
@@ -169,6 +170,7 @@ public class TxManagerServiceImpl implements TxManagerService {
 
     @Override
     public int closeTransactionGroup(String groupId,int state) {
+        logger.info("关闭事务组");
         String key = getTxGroupKey(groupId);
         TxGroup txGroup = getTxGroup(groupId);
         if(txGroup==null){

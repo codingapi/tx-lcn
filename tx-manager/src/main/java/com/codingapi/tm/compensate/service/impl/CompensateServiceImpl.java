@@ -114,6 +114,7 @@ public class CompensateServiceImpl implements CompensateService {
         final String json = JSON.toJSONString(transactionCompensateMsg);
         logger.info("Auto Compensate->" + json);
         //自动补偿业务执行...
+        logger.debug("自动补偿业务执行...");
         final int tryTime = configReader.getCompensateTryTime();
         boolean autoExecuteRes = false;
         try {
@@ -278,9 +279,11 @@ public class CompensateServiceImpl implements CompensateService {
                 }
             }
         }
+        logger.info("重新加载补偿数据...");
         logger.info("Compensate Loaded->"+JSON.toJSONString(txGroup));
     }
 
+    @Override
     public TxGroup getCompensateByGroupId(String groupId) {
         String json = compensateDao.getCompensateByGroupId(groupId);
         if (json == null) {

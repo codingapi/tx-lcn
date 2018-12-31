@@ -1,6 +1,7 @@
 package com.codingapi.tx.aop.bean;
 
 import com.alibaba.fastjson.JSONObject;
+import com.codingapi.tx.annotation.TxTransactionMode;
 import com.codingapi.tx.framework.utils.SocketManager;
 import com.codingapi.tx.model.Request;
 import org.apache.commons.lang.StringUtils;
@@ -18,7 +19,7 @@ public class TxTransactionLocal {
 
     private Logger logger = LoggerFactory.getLogger(TxTransactionLocal.class);
 
-    private final static ThreadLocal<TxTransactionLocal> currentLocal = new InheritableThreadLocal<TxTransactionLocal>();
+    private final static ThreadLocal<TxTransactionLocal> currentLocal = new InheritableThreadLocal<>();
 
     private String groupId;
 
@@ -47,6 +48,8 @@ public class TxTransactionLocal {
     private String type;
 
     private boolean readOnly = false;
+
+    private TxTransactionMode mode;
 
     public boolean isHasIsGroup() {
         return hasIsGroup;
@@ -106,6 +109,13 @@ public class TxTransactionLocal {
         currentLocal.set(current);
     }
 
+    public TxTransactionMode getMode() {
+        return mode;
+    }
+
+    public void setMode(TxTransactionMode mode) {
+        this.mode = mode;
+    }
 
     public void putLoadBalance(String key, String data){
         cacheModelInfo.put(key,data);
@@ -157,4 +167,14 @@ public class TxTransactionLocal {
         this.readOnly = readOnly;
     }
 
+    public static boolean isInTxcTransaction() {
+        TxTransactionLocal local = current();
+        if (local != null
+            && local.mode != null
+            && local.mode == TxTransactionMode.TX_MODE_TXC
+            && !local.isReadOnly()) {
+            return true;
+        }
+        return false;
+    }
 }

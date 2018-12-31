@@ -110,13 +110,11 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
     /**
      * 事务提交或回归
      *
-     * @param checkSate
+     * @param checkSate 1-提交事务
      */
     private boolean transaction(final TxGroup txGroup, final int checkSate) {
-
-
         if (checkSate == 1) {
-
+            logger.info("事务提交");
             //补偿请求，加载历史数据
             if (txGroup.getIsCompensate() == 1) {
                 compensateService.reloadCompensate(txGroup);
@@ -135,8 +133,8 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                             final JSONObject jsonObject = new JSONObject();
                             jsonObject.put("a", "t");
 
-
-                            if (txGroup.getIsCompensate() == 1) {   //补偿请求
+                            /** 补偿请求 **/
+                            if (txGroup.getIsCompensate() == 1) {
                                 jsonObject.put("c", txInfo.getIsCommit());
                             } else { //正常业务
                                 jsonObject.put("c", checkSate);
@@ -193,24 +191,25 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
             }
             logger.info("--->" + hasOk + ",group:" + txGroup.getGroupId() + ",state:" + checkSate + ",list:" + txGroup.toJsonString());
             return hasOk;
-        }else{
-            //回滚操作只发送通过不需要等待确认
-            for (TxInfo txInfo : txGroup.getList()) {
-                if(txInfo.getChannel()!=null) {
-                    if (txInfo.getIsGroup() == 0) {
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("a", "t");
-                        jsonObject.put("c", checkSate);
-                        jsonObject.put("t", txInfo.getKid());
-                        String key = KidUtils.generateShortUuid();
-                        jsonObject.put("k", key);
-                        txInfo.getChannel().send(jsonObject.toJSONString());
-                    }
+        }
+
+        logger.info("事务回滚");
+        //回滚操作只发送通过不需要等待确认
+        for (TxInfo txInfo : txGroup.getList()) {
+            if(txInfo.getChannel()!=null) {
+                if (txInfo.getIsGroup() == 0) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("a", "t");
+                    jsonObject.put("c", checkSate);
+                    jsonObject.put("t", txInfo.getKid());
+                    String key = KidUtils.generateShortUuid();
+                    jsonObject.put("k", key);
+                    txInfo.getChannel().send(jsonObject.toJSONString());
                 }
             }
-            txManagerService.deleteTxGroup(txGroup);
-            return true;
         }
+        txManagerService.deleteTxGroup(txGroup);
+        return true;
 
     }
 

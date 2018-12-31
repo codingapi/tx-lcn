@@ -7,5 +7,5 @@ import org.aspectj.lang.ProceedingJoinPoint;
  */
 public interface AspectBeforeService {
 
-    Object around(String groupId, ProceedingJoinPoint point) throws Throwable;
+    Object around(String groupId, ProceedingJoinPoint point, String mode) throws Throwable;
 }
