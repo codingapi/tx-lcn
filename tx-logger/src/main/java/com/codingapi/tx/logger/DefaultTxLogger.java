@@ -1,6 +1,6 @@
 package com.codingapi.tx.logger;
 
-import com.codingapi.tx.logger.db.DbProperties;
+import com.codingapi.tx.logger.db.LogDbProperties;
 import com.codingapi.tx.logger.db.TxLoggerHelper;
 import com.codingapi.tx.logger.db.TxLog;
 import lombok.extern.slf4j.Slf4j;
@@ -30,12 +30,12 @@ public class DefaultTxLogger implements TxLogger {
 
     private final TxLoggerHelper txLoggerHelper;
 
-    private final DbProperties dbProperties;
+    private final LogDbProperties dbProperties;
 
     private final ExecutorService executor;
 
     @Autowired
-    public DefaultTxLogger(DbProperties dbProperties, TxLoggerHelper txLoggerHelper) {
+    public DefaultTxLogger(LogDbProperties dbProperties, TxLoggerHelper txLoggerHelper) {
         this.dbProperties = dbProperties;
         this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         this.txLoggerHelper = txLoggerHelper;

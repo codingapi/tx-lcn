@@ -19,14 +19,14 @@ import java.util.List;
 public class TxClientConfig {
 
     /**
-     * framework order
+     * support order
      *
      * @TxTransaction aop Service
      */
     private int controlOrder = 0;
 
     /**
-     * resource order
+     * control order
      *
      * @getConnection() aop service
      */

@@ -1,7 +1,7 @@
 package com.codingapi.tx.client;
 
-import com.codingapi.tx.client.transaction.txc.sql.init.DefaultTxcSettingFactory;
-import com.codingapi.tx.client.transaction.txc.sql.init.TxcSettingFactory;
+import com.codingapi.tx.client.spi.transaction.txc.resource.sql.init.DefaultTxcSettingFactory;
+import com.codingapi.tx.client.spi.transaction.txc.resource.sql.init.TxcSettingFactory;
 import com.codingapi.tx.commons.util.serializer.ProtostuffSerializer;
 import org.apache.commons.dbutils.QueryRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

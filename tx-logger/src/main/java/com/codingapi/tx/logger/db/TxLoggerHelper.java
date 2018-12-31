@@ -1,10 +1,8 @@
 package com.codingapi.tx.logger.db;
 
 import org.apache.commons.dbutils.BasicRowProcessor;
-import org.apache.commons.dbutils.BeanProcessor;
 import org.apache.commons.dbutils.GenerousBeanProcessor;
 import org.apache.commons.dbutils.RowProcessor;
-import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,7 @@ import java.util.List;
 public class TxLoggerHelper {
 
     @Autowired
-    private DbHelper dbHelper;
+    private LogDbHelper dbHelper;
 
     private RowProcessor processor = new BasicRowProcessor(new GenerousBeanProcessor());
 
