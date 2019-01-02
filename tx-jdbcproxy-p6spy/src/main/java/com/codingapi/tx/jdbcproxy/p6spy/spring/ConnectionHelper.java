@@ -19,8 +19,9 @@ public class ConnectionHelper {
     private CompoundJdbcEventListener compoundJdbcEventListener;
 
     public Connection proxy(Connection connection){
-        ConnectionWrapper connectionWrapper = ConnectionWrapper.wrap(connection,compoundJdbcEventListener, ConnectionInformation.fromConnection(connection));
-        return connectionWrapper;
+        return ConnectionWrapper.wrap(connection,
+                compoundJdbcEventListener,
+                ConnectionInformation.fromConnection(connection));
     }
 
 

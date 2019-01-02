@@ -63,10 +63,6 @@ public class LCNTransactionBeanHelper {
 
     private final ApplicationContext spring;
 
-    public static void main(String[] args){
-        System.out.println(new LCNTransactionBeanHelper(null).getRpcBeanName(null, LCNCmdType.createGroup));
-    }
-
     @Autowired
     public LCNTransactionBeanHelper(ApplicationContext spring) {
         this.spring = spring;

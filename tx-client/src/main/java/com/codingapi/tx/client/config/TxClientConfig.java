@@ -33,7 +33,7 @@ public class TxClientConfig {
     private int resourceOrder = 0;
 
     /**
-     * txmanager managerHost
+     * txManager managerHost
      */
     private String txManagerHost;
     /**
