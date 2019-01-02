@@ -15,7 +15,7 @@ export default {
       {
         key: 'docs',
         text: 'DOCS',
-        link: '/en-us/docs/demo1.html',
+        link: '/en-us/docs/preface.html',
       },
       {
         key: 'blog',
