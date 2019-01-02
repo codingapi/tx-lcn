@@ -30,7 +30,7 @@ public class RpcCmdDecoder extends SimpleChannelInboundHandler<NettyRpcCmd> {
 
         //心态数据包直接响应
         if (cmd.getMsg() != null && MessageConstants.ACTION_RPC_HEART.equals(cmd.getMsg().getAction())) {
-            if (NettyContext.currentType().equals(NettyType.clent)) {
+            if (NettyContext.currentType().equals(NettyType.client)) {
                 ctx.writeAndFlush(cmd);
                 return;
             } else {

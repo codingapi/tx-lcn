@@ -12,7 +12,7 @@ public enum  NettyType {
     /**
      * 客户端模式
      */
-    clent,
+    client,
     /**
      * 服务端模式
      */

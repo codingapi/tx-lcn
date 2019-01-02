@@ -41,7 +41,7 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
 
     @Override
     public void init(List<TxManagerHost> hosts) {
-        NettyContext.type = NettyType.clent;
+        NettyContext.type = NettyType.client;
         NettyContext.params = hosts;
         workerGroup = new NioEventLoopGroup();
         for(TxManagerHost host:hosts){
