@@ -74,7 +74,7 @@ export default {
       {
         key: 'docs',
         text: '文档',
-        link: '/zh-cn/docs/demo1.html',
+        link: '/zh-cn/docs/preface.html',
       },
       {
         key: 'blog',
