@@ -1,5 +1,7 @@
 package com.codingapi.tx.manager.core.restapi.model;
 
+import com.alibaba.fastjson.JSONObject;
+import jdk.nashorn.api.scripting.JSObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -48,4 +50,9 @@ public class ExceptionInfo {
      * 创建时间
      */
     private Date createTime;
+
+    /**
+     * 事务信息
+     */
+    private JSONObject transactionInfo;
 }

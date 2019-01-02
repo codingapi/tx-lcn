@@ -98,6 +98,13 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         for (TxException txException : txExceptions) {
             ExceptionInfo exceptionInfo = new ExceptionInfo();
             BeanUtils.copyProperties(txException, exceptionInfo);
+            try {
+                JSONObject transactionInfo = getTransactionInfo(exceptionInfo.getGroupId(), exceptionInfo.getUnitId());
+                exceptionInfo.setTransactionInfo(transactionInfo);
+            } catch (TxManagerException e) {
+                txExceptionMapper.changeExState(txException.getId(), (short) 1);
+                exceptionInfo.setExState((short) 1);
+            }
             exceptionInfoList.add(exceptionInfo);
         }
         ExceptionList exceptionList = new ExceptionList();

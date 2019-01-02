@@ -71,15 +71,27 @@ public class AdminServiceImpl implements AdminService {
         List<TxLog> txLogs;
         if (!StringUtils.isEmpty(groupId) && !StringUtils.isEmpty(tag)) {
             total = txLoggerHelper.findByGroupAndTagTotal(groupId, tag);
+            if (total < (page - 1) * limit) {
+                page = 1;
+            }
             txLogs = txLoggerHelper.findByGroupAndTag((page - 1) * limit, limit, groupId, tag, timeOrder);
         } else if (!StringUtils.isEmpty(tag)) {
             total = txLoggerHelper.findByTagTotal(tag);
+            if (total < (page - 1) * limit) {
+                page = 1;
+            }
             txLogs = txLoggerHelper.findByTag((page - 1) * limit, limit, tag, timeOrder);
         } else if (!StringUtils.isEmpty(groupId)) {
             total = txLoggerHelper.findByGroupIdTotal(groupId);
+            if (total < (page - 1) * limit) {
+                page = 1;
+            }
             txLogs = txLoggerHelper.findByGroupId((page - 1) * limit, limit, groupId, timeOrder);
         } else {
             total = txLoggerHelper.findByLimitTotal();
+            if (total < (page - 1) * limit) {
+                page = 1;
+            }
             txLogs = txLoggerHelper.findByLimit((page - 1) * limit, limit, timeOrder);
         }
 
