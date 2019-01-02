@@ -40,6 +40,11 @@ public class ExceptionInfo {
     private int registrar;
 
     /**
+     * 异常状态 0 待处理 1已处理
+     */
+    private short exState;
+
+    /**
      * 创建时间
      */
     private Date createTime;

@@ -74,8 +74,11 @@ public class AdminController {
     @GetMapping({"/logs/{page}", "/logs/{page}/{limit}", "/logs"})
     public TxLogList txLogList(
             @RequestParam(value = "page", required = false) @PathVariable(value = "page", required = false) Integer page,
-            @RequestParam(value = "limit", required = false) @PathVariable(value = "limit", required = false) Integer limit) {
-        return adminService.txLogList(page, limit);
+            @RequestParam(value = "limit", required = false) @PathVariable(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "groupId", required = false) String groupId,
+            @RequestParam(value = "tag", required = false) String tag,
+            @RequestParam(value = "timeOrder", required = false) Integer timeOrder) {
+        return adminService.txLogList(page, limit, groupId, tag, timeOrder);
     }
 
     /**

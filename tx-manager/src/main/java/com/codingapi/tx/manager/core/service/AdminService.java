@@ -26,9 +26,12 @@ public interface AdminService {
      *
      * @param page
      * @param limit
+     * @param groupId
+     * @param tag
+     * @param timeOrder 时间排序1 顺序 2 逆序
      * @return
      */
-    TxLogList txLogList(Integer page, Integer limit);
+    TxLogList txLogList(Integer page, Integer limit, String groupId, String tag, Integer timeOrder);
 
     /**
      * 分布式事务统计信息
