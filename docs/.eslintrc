@@ -1,0 +1,28 @@
+{
+  "extends": "eslint-config-ali/react",
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "node": true,
+    "mocha": true
+  },
+  "globals": {
+    "AK_GLOBAL": true,
+    "dd": {},
+    "_czc": {},
+    "dplus": {},
+    "salt": {},
+    "_": true,
+    "homePageData": {},
+    "Lang": {}
+  },
+  "rules": {
+    "max-len": 0,
+    "new-cap": [2, { "newIsCap": true, "properties": false }],
+    "react/jsx-indent": 0,
+    "react/jsx-indent-props": 0,
+    "indent": 0,
+    "radix": ["error", "as-needed"],
+    "linebreak-style": [0 ,"error", "windows"]
+  }
+}
