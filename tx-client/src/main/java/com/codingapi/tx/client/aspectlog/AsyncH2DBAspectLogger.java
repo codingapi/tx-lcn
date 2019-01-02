@@ -16,11 +16,11 @@ import java.util.concurrent.TimeUnit;
  * Date: 2018/12/28
  *
  * @author ujued
- * @see ThreadPoolLogger
+ * @see AspectLogger
  */
 @Component
 @Slf4j
-public class AsyncH2DThreadPoolLogger implements ThreadPoolLogger {
+public class AsyncH2DBAspectLogger implements AspectLogger {
 
     private static final ExecutorService executorService =
             Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
@@ -29,7 +29,7 @@ public class AsyncH2DThreadPoolLogger implements ThreadPoolLogger {
     private final AspectLogHelper txLogHelper;
 
     @Autowired
-    public AsyncH2DThreadPoolLogger(  AspectLogHelper txLogHelper) {
+    public AsyncH2DBAspectLogger(AspectLogHelper txLogHelper) {
         this.txLogHelper = txLogHelper;
 
         // 等待线程池任务完成

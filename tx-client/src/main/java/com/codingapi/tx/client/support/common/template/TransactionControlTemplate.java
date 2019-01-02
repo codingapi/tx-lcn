@@ -2,7 +2,7 @@ package com.codingapi.tx.client.support.common.template;
 
 import com.codingapi.tx.client.support.checking.DTXChecking;
 import com.codingapi.tx.client.support.checking.DTXExceptionHandler;
-import com.codingapi.tx.client.aspectlog.ThreadPoolLogger;
+import com.codingapi.tx.client.aspectlog.AspectLogger;
 import com.codingapi.tx.client.support.rpc.MessageCreator;
 import com.codingapi.tx.commons.bean.TransactionInfo;
 import com.codingapi.tx.commons.exception.BeforeBusinessException;
@@ -40,7 +40,7 @@ public class TransactionControlTemplate {
 
     private final TracerHelper tracerHelper;
 
-    private final ThreadPoolLogger aspectLogger;
+    private final AspectLogger aspectLogger;
 
     private final DTXChecking dtxChecking;
 
@@ -55,7 +55,7 @@ public class TransactionControlTemplate {
     @Autowired
     public TransactionControlTemplate(RpcClient rpcClient,
                                       TracerHelper tracerHelper,
-                                      ThreadPoolLogger aspectLogger,
+                                      AspectLogger aspectLogger,
                                       DTXChecking dtxChecking,
                                       DTXExceptionHandler dtxExceptionHandler,
                                       TransactionCleanTemplate transactionCleanTemplate) {

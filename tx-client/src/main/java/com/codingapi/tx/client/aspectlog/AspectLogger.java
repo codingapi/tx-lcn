@@ -8,7 +8,7 @@ import com.codingapi.tx.commons.bean.TransactionInfo;
  *
  * @author ujued
  */
-public interface ThreadPoolLogger {
+public interface AspectLogger {
 
     /**
      * 记录切面日志
