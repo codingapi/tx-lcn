@@ -19,6 +19,10 @@
             <artifactId>tx-spi-rpc</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+        </dependency>
     </dependencies>
 
 

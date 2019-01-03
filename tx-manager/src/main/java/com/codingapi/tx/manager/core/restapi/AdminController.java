@@ -23,12 +23,12 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    private final TxExceptionService compensationService;
+    private final TxExceptionService txExceptionService;
 
     @Autowired
-    public AdminController(AdminService adminService, TxExceptionService compensationService) {
+    public AdminController(AdminService adminService, TxExceptionService txExceptionService) {
         this.adminService = adminService;
-        this.compensationService = compensationService;
+        this.txExceptionService = txExceptionService;
     }
 
     @PostMapping("/login")
@@ -47,7 +47,7 @@ public class AdminController {
     public ExceptionList exceptionList(
             @RequestParam(value = "page", required = false) @PathVariable(value = "page", required = false) Integer page,
             @RequestParam(value = "limit", required = false) @PathVariable(value = "limit", required = false) Integer limit) {
-        return compensationService.exceptionList(page, limit, null, 1);
+        return txExceptionService.exceptionList(page, limit, null, 1);
     }
 
     /**
@@ -61,7 +61,7 @@ public class AdminController {
     public JSONObject transactionInfo(
             @RequestParam("groupId") String groupId,
             @RequestParam("unitId") String unitId) throws TxManagerException {
-        return compensationService.getTransactionInfo(groupId, unitId);
+        return txExceptionService.getTransactionInfo(groupId, unitId);
     }
 
     /**
@@ -74,8 +74,11 @@ public class AdminController {
     @GetMapping({"/logs/{page}", "/logs/{page}/{limit}", "/logs"})
     public TxLogList txLogList(
             @RequestParam(value = "page", required = false) @PathVariable(value = "page", required = false) Integer page,
-            @RequestParam(value = "limit", required = false) @PathVariable(value = "limit", required = false) Integer limit) {
-        return adminService.txLogList(page, limit);
+            @RequestParam(value = "limit", required = false) @PathVariable(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "groupId", required = false) String groupId,
+            @RequestParam(value = "tag", required = false) String tag,
+            @RequestParam(value = "timeOrder", required = false) Integer timeOrder) {
+        return adminService.txLogList(page, limit, groupId, tag, timeOrder);
     }
 
     /**

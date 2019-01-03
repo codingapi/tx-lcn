@@ -12,6 +12,7 @@ import com.codingapi.tx.manager.core.service.WriteTxExceptionDTO;
 import com.codingapi.tx.manager.db.domain.TxException;
 import com.codingapi.tx.manager.db.mapper.TxExceptionMapper;
 import com.codingapi.tx.manager.support.rpc.MessageCreator;
+import com.codingapi.tx.manager.support.txex.TxExceptionListener;
 import com.codingapi.tx.spi.rpc.RpcClient;
 import com.codingapi.tx.spi.rpc.dto.MessageDto;
 import com.codingapi.tx.spi.rpc.exception.RpcException;
@@ -44,14 +45,18 @@ public class TxExceptionServiceImpl implements TxExceptionService {
 
     private final RpcClient rpcClient;
 
-    @Autowired
-    private TxLogger txLogger;
+    private final TxLogger txLogger;
+
+    private final TxExceptionListener txExceptionListener;
 
     @Autowired
     public TxExceptionServiceImpl(TxExceptionMapper txExceptionMapper,
-                                  RpcClient rpcClient) {
+                                  RpcClient rpcClient, TxLogger txLogger,
+                                  TxExceptionListener txExceptionListener) {
         this.txExceptionMapper = txExceptionMapper;
         this.rpcClient = rpcClient;
+        this.txLogger = txLogger;
+        this.txExceptionListener = txExceptionListener;
     }
 
     @Override
@@ -62,8 +67,9 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         txException.setTransactionState(writeTxExceptionReq.getTransactionState());
         txException.setUnitId(writeTxExceptionReq.getUnitId());
         txException.setRegistrar(writeTxExceptionReq.getRegistrar());
-        txException.setModId(writeTxExceptionReq.getClientAddress());
+        txException.setModId(writeTxExceptionReq.getModId());
         txExceptionMapper.save(txException);
+        txExceptionListener.onException(txException);
     }
 
     @Override
@@ -98,6 +104,18 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         for (TxException txException : txExceptions) {
             ExceptionInfo exceptionInfo = new ExceptionInfo();
             BeanUtils.copyProperties(txException, exceptionInfo);
+
+            // 如果状态为解决，决定查下模块的日志来最终判断异常状态
+            if (txException.getExState() != 1) {
+                try {
+                    JSONObject transactionInfo = getTransactionInfo(exceptionInfo.getGroupId(), exceptionInfo.getUnitId());
+                    exceptionInfo.setTransactionInfo(transactionInfo);
+                } catch (TxManagerException e) {
+                    // 不存在异常日志，正常
+                    txExceptionMapper.changeExState(txException.getId(), (short) 1);
+                    exceptionInfo.setExState((short) 1);
+                }
+            }
             exceptionInfoList.add(exceptionInfo);
         }
         ExceptionList exceptionList = new ExceptionList();

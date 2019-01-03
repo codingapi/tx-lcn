@@ -2,7 +2,7 @@ package com.codingapi.tx.client.support.common.template;
 
 import com.codingapi.tx.client.support.LCNTransactionBeanHelper;
 import com.codingapi.tx.client.support.checking.DTXChecking;
-import com.codingapi.tx.client.aspectlog.ThreadPoolLogger;
+import com.codingapi.tx.client.aspectlog.AspectLogger;
 import com.codingapi.tx.commons.exception.TransactionClearException;
 import com.codingapi.tx.commons.util.Transactions;
 import com.codingapi.tx.logger.TxLogger;
@@ -24,14 +24,14 @@ public class TransactionCleanTemplate {
 
     private final DTXChecking dtxChecking;
 
-    private final ThreadPoolLogger aspectLogger;
+    private final AspectLogger aspectLogger;
 
     private final TxLogger txLogger;
 
     @Autowired
     public TransactionCleanTemplate(LCNTransactionBeanHelper transactionBeanHelper,
                                     DTXChecking dtxChecking,
-                                    ThreadPoolLogger aspectLogger,
+                                    AspectLogger aspectLogger,
                                     TxLogger txLogger) {
         this.transactionBeanHelper = transactionBeanHelper;
         this.dtxChecking = dtxChecking;

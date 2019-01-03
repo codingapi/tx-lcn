@@ -2,7 +2,7 @@ package com.codingapi.tx.client.support.checking;
 
 import com.codingapi.tx.client.config.TxClientConfig;
 import com.codingapi.tx.client.support.LCNTransactionBeanHelper;
-import com.codingapi.tx.client.aspectlog.ThreadPoolLogger;
+import com.codingapi.tx.client.aspectlog.AspectLogger;
 import com.codingapi.tx.client.support.rpc.MessageCreator;
 import com.codingapi.tx.client.support.rpc.TxMangerReporter;
 import com.codingapi.tx.commons.exception.SerializerException;
@@ -56,14 +56,14 @@ public class SimpleDTXChecking implements DTXChecking {
 
     private final TxLogger txLogger;
 
-    private final ThreadPoolLogger aspectLogger;
+    private final AspectLogger aspectLogger;
 
     @Autowired
     private TxMangerReporter txMangerReporter;
 
     @Autowired
-    public SimpleDTXChecking(RpcClient rpcClient,TxClientConfig clientConfig, LCNTransactionBeanHelper transactionBeanHelper,
-                             ThreadPoolLogger aspectLogger, TxLogger txLogger) {
+    public SimpleDTXChecking(RpcClient rpcClient, TxClientConfig clientConfig, LCNTransactionBeanHelper transactionBeanHelper,
+                             AspectLogger aspectLogger, TxLogger txLogger) {
         this.rpcClient = rpcClient;
         this.clientConfig = clientConfig;
         this.transactionBeanHelper = transactionBeanHelper;

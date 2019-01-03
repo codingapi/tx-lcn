@@ -46,6 +46,11 @@ public class TxManagerInfo {
     private long dtxTime;
 
     /**
+     * 异常通知
+     */
+    private String exUrl;
+
+    /**
      * Redis状态
      */
     private short redisState;

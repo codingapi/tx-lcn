@@ -7,6 +7,7 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -33,7 +34,7 @@ public class TxLoggerHelper {
                 "  `group_id` varchar(50)  NOT NULL ,\n" +
                 "\t`unit_id` varchar(50)  NOT NULL ,\n" +
                 "\t`tag` varchar(50)  NOT NULL ,\n" +
-                "\t`content` varchar(300)  NOT NULL ,\n" +
+                "\t`content` varchar(1024)  NOT NULL ,\n" +
                 "  `create_time` varchar(30) NOT NULL,\n" +
                 "  `app_name` varchar(50) NOT NULL,\n" +
                 "  PRIMARY KEY (`id`) USING BTREE\n" +
@@ -47,17 +48,117 @@ public class TxLoggerHelper {
         return dbHelper.update(sql, txLoggerInfo.getGroupId(), txLoggerInfo.getUnitId(), txLoggerInfo.getTag(), txLoggerInfo.getContent(), txLoggerInfo.getCreateTime(), txLoggerInfo.getAppName());
     }
 
-    public long total(String where) {
-        return dbHelper.query("select count(*) from t_logger where " + where, new ScalarHandler<>());
+    /**
+     * 按筛选条件获取记录数
+     *
+     * @param where
+     * @param params
+     * @return
+     */
+    private long total(String where, Object... params) {
+        return dbHelper.query("select count(*) from t_logger where " + where, new ScalarHandler<>(), params);
     }
 
-    public List<TxLog> findByLimit(int left, int right) {
-        String sql = "select * from t_logger limit " + left + ", " + right;
+    /**
+     * 时间排序SQL
+     *
+     * @param timeOrder
+     * @return
+     */
+    private String timeOrderSql(int timeOrder) {
+        return "order by create_time " + (timeOrder == 1 ? "asc" : "desc");
+    }
+
+    /**
+     * 分页获取记录
+     *
+     * @param left
+     * @param right
+     * @return
+     */
+    public List<TxLog> findByLimit(int left, int right, int timeOrder) {
+        String sql = "select * from t_logger " + timeOrderSql(timeOrder) + " limit " + left + ", " + right;
         return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor));
     }
 
+    /**
+     * 分页获取记录所有记录数
+     *
+     * @return
+     */
     public long findByLimitTotal() {
         return total("1=1");
     }
 
+    /**
+     * GroupId 和 Tag 查询记录数
+     *
+     * @param groupId
+     * @param tag
+     * @return
+     */
+    public long findByGroupAndTagTotal(String groupId, String tag) {
+        return total("group_id=? and tag=?", groupId, tag);
+    }
+
+    /**
+     * GroupID 和 Tag 查询
+     *
+     * @param left
+     * @param limit
+     * @param groupId
+     * @param tag
+     * @return
+     */
+    public List<TxLog> findByGroupAndTag(int left, Integer limit, String groupId, String tag, int timeOrder) {
+        String sql = "select * from t_logger where group_id=? and tag=? " + timeOrderSql(timeOrder) + " limit "
+                + left + ", " + limit;
+        return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor), groupId, tag);
+    }
+
+    /**
+     * Tag 查询记录数
+     *
+     * @param tag
+     * @return
+     */
+    public long findByTagTotal(String tag) {
+        return total("tag=?", tag);
+    }
+
+    /**
+     * ag 查询
+     *
+     * @param left
+     * @param limit
+     * @param tag
+     * @return
+     */
+    public List<TxLog> findByTag(int left, Integer limit, String tag, int timeOrder) {
+        String sql = "select * from t_logger where tag =? " + timeOrderSql(timeOrder) + " limit " + left + ", " + limit;
+        return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor), tag);
+    }
+
+    /**
+     * GroupId 查询记录数
+     *
+     * @param groupId
+     * @return
+     */
+    public long findByGroupIdTotal(String groupId) {
+        return total("group_id=?", groupId);
+    }
+
+    /**
+     * GroupId 查询
+     *
+     * @param left
+     * @param limit
+     * @param groupId
+     * @return
+     */
+    public List<TxLog> findByGroupId(int left, Integer limit, String groupId, int timeOrder) {
+        String sql = "select * from t_logger where group_id=? " + timeOrderSql(timeOrder) + " limit " + left + ", " + limit;
+        return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor), groupId);
+    }
 }

@@ -37,7 +37,7 @@ public class TxException {
     /**
      * 事务状态
      */
-    private short transactionState;
+    private Short transactionState;
 
     /**
      * 上报方 0 TxManager 1 TxClient

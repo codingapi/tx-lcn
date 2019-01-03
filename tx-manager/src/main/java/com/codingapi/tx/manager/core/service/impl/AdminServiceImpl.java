@@ -14,6 +14,7 @@ import com.codingapi.tx.manager.core.restapi.model.TxManagerInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +29,18 @@ import java.util.Objects;
 @Service
 public class AdminServiceImpl implements AdminService {
 
-    @Autowired
-    private TxManagerConfig managerConfig;
+    private final TxManagerConfig managerConfig;
+
+    private final DefaultTokenStorage defaultTokenStorage;
+
+    private final TxLoggerHelper txLoggerHelper;
 
     @Autowired
-    private DefaultTokenStorage defaultTokenStorage;
-
-    @Autowired
-    private TxLoggerHelper txLoggerHelper;
+    public AdminServiceImpl(TxManagerConfig managerConfig, DefaultTokenStorage defaultTokenStorage, TxLoggerHelper txLoggerHelper) {
+        this.managerConfig = managerConfig;
+        this.defaultTokenStorage = defaultTokenStorage;
+        this.txLoggerHelper = txLoggerHelper;
+    }
 
     @Override
     public String login(String password) throws TxManagerException {
@@ -48,24 +53,55 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public TxLogList txLogList(Integer page, Integer limit) {
+    public TxLogList txLogList(Integer page, Integer limit, String groupId, String tag, Integer timeOrder) {
+
+        // 参数保证
         if (Objects.isNull(page) || page < 1) {
             page = 1;
         }
         if (Objects.isNull(limit) || limit < 1) {
             limit = 10;
         }
-        long total = txLoggerHelper.findByLimitTotal();
-        int left = (page - 1) * limit;
-        List<TxLog> txLogs = txLoggerHelper.findByLimit(left, limit);
-        List<TxManagerLog> txManagerLogs = new ArrayList<>(txLogs.size());
+        if (Objects.isNull(timeOrder) || timeOrder < 1 || timeOrder > 2) {
+            timeOrder = 2;
+        }
 
+        // 区分筛选条件
+        long total;
+        List<TxLog> txLogs;
+        if (!StringUtils.isEmpty(groupId) && !StringUtils.isEmpty(tag)) {
+            total = txLoggerHelper.findByGroupAndTagTotal(groupId, tag);
+            if (total < (page - 1) * limit) {
+                page = 1;
+            }
+            txLogs = txLoggerHelper.findByGroupAndTag((page - 1) * limit, limit, groupId, tag, timeOrder);
+        } else if (!StringUtils.isEmpty(tag)) {
+            total = txLoggerHelper.findByTagTotal(tag);
+            if (total < (page - 1) * limit) {
+                page = 1;
+            }
+            txLogs = txLoggerHelper.findByTag((page - 1) * limit, limit, tag, timeOrder);
+        } else if (!StringUtils.isEmpty(groupId)) {
+            total = txLoggerHelper.findByGroupIdTotal(groupId);
+            if (total < (page - 1) * limit) {
+                page = 1;
+            }
+            txLogs = txLoggerHelper.findByGroupId((page - 1) * limit, limit, groupId, timeOrder);
+        } else {
+            total = txLoggerHelper.findByLimitTotal();
+            if (total < (page - 1) * limit) {
+                page = 1;
+            }
+            txLogs = txLoggerHelper.findByLimit((page - 1) * limit, limit, timeOrder);
+        }
+
+        // 组装返回数据
+        List<TxManagerLog> txManagerLogs = new ArrayList<>(txLogs.size());
         for (TxLog txLog : txLogs) {
             TxManagerLog txManagerLog = new TxManagerLog();
             BeanUtils.copyProperties(txLog, txManagerLog);
             txManagerLogs.add(txManagerLog);
         }
-
         TxLogList txLogList = new TxLogList();
         txLogList.setTotal(total);
         txLogList.setLogs(txManagerLogs);
@@ -88,6 +124,7 @@ public class AdminServiceImpl implements AdminService {
         txManagerInfo.setRedisState((short) 1);
         txManagerInfo.setSocketHost(managerConfig.getManagerHost());
         txManagerInfo.setSocketPort(managerConfig.getRpcPort());
+        txManagerInfo.setExUrl(managerConfig.getExUrl());
         return txManagerInfo;
     }
 }

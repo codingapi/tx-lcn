@@ -1,0 +1,35 @@
+pages:
+ # key is the dirname of pages in src/pages
+ home:
+  # 首页配置
+  zh-cn:
+   title: '网页标签title'
+   keywords: '关键词1，关键词2'
+   description: '页面内容简介'
+  # home config
+  en-us:
+   title: 'page title'
+   keywords: 'keyword1,keyword2'
+   description: 'page description'
+ community:
+  # 社区页配置
+  zh-cn:
+   title: '网页标签title'
+   keywords: '关键词1，关键词2'
+   description: '页面内容简介'
+  # community page config
+  en-us:
+   title: 'page title'
+   keywords: 'keyword1,keyword2'
+   description: 'page description'
+ blog:
+  # 博客列表页配置
+  zh-cn:
+   title: '网页标签title'
+   keywords: '关键词1，关键词2'
+   description: '页面内容简介'
+  en-us:
+   # blog list page config
+   title: 'page title'
+   keywords: 'keyword1,keyword2'
+   description: 'page description'

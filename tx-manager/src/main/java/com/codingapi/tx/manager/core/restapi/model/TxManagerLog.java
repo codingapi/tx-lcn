@@ -26,6 +26,11 @@ public class TxManagerLog {
     private String unitId;
 
     /**
+     * TAG
+     */
+    private String tag;
+
+    /**
      * 日志内容
      */
     private String content;
