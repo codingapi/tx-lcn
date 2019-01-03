@@ -16,6 +16,6 @@ public enum  NettyType {
     /**
      * 服务端模式
      */
-    server;
+    server
 
 }
