@@ -6,16 +6,13 @@ package com.codingapi.tx.client.bean;
  */
 public class TxCompensateLocal {
 
-    private final static ThreadLocal<TxCompensateLocal> currentLocal = new InheritableThreadLocal<TxCompensateLocal>();
+    private final static ThreadLocal<TxCompensateLocal> currentLocal = new InheritableThreadLocal<>();
 
     private String groupId;
-
-
 
     private String type;
 
     private int startState;
-
 
     public int getStartState() {
         return startState;

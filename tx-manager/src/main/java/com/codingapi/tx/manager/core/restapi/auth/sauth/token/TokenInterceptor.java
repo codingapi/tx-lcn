@@ -6,6 +6,7 @@ import com.codingapi.tx.manager.core.restapi.model.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -53,7 +54,7 @@ public class TokenInterceptor implements HandlerInterceptor {
                 return true;
             }
         } catch (SAuthHandleException e) {
-            responseError(403, e.getMessage(), response);
+            responseError(HttpStatus.FORBIDDEN.value(), e.getMessage(), response);
             return false;
         }
 
@@ -63,13 +64,13 @@ public class TokenInterceptor implements HandlerInterceptor {
         }
         if (StringUtils.isEmpty(token)) {
             LOG.warn("Unauthorized, token is null. URL: " + request.getRequestURI());
-            responseError(401, "Unauthorized.", response);
+            responseError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized.", response);
             return false;
         }
         LOG.info("Token is: {}", token);
         if (!SAuthLogic.verify(token)) {
             LOG.warn("Unauthorized, token is invalid.");
-            responseError(401, "Unauthorized, token is invalid.", response);
+            responseError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized, token is invalid.", response);
             return false;
         }
         return true;

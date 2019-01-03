@@ -16,15 +16,15 @@ import lombok.NoArgsConstructor;
 public class WriteTxExceptionDTO {
     private String groupId;
     private String unitId;
-    private String clientAddress;
+    private String modId;
     private Short transactionState;
     private short exState;
     private Short registrar;
 
-    public WriteTxExceptionDTO(String groupId, String unitId, String clientAddress, Short transactionState) {
+    public WriteTxExceptionDTO(String groupId, String unitId, String modId, Short transactionState) {
         this.groupId = groupId;
         this.unitId = unitId;
         this.transactionState = transactionState;
-        this.clientAddress = clientAddress;
+        this.modId = modId;
     }
 }

@@ -37,7 +37,7 @@ public class ExceptionInfo {
     private String modId;
 
     /**
-     * 上报方
+     * 异常情况。-1 【未知】 0 【TxManager通知事务】， 1 【TxClient查询事务状态】 2 【事务发起方通知事务组】
      */
     private int registrar;
 

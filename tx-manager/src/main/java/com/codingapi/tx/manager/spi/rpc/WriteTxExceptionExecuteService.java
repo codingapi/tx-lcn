@@ -6,6 +6,8 @@ import com.codingapi.tx.manager.core.service.TxExceptionService;
 import com.codingapi.tx.manager.core.service.WriteTxExceptionDTO;
 import com.codingapi.tx.manager.support.TransactionCmd;
 import com.codingapi.tx.manager.support.rpc.RpcExecuteService;
+import com.codingapi.tx.spi.rpc.RpcClient;
+import com.codingapi.tx.spi.rpc.exception.RpcException;
 import com.codingapi.tx.spi.rpc.params.TxExceptionParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +25,14 @@ import java.util.Objects;
 @Slf4j
 public class WriteTxExceptionExecuteService implements RpcExecuteService {
 
-
     private final TxExceptionService compensationService;
 
+    private final RpcClient rpcClient;
+
     @Autowired
-    public WriteTxExceptionExecuteService(TxExceptionService compensationService) {
+    public WriteTxExceptionExecuteService(TxExceptionService compensationService, RpcClient rpcClient) {
         this.compensationService = compensationService;
+        this.rpcClient = rpcClient;
     }
 
     @Override
@@ -36,7 +40,7 @@ public class WriteTxExceptionExecuteService implements RpcExecuteService {
         try {
             TxExceptionParams txExceptionParams = transactionCmd.getMsg().loadData(TxExceptionParams.class);
             WriteTxExceptionDTO writeTxExceptionReq = new WriteTxExceptionDTO();
-            writeTxExceptionReq.setClientAddress(transactionCmd.getRemoteKey());
+            writeTxExceptionReq.setModId(rpcClient.getAppName(transactionCmd.getRemoteKey()));
             writeTxExceptionReq.setTransactionState(txExceptionParams.getTransactionState());
             writeTxExceptionReq.setGroupId(txExceptionParams.getGroupId());
             writeTxExceptionReq.setUnitId(txExceptionParams.getUnitId());
@@ -44,6 +48,7 @@ public class WriteTxExceptionExecuteService implements RpcExecuteService {
             compensationService.writeTxException(writeTxExceptionReq);
         } catch (SerializerException e) {
             throw new TxManagerException(e);
+        } catch (RpcException ignored) {
         }
         return null;
     }

@@ -10,7 +10,13 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
-
+/**
+ * Description:
+ * Company: CodingApi
+ * Date: 2018/12/10
+ *
+ * @author lorne
+ */
 @Configuration
 @ComponentScan
 public class TxClientConfiguration {

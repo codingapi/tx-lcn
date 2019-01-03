@@ -67,9 +67,7 @@ public class DefaultTxLogger implements TxLogger {
             txLog.setAppName(appName);
             txLog.setCreateTime(getTime());
             log.debug("txLoggerInfoEvent->{}", txLog);
-            this.executor.execute(() -> {
-                txLoggerHelper.insert(txLog);
-            });
+            this.executor.execute(() -> txLoggerHelper.insert(txLog));
         }
     }
 }
