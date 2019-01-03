@@ -37,7 +37,7 @@ class Home extends Language {
     const language = this.getLanguage();
     const dataSource = homeConfig[language];
     const { headerType } = this.state;
-    const headerLogo = headerType === 'primary' ? '/img/dubbo_white.png' : '/img/dubbo_colorful.png';
+    const headerLogo = headerType === 'primary' ? '/img/txlcn_white.png' : '/img/txlcn.png';
     return (
       <div className="home-page">
         <section className="top-section">
