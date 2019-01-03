@@ -14,6 +14,7 @@
 
 ## 模块划分
 
+docs : 官网文档
 example : 测试demo   
 tx-client:TXLCN分布式事务客户端   
 tx-client-dubbo:dubbo框架客户端   
