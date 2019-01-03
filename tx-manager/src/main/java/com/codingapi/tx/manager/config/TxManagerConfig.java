@@ -45,4 +45,9 @@ public class TxManagerConfig {
      * 后台密码
      */
     private String adminKey = "codingapi";
+
+    /**
+     * 异常回调地址
+     */
+    private String exUrl = "/provider/email-to/ujued@qq.com";
 }

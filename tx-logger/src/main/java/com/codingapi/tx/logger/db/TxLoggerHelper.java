@@ -34,7 +34,7 @@ public class TxLoggerHelper {
                 "  `group_id` varchar(50)  NOT NULL ,\n" +
                 "\t`unit_id` varchar(50)  NOT NULL ,\n" +
                 "\t`tag` varchar(50)  NOT NULL ,\n" +
-                "\t`content` varchar(300)  NOT NULL ,\n" +
+                "\t`content` varchar(1024)  NOT NULL ,\n" +
                 "  `create_time` varchar(30) NOT NULL,\n" +
                 "  `app_name` varchar(50) NOT NULL,\n" +
                 "  PRIMARY KEY (`id`) USING BTREE\n" +

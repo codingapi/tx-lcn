@@ -124,6 +124,7 @@ public class AdminServiceImpl implements AdminService {
         txManagerInfo.setRedisState((short) 1);
         txManagerInfo.setSocketHost(managerConfig.getManagerHost());
         txManagerInfo.setSocketPort(managerConfig.getRpcPort());
+        txManagerInfo.setExUrl(managerConfig.getExUrl());
         return txManagerInfo;
     }
 }

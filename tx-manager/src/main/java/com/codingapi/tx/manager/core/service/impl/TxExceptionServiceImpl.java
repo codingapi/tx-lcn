@@ -12,6 +12,7 @@ import com.codingapi.tx.manager.core.service.WriteTxExceptionDTO;
 import com.codingapi.tx.manager.db.domain.TxException;
 import com.codingapi.tx.manager.db.mapper.TxExceptionMapper;
 import com.codingapi.tx.manager.support.rpc.MessageCreator;
+import com.codingapi.tx.manager.support.txex.TxExceptionListener;
 import com.codingapi.tx.spi.rpc.RpcClient;
 import com.codingapi.tx.spi.rpc.dto.MessageDto;
 import com.codingapi.tx.spi.rpc.exception.RpcException;
@@ -46,12 +47,16 @@ public class TxExceptionServiceImpl implements TxExceptionService {
 
     private final TxLogger txLogger;
 
+    private final TxExceptionListener txExceptionListener;
+
     @Autowired
     public TxExceptionServiceImpl(TxExceptionMapper txExceptionMapper,
-                                  RpcClient rpcClient, TxLogger txLogger) {
+                                  RpcClient rpcClient, TxLogger txLogger,
+                                  TxExceptionListener txExceptionListener) {
         this.txExceptionMapper = txExceptionMapper;
         this.rpcClient = rpcClient;
         this.txLogger = txLogger;
+        this.txExceptionListener = txExceptionListener;
     }
 
     @Override
@@ -62,9 +67,9 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         txException.setTransactionState(writeTxExceptionReq.getTransactionState());
         txException.setUnitId(writeTxExceptionReq.getUnitId());
         txException.setRegistrar(writeTxExceptionReq.getRegistrar());
-        txException.setModId(writeTxExceptionReq.getClientAddress());
+        txException.setModId(writeTxExceptionReq.getModId());
         txExceptionMapper.save(txException);
-
+        txExceptionListener.onException(txException);
     }
 
     @Override

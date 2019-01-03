@@ -25,17 +25,21 @@ import java.util.List;
 @Slf4j
 public class TxManagerManagerRefreshing {
 
-    @Autowired
-    private ManagerStorage managerStorage;
+    private final ManagerStorage managerStorage;
+
+    private final RestTemplate restTemplate;
+
+    private final TxManagerConfig txManagerConfig;
+
+    private static final String MANAGER_REFRESH_URL = "http://%s/manager/refresh";
 
     @Autowired
-    private RestTemplate restTemplate;
-
-    private String managerRefreshUrl = "http://%s/manager/refresh";
-
-
-    @Autowired
-    private TxManagerConfig txManagerConfig;
+    public TxManagerManagerRefreshing(ManagerStorage managerStorage,
+                                      RestTemplate restTemplate, TxManagerConfig txManagerConfig) {
+        this.managerStorage = managerStorage;
+        this.restTemplate = restTemplate;
+        this.txManagerConfig = txManagerConfig;
+    }
 
 
     public void refresh() {
@@ -46,10 +50,10 @@ public class TxManagerManagerRefreshing {
         List<String> addressList =  managerStorage.addressList();
         log.info("addressList->{}",addressList);
         for(String address:addressList){
-            String url = String.format(managerRefreshUrl,address);
+            String url = String.format(MANAGER_REFRESH_URL,address);
             log.info("url->{}",url);
             try {
-                ResponseEntity<Boolean> res =  restTemplate.postForEntity(String.format(managerRefreshUrl,address), notifyConnectParams,Boolean.class);
+                ResponseEntity<Boolean> res =  restTemplate.postForEntity(String.format(MANAGER_REFRESH_URL,address), notifyConnectParams,Boolean.class);
                 if(res.getStatusCode().equals(HttpStatus.OK)||res.getStatusCode().is5xxServerError()) {
                     log.info("manager refresh res->{}", res);
                 }else{
