@@ -1,4 +1,4 @@
-package com.codingapi.tx.client.listener;
+package com.codingapi.tx.client;
 
 import com.codingapi.tx.client.config.TxClientConfig;
 import com.codingapi.tx.spi.rpc.RpcClientInitializer;
@@ -9,19 +9,21 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 /**
+ * Description:
+ * Company: CodingApi
+ * Date: 2018/12/10
+ *
  * @author lorne
- * @date 2018/11/29
- * @description
  */
 @Component
-public class InitServer   {
+public class TxClientInitialization {
 
     private final RpcClientInitializer rpcClientInitializer;
 
     private final TxClientConfig txClientConfig;
 
     @Autowired
-    public InitServer(RpcClientInitializer rpcClientInitializer, TxClientConfig txClientConfig) {
+    public TxClientInitialization(RpcClientInitializer rpcClientInitializer, TxClientConfig txClientConfig) {
         this.rpcClientInitializer = rpcClientInitializer;
         this.txClientConfig = txClientConfig;
     }

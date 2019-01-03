@@ -44,14 +44,14 @@ public class TxExceptionServiceImpl implements TxExceptionService {
 
     private final RpcClient rpcClient;
 
-    @Autowired
-    private TxLogger txLogger;
+    private final TxLogger txLogger;
 
     @Autowired
     public TxExceptionServiceImpl(TxExceptionMapper txExceptionMapper,
-                                  RpcClient rpcClient) {
+                                  RpcClient rpcClient, TxLogger txLogger) {
         this.txExceptionMapper = txExceptionMapper;
         this.rpcClient = rpcClient;
+        this.txLogger = txLogger;
     }
 
     @Override
@@ -64,6 +64,7 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         txException.setRegistrar(writeTxExceptionReq.getRegistrar());
         txException.setModId(writeTxExceptionReq.getClientAddress());
         txExceptionMapper.save(txException);
+
     }
 
     @Override
@@ -98,12 +99,17 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         for (TxException txException : txExceptions) {
             ExceptionInfo exceptionInfo = new ExceptionInfo();
             BeanUtils.copyProperties(txException, exceptionInfo);
-            try {
-                JSONObject transactionInfo = getTransactionInfo(exceptionInfo.getGroupId(), exceptionInfo.getUnitId());
-                exceptionInfo.setTransactionInfo(transactionInfo);
-            } catch (TxManagerException e) {
-                txExceptionMapper.changeExState(txException.getId(), (short) 1);
-                exceptionInfo.setExState((short) 1);
+
+            // 如果状态为解决，决定查下模块的日志来最终判断异常状态
+            if (txException.getExState() != 1) {
+                try {
+                    JSONObject transactionInfo = getTransactionInfo(exceptionInfo.getGroupId(), exceptionInfo.getUnitId());
+                    exceptionInfo.setTransactionInfo(transactionInfo);
+                } catch (TxManagerException e) {
+                    // 不存在异常日志，正常
+                    txExceptionMapper.changeExState(txException.getId(), (short) 1);
+                    exceptionInfo.setExState((short) 1);
+                }
             }
             exceptionInfoList.add(exceptionInfo);
         }

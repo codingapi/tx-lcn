@@ -1,5 +1,4 @@
-package com.codingapi.tx.manager.listener;
-
+package com.codingapi.tx.manager;
 
 import com.codingapi.tx.manager.config.TxManagerConfig;
 import com.codingapi.tx.spi.rpc.RpcServerInitializer;
@@ -10,18 +9,24 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 /**
+ * Description:
+ * Company: CodingApi
+ * Date: 2018/11/29
+ *
  * @author lorne
- * @date 2018/11/29
- * @description
  */
 @Component
-public class InitServer {
+public class TxManagerInitialization {
+
+    private final TxManagerConfig txManagerConfig;
+
+    private final RpcServerInitializer rpcServerInitializer;
 
     @Autowired
-    private TxManagerConfig txManagerConfig;
-
-    @Autowired
-    private RpcServerInitializer rpcServerInitializer;
+    public TxManagerInitialization(TxManagerConfig txManagerConfig, RpcServerInitializer rpcServerInitializer) {
+        this.txManagerConfig = txManagerConfig;
+        this.rpcServerInitializer = rpcServerInitializer;
+    }
 
     @PostConstruct
     public void start(){
