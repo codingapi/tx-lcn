@@ -44,8 +44,8 @@ public class TxManagerManagerRefreshing {
 
     public void refresh() {
         NotifyConnectParams notifyConnectParams = new NotifyConnectParams();
-        notifyConnectParams.setHost(txManagerConfig.getManagerHost());
-        notifyConnectParams.setPort(txManagerConfig.getRpcPort());
+        notifyConnectParams.setHost(txManagerConfig.getHost());
+        notifyConnectParams.setPort(txManagerConfig.getPort());
 
         List<String> addressList =  managerStorage.addressList();
         log.info("addressList->{}",addressList);

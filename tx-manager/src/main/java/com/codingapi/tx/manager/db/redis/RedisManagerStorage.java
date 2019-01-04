@@ -75,7 +75,7 @@ public class RedisManagerStorage implements ManagerStorage, DisposableBean {
         if(list==null){
             return null;
         }
-        String address = managerConfig.getManagerHost()+":"+port;
+        String address = managerConfig.getHost()+":"+port;
         list.remove(address);
         return list;
     }
@@ -95,14 +95,14 @@ public class RedisManagerStorage implements ManagerStorage, DisposableBean {
 
     @PostConstruct
     public void init(){
-        String address = managerConfig.getManagerHost()+":"+port;
+        String address = managerConfig.getHost()+":"+port;
         add(address);
         log.info("manager add redis finish.");
     }
 
     @Override
     public void destroy() throws Exception {
-        String address = managerConfig.getManagerHost()+":"+port;
+        String address = managerConfig.getHost()+":"+port;
         remove(address);
         log.info("manager remove redis.");
     }

@@ -1,8 +1,11 @@
 package com.codingapi.tx.spi.sleuth.springcloud;
 
+import com.codingapi.tx.spi.sleuth.TracerHelper;
+import com.codingapi.tx.spi.sleuth.listener.SleuthParamListener;
 import com.codingapi.tx.spi.sleuth.springcloud.ribbon.loadbalance.TXLCNZoneAvoidanceRule;
 import com.netflix.loadbalancer.IRule;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -18,10 +21,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TxSpringCloudConfiguration {
 
-
     @Bean
     @ConditionalOnMissingBean
-    public IRule ribbonRule(){
-        return new TXLCNZoneAvoidanceRule();
+    public IRule ribbonRule(SleuthParamListener sleuthParamListener,
+                            Registration registration,
+                            TracerHelper tracerHelper){
+        return new TXLCNZoneAvoidanceRule(sleuthParamListener, registration, tracerHelper);
     }
 }

@@ -30,6 +30,6 @@ public class TxClientInitialization {
 
     @PostConstruct
     public void start(){
-        rpcClientInitializer.init(TxManagerHost.parserList(txClientConfig.getManagerHost()));
+        rpcClientInitializer.init(TxManagerHost.parserList(txClientConfig.getManagerAddress()));
     }
 }

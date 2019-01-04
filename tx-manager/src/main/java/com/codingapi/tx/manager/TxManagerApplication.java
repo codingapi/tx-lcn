@@ -25,6 +25,11 @@ import java.util.concurrent.TimeUnit;
 @SpringBootApplication
 public class TxManagerApplication {
 
+    // Tx-manager 默认打开日志记录，在管理后台查看
+    static {
+        System.setProperty("tx-lcn.logger.enabled", "true");
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(TxManagerApplication.class, args);
     }

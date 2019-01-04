@@ -1,6 +1,7 @@
 package com.codingapi.tx.manager.config;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -16,15 +17,20 @@ import org.springframework.stereotype.Component;
 @Data
 public class TxManagerConfig {
 
-    /**
-     * manager managerHost
-     */
-    private String managerHost;
+    public TxManagerConfig(@Value("${server.port}") Integer port) {
+        this.port = port + 1;
+        this.host = "127.0.0.1";
+    }
 
     /**
-     * support  rpcPort
+     * manager host
      */
-    private int rpcPort;
+    private String host;
+
+    /**
+     * support  port
+     */
+    private int port;
 
     /**
      * netty heart check time (s)

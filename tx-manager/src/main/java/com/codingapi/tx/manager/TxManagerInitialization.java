@@ -32,7 +32,7 @@ public class TxManagerInitialization {
     public void start(){
         ManagerProperties managerProperties = new ManagerProperties();
         managerProperties.setCheckTime(txManagerConfig.getHeartTime());
-        managerProperties.setRpcPort(txManagerConfig.getRpcPort());
+        managerProperties.setRpcPort(txManagerConfig.getPort());
         rpcServerInitializer.init(managerProperties);
     }
 }
