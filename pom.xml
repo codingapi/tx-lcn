@@ -6,7 +6,7 @@
 
     <groupId>com.codingapi</groupId>
     <artifactId>tx-lcn</artifactId>
-    <version>5.0.0.beta</version>
+    <version>${codingapi.txlcn.version}</version>
     <packaging>pom</packaging>
 
 
