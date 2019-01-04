@@ -28,12 +28,7 @@ public class SchemaCache {
 
     private Schema<?> get(final Class<?> cls, Cache<Class<?>, Schema<?>> cache) {
         try {
-            return cache.get(cls, new Callable<Schema<?>>() {
-                @Override
-                public Schema<?> call() throws Exception {
-                    return RuntimeSchema.createFrom(cls);
-                }
-            });
+            return cache.get(cls, () -> RuntimeSchema.createFrom(cls));
 
         } catch (ExecutionException e) {
             e.printStackTrace();

@@ -42,7 +42,7 @@ public class CompoundJdbcEventListener extends JdbcEventListener {
     this.eventListeners = eventListeners;
   }
 
-  public void addListender(JdbcEventListener listener) {
+  public void addListener(JdbcEventListener listener) {
     eventListeners.add(listener);
   }
 

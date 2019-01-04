@@ -29,6 +29,6 @@ public class P6spySqlConfiguration {
     @PostConstruct
     public void init(){
         Map<String, SimpleJdbcEventListener> listeners = spring.getBeansOfType(SimpleJdbcEventListener.class);
-        listeners.forEach((k, v) -> compoundJdbcEventListener.addListender(v));
+        listeners.forEach((k, v) -> compoundJdbcEventListener.addListener(v));
     }
 }
