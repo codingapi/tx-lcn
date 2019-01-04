@@ -19,8 +19,8 @@ export default {
       ],
     },
     introduction: {
-      title: '开源的分布式事务框架',
-      desc: '兼容 dubbo、springcloud框架，支持各种关系型数据库',
+      title: '高性能的分布式事务框架',
+      desc: '兼容dubbo、springcloud框架，支持RPC框架拓展，支持各种ORM框架、NoSQL、负载均衡、事务补偿',
       img: '/img/architecture.png',
     },
     features: {
