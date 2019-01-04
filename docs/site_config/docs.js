@@ -79,11 +79,11 @@ export default {
                         title: '配置手册',
                         children: [
                             {
-                                title: 'Client配置',
+                                title: 'TxClient配置',
                                 link: '/zh-cn/docs/setting/client.html',
                             },
                             {
-                                title: 'Manager配置',
+                                title: 'TxManager配置',
                                 link: '/zh-cn/docs/setting/manager.html',
                             },
                             {
@@ -114,12 +114,12 @@ export default {
                         link: '/zh-cn/docs/communication.html',
                     },
                     {
-                        title: '问题排查手册',
-                        link: '/zh-cn/docs/debug.html',
+                        title: 'TM管理手册',
+                        link: '/zh-cn/docs/manageradmin.html',
                     },
                     {
-                        title: 'TxManager管理手册',
-                        link: '/zh-cn/docs/manageradmin.html',
+                        title: '问题排查手册',
+                        link: '/zh-cn/docs/debug.html',
                     },
                     {
                         title: '性能测试报告',
