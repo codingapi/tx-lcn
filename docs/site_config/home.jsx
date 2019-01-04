@@ -4,7 +4,7 @@ export default {
   'zh-cn': {
     brand: {
       brandName: 'TX-LCN分布式事务框架',
-      briefIntroduction: 'LCN并不生产事务，LCN只是本地事务的搬运工',
+      briefIntroduction: 'LCN并不生产事务，LCN只是本地事务的协调工',
       buttons: [
         {
           text: '立即开始',

@@ -89,7 +89,7 @@ class BlogDetail extends Language {
         <Header
           type="normal"
           currentKey="blog"
-          logo="/img/dubbo_colorful.png"
+          logo="/img/txlcn.png"
           language={language}
           onLanguageChange={this.onLanguageChange}
         />
@@ -98,7 +98,7 @@ class BlogDetail extends Language {
           ref={(node) => { this.markdownContainer = node; }}
           dangerouslySetInnerHTML={{ __html }}
         />
-        <Footer logo="/img/dubbo_gray.png" language={language} />
+        <Footer logo="/img/txlcn.png" language={language} />
       </div>
     );
   }

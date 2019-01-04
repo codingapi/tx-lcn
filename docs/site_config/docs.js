@@ -38,6 +38,11 @@ export default {
                         opened: true,
                     },
                     {
+                        title: '背景',
+                        link: '/zh-cn/docs/background.html',
+                        opened: true,
+                    },
+                    {
                         title: '快速开始',
                         link: '/zh-cn/docs/start.html',
                     },
