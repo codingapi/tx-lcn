@@ -5,6 +5,7 @@ import com.codingapi.example.demod.mapper.DDemoMapper;
 import com.codingapi.example.demod.service.DemoService;
 import com.codingapi.tx.client.bean.TxTransactionLocal;
 import com.codingapi.tx.commons.annotation.TxTransaction;
+import com.codingapi.tx.commons.annotation.TxcTransaction;
 import com.codingapi.tx.commons.util.Transactions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +30,7 @@ public class DemoServiceImpl implements DemoService {
 
 
     @Override
-    @TxTransaction(type = Transactions.TXC)
+    @TxcTransaction
     public String rpc(String value) {
         Demo demo = new Demo();
         demo.setCreateTime(new Date());

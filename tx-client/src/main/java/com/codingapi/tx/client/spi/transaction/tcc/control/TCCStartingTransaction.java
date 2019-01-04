@@ -1,6 +1,6 @@
 package com.codingapi.tx.client.spi.transaction.tcc.control;
 
-import com.codingapi.tx.commons.annotation.TCCTransaction;
+import com.codingapi.tx.commons.annotation.TccTransaction;
 import com.codingapi.tx.client.bean.TCCTransactionInfo;
 import com.codingapi.tx.client.bean.TxTransactionInfo;
 import com.codingapi.tx.client.bean.TxTransactionLocal;
@@ -42,15 +42,15 @@ public class TCCStartingTransaction implements TXLCNTransactionControl {
 
         Method method = info.getPointMethod();
 
-        TCCTransaction tccTransaction = method.getAnnotation(TCCTransaction.class);
+        TccTransaction tccTransaction = method.getAnnotation(TccTransaction.class);
         if (tccTransaction == null) {
-            throw new IllegalStateException(" TCC模式下需添加 @TCCTransaction 注解在  " + method.getName() + " 上 ");
+            throw new IllegalStateException(" TCC模式下需添加 @TccTransaction 注解在  " + method.getName() + " 上 ");
         }
         if (StringUtils.isEmpty(tccTransaction.cancelMethod())) {
-            throw new NullPointerException(" @TCCTransaction 需指明 回滚执行方法名称！ ");
+            throw new NullPointerException(" @TccTransaction 需指明 回滚执行方法名称！ ");
         }
         if (StringUtils.isEmpty(tccTransaction.confirmMethod())) {
-            throw new NullPointerException(" @TCCTransaction 需指明 确认执行方法名称！");
+            throw new NullPointerException(" @TccTransaction 需指明 确认执行方法名称！");
         }
 
         TCCTransactionInfo tccInfo = new TCCTransactionInfo();

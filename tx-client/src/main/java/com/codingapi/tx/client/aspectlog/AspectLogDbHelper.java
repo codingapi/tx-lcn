@@ -33,6 +33,7 @@ public class AspectLogDbHelper implements DisposableBean {
     public void init() {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setDriverClassName(org.h2.Driver.class.getName());
+        log.info("init db at {}", aspectLogDbProperties.getFilePath());
         hikariConfig.setJdbcUrl(String.format("jdbc:h2:%s",aspectLogDbProperties.getFilePath()));
         hikariDataSource = new HikariDataSource(hikariConfig);
         queryRunner = new QueryRunner(hikariDataSource);

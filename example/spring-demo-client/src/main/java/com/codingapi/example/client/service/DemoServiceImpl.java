@@ -5,6 +5,7 @@ import com.codingapi.example.common.spring.DDemoClient;
 import com.codingapi.example.common.spring.EDemoClient;
 import com.codingapi.example.client.mapper.ClientDemoMapper;
 import com.codingapi.tx.client.bean.TxTransactionLocal;
+import com.codingapi.tx.commons.annotation.LcnTransaction;
 import com.codingapi.tx.commons.annotation.TxTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +36,7 @@ public class DemoServiceImpl implements DemoService {
     private String appName;
 
     @Override
-    @TxTransaction
+    @LcnTransaction
     @Transactional
     public String execute(String value) {
         String dResp = dDemoClient.rpc(value);

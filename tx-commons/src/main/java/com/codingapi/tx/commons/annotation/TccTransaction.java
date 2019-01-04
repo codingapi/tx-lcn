@@ -6,13 +6,13 @@ import java.lang.annotation.*;
  * @author 侯存路
  * @date 2018/12/3
  * @company codingApi
- * @description
+ * @description type [tcc] of DTX
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface TCCTransaction {
+public @interface TccTransaction {
 
 
 

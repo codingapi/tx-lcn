@@ -4,17 +4,15 @@ import com.codingapi.example.common.db.domain.Demo;
 import com.codingapi.example.demo.mapper.EDemoMapper;
 import com.codingapi.example.demo.service.DemoService;
 import com.codingapi.tx.client.bean.TxTransactionLocal;
-import com.codingapi.tx.commons.annotation.TCCTransaction;
+import com.codingapi.tx.commons.annotation.TccTransaction;
 import com.codingapi.tx.commons.annotation.TxTransaction;
 import com.codingapi.tx.commons.util.Transactions;
-import com.codingapi.tx.spi.sleuth.TracerHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -36,8 +34,7 @@ public class DemoServiceImpl implements DemoService {
     private String appName;
 
     @Override
-    @TxTransaction(type = Transactions.TCC)
-    @TCCTransaction(confirmMethod = "cm", cancelMethod = "cl", executeClass = DemoServiceImpl.class)
+    @TccTransaction(confirmMethod = "cm", cancelMethod = "cl", executeClass = DemoServiceImpl.class)
     public String rpc(String value) {
         Demo demo = new Demo();
         demo.setDemoField(value);

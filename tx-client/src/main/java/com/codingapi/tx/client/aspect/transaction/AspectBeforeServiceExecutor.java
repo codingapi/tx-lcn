@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.text.Annotation;
 import java.util.Objects;
 
 /**
@@ -39,14 +40,20 @@ public class AspectBeforeServiceExecutor {
         this.transactionServiceExecutor = transactionServiceExecutor;
     }
 
-    public Object around(ProceedingJoinPoint point) throws Throwable {
-
+    Object runTransaction(String transactionType, ProceedingJoinPoint point) throws Throwable {
+        log.info("TX-LCN local start---->");
         // build TransactionInfo 获取切面方法参数
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
         Class<?> clazz = point.getTarget().getClass();
         Object[] parameters = point.getArgs();
         Method thisMethod = clazz.getMethod(method.getName(), method.getParameterTypes());
+
+        if (Objects.isNull(transactionType)){
+            TxTransaction transaction = thisMethod.getAnnotation(TxTransaction.class);
+            assert Objects.nonNull(transaction);
+            transactionType = transaction.type();
+        }
 
         TransactionInfo transactionInfo = new TransactionInfo(clazz,
                 thisMethod.getName(),
@@ -56,8 +63,7 @@ public class AspectBeforeServiceExecutor {
 
         // 事务发起方判断
         boolean isTransactionStart = tracerHelper.getGroupId() == null;
-        TxTransaction transaction = thisMethod.getAnnotation(TxTransaction.class);
-        assert Objects.nonNull(transaction);
+
 
         // 该线程事务
         String groupId = isTransactionStart ? RandomUtils.randomKey() : tracerHelper.getGroupId();
@@ -69,11 +75,11 @@ public class AspectBeforeServiceExecutor {
         }
         txTransactionLocal.setUnitId(unitId);
         txTransactionLocal.setGroupId(groupId);
-        txTransactionLocal.setTransactionType(transaction.type());
+        txTransactionLocal.setTransactionType(transactionType);
 
         // 事务参数
         TxTransactionInfo info = new TxTransactionInfo(
-                transaction.type(),
+                transactionType,
                 isTransactionStart,
                 groupId,
                 unitId,
@@ -86,6 +92,7 @@ public class AspectBeforeServiceExecutor {
             return transactionServiceExecutor.transactionRunning(info);
         } finally {
             TxTransactionLocal.makeNeverAppeared();
+            log.info("TX-LCN local end------>");
         }
     }
 }
