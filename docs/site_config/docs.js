@@ -52,7 +52,16 @@ export default {
                     },
                     {
                         title: '示例',
-                        link: '/zh-cn/docs/demo.html',
+                        children: [
+                            {
+                                title: 'dubbo示例',
+                                link: '/zh-cn/docs/demo/dubbo.html',
+                            },
+                            {
+                                title: 'springcloud示例',
+                                link: '/zh-cn/docs/demo/springcloud.html',
+                            },
+                        ],
                     },
                     {
                         title: '原理介绍',
