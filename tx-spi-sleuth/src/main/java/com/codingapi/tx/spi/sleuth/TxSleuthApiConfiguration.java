@@ -19,6 +19,8 @@ import java.util.Objects;
 @Configuration
 @ComponentScan
 public class TxSleuthApiConfiguration {
+
+
     static {
         String propagationKeys = System.getProperty("spring.sleuth.propagation-keys");
         if (Objects.isNull(propagationKeys)) {
@@ -26,7 +28,9 @@ public class TxSleuthApiConfiguration {
         } else if (!propagationKeys.trim().endsWith(",")) {
             propagationKeys += ",";
         }
-        System.setProperty("spring.sleuth.propagation-keys", propagationKeys + TracerHelper.GROUP_ID_FIELD_NAME + "," + TracerHelper.TX_APP_LIST + "," + TracerHelper.TX_MANAGER_FIELD_NAME);
+        System.setProperty("spring.sleuth.propagation-keys",
+                propagationKeys + TracerHelper.GROUP_ID_FIELD_NAME + ","
+                        + TracerHelper.TX_APP_LIST + "," + TracerHelper.TX_MANAGER_FIELD_NAME);
     }
 
     @Bean
