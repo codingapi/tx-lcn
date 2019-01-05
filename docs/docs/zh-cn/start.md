@@ -73,7 +73,7 @@ public void cancelRpc(Stirng value) {
 ```properties
 server.port=8069
 ```
-> `NOTE` 基于默认配置正常运行请确保TxManager服务端口为8069
+> `NOTE` 基于默认配置正常运行请确保TxManager服务端口为8069 [原因](setting/manager.html)
 
 ----------------------
 至此你已经开发好了一个简单的支持分布式事务的分布式微服务系统

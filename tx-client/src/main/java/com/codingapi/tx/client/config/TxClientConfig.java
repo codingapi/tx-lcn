@@ -21,6 +21,9 @@ import java.util.List;
 public class TxClientConfig {
 
     public TxClientConfig() {
+        this.controlOrder = 0;
+        this.resourceOrder = 0;
+        this.dtxTime = 30000;
         this.managerAddress = Collections.singletonList("127.0.0.1:8070");
     }
 
