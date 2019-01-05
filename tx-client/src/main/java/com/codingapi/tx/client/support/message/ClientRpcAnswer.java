@@ -1,4 +1,4 @@
-package com.codingapi.tx.client.support.rpc;
+package com.codingapi.tx.client.support.message;
 
 import com.codingapi.tx.spi.message.RpcAnswer;
 import com.codingapi.tx.spi.message.RpcClient;

@@ -1,7 +1,7 @@
 package com.codingapi.tx.client.spi.message.callback;
 
 import com.codingapi.tx.client.config.TxClientConfig;
-import com.codingapi.tx.client.support.rpc.MessageCreator;
+import com.codingapi.tx.client.support.message.MessageCreator;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.spi.message.ClientInitCallBack;
 import com.codingapi.tx.spi.message.RpcClient;

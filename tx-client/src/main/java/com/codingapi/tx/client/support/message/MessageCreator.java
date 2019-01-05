@@ -1,4 +1,4 @@
-package com.codingapi.tx.client.support.rpc;
+package com.codingapi.tx.client.support.message;
 
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.util.serializer.SerializerContext;
