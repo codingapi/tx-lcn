@@ -50,11 +50,11 @@ export default {
     },
     start: {
       title: '快速开始',
-      desc: '简单描述',
+      desc: <p> <br /> 简单加几个注解在协作的微服务上，即可享受TXLCN带来的好处！ <br /> <br /> </p>,
       img: '/img/quick_start.png',
       button: {
-        text: '阅读更多',
-        link: '/zh-cn/docs/demo1.html',
+        text: '好了，开始吧',
+        link: '/zh-cn/docs/start.html',
       },
     },
     users: {
