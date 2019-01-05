@@ -6,7 +6,7 @@ import com.codingapi.tx.client.support.separate.TXLCNTransactionState;
 import com.codingapi.tx.client.support.resouce.TransactionResourceExecutor;
 import com.codingapi.tx.client.support.rpc.RpcExecuteService;
 import com.codingapi.tx.client.support.common.TransactionCleanService;
-import com.codingapi.tx.spi.rpc.LCNCmdType;
+import com.codingapi.tx.spi.message.LCNCmdType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -33,9 +33,9 @@ public class LCNTransactionBeanHelper {
 
 
     /**
-     * rpc bean 名称格式
+     * message bean 名称格式
      * rpc_%s_%s
-     * rpc:前缀 %s:事务类型（lcn,tcc,txc） %s:事务业务(commit,rollback)
+     * message:前缀 %s:事务类型（lcn,tcc,txc） %s:事务业务(commit,rollback)
      */
     private static final String RPC_BEAN_NAME_FORMAT = "rpc_%s_%s";
 

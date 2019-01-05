@@ -2,9 +2,9 @@ package com.codingapi.tx.client.support.rpc;
 
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.util.serializer.SerializerContext;
-import com.codingapi.tx.spi.rpc.MessageConstants;
-import com.codingapi.tx.spi.rpc.dto.MessageDto;
-import com.codingapi.tx.spi.rpc.params.*;
+import com.codingapi.tx.spi.message.MessageConstants;
+import com.codingapi.tx.spi.message.dto.MessageDto;
+import com.codingapi.tx.spi.message.params.*;
 
 import java.util.Objects;
 

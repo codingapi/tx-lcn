@@ -1,8 +1,8 @@
 package com.codingapi.tx.manager.support;
 
 
-import com.codingapi.tx.spi.rpc.LCNCmdType;
-import com.codingapi.tx.manager.support.rpc.RpcExecuteService;
+import com.codingapi.tx.spi.message.LCNCmdType;
+import com.codingapi.tx.manager.support.message.RpcExecuteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;

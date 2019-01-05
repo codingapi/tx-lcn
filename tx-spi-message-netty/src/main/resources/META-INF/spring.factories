@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.codingapi.tx.spi.rpc.netty.RpcNettyConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.codingapi.tx.spi.message.netty.RpcNettyConfiguration
