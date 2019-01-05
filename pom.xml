@@ -19,8 +19,8 @@
         <module>tx-client</module>
         <module>tx-commons</module>
         <module>tx-jdbcproxy-p6spy</module>
-        <module>tx-spi-rpc</module>
-        <module>tx-spi-rpc-netty</module>
+        <module>tx-spi-message</module>
+        <module>tx-spi-message-netty</module>
         <module>tx-spi-sleuth</module>
         <module>tx-spi-sleuth-springcloud</module>
         <module>tx-spi-sleuth-dubbo</module>
@@ -188,7 +188,7 @@
 
             <dependency>
                 <groupId>com.codingapi.txlcn</groupId>
-                <artifactId>tx-spi-rpc-netty</artifactId>
+                <artifactId>tx-spi-message-netty</artifactId>
                 <version>${codingapi.txlcn.version}</version>
             </dependency>
 
@@ -207,7 +207,7 @@
 
             <dependency>
                 <groupId>com.codingapi.txlcn</groupId>
-                <artifactId>tx-spi-rpc</artifactId>
+                <artifactId>tx-spi-message</artifactId>
                 <version>${codingapi.txlcn.version}</version>
             </dependency>
 

@@ -1,6 +1,5 @@
 package com.codingapi.tx.spi.sleuth.springcloud.ribbon.loadbalance;
 
-import com.codingapi.tx.spi.sleuth.TracerHelper;
 import com.codingapi.tx.spi.sleuth.listener.SleuthParamListener;
 import com.netflix.loadbalancer.Server;
 import com.netflix.loadbalancer.ZoneAvoidanceRule;
@@ -21,22 +20,15 @@ import java.util.List;
 @Scope("prototype")
 public class TXLCNZoneAvoidanceRule extends ZoneAvoidanceRule {
 
+    //针对sleuth 负载控制的ExtraField参数设置
     private final SleuthParamListener sleuthParamListener;
 
     private final Registration registration;
 
-    private final TracerHelper tracerHelper;
-
-    public TXLCNZoneAvoidanceRule() {
-        this(null, null, null);
-    }
-
     public TXLCNZoneAvoidanceRule(SleuthParamListener sleuthParamListener,
-                                  Registration registration,
-                                  TracerHelper tracerHelper) {
+                                  Registration registration) {
         this.sleuthParamListener = sleuthParamListener;
         this.registration = registration;
-        this.tracerHelper = tracerHelper;
     }
 
     @Override
@@ -45,7 +37,6 @@ public class TXLCNZoneAvoidanceRule extends ZoneAvoidanceRule {
     }
 
     private Server getServer(Object key) {
-        log.debug("load balanced rule key: {}, app list: {}", key, tracerHelper.getAppList());
         String localKey = String.format("%s:%s:%s", registration.getServiceId(), registration.getHost(), registration.getPort());
         List<String> appList = sleuthParamListener.beforeBalance(localKey);
         Server balanceServer = null;
@@ -62,13 +53,10 @@ public class TXLCNZoneAvoidanceRule extends ZoneAvoidanceRule {
         if (balanceServer == null) {
             Server server = super.choose(key);
             sleuthParamListener.alfterNewBalance(String.format("%s:%s", server.getMetaInfo().getAppName(), server.getHostPort()));
-            log.debug("app list: {}", tracerHelper.getAppList());
             return server;
         } else {
-            log.debug("app list hit: {}", tracerHelper.getAppList());
             return balanceServer;
         }
     }
-
 
 }
