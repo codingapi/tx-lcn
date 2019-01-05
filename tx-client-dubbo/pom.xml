@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>tx-lcn</artifactId>
-        <groupId>com.codingapi</groupId>
+        <groupId>com.codingapi.txlcn</groupId>
         <version>5.0.0.beta</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -15,12 +15,12 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.codingapi</groupId>
+            <groupId>com.codingapi.txlcn</groupId>
             <artifactId>tx-client</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.codingapi</groupId>
+            <groupId>com.codingapi.txlcn</groupId>
             <artifactId>tx-spi-sleuth-dubbo</artifactId>
         </dependency>
 

@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
 
     <parent>
-        <groupId>com.codingapi</groupId>
+        <groupId>com.codingapi.txlcn</groupId>
         <artifactId>tx-lcn</artifactId>
         <version>5.0.0.beta</version>
     </parent>
@@ -21,17 +21,17 @@
         </dependency>
 
         <dependency>
-            <groupId>com.codingapi</groupId>
+            <groupId>com.codingapi.txlcn</groupId>
             <artifactId>tx-logger</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.codingapi</groupId>
+            <groupId>com.codingapi.txlcn</groupId>
             <artifactId>tx-commons</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.codingapi</groupId>
+            <groupId>com.codingapi.txlcn</groupId>
             <artifactId>tx-spi-rpc-netty</artifactId>
         </dependency>
 
