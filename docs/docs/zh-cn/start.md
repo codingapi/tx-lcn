@@ -18,54 +18,54 @@
 ```
 > `NOTE` 依微服务架构依赖其一
 
-## 二、三个协作的微服务示例代码
+## 二、微服务示例代码
+
+### (1) 微服务Client
 ```java
 // Micro Service Client. As DTX starter
-@LcnTransaction
-@Transactional
-public String execute(String value) throw BusinessException {
-    // step1. call remote service D
-    String result1 = microServiceD.rpc(value);
-    // step2. call remote service E
-    String result2 = microServiceE.rpc(value);
-    // step3. local store operate
-    valueDao.save(value);
-    return return result2 + " > " + result2 + " > " + "ok-client";
+public class ServiceClient {
+    private ValueDao valueDao;
+    private ServiceD serviceD;
+    public ServiceClient(ValueDao valueDao, ServiceD serviceD) {
+        this.valueDao = valueDao;
+        this.serviceD = serviceD;
+    }
+    
+    @LcnTransaction
+    @Transactional
+    public String execute(String value) throws BusinessException {
+        // step1. call remote service D
+        String result = serviceD.rpc(value);
+        // step2. local store operate. DTX commit if save success, rollback if not.
+        valueDao.save(value);
+        valueDao.saveBak(value);
+        return result + " > " + "ok-client";
+    }
 }
-
+```
+### (2) 微服务D
+```java
 // Micro Service D
-@TxcTransaction
-public String rpc(String value) throw BusinessException {
-    valueDao.save(value);
-    return "ok-D";
-}
-
-// Micro Service E
-@TccTransaction
-public String rpc(String value) throw BusinessException {
-    long id = valueDao.save(value);
-    globalCache.bind(DTXLocal.cur().groupId(), id);
-    return "ok-E";
-}
-
-public void confirmRpc(String value) {
-    LOG.info("confirm rpc");
-    // other confrim logic
-}
-
-public void cancelRpc(Stirng value) {
-    LOG.info("cancel rpc");
-    // rollback by self
-    valueDao.deleteById(globalCache.value(DTXLocal.cur().groupId()));
+public class ServiceD {
+    private ValueDao valueDao;
+    public ServiceD(ValueDao valueDao) {
+        this.valueDao = valueDao;
+    }
+    
+    @LcnTransaction
+    @Transactional
+    public String rpc(String value) throws BusinessException {
+        valueDao.save(value);
+        valueDao.saveBak(value);
+        return "ok-D";
+    }
 }
 ```
 >`NOTES`  
-@LcnTransaction 
-标注事务单元用Lcn事务模式参与分布式事务[[原理]](principle/lcn.html)  
-@TxcTransaction 
-标注事务单元用Txc事务模式参与分布式事务[[原理]](principle/txc.html)  
-@TccTransaction 
-标注事务单元用Tcc事务模式参与分布式事务[[原理]](principle/tcc.html)  
+1、@LcnTransaction 
+标注事务单元用Lcn事务模式参与分布式事务[[原理]](principle/lcn.html)。还有 
+[TXC](principle/txc.html)  [TCC](principle/tcc.html) 模式。  
+2、LCN模式需要加本地事务注解，LCN只协调本地事务
 
 ## 三、启动TxManager
 
@@ -76,4 +76,4 @@ server.port=8069
 > `NOTE` 基于默认配置正常运行请确保TxManager服务端口为8069 [原因](setting/manager.html)
 
 ----------------------
-至此你已经开发好了一个简单的支持分布式事务的分布式微服务系统
+至此，你已经开发好了一个简单的、支持分布式事务(DTX)的微服务系统
