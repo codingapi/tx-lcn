@@ -33,31 +33,20 @@ public class ManagerRpcExceptionHandler implements RpcExceptionHandler {
 
     @Override
     public void handleNotifyUnitBusinessException(Object params, Throwable e) {
-        // runtime compensation
-        List paramList = ((List) params);
-
-        try {
-            String modName = rpcClient.getAppName((String) paramList.get(1));
-            NotifyUnitParams notifyUnitParams = (NotifyUnitParams) paramList.get(0);
-            WriteTxExceptionDTO writeTxExceptionReq = new WriteTxExceptionDTO(notifyUnitParams.getGroupId(),
-                    notifyUnitParams.getUnitId(), modName, (short) notifyUnitParams.getState());
-            writeTxExceptionReq.setRegistrar((short) 1);
-            compensationService.writeTxException(writeTxExceptionReq);
-        } catch (RpcException e1) {
-            log.error(e1.getMessage());
-        }
-
+        // the same to rpc error
+        handleNotifyUnitMessageException(params, e);
     }
 
     @Override
     public void handleNotifyUnitMessageException(Object params, Throwable e) {
-        // support exception transfer to t_compensation
+        // notify unit rpc error, write txEx
         List paramList = ((List) params);
         try {
             String modName = rpcClient.getAppName((String) paramList.get(1));
             NotifyUnitParams notifyUnitParams = (NotifyUnitParams) paramList.get(0);
             WriteTxExceptionDTO writeTxExceptionReq = new WriteTxExceptionDTO(notifyUnitParams.getGroupId(),
                     notifyUnitParams.getUnitId(), modName, (short) notifyUnitParams.getState());
+            writeTxExceptionReq.setRegistrar((short) 0);
             compensationService.writeTxException(writeTxExceptionReq);
         } catch (RpcException e1) {
             log.error(e1.getMessage());

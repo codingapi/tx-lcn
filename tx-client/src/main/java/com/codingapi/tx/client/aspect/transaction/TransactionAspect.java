@@ -32,6 +32,10 @@ public class TransactionAspect implements Ordered {
         this.aspectBeforeServiceExecutor = aspectBeforeServiceExecutor;
     }
 
+    @Pointcut("@annotation(com.codingapi.tx.commons.annotation.TxTransaction)")
+    public void txTransactionPointcut() {
+    }
+
     @Pointcut("@annotation(com.codingapi.tx.commons.annotation.LcnTransaction)")
     public void lcnTransactionPointcut() {
     }
@@ -44,22 +48,25 @@ public class TransactionAspect implements Ordered {
     public void tccTransactionPointcut() {
     }
 
-    @Around("@annotation(com.codingapi.tx.commons.annotation.TxTransaction)")
+    @Around("txTransactionPointcut()")
     public Object transactionRunning(ProceedingJoinPoint point) throws Throwable {
         return aspectBeforeServiceExecutor.runTransaction(null, point);
     }
 
-    @Around("lcnTransactionPointcut() && !txcTransactionPointcut() && !tccTransactionPointcut()")
+    @Around("lcnTransactionPointcut() && !txcTransactionPointcut()" +
+            "&& !tccTransactionPointcut() && !txTransactionPointcut()")
     public Object runWithLcnTransaction(ProceedingJoinPoint point) throws Throwable {
         return aspectBeforeServiceExecutor.runTransaction(Transactions.LCN, point);
     }
 
-    @Around("txcTransactionPointcut() && !lcnTransactionPointcut() && !tccTransactionPointcut()")
+    @Around("txcTransactionPointcut() && !lcnTransactionPointcut()" +
+            "&& !tccTransactionPointcut() && !txTransactionPointcut()")
     public Object runWithTxcTransaction(ProceedingJoinPoint point) throws Throwable {
         return aspectBeforeServiceExecutor.runTransaction(Transactions.TXC, point);
     }
 
-    @Around("tccTransactionPointcut() && !lcnTransactionPointcut() && !txcTransactionPointcut()")
+    @Around("tccTransactionPointcut() && !lcnTransactionPointcut()" +
+            "&& !txcTransactionPointcut() && !txTransactionPointcut()")
     public Object runWithTccTransaction(ProceedingJoinPoint point) throws Throwable {
         return aspectBeforeServiceExecutor.runTransaction(Transactions.TCC, point);
     }

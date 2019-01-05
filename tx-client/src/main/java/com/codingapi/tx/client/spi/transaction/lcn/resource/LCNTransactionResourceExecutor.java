@@ -1,6 +1,6 @@
 package com.codingapi.tx.client.spi.transaction.lcn.resource;
 
-import com.codingapi.tx.client.bean.TxTransactionLocal;
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.support.resouce.TransactionResourceExecutor;
 import com.codingapi.tx.client.support.common.cache.TransactionAttachmentCache;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +29,8 @@ public class LCNTransactionResourceExecutor implements TransactionResourceExecut
 
     @Override
     public Connection proxyConnection(Supplier<Connection> connectionSupplier) throws Throwable {
-        String groupId = TxTransactionLocal.current().getGroupId();
-        String unitId = TxTransactionLocal.current().getUnitId();
+        String groupId = DTXLocal.cur().getGroupId();
+        String unitId = DTXLocal.cur().getUnitId();
         Connection connection = transactionAttachmentCache.attachment(
                 groupId, unitId, LCNConnectionProxy.class, () -> new LCNConnectionProxy(connectionSupplier.get())
         );

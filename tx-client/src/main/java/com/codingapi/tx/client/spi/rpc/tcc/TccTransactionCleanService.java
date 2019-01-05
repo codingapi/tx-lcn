@@ -1,6 +1,6 @@
 package com.codingapi.tx.client.spi.rpc.tcc;
 
-import com.codingapi.tx.client.bean.TxTransactionLocal;
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.spi.transaction.tcc.control.UnitTCCInfoMap;
 import com.codingapi.tx.commons.exception.TransactionClearException;
 import com.codingapi.tx.client.bean.TCCTransactionInfo;
@@ -39,8 +39,8 @@ public class TccTransactionCleanService implements TransactionCleanService {
         Object object = applicationContext.getBean(tccInfo.getExecuteClass());
         Method exeMethod = null;
         try {
-            TxTransactionLocal.getOrNew().setGroupId(groupId);
-            TxTransactionLocal.getOrNew().setUnitId(unitId);
+            DTXLocal.getOrNew().setGroupId(groupId);
+            DTXLocal.getOrNew().setUnitId(unitId);
             exeMethod = tccInfo.getExecuteClass().getMethod(
                     state == 1 ? tccInfo.getConfirmMethod() : tccInfo.getCancelMethod(),
                     tccInfo.getMethodTypeParameter());
@@ -51,7 +51,7 @@ public class TccTransactionCleanService implements TransactionCleanService {
             log.error(" rpc_tcc_" + exeMethod + e.getMessage());
             throw new TransactionClearException(e.getMessage());
         } finally {
-            TxTransactionLocal.makeNeverAppeared();
+            DTXLocal.makeNeverAppeared();
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.codingapi.tx.client.spi.transaction.txc.control;
 
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.bean.TxTransactionInfo;
-import com.codingapi.tx.client.bean.TxTransactionLocal;
 import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.TxcService;
 import com.codingapi.tx.client.support.separate.TXLCNTransactionControl;
 import com.codingapi.tx.client.support.common.template.TransactionCleanTemplate;
@@ -43,22 +43,22 @@ public class TxcRunningTransaction implements TXLCNTransactionControl {
     public void preBusinessCode(TxTransactionInfo info) {
 
         // 准备回滚信息容器
-        TxTransactionLocal.current().setAttachment(new RollbackInfo());
+        DTXLocal.cur().setAttachment(new RollbackInfo());
 
         // TXC 类型事务需要代理资源
-        TxTransactionLocal.makeProxy();
+        DTXLocal.makeProxy();
     }
 
     @Override
     public void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) {
         // 写Undo log 早于 clean
         txcService.writeUndoLog(
-                info.getGroupId(), info.getUnitId(), (RollbackInfo) TxTransactionLocal.current().getAttachment());
+                info.getGroupId(), info.getUnitId(), (RollbackInfo) DTXLocal.cur().getAttachment());
 
         try {
             log.info("txc > running > clean transaction.");
             transactionCleanTemplate.clean(
-                    TxTransactionLocal.current().getGroupId(),
+                    DTXLocal.cur().getGroupId(),
                     info.getUnitId(),
                     info.getTransactionType(),
                     0);
@@ -71,7 +71,7 @@ public class TxcRunningTransaction implements TXLCNTransactionControl {
     public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) throws TxClientException {
         // 写Undo log
         txcService.writeUndoLog(
-                info.getGroupId(), info.getUnitId(), (RollbackInfo) TxTransactionLocal.current().getAttachment());
+                info.getGroupId(), info.getUnitId(), (RollbackInfo) DTXLocal.cur().getAttachment());
         // 加入事务组
         transactionControlTemplate.joinGroup(info.getGroupId(), info.getUnitId(), info.getTransactionType(),
                 info.getTransactionInfo());

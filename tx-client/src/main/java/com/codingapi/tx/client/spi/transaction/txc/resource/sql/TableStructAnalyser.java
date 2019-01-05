@@ -1,6 +1,6 @@
 package com.codingapi.tx.client.spi.transaction.txc.resource.sql;
 
-import com.codingapi.tx.client.bean.TxTransactionLocal;
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.TableStruct;
 import org.apache.commons.dbutils.DbUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class TableStructAnalyser {
         ResultSet columnSet = null;
         TableStruct tableStruct = new TableStruct(table);
         try {
-            TxTransactionLocal.makeUnProxy();
+            DTXLocal.makeUnProxy();
             connection = dataSource.getConnection();
             connection.setAutoCommit(true);
             structRs = connection.getMetaData().getPrimaryKeys(connection.getCatalog(), null, table);
@@ -53,7 +53,7 @@ public class TableStructAnalyser {
                 DbUtils.close(connection);
             } catch (SQLException ignored) {
             }
-            TxTransactionLocal.undoProxyStatus();
+            DTXLocal.undoProxyStatus();
         }
         return tableStruct;
     }
@@ -68,7 +68,7 @@ public class TableStructAnalyser {
         Connection connection = null;
         ResultSet resultSet = null;
         try {
-            TxTransactionLocal.makeUnProxy();
+            DTXLocal.makeUnProxy();
             connection = dataSource.getConnection();
             connection.setAutoCommit(true);
             resultSet = connection.getMetaData().getTables(null, null, tableName, null);
@@ -83,7 +83,7 @@ public class TableStructAnalyser {
                 DbUtils.close(connection);
             } catch (SQLException ignored) {
             }
-            TxTransactionLocal.undoProxyStatus();
+            DTXLocal.undoProxyStatus();
         }
         return false;
     }

@@ -10,9 +10,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Data
 @Slf4j
-public class TxTransactionLocal {
+public class DTXLocal {
 
-    private final static ThreadLocal<TxTransactionLocal> currentLocal = new InheritableThreadLocal<TxTransactionLocal>();
+    private final static ThreadLocal<DTXLocal> currentLocal = new InheritableThreadLocal<DTXLocal>();
 
     /**
      * 事务类型
@@ -75,7 +75,7 @@ public class TxTransactionLocal {
      *
      * @return
      */
-    public static TxTransactionLocal current() {
+    public static DTXLocal cur() {
         return currentLocal.get();
     }
 
@@ -84,9 +84,9 @@ public class TxTransactionLocal {
      *
      * @return
      */
-    public static TxTransactionLocal getOrNew() {
+    public static DTXLocal getOrNew() {
         if (currentLocal.get() == null) {
-            currentLocal.set(new TxTransactionLocal());
+            currentLocal.set(new DTXLocal());
         }
         return currentLocal.get();
     }
@@ -95,9 +95,9 @@ public class TxTransactionLocal {
      * 设置代理资源
      */
     public static void makeProxy() {
-        if (current() != null) {
-            current().proxyTmp = current().proxy;
-            current().proxy = true;
+        if (cur() != null) {
+            cur().proxyTmp = cur().proxy;
+            cur().proxy = true;
         }
     }
 
@@ -105,9 +105,9 @@ public class TxTransactionLocal {
      * 设置不代理资源
      */
     public static void makeUnProxy() {
-        if (current() != null) {
-            current().proxyTmp = current().proxy;
-            current().proxy = false;
+        if (cur() != null) {
+            cur().proxyTmp = cur().proxy;
+            cur().proxy = false;
         }
     }
 
@@ -115,8 +115,8 @@ public class TxTransactionLocal {
      * 撤销到上一步的资源代理状态
      */
     public static void undoProxyStatus() {
-        if (current() != null) {
-            current().proxy = current().proxyTmp;
+        if (cur() != null) {
+            cur().proxy = cur().proxyTmp;
         }
     }
 
@@ -125,7 +125,7 @@ public class TxTransactionLocal {
      */
     public static void makeNeverAppeared() {
         if (currentLocal.get() != null) {
-            log.info("clean thread local[{}]: {}", TxTransactionLocal.class.getSimpleName(), current());
+            log.info("clean thread local[{}]: {}", DTXLocal.class.getSimpleName(), cur());
             currentLocal.set(null);
         }
     }

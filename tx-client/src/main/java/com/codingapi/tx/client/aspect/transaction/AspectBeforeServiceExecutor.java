@@ -1,9 +1,9 @@
 package com.codingapi.tx.client.aspect.transaction;
 
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.spi.sleuth.TracerHelper;
 import com.codingapi.tx.commons.annotation.TxTransaction;
 import com.codingapi.tx.client.bean.TxTransactionInfo;
-import com.codingapi.tx.client.bean.TxTransactionLocal;
 import com.codingapi.tx.client.support.separate.TXLCNTransactionServiceExecutor;
 import com.codingapi.tx.commons.util.Transactions;
 import com.codingapi.tx.commons.bean.TransactionInfo;
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.text.Annotation;
 import java.util.Objects;
 
 /**
@@ -68,14 +67,14 @@ public class AspectBeforeServiceExecutor {
         // 该线程事务
         String groupId = isTransactionStart ? RandomUtils.randomKey() : tracerHelper.getGroupId();
         String unitId = Transactions.unitId(transactionInfo.getMethodStr());
-        TxTransactionLocal txTransactionLocal = TxTransactionLocal.getOrNew();
-        if (txTransactionLocal.getUnitId() != null) {
-            txTransactionLocal.setInUnit(true);
-            log.info("tx > unit[{}] in unit: {}", unitId, txTransactionLocal.getUnitId());
+        DTXLocal dtxLocal = DTXLocal.getOrNew();
+        if (dtxLocal.getUnitId() != null) {
+            dtxLocal.setInUnit(true);
+            log.info("tx > unit[{}] in unit: {}", unitId, dtxLocal.getUnitId());
         }
-        txTransactionLocal.setUnitId(unitId);
-        txTransactionLocal.setGroupId(groupId);
-        txTransactionLocal.setTransactionType(transactionType);
+        dtxLocal.setUnitId(unitId);
+        dtxLocal.setGroupId(groupId);
+        dtxLocal.setTransactionType(transactionType);
 
         // 事务参数
         TxTransactionInfo info = new TxTransactionInfo(
@@ -91,7 +90,7 @@ public class AspectBeforeServiceExecutor {
         try {
             return transactionServiceExecutor.transactionRunning(info);
         } finally {
-            TxTransactionLocal.makeNeverAppeared();
+            DTXLocal.makeNeverAppeared();
             log.info("TX-LCN local end------>");
         }
     }
