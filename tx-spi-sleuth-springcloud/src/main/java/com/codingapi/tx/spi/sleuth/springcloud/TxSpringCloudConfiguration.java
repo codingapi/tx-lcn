@@ -1,6 +1,5 @@
 package com.codingapi.tx.spi.sleuth.springcloud;
 
-import com.codingapi.tx.spi.sleuth.TracerHelper;
 import com.codingapi.tx.spi.sleuth.listener.SleuthParamListener;
 import com.codingapi.tx.spi.sleuth.springcloud.ribbon.loadbalance.TXLCNZoneAvoidanceRule;
 import com.netflix.loadbalancer.IRule;
@@ -32,8 +31,7 @@ public class TxSpringCloudConfiguration {
     @ConditionalOnMissingBean
     @ConditionalOnProperty(name = "tx-lcn.springcloud.loadbalance.enabled",havingValue = "true")
     public IRule ribbonRule(SleuthParamListener sleuthParamListener,
-                            Registration registration,
-                            TracerHelper tracerHelper){
-        return new TXLCNZoneAvoidanceRule(sleuthParamListener, registration, tracerHelper);
+                            Registration registration){
+        return new TXLCNZoneAvoidanceRule(sleuthParamListener, registration);
     }
 }

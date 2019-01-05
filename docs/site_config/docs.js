@@ -109,7 +109,7 @@ export default {
                                 link: '/zh-cn/docs/expansion/transaction.html',
                             },
                             {
-                                title: '通讯RPC扩展',
+                                title: '通讯协议扩展',
                                 link: '/zh-cn/docs/expansion/net.html',
                             },
                             {

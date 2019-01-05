@@ -32,7 +32,7 @@
 
         <dependency>
             <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>tx-spi-rpc-netty</artifactId>
+            <artifactId>tx-spi-message-netty</artifactId>
         </dependency>
 
         <dependency>

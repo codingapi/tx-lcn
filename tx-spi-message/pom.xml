@@ -9,21 +9,13 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>tx-spi-rpc-netty</artifactId>
+    <artifactId>tx-spi-message</artifactId>
+
 
     <dependencies>
-
-
         <dependency>
             <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>tx-spi-rpc</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
+            <artifactId>tx-commons</artifactId>
         </dependency>
     </dependencies>
-
-
 </project>
