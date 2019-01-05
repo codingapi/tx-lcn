@@ -13,5 +13,11 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface TxcTransaction {
-    long timeout() default 2000;
+
+    /**
+     * 资源锁定时等待时间，默认不等待
+     *
+     * @return
+     */
+    long timeout() default 0;
 }
