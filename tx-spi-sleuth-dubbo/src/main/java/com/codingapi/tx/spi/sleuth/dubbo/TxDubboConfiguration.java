@@ -21,6 +21,11 @@ import javax.annotation.PostConstruct;
 @Slf4j
 public class TxDubboConfiguration {
 
+    static {
+        System.setProperty("dubbo.provider.filter","tracing");
+        System.setProperty("dubbo.consumer.filter","tracing");
+    }
+
     @Autowired
     private SleuthParamListener sleuthParamListener;
 
