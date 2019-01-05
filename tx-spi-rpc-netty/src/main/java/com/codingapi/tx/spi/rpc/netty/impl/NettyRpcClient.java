@@ -8,7 +8,7 @@ import com.codingapi.tx.spi.rpc.exception.RpcException;
 import com.codingapi.tx.spi.rpc.netty.SocketManager;
 import com.codingapi.tx.spi.rpc.netty.bean.NettyRpcCmd;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -19,9 +19,9 @@ import java.util.List;
  *
  * @author ujued
  */
-@Service
+@Component
 @Slf4j
-public class NettyRpcClient implements RpcClient {
+public class NettyRpcClient extends RpcClient {
 
 
     @Override
@@ -57,11 +57,6 @@ public class NettyRpcClient implements RpcClient {
         MessageDto result = request(rpcCmd);
         log.debug("cmd request used time: {} ms", System.currentTimeMillis() - startTime);
         return result;
-    }
-
-    @Override
-    public String loadRemoteKey() throws RpcException {
-        return SocketManager.getInstance().loadRemoteKey();
     }
 
 

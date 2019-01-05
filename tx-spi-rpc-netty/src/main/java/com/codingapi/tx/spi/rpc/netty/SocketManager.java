@@ -19,7 +19,6 @@ import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by lorne on 2017/6/30.
@@ -28,9 +27,6 @@ import java.util.Random;
 public class SocketManager {
 
     private final AttributeKey<String> attributeKey = AttributeKey.valueOf(SocketManager.class.getName());
-
-
-    private Random random;
 
     private ChannelGroup channels;
 
@@ -59,8 +55,12 @@ public class SocketManager {
 
     private SocketManager() {
         channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-        random = new Random();
     }
+
+    public int channelSize(){
+        return channels.size();
+    }
+
 
 
     private Channel getChannel(String key) throws RpcException {
@@ -106,20 +106,8 @@ public class SocketManager {
     }
 
 
-    public String loadRemoteKey() throws RpcException {
-        int size = channels.size();
-        if (size == 0) {
-            throw new RpcException(RpcException.NON_TX_MANAGER, "not can used connection");
-        }
-        int randomIndex = random.nextInt(size);
-        int index = 0;
-        for (Channel channel : channels) {
-            if (index == randomIndex) {
-                return channel.remoteAddress().toString();
-            }
-            index++;
-        }
-        throw new RpcException("channels was empty.");
+    public ChannelGroup getChannels() {
+        return channels;
     }
 
     public int currentSize() {

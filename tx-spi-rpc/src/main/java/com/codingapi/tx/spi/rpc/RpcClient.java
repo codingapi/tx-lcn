@@ -4,6 +4,8 @@ import com.codingapi.tx.spi.rpc.dto.MessageDto;
 import com.codingapi.tx.spi.rpc.dto.RpcCmd;
 import com.codingapi.tx.spi.rpc.dto.RpcResponseState;
 import com.codingapi.tx.spi.rpc.exception.RpcException;
+import com.codingapi.tx.spi.rpc.loadbalance.RpcLoadBalance;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -14,7 +16,10 @@ import java.util.List;
  *
  * @author ujued
  */
-public interface RpcClient {
+public abstract class RpcClient {
+
+    @Autowired
+    private RpcLoadBalance rpcLoadBalance;
 
     /**
      * 发送指令不需要返回数据，需要知道返回的状态
@@ -22,7 +27,7 @@ public interface RpcClient {
      * @return  指令状态
      * @throws RpcException
      */
-    RpcResponseState send(RpcCmd rpcCmd) throws RpcException;
+   public abstract RpcResponseState send(RpcCmd rpcCmd) throws RpcException;
 
 
     /**
@@ -32,7 +37,7 @@ public interface RpcClient {
      * @return  指令状态
      * @throws RpcException
      */
-    RpcResponseState send(String remoteKey,MessageDto msg) throws RpcException;
+    public abstract RpcResponseState send(String remoteKey,MessageDto msg) throws RpcException;
 
 
     /**
@@ -41,7 +46,7 @@ public interface RpcClient {
      * @return  相应指令数据
      * @throws RpcException
      */
-    MessageDto request(RpcCmd rpcCmd)throws RpcException;
+    public abstract  MessageDto request(RpcCmd rpcCmd)throws RpcException;
 
 
     /**
@@ -51,7 +56,7 @@ public interface RpcClient {
      * @return  相应指令数据
      * @throws RpcException
      */
-    MessageDto request(String remoteKey,MessageDto msg)throws RpcException;
+    public abstract  MessageDto request(String remoteKey,MessageDto msg)throws RpcException;
 
 
     /**
@@ -59,14 +64,16 @@ public interface RpcClient {
      * @return
      * @throws RpcException
      */
-    String loadRemoteKey()throws RpcException;
+    public  String loadRemoteKey() throws RpcException{
+        return rpcLoadBalance.getRemoteKey();
+    }
 
 
     /**
      * 获取所有的远程连接对象
      * @return  远程连接对象数组.
      */
-    List<String> loadAllRemoteKey();
+    public abstract List<String> loadAllRemoteKey();
 
 
     /**
@@ -74,7 +81,7 @@ public interface RpcClient {
      * @param moduleName 模块名称
      * @return 远程标识
      */
-    List<String> moduleList(String moduleName);
+    public abstract List<String> moduleList(String moduleName);
 
 
     /**
@@ -82,7 +89,7 @@ public interface RpcClient {
      * @param remoteKey 远程标识
      * @param appName   应用名称
      */
-    void bindAppName(String remoteKey,String appName) throws RpcException;
+    public abstract void bindAppName(String remoteKey,String appName) throws RpcException;
 
 
 
@@ -91,6 +98,6 @@ public interface RpcClient {
      * @param remoteKey 远程标识
      * @return   应用名称
      */
-    String getAppName(String remoteKey) throws RpcException;
+    public abstract  String getAppName(String remoteKey) throws RpcException;
 
 }

@@ -2,7 +2,9 @@ package com.codingapi.tx.spi.rpc.netty;
 
 import com.codingapi.tx.spi.rpc.ClientInitCallBack;
 import com.codingapi.tx.spi.rpc.RpcAnswer;
+import com.codingapi.tx.spi.rpc.loadbalance.RpcLoadBalance;
 import com.codingapi.tx.spi.rpc.netty.bean.RpcCmdContext;
+import com.codingapi.tx.spi.rpc.netty.loadbalance.RandomLoadBalance;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -43,6 +45,12 @@ public class RpcNettyConfiguration {
     @ConditionalOnMissingBean
     public RpcAnswer rpcClientAnswer(){
         return rpcCmd -> log.info("cmd->{}",rpcCmd);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public RpcLoadBalance rpcLoadBalance(){
+        return new RandomLoadBalance();
     }
 
 
