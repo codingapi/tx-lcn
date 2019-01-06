@@ -5,7 +5,7 @@ import com.codingapi.tx.commons.exception.TxManagerException;
 import com.codingapi.tx.spi.message.params.AskTransactionStateParams;
 import com.codingapi.tx.manager.support.group.GroupRelationship;
 import com.codingapi.tx.manager.support.message.RpcExecuteService;
-import com.codingapi.tx.manager.support.TransactionCmd;
+import com.codingapi.tx.manager.support.message.TransactionCmd;
 import com.codingapi.tx.manager.core.service.TxExceptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,6 @@
 package com.codingapi.tx.manager.support.message;
 
 import com.codingapi.tx.manager.support.ManagerRpcBeanHelper;
-import com.codingapi.tx.manager.support.TransactionCmd;
 import com.codingapi.tx.spi.message.RpcClient;
 import com.codingapi.tx.spi.message.dto.MessageDto;
 import com.codingapi.tx.spi.message.dto.RpcCmd;

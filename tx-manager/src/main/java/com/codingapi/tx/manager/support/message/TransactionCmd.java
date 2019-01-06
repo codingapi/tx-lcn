@@ -1,4 +1,4 @@
-package com.codingapi.tx.manager.support;
+package com.codingapi.tx.manager.support.message;
 
 
 import com.codingapi.tx.spi.message.LCNCmdType;
