@@ -364,6 +364,25 @@
             <timezone>+8</timezone>
         </developer>
 
+        <developer>
+            <name>yinxue</name>
+            <email>yinxue@codingapi.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+
+        <developer>
+            <name>zhuyu</name>
+            <email>zhuyu@codingapi.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+
+
     </developers>
 
     <scm>
