@@ -46,7 +46,7 @@ public class MessageConstants {
     /**
      * 通知建立连接
      */
-    public static final String ACTION_NEW_CONNECT = "newConnect";
+    public static final String ACTION_NEW_TXMANAGER = "newTxManager";
 
     /**
      * 获取切面日志

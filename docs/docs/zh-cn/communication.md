@@ -2,16 +2,29 @@
 
 TxClient 与 TxManager 通讯指令说明文档
 
-通讯指令数据包格式为json格式
+通讯指令数据包格式为Json格式
 
-例如:
+Json结构说明:
+
+| 字段   |      数据类型      |      说明      |
+|----------|:-------------:|:-------------:|
+| key |  string | 请求唯一标示 |
+| remoteKey | string |请求资源方标示key |
+| msg |    object   | 请求包数据体   |
+| msg.action |    string   | 请求业务方法名   |
+| msg.state |    int   | 请求状态 100:发起请求,200:响应成功,500:响应失败  |
+| msg.groupId |    string   | 事务组Id   |
+| msg.bytes |    byte[]   |  序列化请求数据   |
+
+示例数据包:
 
 请求包
 ```
 {
 	"key": "25303248287617950",
 	"msg": {
-		"action": "atg",
+		"action": "joinGroup",
+		"state": 100,
 		"bytes": "ChEyNTMwMzIyNDYxMjczODg4OBIgNGQ1NTcwMjc3Yzg1OTI5OTI5YWUxNDBiNjFlNjA3ZjAaA3R4Yw==",
 		"groupId": "25303224612738888"
 	},
@@ -24,25 +37,14 @@ TxClient 与 TxManager 通讯指令说明文档
 {
 	"key": "25303248287617950",
 	"msg": {
-		"action": "rok",
+		"action": "joinGroup",
+		"state": 200,
 		"groupId": "25303224612738888"
 	},
 	"remoteKey": "/127.0.0.1:59413"
 }
 
 ```
-
-结构说明:
-
-| 字段   |      数据类型      |      说明      |
-|----------|:-------------:|:-------------:|
-| key |  string | 请求唯一标示 |
-| remoteKey | string |请求资源方标示key |
-| msg |    object   | 请求包数据体   |
-| msg.action |    string   | 请求业务方法名   |
-| msg.groupId |    string   | 事务组Id   |
-| msg.bytes |    byte[]   |  序列化请求数据   |
-
 
 
 
@@ -53,95 +55,301 @@ TxClient 与 TxManager 通讯指令说明文档
 
 请求msg对象参数:
 
-| 字段   |      数据类型      |      说明      |
-|----------|:-------------:|:-------------:|
-| action |    string   |  cg   |
-| groupId |    string   | 事务组Id   |
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  createGroup   | 创建事务组key   |
+| state |    int   |   100  |  请求状态  |
+| groupId |    string   | 1234567890   | 事务组Id   |
 
-示例数据：
 
-```
-{"key":"253032248421004632","msg":{"action":"cg","groupId":"25303224612738888"},"remoteKey":"/127.0.0.1:8070"}
-```
 
 响应参数:
 
-| 字段   |      数据类型      |      说明      |
-|----------|:-------------:|:-------------:|
-| action |    string   |  rok   |
-| groupId |    string   | 事务组Id   |
-示例数据：
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  createGroup   | 创建事务组   |
+| state |    int   |   200  |  响应成功  |
+| groupId |    string   | 1234567890   | 事务组Id   |
 
-```
-{"key":"253032248421004632","msg":{"action":"rok","groupId":"25303224612738888"},"remoteKey":"/127.0.0.1:59360"}
-```
 
 2. 加入事务组指令
 
-{"key":"25303248287617950","msg":{"action":"atg","bytes":"ChEyNTMwMzIyNDYxMjczODg4OBIgNGQ1NTcwMjc3Yzg1OTI5OTI5YWUxNDBiNjFlNjA3ZjAaA3R4Yw==","groupId":"25303224612738888"},"remoteKey":"/127.0.0.1:8070"}
 
-{"key":"25303248287617950","msg":{"action":"rok","groupId":"25303224612738888"},"remoteKey":"/127.0.0.1:59413"}
+请求方向:TxClient->TxManager
+
+请求msg对象参数:
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  joinGroup   | 加入事务组   |
+| state |    int   |   100  |  请求状态  |
+| groupId |    string   | 1234567890   | 事务组Id   |
+| bytes |    byte[]   | 1234567890==   | 序列化请求数据包  |
+
+序列化数据包内容格式
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| groupId |    string   |  1234567890 | 事务组Id   |
+| unitId |     string  |   1234567890  |  事务单元Id  |
+| unitType |    string   | lcn  | 事务类型(lcn/txc/tcc)   |
+| remoteKey |    string   |  /127.0.0.1:8070 | 请求资源方标示key  |
+
+
+
+响应参数:
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  joinGroup   | 加入事务组   |
+| state |    int   |   200  |  响应成功  |
+| groupId |    string   | 1234567890   | 事务组Id   |
 
 
 3. 通知事务组指令
 
-{"key":"253032592607473146","msg":{"action":"clg","bytes":"ChEyNTMwMzIyNDYxMjczODg4OBAA","groupId":"25303224612738888"},"remoteKey":"/127.0.0.1:8070"}
 
-{"key":"253032592607473146","msg":{"action":"rok","groupId":"25303224612738888"},"remoteKey":"/127.0.0.1:59360"}
+请求方向:TxClient->TxManager
+
+请求msg对象参数:
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  notifyGroup   | 通知事务组   |
+| state |    int   |   100  |  请求状态  |
+| groupId |    string   | 1234567890   | 事务组Id   |
+| bytes |    byte[]   | 1234567890==   | 序列化请求数据包  |
+
+序列化数据包内容格式
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| groupId |    string   |  1234567890 | 事务组Id   |
+| state |    int   |  0 或 1 | 代表发起方正常或者异常执行  |
+
+
+
+响应参数:
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  notifyGroup   | 通知事务组   |
+| state |    int   |   200  |  响应成功  |
+| groupId |    string   | 1234567890   | 事务组Id   |
 
 
 4. 通知事务单元指令
 
-{"key":"25462490615581871","msg":{"action":"nt","bytes":"ChIyNTQ2MjMyNjA1MzE4ODc2NzISIDE3MmIyNGMxNTkzZDc4MTFiOGU5Y2ZhNzY0MmY4ZDIyGgN0Y2MgAQ==","groupId":"254623260531887672"},"remoteKey":"/127.0.0.1:59631"}
 
-{"key":"25462490615581871","msg":{"action":"rok"},"remoteKey":"/127.0.0.1:8070"}
+
+请求方向:TxManager->TxClient
+
+请求msg对象参数:
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  notifyUnit  | 通知事务单元   |
+| state |    int   |   100  |  请求状态  |
+| groupId |    string   | 1234567890   | 事务组Id   |
+| bytes |    byte[]   | 1234567890==   | 序列化请求数据包  |
+
+序列化数据包内容格式
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| groupId |    string   |  1234567890 | 事务组Id   |
+| unitId |     string  |   1234567890  |  事务单元Id  |
+| unitType |    string   | lcn  | 事务类型(lcn/txc/tcc)   |
+| state |    int   |  0 或 1 | 0 代表回滚，1代表提交  |
+
+
+
+响应参数:
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  notifyUnit   | 通知事务组   |
+| state |    int   |   200  |  响应成功  |
+| groupId |    string   | 1234567890   | 事务组Id   |
+
 
 5. 事务单元检查事务状态
 
-{"key":"251725517007399087","msg":{"action":"ats","bytes":"ChJzcHJpbmctZGVtby1jbGllbnQQAA==","groupId":"254623260531887672"},"remoteKey":"/127.0.0.1:8070"}
 
-{"key":"251725517007399087","msg":{"action":"rok","bytes":"ChJzcHJpbmctZGVtby1jbGllbnQQAA==","groupId":"254623260531887672"},"remoteKey":"/127.0.0.1:8070"}
+请求方向:TxClient->TxManager
+
+请求msg对象参数:
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  askTransactionState   | 通知事务组   |
+| state |    int   |   100  |  请求状态  |
+| groupId |    string   | 1234567890   | 事务组Id   |
+| bytes |    byte[]   | 1234567890==   | 序列化请求数据包  |
+
+序列化数据包内容格式
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| groupId |    string   |  1234567890 | 事务组Id   |
+| unitId |     string  |   1234567890  |  事务单元Id  |
+
+
+
+响应参数:
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  askTransactionState   | 通知事务组   |
+| state |    int   |   200  |  响应成功  |
+| groupId |    string   | 1234567890   | 事务组Id   |
+| bytes |    byte[]   | 1234567890==   | 序列化请求数据包  |
+
+
+序列化数据包内容格式(该序列化直接对Short对象做了序列化，无Object对象)
+
+|      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|
+|     int   |  1、0、-1 | 0 代表回滚，1代表提交，-1将添加到异常状态   |
 
 
 6. 心跳指令
 
-{"key":"252356025399579923","msg":{"action":"h"}}
+请求方向:TxManager->TxClient
 
-{"key":"252356025399579923","msg":{"action":"h"}}
+格式如下:
+```
+{"key":"252356025399579923","msg":{"action":"h","state":1000}}
+```
+
 
 7. 通知加入新的TxManager
 
-{"msg":{"action":"nc","bytes":"CgkxMjcuMC4wLjEQiD8="},"remoteKey":"/127.0.0.1:60302"}
+请求方向:TxManager->TxClient
+
+请求msg对象参数:
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  newTxManager   | 通知事务组   |
+| state |    int   |   100  |  请求状态  |
+| bytes |    byte[]   | 1234567890==   | 序列化请求数据包  |
+
+序列化数据包内容格式
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| host |    string   |  127.0.0.1 | TxManager服务地址   |
+| port |     int  |   8082  |  TxManager服务端口  |
+
+无需响应
 
 
 8. 客户端上报异常状态
 
 
-{"key":"251725517007399087","msg":{"action":"wc","bytes":"ChJzcHJpbmctZGVtby1jbGllbnQQAA==","groupId":"254623260531887672"},"remoteKey":"/127.0.0.1:8070"}
+
+请求方向:TxClient->TxManager
+
+请求msg对象参数:
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  writeException   | 通知事务组   |
+| state |    int   |   100  |  请求状态  |
+| groupId |    string   | 1234567890   | 事务组Id   |
+| bytes |    byte[]   | 1234567890==   | 序列化请求数据包  |
+
+序列化数据包内容格式
 
 
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| groupId |    string   |  1234567890 | 事务组Id   |
+| unitId |     string  |   1234567890  |  事务单元Id  |
+| registrar |    short   |  -1 0 1 2  | 异常情况 -1:未知, 0:TxManager通知事务,1:TxClient查询事务状态, 2:事务发起方通知事务组|
+| transactionState |     short  |   1234567890  |  事务单元Id  |
+
+无需响应
 
 
 9. 通知客户端获取事务切面日志
 
-{"key":"251725517007399087","msg":{"action":"wc","bytes":"ChJzcHJpbmctZGVtby1jbGllbnQQAA==","groupId":"254623260531887672"},"remoteKey":"/127.0.0.1:8070"}
+
+请求方向:TxManager->TxClient
+
+请求msg对象参数:
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  getAspectLog   | 通知事务组   |
+| state |    int   |   100  |  请求状态  |
+| bytes |    byte[]   | 1234567890==   | 序列化请求数据包  |
+
+序列化数据包内容格式
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| groupId |    string   |  1234567890 | 事务组Id   |
+| unitId |     string  |   1234567890  |  事务单元Id  |
+
+响应参数:
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  getAspectLog  | 通知事务组   |
+| state |    int   |   200  |  响应成功  |
+| groupId |    string   | 1234567890   | 事务组Id   |
+| bytes |    byte[]   | 1234567890==   | 序列化请求数据包  |
 
 
-{"key":"251725517007399087","msg":{"action":"wc","bytes":"ChJzcHJpbmctZGVtby1jbGllbnQQAA==","groupId":"254623260531887672"},"remoteKey":"/127.0.0.1:8070"}
 
+序列化数据包内容格式(该序列化直接对Json对象做了序列化，无Object对象)
+
+|      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|
+|     JsonObject   |  {key:value} |   切面日志json格式 |
 
 
 10. 客户端初始化指令
 
 
 请求方向:TxClient->TxManager
-请求参数:
 
-{"key":"251725517007399087","msg":{"action":"ic","bytes":"ChJzcHJpbmctZGVtby1jbGllbnQQAA==","groupId":"init"},"remoteKey":"/127.0.0.1:8070"}
+
+请求msg对象参数:
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  initClient | 通知事务单元   |
+| state |    int   |   100  |  请求状态  |
+| groupId |    string   | 1234567890   | 事务组Id   |
+| bytes |    byte[]   | 1234567890==   | 序列化请求数据包  |
+
+序列化数据包内容格式
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| appName |    string   |  demo1 | 模块名称   |
+
+
 
 响应参数:
 
-{"key":"251725517007399087","msg":{"action":"rok","bytes":"ChJzcHJpbmctZGVtby1jbGllbnQQsOoB","groupId":"init"},"remoteKey":"/127.0.0.1:59360"}
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| action |    string   |  initClient   | 通知事务组   |
+| state |    int   |   200  |  响应成功  |
+| groupId |    string   | 1234567890   | 事务组Id   |
+| bytes |    byte[]   | 1234567890==   | 序列化请求数据包  |
+
+序列化数据包内容格式
+
+| 字段   |      数据类型      |      值      |      说明      |
+|----------|:-------------:|:-------------:|:-------------:|
+| appName |    string   |  demo1 | 模块名称   |
+| dtxTime |    int   |   30000  |  分布式事务执行最大时间(单位:毫秒)  |
+
 
 
 

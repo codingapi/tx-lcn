@@ -130,7 +130,7 @@ public class MessageCreator {
         InitClientParams initClientParams = new InitClientParams();
         initClientParams.setAppName(appName);
         MessageDto messageDto = new MessageDto();
-        messageDto.setGroupId("init");
+        messageDto.setGroupId("INITCLIENTGROUPID");
         messageDto.setBytes(serialize(initClientParams));
         messageDto.setAction(MessageConstants.ACTION_INIT_CLIENT);
         return messageDto;

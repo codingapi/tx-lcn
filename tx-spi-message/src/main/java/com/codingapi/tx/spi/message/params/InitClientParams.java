@@ -14,8 +14,14 @@ import java.io.Serializable;
 @Data
 public class InitClientParams implements Serializable {
 
+    /**
+     * 模块名称
+     */
     private String appName;
 
+    /**
+     * 分布式事务执行最大时间
+     */
     private long dtxTime;
 
 

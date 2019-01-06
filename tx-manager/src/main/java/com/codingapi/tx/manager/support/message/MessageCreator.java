@@ -33,9 +33,9 @@ public class MessageCreator {
      * @param notifyConnectParams
      * @return
      */
-    public static MessageDto notifyConnect(NotifyConnectParams notifyConnectParams) {
+    public static MessageDto newTxManager(NotifyConnectParams notifyConnectParams) {
         MessageDto msg = new MessageDto();
-        msg.setAction(MessageConstants.ACTION_NEW_CONNECT);
+        msg.setAction(MessageConstants.ACTION_NEW_TXMANAGER);
         msg.setBytes(serialize(notifyConnectParams));
         return msg;
     }
