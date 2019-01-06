@@ -39,15 +39,16 @@ public class ClientRpcAnswer implements RpcAnswer {
         log.debug("Receive Message: {}", rpcCmd.getMsg());
         TransactionCmd transactionCmd = MessageParser.parser(rpcCmd);
         String transactionType = transactionCmd.getTransactionType();
+        String action = transactionCmd.getMsg().getAction();
         RpcExecuteService executeService =
                 transactionBeanHelper.loadRpcExecuteService(transactionType, transactionCmd.getType());
         MessageDto messageDto = null;
         try {
             Object message = executeService.execute(transactionCmd);
-            messageDto = MessageCreator.notifyUnitOkResponse(message);
+            messageDto = MessageCreator.notifyUnitOkResponse(message,action);
         } catch (TxClientException e) {
             log.error("message > execute error.", e);
-            messageDto = MessageCreator.notifyUnitFailResponse(e);
+            messageDto = MessageCreator.notifyUnitFailResponse(e,action);
         } finally {
             if (Objects.nonNull(rpcCmd.getKey())) {
                 try {

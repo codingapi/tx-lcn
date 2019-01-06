@@ -30,13 +30,15 @@ public class ServerRpcAnswer implements RpcAnswer {
 
     @Override
     public void callback(RpcCmd rpcCmd) {
+
         try {
             hashGroupRpcCmdHandler.handleMessage(rpcCmd);
         } catch (Throwable e) {
             if (rpcCmd.getKey() != null) {
                 log.info("send response.");
+                String action = rpcCmd.getMsg().getAction();
                 // 事务协调器业务未处理的异常响应服务器失败
-                rpcCmd.setMsg(MessageCreator.serverException());
+                rpcCmd.setMsg(MessageCreator.serverException(action));
                 try {
                     rpcClient.send(rpcCmd);
                     log.info("send response ok.");

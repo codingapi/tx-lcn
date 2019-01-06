@@ -2,6 +2,7 @@ package com.codingapi.tx.spi.message.dto;
 
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.util.serializer.SerializerContext;
+import com.codingapi.tx.spi.message.MessageConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,10 @@ public class MessageDto implements Serializable {
      */
     private byte[] bytes;
 
+    /**
+     * 请求状态
+     */
+    private int state = MessageConstants.STATE_REQUEST;
 
     public <T> T loadData(Class<T> tClass) throws SerializerException {
         return SerializerContext.getInstance().deSerialize(bytes,tClass);

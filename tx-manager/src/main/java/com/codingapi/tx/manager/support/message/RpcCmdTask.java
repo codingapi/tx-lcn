@@ -34,14 +34,15 @@ public class RpcCmdTask implements Runnable {
     @Override
     public void run() {
         TransactionCmd transactionCmd = parser(rpcCmd);
+        String action = transactionCmd.getMsg().getAction();
         RpcExecuteService rpcExecuteService = rpcBeanHelper.loadManagerService(transactionCmd.getType());
         MessageDto messageDto = null;
         try {
             Object message = rpcExecuteService.execute(transactionCmd);
-            messageDto = MessageCreator.notifyGroupOkResponse(message);
+            messageDto = MessageCreator.notifyGroupOkResponse(message,action);
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
-            messageDto = MessageCreator.notifyGroupFailResponse(e);
+            messageDto = MessageCreator.notifyGroupFailResponse(e,action);
         } finally {
             // 对需要响应信息的请求做出响应
             if (rpcCmd.getKey() != null) {
