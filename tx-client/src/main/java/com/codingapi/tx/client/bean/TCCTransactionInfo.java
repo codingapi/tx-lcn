@@ -15,7 +15,7 @@ public class TCCTransactionInfo {
     /**
      * Tcc 事务 提交/回滚 执行类
      */
-    private  Class executeClass;
+    private  Class<?> executeClass;
 
 
     /**

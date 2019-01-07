@@ -36,5 +36,5 @@ public class TxExceptionParams implements Serializable {
     /**
      * 事务状态 0 回滚 1提交
      */
-    private short transactionState;
+    private Short transactionState;
 }

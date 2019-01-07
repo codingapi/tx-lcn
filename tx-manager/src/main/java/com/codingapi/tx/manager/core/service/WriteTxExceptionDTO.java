@@ -18,7 +18,7 @@ public class WriteTxExceptionDTO {
     private String unitId;
     private String modId;
     private Short transactionState;
-    private short exState;
+    private Short exState;
     private Short registrar;
 
     public WriteTxExceptionDTO(String groupId, String unitId, String modId, Short transactionState) {
