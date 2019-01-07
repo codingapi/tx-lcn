@@ -74,6 +74,16 @@ class Home extends Language {
             <img src={getLink(dataSource.introduction.img)} />
           </div>
         </section>
+          <section className="start-section">
+              <div className="start-body">
+                  <div className="left-part">
+                      <h3>{dataSource.start.title}</h3>
+                      <p>{dataSource.start.desc}</p>
+                      <a href={getLink(dataSource.start.button.link)} target={dataSource.start.button.link || '_self'}>{dataSource.start.button.text}</a>
+                  </div>
+                  <div className="right-part"><img src={getLink('/img/quick_start.png')} /></div>
+              </div>
+          </section>
         <section className="feature-section">
           <h3>{dataSource.features.title}</h3>
           <ul>
@@ -84,27 +94,18 @@ class Home extends Language {
           }
           </ul>
         </section>
-        <section className="start-section">
-          <div className="start-body">
-            <div className="left-part">
-              <h3>{dataSource.start.title}</h3>
-              <p>{dataSource.start.desc}</p>
-              <a href={getLink(dataSource.start.button.link)} target={dataSource.start.button.link || '_self'}>{dataSource.start.button.text}</a>
-              </div>
-            <div className="right-part"><img src={getLink('/img/quick_start.png')} /></div>
-          </div>
-        </section>
-        <section className="users-section">
-          <h3>{dataSource.users.title}</h3>
-          <p>{dataSource.users.desc}</p>
-          <div className="users">
-          {
-            dataSource.users.list.map((user, i) => (
-              <img src={getLink(user)} key={i} />
-            ))
-          }
-          </div>
-        </section>
+
+        {/*<section className="users-section">*/}
+          {/*<h3>{dataSource.users.title}</h3>*/}
+          {/*<p>{dataSource.users.desc}</p>*/}
+          {/*<div className="users">*/}
+          {/*{*/}
+            {/*dataSource.users.list.map((user, i) => (*/}
+              {/*<img src={getLink(user)} key={i} />*/}
+            {/*))*/}
+          {/*}*/}
+          {/*</div>*/}
+        {/*</section>*/}
         <Footer logo="/img/txlcn.png" language={language} />
       </div>
     );
