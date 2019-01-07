@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 
@@ -31,23 +32,32 @@ public class DemoServiceImpl implements DemoService {
     @Autowired
     private EDemoClient eDemoClient;
 
+
+    private ServiceD serviceD;
+
     @Value("${spring.application.name}")
     private String appName;
 
-    @Override
-    @TxTransaction
-    @Transactional
-    public String execute(String value) {
-        String dResp = dDemoClient.rpc(value);
-        String eResp = eDemoClient.rpc(value);
-        Demo demo = new Demo();
-        demo.setDemoField(value);
-        demo.setAppName(appName);
-        demo.setCreateTime(new Date());
-        demo.setGroupId(TxTransactionLocal.current().getGroupId());
-        demo.setUnitId(TxTransactionLocal.current().getUnitId());
-        demoMapper.save(demo);
-//        int i = 1/0;
-        return dResp + " > " + eResp + " > " + "ok-client";
+//    @Override
+//    @TxTransaction
+//    @Transactional
+//    public String execute(String value) {
+//        String dResp = dDemoClient.rpc(value);
+//        String eResp = eDemoClient.rpc(value);
+//        Demo demo = new Demo();
+//        demo.setDemoField(value);
+//        demo.setAppName(appName);
+//        demo.setCreateTime(new Date());
+//        demo.setGroupId(TxTransactionLocal.current().getGroupId());
+//        demo.setUnitId(TxTransactionLocal.current().getUnitId());
+//        demoMapper.save(demo);
+////        int i = 1/0;
+//        return dResp + " > " + eResp + " > " + "ok-client";
+//    }
+
+
+    public String execute(String value) throws BusinessException {
+        String result = serviceD.rpc(value);
+
     }
 }
