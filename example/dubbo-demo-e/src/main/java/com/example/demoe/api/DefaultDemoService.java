@@ -3,11 +3,9 @@ package com.example.demoe.api;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.codingapi.example.common.db.domain.Demo;
 import com.codingapi.example.common.dubbo.EDemoService;
-import com.codingapi.tx.client.bean.TxTransactionLocal;
-import com.codingapi.tx.commons.annotation.TCCTransaction;
+import com.codingapi.tx.client.bean.DTXLocal;
+import com.codingapi.tx.commons.annotation.TccTransaction;
 import com.codingapi.tx.commons.annotation.TxTransaction;
-import com.codingapi.tx.commons.util.Transactions;
-import com.codingapi.tx.spi.sleuth.TracerHelper;
 import com.example.demoe.mapper.EDemoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,26 +42,26 @@ public class DefaultDemoService implements EDemoService {
     @Override
     @Transactional
     @TxTransaction(type = "tcc")
-    @TCCTransaction(confirmMethod = "cm", cancelMethod = "cl", executeClass = DefaultDemoService.class)
+    @TccTransaction(confirmMethod = "cm", cancelMethod = "cl", executeClass = DefaultDemoService.class)
     public String rpc(String name) {
         Demo demo = new Demo();
         demo.setDemoField(name);
         demo.setCreateTime(new Date());
-        demo.setGroupId(TxTransactionLocal.current().getGroupId());
-        demo.setUnitId(TxTransactionLocal.current().getUnitId());
+        demo.setGroupId(DTXLocal.cur().getGroupId());
+        demo.setUnitId(DTXLocal.cur().getUnitId());
         demo.setAppName(appName);
         demoMapper.save(demo);
-        ids.put(TxTransactionLocal.current().getGroupId(), demo.getId());
+        ids.put(DTXLocal.cur().getGroupId(), demo.getId());
         return "e-ok";
     }
 
     public void cm(String name) {
-        log.info("tcc-confirm-" + TxTransactionLocal.getOrNew().getGroupId());
-        ids.remove(TxTransactionLocal.getOrNew().getGroupId());
+        log.info("tcc-confirm-" + DTXLocal.getOrNew().getGroupId());
+        ids.remove(DTXLocal.getOrNew().getGroupId());
     }
 
     public void cl(String name) {
-        log.info("tcc-cancel-" + TxTransactionLocal.getOrNew().getGroupId());
-        demoMapper.deleteById(ids.get(TxTransactionLocal.getOrNew().getGroupId()));
+        log.info("tcc-cancel-" + DTXLocal.getOrNew().getGroupId());
+        demoMapper.deleteById(ids.get(DTXLocal.getOrNew().getGroupId()));
     }
 }

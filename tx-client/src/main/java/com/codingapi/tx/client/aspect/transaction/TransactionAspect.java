@@ -1,10 +1,13 @@
 package com.codingapi.tx.client.aspect.transaction;
 
 import com.codingapi.tx.client.config.TxClientConfig;
+import com.codingapi.tx.commons.annotation.ITxTransaction;
+import com.codingapi.tx.commons.util.Transactions;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
@@ -19,27 +22,62 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TransactionAspect implements Ordered {
 
-    @Autowired
-    private TxClientConfig txClientConfig;
+    private final TxClientConfig txClientConfig;
+
+    private final AspectBeforeServiceExecutor aspectBeforeServiceExecutor;
 
     @Autowired
-    private AspectBeforeServiceExecutor aspectBeforeServiceExecutor;
+    public TransactionAspect(TxClientConfig txClientConfig, AspectBeforeServiceExecutor aspectBeforeServiceExecutor) {
+        this.txClientConfig = txClientConfig;
+        this.aspectBeforeServiceExecutor = aspectBeforeServiceExecutor;
+    }
 
+    @Pointcut("@annotation(com.codingapi.tx.commons.annotation.TxTransaction)")
+    public void txTransactionPointcut() {
+    }
 
-    @Around("@annotation(com.codingapi.tx.commons.annotation.TxTransaction)")
-    public Object transactionRunning(ProceedingJoinPoint point)throws Throwable{
-        log.info("TX-LCN local start---->");
-        Object obj =  aspectBeforeServiceExecutor.around(point);
-        log.info("TX-LCN local end------>");
-        return obj;
+    @Pointcut("@annotation(com.codingapi.tx.commons.annotation.LcnTransaction)")
+    public void lcnTransactionPointcut() {
+    }
+
+    @Pointcut("@annotation(com.codingapi.tx.commons.annotation.TxcTransaction)")
+    public void txcTransactionPointcut() {
+    }
+
+    @Pointcut("@annotation(com.codingapi.tx.commons.annotation.TccTransaction)")
+    public void tccTransactionPointcut() {
+    }
+
+    @Around("txTransactionPointcut()")
+    public Object transactionRunning(ProceedingJoinPoint point) throws Throwable {
+        return aspectBeforeServiceExecutor.runTransaction(null, point);
+    }
+
+    @Around("lcnTransactionPointcut() && !txcTransactionPointcut()" +
+            "&& !tccTransactionPointcut() && !txTransactionPointcut()")
+    public Object runWithLcnTransaction(ProceedingJoinPoint point) throws Throwable {
+        return aspectBeforeServiceExecutor.runTransaction(Transactions.LCN, point);
+    }
+
+    @Around("txcTransactionPointcut() && !lcnTransactionPointcut()" +
+            "&& !tccTransactionPointcut() && !txTransactionPointcut()")
+    public Object runWithTxcTransaction(ProceedingJoinPoint point) throws Throwable {
+        return aspectBeforeServiceExecutor.runTransaction(Transactions.TXC, point);
+    }
+
+    @Around("tccTransactionPointcut() && !lcnTransactionPointcut()" +
+            "&& !txcTransactionPointcut() && !txTransactionPointcut()")
+    public Object runWithTccTransaction(ProceedingJoinPoint point) throws Throwable {
+        return aspectBeforeServiceExecutor.runTransaction(Transactions.TCC, point);
     }
 
     @Around("this(com.codingapi.tx.commons.annotation.ITxTransaction) && execution( * *(..))")
-    public Object around(ProceedingJoinPoint point)throws Throwable{
-        log.info("interface-ITransactionRunning-start---->");
-        Object obj =  aspectBeforeServiceExecutor.around(point);
-        log.info("interface-ITransactionRunning-end---->");
-        return obj;
+    public Object around(ProceedingJoinPoint point) throws Throwable {
+        if (!(point.getThis() instanceof ITxTransaction)) {
+            throw new IllegalStateException("error join point");
+        }
+        ITxTransaction txTransaction = (ITxTransaction) point.getThis();
+        return aspectBeforeServiceExecutor.runTransaction(txTransaction.transactionType(), point);
     }
 
 
@@ -47,6 +85,5 @@ public class TransactionAspect implements Ordered {
     public int getOrder() {
         return txClientConfig.getControlOrder();
     }
-
 
 }

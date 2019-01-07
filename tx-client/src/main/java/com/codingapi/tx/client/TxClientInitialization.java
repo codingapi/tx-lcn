@@ -1,8 +1,8 @@
 package com.codingapi.tx.client;
 
 import com.codingapi.tx.client.config.TxClientConfig;
-import com.codingapi.tx.spi.rpc.RpcClientInitializer;
-import com.codingapi.tx.spi.rpc.dto.TxManagerHost;
+import com.codingapi.tx.spi.message.RpcClientInitializer;
+import com.codingapi.tx.spi.message.dto.TxManagerHost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +30,6 @@ public class TxClientInitialization {
 
     @PostConstruct
     public void start(){
-        rpcClientInitializer.init(TxManagerHost.parserList(txClientConfig.getManagerHost()));
+        rpcClientInitializer.init(TxManagerHost.parserList(txClientConfig.getManagerAddress()));
     }
 }

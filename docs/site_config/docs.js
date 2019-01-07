@@ -38,6 +38,11 @@ export default {
                         opened: true,
                     },
                     {
+                        title: '背景',
+                        link: '/zh-cn/docs/background.html',
+                        opened: true,
+                    },
+                    {
                         title: '快速开始',
                         link: '/zh-cn/docs/start.html',
                     },
@@ -47,7 +52,16 @@ export default {
                     },
                     {
                         title: '示例',
-                        link: '/zh-cn/docs/demo.html',
+                        children: [
+                            {
+                                title: 'dubbo示例',
+                                link: '/zh-cn/docs/demo/dubbo.html',
+                            },
+                            {
+                                title: 'springcloud示例',
+                                link: '/zh-cn/docs/demo/springcloud.html',
+                            },
+                        ],
                     },
                     {
                         title: '原理介绍',
@@ -74,11 +88,11 @@ export default {
                         title: '配置手册',
                         children: [
                             {
-                                title: 'Client配置',
+                                title: 'TxClient配置',
                                 link: '/zh-cn/docs/setting/client.html',
                             },
                             {
-                                title: 'Manager配置',
+                                title: 'TxManager配置',
                                 link: '/zh-cn/docs/setting/manager.html',
                             },
                             {
@@ -95,8 +109,8 @@ export default {
                                 link: '/zh-cn/docs/expansion/transaction.html',
                             },
                             {
-                                title: '通讯RPC扩展',
-                                link: '/zh-cn/docs/expansion/net.html',
+                                title: '通讯协议扩展',
+                                link: '/zh-cn/docs/expansion/message.html',
                             },
                             {
                                 title: 'RPC框架扩展',
@@ -109,12 +123,12 @@ export default {
                         link: '/zh-cn/docs/communication.html',
                     },
                     {
-                        title: '问题排查手册',
-                        link: '/zh-cn/docs/debug.html',
+                        title: 'TM管理手册',
+                        link: '/zh-cn/docs/manageradmin.html',
                     },
                     {
-                        title: 'TxManager管理手册',
-                        link: '/zh-cn/docs/manageradmin.html',
+                        title: '问题排查手册',
+                        link: '/zh-cn/docs/debug.html',
                     },
                     {
                         title: '性能测试报告',

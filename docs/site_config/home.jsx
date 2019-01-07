@@ -4,7 +4,7 @@ export default {
   'zh-cn': {
     brand: {
       brandName: 'TX-LCN分布式事务框架',
-      briefIntroduction: 'LCN并不生产事务，LCN只是本地事务的搬运工',
+      briefIntroduction: 'LCN并不生产事务，LCN只是本地事务的协调工',
       buttons: [
         {
           text: '立即开始',
@@ -19,8 +19,8 @@ export default {
       ],
     },
     introduction: {
-      title: '开源的分布式事务框架',
-      desc: '兼容 dubbo、springcloud框架，支持各种关系型数据库',
+      title: '高性能的分布式事务框架',
+      desc: '兼容dubbo、springcloud框架，支持RPC框架拓展，支持各种ORM框架、NoSQL、负载均衡、事务补偿',
       img: '/img/architecture.png',
     },
     features: {
@@ -50,18 +50,18 @@ export default {
     },
     start: {
       title: '快速开始',
-      desc: '简单描述',
+      desc: <p> <br /> 简单加几个注解在协作的微服务上，即可享受TXLCN带来的好处！ <br /> <br /> </p>,
       img: '/img/quick_start.png',
       button: {
-        text: '阅读更多',
-        link: '/zh-cn/docs/demo1.html',
+        text: '好了，开始吧',
+        link: '/zh-cn/docs/start.html',
       },
     },
     users: {
       title: '用户',
       desc: <span>目前采用的客户</span>,
       list: [
-        '/img/users_alibaba.png',
+        '/img/users_alibaba.png','/img/users_alibaba.png',
       ],
     },
   },

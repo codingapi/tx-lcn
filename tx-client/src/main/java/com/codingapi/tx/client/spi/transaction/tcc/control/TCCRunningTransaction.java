@@ -1,13 +1,14 @@
 package com.codingapi.tx.client.spi.transaction.tcc.control;
 
-import com.codingapi.tx.commons.annotation.TCCTransaction;
+import com.codingapi.tx.client.bean.DTXLocal;
+import com.codingapi.tx.commons.annotation.TccTransaction;
 import com.codingapi.tx.client.bean.TCCTransactionInfo;
 import com.codingapi.tx.client.bean.TxTransactionInfo;
-import com.codingapi.tx.client.bean.TxTransactionLocal;
 import com.codingapi.tx.client.support.separate.TXLCNTransactionControl;
 import com.codingapi.tx.client.support.common.template.TransactionCleanTemplate;
 import com.codingapi.tx.client.support.common.template.TransactionControlTemplate;
 import com.codingapi.tx.client.support.common.cache.TransactionAttachmentCache;
+import com.codingapi.tx.commons.exception.BeforeBusinessException;
 import com.codingapi.tx.commons.exception.TransactionClearException;
 import com.codingapi.tx.commons.exception.TxClientException;
 import lombok.extern.slf4j.Slf4j;
@@ -43,38 +44,18 @@ public class TCCRunningTransaction implements TXLCNTransactionControl {
     }
 
     @Override
-    public void preBusinessCode(TxTransactionInfo info) {
+    public void preBusinessCode(TxTransactionInfo info) throws BeforeBusinessException {
         log.info(" TCC  > transaction >  running ");
         String groupId = info.getGroupId();
-        Method method = info.getPointMethod();
-
-        TCCTransaction tccTransaction = method.getAnnotation(TCCTransaction.class);
-        if (tccTransaction == null) {
-            throw new IllegalStateException(" TCC模式下需添加 @TCCTransaction 注解在  " + method.getName() + " 上 ！");
-        }
-        if (StringUtils.isEmpty(tccTransaction.cancelMethod())) {
-            throw new NullPointerException("  @TCCTransaction 需指明 回滚执行方法名称！ ");
-        }
-        if (StringUtils.isEmpty(tccTransaction.confirmMethod())) {
-            throw new NullPointerException("  @TCCTransaction 需指明 确认执行方法名称！");
-        }
-
-
-        TCCTransactionInfo tccInfo = new TCCTransactionInfo();
-        tccInfo.setExecuteClass(tccTransaction.executeClass());
-        tccInfo.setCancelMethod(tccTransaction.cancelMethod());
-        tccInfo.setConfirmMethod(tccTransaction.confirmMethod());
-        tccInfo.setMethodParameter(info.getTransactionInfo().getArgumentValues());
-        tccInfo.setMethodTypeParameter(info.getTransactionInfo().getParameterTypes());
         UnitTCCInfoMap map = transactionAttachmentCache.attachment(groupId, info.getUnitId(), UnitTCCInfoMap.class, UnitTCCInfoMap::new);
-        map.put(info.getUnitId(), tccInfo);
+        map.put(info.getUnitId(), TCCStartingTransaction.prepareTccInfo(info));
     }
 
     @Override
     public void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) {
         try {
             transactionCleanTemplate.clean(
-                    TxTransactionLocal.current().getGroupId(),
+                    DTXLocal.cur().getGroupId(),
                     info.getUnitId(),
                     info.getTransactionType(),
                     0);

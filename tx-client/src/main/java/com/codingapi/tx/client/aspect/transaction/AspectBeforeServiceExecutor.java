@@ -1,9 +1,9 @@
 package com.codingapi.tx.client.aspect.transaction;
 
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.spi.sleuth.TracerHelper;
 import com.codingapi.tx.commons.annotation.TxTransaction;
 import com.codingapi.tx.client.bean.TxTransactionInfo;
-import com.codingapi.tx.client.bean.TxTransactionLocal;
 import com.codingapi.tx.client.support.separate.TXLCNTransactionServiceExecutor;
 import com.codingapi.tx.commons.util.Transactions;
 import com.codingapi.tx.commons.bean.TransactionInfo;
@@ -39,14 +39,20 @@ public class AspectBeforeServiceExecutor {
         this.transactionServiceExecutor = transactionServiceExecutor;
     }
 
-    public Object around(ProceedingJoinPoint point) throws Throwable {
-
+    Object runTransaction(String transactionType, ProceedingJoinPoint point) throws Throwable {
+        log.info("TX-LCN local start---->");
         // build TransactionInfo 获取切面方法参数
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
         Class<?> clazz = point.getTarget().getClass();
         Object[] parameters = point.getArgs();
         Method thisMethod = clazz.getMethod(method.getName(), method.getParameterTypes());
+
+        if (Objects.isNull(transactionType)){
+            TxTransaction transaction = thisMethod.getAnnotation(TxTransaction.class);
+            assert Objects.nonNull(transaction);
+            transactionType = transaction.type();
+        }
 
         TransactionInfo transactionInfo = new TransactionInfo(clazz,
                 thisMethod.getName(),
@@ -56,24 +62,23 @@ public class AspectBeforeServiceExecutor {
 
         // 事务发起方判断
         boolean isTransactionStart = tracerHelper.getGroupId() == null;
-        TxTransaction transaction = thisMethod.getAnnotation(TxTransaction.class);
-        assert Objects.nonNull(transaction);
+
 
         // 该线程事务
         String groupId = isTransactionStart ? RandomUtils.randomKey() : tracerHelper.getGroupId();
         String unitId = Transactions.unitId(transactionInfo.getMethodStr());
-        TxTransactionLocal txTransactionLocal = TxTransactionLocal.getOrNew();
-        if (txTransactionLocal.getUnitId() != null) {
-            txTransactionLocal.setInUnit(true);
-            log.info("tx > unit[{}] in unit: {}", unitId, txTransactionLocal.getUnitId());
+        DTXLocal dtxLocal = DTXLocal.getOrNew();
+        if (dtxLocal.getUnitId() != null) {
+            dtxLocal.setInUnit(true);
+            log.info("tx > unit[{}] in unit: {}", unitId, dtxLocal.getUnitId());
         }
-        txTransactionLocal.setUnitId(unitId);
-        txTransactionLocal.setGroupId(groupId);
-        txTransactionLocal.setTransactionType(transaction.type());
+        dtxLocal.setUnitId(unitId);
+        dtxLocal.setGroupId(groupId);
+        dtxLocal.setTransactionType(transactionType);
 
         // 事务参数
         TxTransactionInfo info = new TxTransactionInfo(
-                transaction.type(),
+                transactionType,
                 isTransactionStart,
                 groupId,
                 unitId,
@@ -85,7 +90,8 @@ public class AspectBeforeServiceExecutor {
         try {
             return transactionServiceExecutor.transactionRunning(info);
         } finally {
-            TxTransactionLocal.makeNeverAppeared();
+            DTXLocal.makeNeverAppeared();
+            log.info("TX-LCN local end------>");
         }
     }
 }

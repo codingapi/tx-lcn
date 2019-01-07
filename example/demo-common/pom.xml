@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>tx-lcn</artifactId>
-        <groupId>com.codingapi</groupId>
+        <groupId>com.codingapi.txlcn</groupId>
         <version>5.0.0.beta</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>

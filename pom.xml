@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.codingapi</groupId>
+    <groupId>com.codingapi.txlcn</groupId>
     <artifactId>tx-lcn</artifactId>
-    <version>${codingapi.txlcn.version}</version>
+    <version>5.0.0.beta</version>
     <packaging>pom</packaging>
 
 
@@ -19,8 +19,8 @@
         <module>tx-client</module>
         <module>tx-commons</module>
         <module>tx-jdbcproxy-p6spy</module>
-        <module>tx-spi-rpc</module>
-        <module>tx-spi-rpc-netty</module>
+        <module>tx-spi-message</module>
+        <module>tx-spi-message-netty</module>
         <module>tx-spi-sleuth</module>
         <module>tx-spi-sleuth-springcloud</module>
         <module>tx-spi-sleuth-dubbo</module>
@@ -151,68 +151,68 @@
         <dependencies>
 
             <dependency>
-                <groupId>com.codingapi</groupId>
+                <groupId>com.codingapi.txlcn</groupId>
                 <artifactId>tx-client-springcloud</artifactId>
                 <version>${codingapi.txlcn.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.codingapi</groupId>
+                <groupId>com.codingapi.txlcn</groupId>
                 <artifactId>tx-client-dubbo</artifactId>
                 <version>${codingapi.txlcn.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.codingapi</groupId>
+                <groupId>com.codingapi.txlcn</groupId>
                 <artifactId>tx-jdbcproxy-p6spy</artifactId>
                 <version>${codingapi.txlcn.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.codingapi</groupId>
+                <groupId>com.codingapi.txlcn</groupId>
                 <artifactId>tx-spi-sleuth-dubbo</artifactId>
                 <version>${codingapi.txlcn.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.codingapi</groupId>
+                <groupId>com.codingapi.txlcn</groupId>
                 <artifactId>tx-client</artifactId>
                 <version>${codingapi.txlcn.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.codingapi</groupId>
+                <groupId>com.codingapi.txlcn</groupId>
                 <artifactId>tx-spi-sleuth-springcloud</artifactId>
                 <version>${codingapi.txlcn.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.codingapi</groupId>
-                <artifactId>tx-spi-rpc-netty</artifactId>
+                <groupId>com.codingapi.txlcn</groupId>
+                <artifactId>tx-spi-message-netty</artifactId>
                 <version>${codingapi.txlcn.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.codingapi</groupId>
+                <groupId>com.codingapi.txlcn</groupId>
                 <artifactId>tx-commons</artifactId>
                 <version>${codingapi.txlcn.version}</version>
             </dependency>
 
 
             <dependency>
-                <groupId>com.codingapi</groupId>
+                <groupId>com.codingapi.txlcn</groupId>
                 <artifactId>tx-logger</artifactId>
                 <version>${codingapi.txlcn.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.codingapi</groupId>
-                <artifactId>tx-spi-rpc</artifactId>
+                <groupId>com.codingapi.txlcn</groupId>
+                <artifactId>tx-spi-message</artifactId>
                 <version>${codingapi.txlcn.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.codingapi</groupId>
+                <groupId>com.codingapi.txlcn</groupId>
                 <artifactId>tx-spi-sleuth</artifactId>
                 <version>${codingapi.txlcn.version}</version>
             </dependency>
@@ -363,6 +363,25 @@
             </roles>
             <timezone>+8</timezone>
         </developer>
+
+        <developer>
+            <name>yinxue</name>
+            <email>yinxue@codingapi.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+
+        <developer>
+            <name>zhuyu</name>
+            <email>zhuyu@codingapi.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+
 
     </developers>
 

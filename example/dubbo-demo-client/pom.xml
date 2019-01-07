@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.codingapi</groupId>
+        <groupId>com.codingapi.txlcn</groupId>
         <artifactId>tx-lcn</artifactId>
         <version>5.0.0.beta</version>
         <relativePath>../../pom.xml</relativePath>
@@ -25,7 +25,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.codingapi</groupId>
+            <groupId>com.codingapi.txlcn</groupId>
             <artifactId>tx-client-dubbo</artifactId>
         </dependency>
 

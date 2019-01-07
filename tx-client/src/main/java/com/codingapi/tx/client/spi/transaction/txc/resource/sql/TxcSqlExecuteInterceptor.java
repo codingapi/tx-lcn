@@ -1,6 +1,6 @@
 package com.codingapi.tx.client.spi.transaction.txc.resource.sql;
 
-import com.codingapi.tx.client.bean.TxTransactionLocal;
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.SqlExecuteInterceptor;
 import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.TxcService;
 import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.*;
@@ -51,9 +51,9 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
     public void preUpdate(Update update) throws SQLException {
 
         // 获取线程传递参数
-        String groupId = TxTransactionLocal.current().getGroupId();
-        String unitId = TxTransactionLocal.current().getUnitId();
-        RollbackInfo rollbackInfo = (RollbackInfo) TxTransactionLocal.current().getAttachment();
+        String groupId = DTXLocal.cur().getGroupId();
+        String unitId = DTXLocal.cur().getUnitId();
+        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
 
 
         // Update相关数据准备
@@ -87,9 +87,9 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
         log.info("do pre delete");
 
         // 获取线程传递参数
-        RollbackInfo rollbackInfo = (RollbackInfo) TxTransactionLocal.current().getAttachment();
-        String groupId = TxTransactionLocal.current().getGroupId();
-        String unitId = TxTransactionLocal.current().getUnitId();
+        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
+        String groupId = DTXLocal.cur().getGroupId();
+        String unitId = DTXLocal.cur().getUnitId();
 
         // Delete Sql 数据
         List<String> tables = new ArrayList<>(delete.getTables().size());
@@ -163,7 +163,7 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
         }
 
         // 设置Rollback SQL
-        RollbackInfo rollbackInfo = (RollbackInfo) TxTransactionLocal.current().getAttachment();
+        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
         Object[] paramArray = new Object[params.size()];
         params.toArray(paramArray);
         rollbackInfo.getRollbackSqlList().add(new StatementInfo(rollbackSql.toString(), paramArray));
@@ -217,9 +217,9 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
         // 尝试锁定
         log.info("lock select sql: {}", plainSelect);
-        String groupId = TxTransactionLocal.current().getGroupId();
-        String unitId = TxTransactionLocal.current().getUnitId();
-        RollbackInfo rollbackInfo = (RollbackInfo) TxTransactionLocal.current().getAttachment();
+        String groupId = DTXLocal.cur().getGroupId();
+        String unitId = DTXLocal.cur().getUnitId();
+        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
 
         SelectImageParams selectImageParams = new SelectImageParams();
         selectImageParams.setGroupId(groupId);

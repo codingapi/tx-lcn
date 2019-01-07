@@ -4,6 +4,7 @@ import com.codingapi.tx.client.spi.transaction.txc.resource.sql.init.DefaultTxcS
 import com.codingapi.tx.client.spi.transaction.txc.resource.sql.init.TxcSettingFactory;
 import org.apache.commons.dbutils.QueryRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @ComponentScan
+@EnableConfigurationProperties
 public class TxClientConfiguration {
 
 

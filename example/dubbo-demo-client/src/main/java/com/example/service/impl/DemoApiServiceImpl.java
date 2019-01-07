@@ -5,7 +5,7 @@ import com.codingapi.example.common.db.domain.Demo;
 import com.codingapi.example.common.db.mapper.DemoMapper;
 import com.codingapi.example.common.dubbo.DDemoService;
 import com.codingapi.example.common.dubbo.EDemoService;
-import com.codingapi.tx.client.bean.TxTransactionLocal;
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.commons.annotation.TxTransaction;
 import com.example.service.DemoApiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,10 +55,10 @@ public class DemoApiServiceImpl implements DemoApiService {
         demo.setCreateTime(new Date());
         demo.setAppName(appName);
         demo.setDemoField(name);
-        demo.setGroupId(TxTransactionLocal.current().getGroupId());
-        demo.setUnitId(TxTransactionLocal.current().getUnitId());
+        demo.setGroupId(DTXLocal.cur().getGroupId());
+        demo.setUnitId(DTXLocal.cur().getUnitId());
         demoMapper.save(demo);
-//        int a = 1 / 0;
+        int a = 1 / 0;
         return dResp + " > " + eResp + " > " + "client-ok";
     }
 }

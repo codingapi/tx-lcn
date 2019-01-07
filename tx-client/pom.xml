@@ -3,13 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.codingapi</groupId>
     <artifactId>tx-client</artifactId>
     <name>tx-client</name>
     <description>LCN project for Spring Boot</description>
 
     <parent>
-        <groupId>com.codingapi</groupId>
+        <groupId>com.codingapi.txlcn</groupId>
         <artifactId>tx-lcn</artifactId>
         <version>5.0.0.beta</version>
     </parent>
@@ -33,27 +32,27 @@
         </dependency>
 
         <dependency>
-            <groupId>com.codingapi</groupId>
+            <groupId>com.codingapi.txlcn</groupId>
             <artifactId>tx-commons</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.codingapi</groupId>
+            <groupId>com.codingapi.txlcn</groupId>
             <artifactId>tx-logger</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.codingapi</groupId>
-            <artifactId>tx-spi-rpc-netty</artifactId>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>tx-spi-message</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.codingapi</groupId>
+            <groupId>com.codingapi.txlcn</groupId>
             <artifactId>tx-jdbcproxy-p6spy</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.codingapi</groupId>
+            <groupId>com.codingapi.txlcn</groupId>
             <artifactId>tx-spi-sleuth</artifactId>
         </dependency>
 

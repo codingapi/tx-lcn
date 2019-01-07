@@ -1,9 +1,9 @@
 package com.codingapi.tx.client.spi.transaction.lcn.control;
 
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.commons.exception.TransactionClearException;
 import com.codingapi.tx.spi.sleuth.TracerHelper;
 import com.codingapi.tx.client.bean.TxTransactionInfo;
-import com.codingapi.tx.client.bean.TxTransactionLocal;
 import com.codingapi.tx.client.support.separate.TXLCNTransactionControl;
 import com.codingapi.tx.client.support.common.cache.TransactionAttachmentCache;
 import com.codingapi.tx.client.support.common.template.TransactionCleanTemplate;
@@ -49,7 +49,7 @@ public class LCNRunningTransaction implements TXLCNTransactionControl {
     @Override
     public void preBusinessCode(TxTransactionInfo info) {
         // LCN 类型事务需要代理资源
-        TxTransactionLocal.makeProxy();
+        DTXLocal.makeProxy();
     }
 
 

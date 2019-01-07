@@ -1,7 +1,7 @@
 package com.codingapi.tx.client.spi.transaction.txc.control;
 
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.bean.TxTransactionInfo;
-import com.codingapi.tx.client.bean.TxTransactionLocal;
 import com.codingapi.tx.client.support.separate.TXLCNTransactionControl;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +17,6 @@ public class TxcDefaultTransaction implements TXLCNTransactionControl {
     @Override
     public void preBusinessCode(TxTransactionInfo info) {
         // TXC 类型事务需要代理资源
-        TxTransactionLocal.makeProxy();
+        DTXLocal.makeProxy();
     }
 }

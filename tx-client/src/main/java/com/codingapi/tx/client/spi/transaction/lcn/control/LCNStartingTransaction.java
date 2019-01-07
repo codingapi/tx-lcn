@@ -1,7 +1,7 @@
 package com.codingapi.tx.client.spi.transaction.lcn.control;
 
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.bean.TxTransactionInfo;
-import com.codingapi.tx.client.bean.TxTransactionLocal;
 import com.codingapi.tx.client.support.separate.TXLCNTransactionControl;
 import com.codingapi.tx.client.support.common.template.TransactionControlTemplate;
 import com.codingapi.tx.commons.exception.BeforeBusinessException;
@@ -33,23 +33,23 @@ public class LCNStartingTransaction implements TXLCNTransactionControl {
                 info.getGroupId(), info.getUnitId(), info.getTransactionInfo(), info.getTransactionType());
 
         // LCN 类型事务需要代理资源
-        TxTransactionLocal.makeProxy();
+        DTXLocal.makeProxy();
     }
 
     @Override
     public void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) {
-        TxTransactionLocal.current().setState(0);
+        DTXLocal.cur().setState(0);
     }
 
     @Override
     public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) {
-        TxTransactionLocal.current().setState(1);
+        DTXLocal.cur().setState(1);
     }
 
     @Override
     public void postBusinessCode(TxTransactionInfo info) {
         // RPC 关闭事务组
         transactionControlTemplate.notifyGroup(
-                info.getGroupId(), info.getUnitId(), info.getTransactionType(), TxTransactionLocal.current().getState());
+                info.getGroupId(), info.getUnitId(), info.getTransactionType(), DTXLocal.cur().getState());
     }
 }

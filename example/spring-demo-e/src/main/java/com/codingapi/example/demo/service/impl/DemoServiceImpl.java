@@ -3,18 +3,14 @@ package com.codingapi.example.demo.service.impl;
 import com.codingapi.example.common.db.domain.Demo;
 import com.codingapi.example.demo.mapper.EDemoMapper;
 import com.codingapi.example.demo.service.DemoService;
-import com.codingapi.tx.client.bean.TxTransactionLocal;
-import com.codingapi.tx.commons.annotation.TCCTransaction;
-import com.codingapi.tx.commons.annotation.TxTransaction;
-import com.codingapi.tx.commons.util.Transactions;
-import com.codingapi.tx.spi.sleuth.TracerHelper;
+import com.codingapi.tx.client.bean.DTXLocal;
+import com.codingapi.tx.commons.annotation.TccTransaction;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -36,28 +32,26 @@ public class DemoServiceImpl implements DemoService {
     private String appName;
 
     @Override
-    @TxTransaction(type = Transactions.TCC)
-    @TCCTransaction(confirmMethod = "cm", cancelMethod = "cl", executeClass = DemoServiceImpl.class)
+    @TccTransaction
     public String rpc(String value) {
         Demo demo = new Demo();
         demo.setDemoField(value);
         demo.setCreateTime(new Date());
         demo.setAppName(appName);
-        demo.setGroupId(TxTransactionLocal.current().getGroupId());
-        demo.setUnitId(TxTransactionLocal.current().getUnitId());
+        demo.setGroupId(DTXLocal.cur().getGroupId());
+        demo.setUnitId(DTXLocal.cur().getUnitId());
         demoMapper.save(demo);
-        ids.put(TxTransactionLocal.current().getGroupId(), demo.getId());
+        ids.put(DTXLocal.cur().getGroupId(), demo.getId());
         return "ok-e";
     }
 
-
-    public void cm(String value) {
-        log.info("tcc-confirm-" + TxTransactionLocal.getOrNew().getGroupId());
-        ids.remove(TxTransactionLocal.getOrNew().getGroupId());
+    public void confirmRpc(String value) {
+        log.info("tcc-confirm-" + DTXLocal.getOrNew().getGroupId());
+        ids.remove(DTXLocal.getOrNew().getGroupId());
     }
 
-    public void cl(String value) {
-        log.info("tcc-cancel-" + TxTransactionLocal.getOrNew().getGroupId());
-        demoMapper.deleteById(ids.get(TxTransactionLocal.getOrNew().getGroupId()));
+    public void cancelRpc(String value) {
+        log.info("tcc-cancel-" + DTXLocal.getOrNew().getGroupId());
+        demoMapper.deleteById(ids.get(DTXLocal.getOrNew().getGroupId()));
     }
 }

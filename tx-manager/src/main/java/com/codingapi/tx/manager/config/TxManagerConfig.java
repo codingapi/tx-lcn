@@ -1,6 +1,7 @@
 package com.codingapi.tx.manager.config;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -16,20 +17,30 @@ import org.springframework.stereotype.Component;
 @Data
 public class TxManagerConfig {
 
-    /**
-     * manager managerHost
-     */
-    private String managerHost;
+    public TxManagerConfig(@Value("${server.port}") Integer port) {
+        this.port = port + 1;
+        this.host = "127.0.0.1";
+        this.heartTime = 5;
+        this.concurrentLevel = 0;
+        this.dtxTime = 30000;
+        this.adminKey = "codingapi";
+        this.exUrl = "/provider/email-to/ujued@qq.com";
+    }
 
     /**
-     * support  rpcPort
+     * manager host
      */
-    private int rpcPort;
+    private String host;
+
+    /**
+     * support  port
+     */
+    private int port;
 
     /**
      * netty heart check time (s)
      */
-    private int heartTime = 5;
+    private int heartTime;
 
     /**
      * 事务处理并发等级
@@ -39,15 +50,15 @@ public class TxManagerConfig {
     /**
      * 分布式事务超时时间
      */
-    private int dtxTime = 30000;
+    private int dtxTime;
 
     /**
      * 后台密码
      */
-    private String adminKey = "codingapi";
+    private String adminKey;
 
     /**
      * 异常回调地址
      */
-    private String exUrl = "/provider/email-to/ujued@qq.com";
+    private String exUrl;
 }

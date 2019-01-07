@@ -122,8 +122,8 @@ public class AdminServiceImpl implements AdminService {
         txManagerInfo.setDtxTime(managerConfig.getDtxTime());
         txManagerInfo.setHeartbeatTime(managerConfig.getHeartTime());
         txManagerInfo.setRedisState((short) 1);
-        txManagerInfo.setSocketHost(managerConfig.getManagerHost());
-        txManagerInfo.setSocketPort(managerConfig.getRpcPort());
+        txManagerInfo.setSocketHost(managerConfig.getHost());
+        txManagerInfo.setSocketPort(managerConfig.getPort());
         txManagerInfo.setExUrl(managerConfig.getExUrl());
         return txManagerInfo;
     }

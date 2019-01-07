@@ -1,8 +1,8 @@
 package com.codingapi.tx.manager;
 
 import com.codingapi.tx.manager.config.TxManagerConfig;
-import com.codingapi.tx.spi.rpc.RpcServerInitializer;
-import com.codingapi.tx.spi.rpc.dto.ManagerProperties;
+import com.codingapi.tx.spi.message.RpcServerInitializer;
+import com.codingapi.tx.spi.message.dto.ManagerProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +32,7 @@ public class TxManagerInitialization {
     public void start(){
         ManagerProperties managerProperties = new ManagerProperties();
         managerProperties.setCheckTime(txManagerConfig.getHeartTime());
-        managerProperties.setRpcPort(txManagerConfig.getRpcPort());
+        managerProperties.setRpcPort(txManagerConfig.getPort());
         rpcServerInitializer.init(managerProperties);
     }
 }

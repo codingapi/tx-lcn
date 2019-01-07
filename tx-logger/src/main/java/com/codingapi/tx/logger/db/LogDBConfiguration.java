@@ -13,12 +13,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class LogDBConfiguration {
 
-
-    @Bean
-    public LogDbProperties logDbProperties(){
-        return new LogDbProperties();
-    }
-
     @Bean
     public LogDbHelper logDbHelper(){
         return new LogDbHelper();

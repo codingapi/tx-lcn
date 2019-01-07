@@ -1,6 +1,6 @@
 package com.codingapi.tx.client.spi.transaction.txc.resource.sql;
 
-import com.codingapi.tx.client.bean.TxTransactionLocal;
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.TxcService;
 import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.TxcSqlExecutor;
 import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.*;
@@ -31,7 +31,7 @@ public class TxcServiceImpl implements TxcService {
     @Override
     public void lockResource(LockInfo lockInfo, RollbackInfo rollbackInfo) throws SQLException {
         try {
-            TxTransactionLocal.makeUnProxy();
+            DTXLocal.makeUnProxy();
             // key value MD5 HEX to store
             lockInfo.setKeyValue(DigestUtils.md5DigestAsHex(lockInfo.getKeyValue().getBytes(StandardCharsets.UTF_8)));
             txcSqlExecutor.tryLock(lockInfo);
@@ -39,7 +39,7 @@ public class TxcServiceImpl implements TxcService {
             rollbackInfo.setStatus(-1);
             throw new SQLException("Resource is locked! Place try again later.");
         } finally {
-            TxTransactionLocal.undoProxyStatus();
+            DTXLocal.undoProxyStatus();
         }
     }
 
@@ -47,10 +47,10 @@ public class TxcServiceImpl implements TxcService {
     public void lockSelect(SelectImageParams selectImageParams, boolean isxLock) throws SQLException {
         List<ModifiedRecord> modifiedRecords;
         try {
-            TxTransactionLocal.makeUnProxy();
+            DTXLocal.makeUnProxy();
             modifiedRecords = txcSqlExecutor.selectSqlPreviousPrimaryKeys(selectImageParams);
         } finally {
-            TxTransactionLocal.undoProxyStatus();
+            DTXLocal.undoProxyStatus();
         }
         for (ModifiedRecord modifiedRecord : modifiedRecords) {
             for (Map.Entry<String, FieldCluster> entry : modifiedRecord.getFieldClusters().entrySet()) {
@@ -72,10 +72,10 @@ public class TxcServiceImpl implements TxcService {
         // 前置镜像数据集
         List<ModifiedRecord> modifiedRecords;
         try {
-            TxTransactionLocal.makeUnProxy();
+            DTXLocal.makeUnProxy();
             modifiedRecords = txcSqlExecutor.updateSqlPreviousData(updateImageParams);
         } finally {
-            TxTransactionLocal.undoProxyStatus();
+            DTXLocal.undoProxyStatus();
         }
 
 
@@ -130,10 +130,10 @@ public class TxcServiceImpl implements TxcService {
         // 前置数据
         List<ModifiedRecord> modifiedRecords;
         try {
-            TxTransactionLocal.makeUnProxy();
+            DTXLocal.makeUnProxy();
             modifiedRecords = txcSqlExecutor.deleteSqlPreviousData(deleteImageParams);
         } finally {
-            TxTransactionLocal.undoProxyStatus();
+            DTXLocal.undoProxyStatus();
         }
 
         // rollback sql
@@ -179,12 +179,12 @@ public class TxcServiceImpl implements TxcService {
 
         // 表存在
         try {
-            TxTransactionLocal.makeUnProxy();
+            DTXLocal.makeUnProxy();
             txcSqlExecutor.writeUndoLog(undoLogDO);
         } catch (SQLException e) {
             log.error("error: {} code: {}", e.getMessage(), e.getErrorCode());
         } finally {
-            TxTransactionLocal.undoProxyStatus();
+            DTXLocal.undoProxyStatus();
         }
     }
 
@@ -192,36 +192,36 @@ public class TxcServiceImpl implements TxcService {
     public void cleanTxc(String groupId, String unitId) throws SQLException {
         // 清理事务单元相关锁
         try {
-            TxTransactionLocal.makeUnProxy();
+            DTXLocal.makeUnProxy();
             txcSqlExecutor.clearLock(groupId, unitId);
         } catch (SQLException e) {
             if (e.getErrorCode() != SqlUtils.MYSQL_TABLE_NOT_EXISTS_CODE) {
                 throw e;
             }
         } finally {
-            TxTransactionLocal.undoProxyStatus();
+            DTXLocal.undoProxyStatus();
         }
 
         // 清理事务单元相关undo_log
         try {
-            TxTransactionLocal.makeUnProxy();
+            DTXLocal.makeUnProxy();
             txcSqlExecutor.clearUndoLog(groupId, unitId);
         } catch (SQLException e) {
             if (e.getErrorCode() != SqlUtils.MYSQL_TABLE_NOT_EXISTS_CODE) {
                 throw e;
             }
         } finally {
-            TxTransactionLocal.undoProxyStatus();
+            DTXLocal.undoProxyStatus();
         }
     }
 
     @Override
     public void undo(String groupId, String unitId) throws SQLException {
         try {
-            TxTransactionLocal.makeUnProxy();
+            DTXLocal.makeUnProxy();
             txcSqlExecutor.applyUndoLog(groupId, unitId);
         } finally {
-            TxTransactionLocal.undoProxyStatus();
+            DTXLocal.undoProxyStatus();
         }
     }
 }

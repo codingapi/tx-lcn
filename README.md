@@ -35,10 +35,10 @@ tx-spi-sleuth-springcloud:sleuth-springcloud实现
 
 需要准备的服务：
 
-* redis 用于tx-manager事务数据储存。
-* mysql demo操作数据,事务日志数据记录，TxManager异常数据。
-* zookeeper dubbo demo依赖
-* consul springcloud demo依赖
+* redis       用于tx-manager事务数据储存。
+* mysql       demo操作数据,事务日志数据记录，TxManager异常数据。
+* zookeeper   [dubbo] demo依赖
+* consul      [springcloud] demo依赖
 
 
 
@@ -46,10 +46,6 @@ tx-spi-sleuth-springcloud:sleuth-springcloud实现
 
 1. 将example下的 txlcn-demo.sql 导入到txlcn-demo数据库。
 2. 将tx-manager下的 tx-manager.sql 导入到tx-manager数据库。
-3. 创建一个tx-logger的数据库。
-
-当项目运行以后会自行在txlcn-demo数据库下添加txc-lock txc-undo-log表，在tx-logger于tx-manager下添加tx-logger表。
-
 
 
 demo 调用链说明:

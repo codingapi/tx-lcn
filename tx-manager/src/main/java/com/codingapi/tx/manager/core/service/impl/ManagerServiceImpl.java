@@ -1,10 +1,10 @@
 package com.codingapi.tx.manager.core.service.impl;
 
-import com.codingapi.tx.spi.rpc.params.NotifyConnectParams;
+import com.codingapi.tx.spi.message.params.NotifyConnectParams;
 import com.codingapi.tx.manager.core.service.ManagerService;
-import com.codingapi.tx.manager.support.rpc.MessageCreator;
-import com.codingapi.tx.spi.rpc.RpcClient;
-import com.codingapi.tx.spi.rpc.exception.RpcException;
+import com.codingapi.tx.manager.support.message.MessageCreator;
+import com.codingapi.tx.spi.message.RpcClient;
+import com.codingapi.tx.spi.message.exception.RpcException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +30,7 @@ public class ManagerServiceImpl implements ManagerService {
         List<String> keys =  rpcClient.loadAllRemoteKey();
         if(keys!=null&&keys.size()>0){
             for(String key:keys){
-                rpcClient.send(key, MessageCreator.notifyConnect(notifyConnectParams));
+                rpcClient.send(key, MessageCreator.newTxManager(notifyConnectParams));
             }
         }
         return true;

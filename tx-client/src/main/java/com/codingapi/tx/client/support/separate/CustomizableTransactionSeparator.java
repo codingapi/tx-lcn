@@ -1,7 +1,7 @@
 package com.codingapi.tx.client.support.separate;
 
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.bean.TxTransactionInfo;
-import com.codingapi.tx.client.bean.TxTransactionLocal;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -17,8 +17,8 @@ public class CustomizableTransactionSeparator implements TXLCNTransactionSeparat
     public TXLCNTransactionState loadTransactionState(TxTransactionInfo txTransactionInfo) {
 
         // 本线程已经参与分布式事务(本地方法互调)
-        if (TxTransactionLocal.current().isInUnit()) {
-            log.info("Default by TxTransactionLocal is not null! {}", TxTransactionLocal.current());
+        if (DTXLocal.cur().isInUnit()) {
+            log.info("Default by DTXLocal is not null! {}", DTXLocal.cur());
             return TXLCNTransactionState.DEFAULT;
         }
 

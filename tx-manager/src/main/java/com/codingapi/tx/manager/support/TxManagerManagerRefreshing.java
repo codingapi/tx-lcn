@@ -1,6 +1,6 @@
 package com.codingapi.tx.manager.support;
 
-import com.codingapi.tx.spi.rpc.params.NotifyConnectParams;
+import com.codingapi.tx.spi.message.params.NotifyConnectParams;
 import com.codingapi.tx.manager.config.TxManagerConfig;
 import com.codingapi.tx.manager.db.ManagerStorage;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +44,8 @@ public class TxManagerManagerRefreshing {
 
     public void refresh() {
         NotifyConnectParams notifyConnectParams = new NotifyConnectParams();
-        notifyConnectParams.setHost(txManagerConfig.getManagerHost());
-        notifyConnectParams.setPort(txManagerConfig.getRpcPort());
+        notifyConnectParams.setHost(txManagerConfig.getHost());
+        notifyConnectParams.setPort(txManagerConfig.getPort());
 
         List<String> addressList =  managerStorage.addressList();
         log.info("addressList->{}",addressList);

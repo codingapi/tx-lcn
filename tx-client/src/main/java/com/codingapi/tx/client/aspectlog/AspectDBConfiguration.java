@@ -13,12 +13,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AspectDBConfiguration {
 
-
-    @Bean
-    public AspectLogDbProperties aspectLogDbProperties(){
-        return new AspectLogDbProperties();
-    }
-
     @Bean
     public AspectLogDbHelper aspectLogDbHelper(){
         return new AspectLogDbHelper();

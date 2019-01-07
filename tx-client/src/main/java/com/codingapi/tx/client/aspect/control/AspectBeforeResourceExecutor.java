@@ -1,6 +1,6 @@
 package com.codingapi.tx.client.aspect.control;
 
-import com.codingapi.tx.client.bean.TxTransactionLocal;
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.support.LCNTransactionBeanHelper;
 import com.codingapi.tx.client.support.resouce.TransactionResourceExecutor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +25,9 @@ public class AspectBeforeResourceExecutor {
     private LCNTransactionBeanHelper transactionBeanHelper;
 
     public Object around(ProceedingJoinPoint point) throws Throwable {
-        TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
-        if (Objects.nonNull(txTransactionLocal) && txTransactionLocal.isProxy()) {
-            String transactionType = txTransactionLocal.getTransactionType();
+        DTXLocal dtxLocal = DTXLocal.cur();
+        if (Objects.nonNull(dtxLocal) && dtxLocal.isProxy()) {
+            String transactionType = dtxLocal.getTransactionType();
             TransactionResourceExecutor transactionResourceExecutor = transactionBeanHelper.loadTransactionResourceExecuter(transactionType);
             Connection connection = transactionResourceExecutor.proxyConnection(() -> {
                 try {

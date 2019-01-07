@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,6 +18,13 @@ import java.util.List;
 @ConfigurationProperties(prefix = "tx-lcn.client")
 @Component
 public class TxClientConfig {
+
+    public TxClientConfig() {
+        this.controlOrder = 0;
+        this.resourceOrder = 0;
+        this.dtxTime = 30000;
+        this.managerAddress = Collections.singletonList("127.0.0.1:8070");
+    }
 
     /**
      * support order
@@ -33,14 +41,6 @@ public class TxClientConfig {
     private int resourceOrder = 0;
 
     /**
-     * txManager managerHost
-     */
-    private String txManagerHost;
-    /**
-     * txManager rpcPort
-     */
-    private int txManagerPort;
-    /**
      * txManager check heart time (s)
      */
     private int txManagerHeart;
@@ -52,7 +52,7 @@ public class TxClientConfig {
     /**
      * manager hosts
      */
-    private List<String> managerHost;
+    private List<String> managerAddress;
 
     /**
      * Distributed Transaction Time

@@ -47,7 +47,7 @@ class Blog extends Language {
             </ul>
           </div>
         </section>
-        <Footer logo="/img/dubbo_gray.png" language={language} />
+        <Footer logo="/img/txlcn.png" language={language} />
       </div>
     );
   }
