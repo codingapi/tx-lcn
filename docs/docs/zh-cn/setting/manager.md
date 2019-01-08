@@ -40,4 +40,12 @@ tx-lcn.manager.ex-url=/provider/email-to/ujued@qq.com
 `a >= 2c + (b + c + d) * (e - 1)`, 特别地，b、c、d 一致时，`a >= (3e-1)b`。你也可以在此理论上适当在减小a的值，发生异常时能更快得到自动补偿，即 `a >= (3e-1)b - Δ`（[原因](../fqa.html)）。
 最后，调用链小于等于3时，将基于默认配置运行良好
 
+(4) 若用`tx-lcn.manager.ex-url=/provider/email-to/xxx@xx.xxx` 这个配置，配置管理员邮箱信息(如QQ邮箱)：
+```properties
+spring.mail.host=smtp.qq.com
+spring.mail.port=587
+spring.mail.username=xxxxx@qq.com
+spring.mail.password=nnvmtplwypuybiof
+```
+ 
 ----------------
