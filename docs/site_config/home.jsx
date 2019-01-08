@@ -61,7 +61,7 @@ export default {
       title: '用户',
       desc: <span>目前采用的客户</span>,
       list: [
-        '/img/users_alibaba.png',
+        '/img/users_alibaba.png','/img/users_alibaba.png',
       ],
     },
   },

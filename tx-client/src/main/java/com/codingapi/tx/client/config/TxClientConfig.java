@@ -18,28 +18,28 @@ import java.util.List;
 @ConfigurationProperties(prefix = "tx-lcn.client")
 @Component
 public class TxClientConfig {
-
+    
     public TxClientConfig() {
         this.controlOrder = 0;
         this.resourceOrder = 0;
         this.dtxTime = 30000;
         this.managerAddress = Collections.singletonList("127.0.0.1:8070");
     }
-
+    
     /**
      * support order
      *
      * @TxTransaction aop Service
      */
-    private int controlOrder = 0;
-
+    private int controlOrder;
+    
     /**
      * control order
      *
      * @getConnection() aop service
      */
-    private int resourceOrder = 0;
-
+    private int resourceOrder;
+    
     /**
      * txManager check heart time (s)
      */
@@ -48,15 +48,15 @@ public class TxClientConfig {
      * txManager max delay time (s)
      */
     private int txManagerDelay;
-
+    
     /**
      * manager hosts
      */
     private List<String> managerAddress;
-
+    
     /**
      * Distributed Transaction Time
      */
-    private long dtxTime = 30000;
-
+    private long dtxTime;
+    
 }

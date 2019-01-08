@@ -1,6 +1,7 @@
 package com.codingapi.tx.manager.core.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.codingapi.tx.commons.exception.TransactionStateException;
 import com.codingapi.tx.commons.exception.TxManagerException;
 import com.codingapi.tx.manager.core.restapi.model.ExceptionList;
 
@@ -45,5 +46,5 @@ public interface TxExceptionService {
      * @param unitId
      * @return
      */
-    JSONObject getTransactionInfo(String groupId, String unitId) throws TxManagerException;
+    JSONObject getTransactionInfo(String groupId, String unitId) throws TxManagerException, TransactionStateException;
 }

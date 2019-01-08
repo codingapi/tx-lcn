@@ -1,5 +1,5 @@
 # client配置说明
-
+## 一、application.properties
 ```properties
 # 事务控制切面控制次序
 tx-lcn.client.control-order=0
@@ -22,6 +22,33 @@ tx-lcn.logger.jdbc-url=jdbc:mysql://127.0.0.1:3306/tx-logger?\
   characterEncoding=UTF-8&serverTimezone=UTC
 tx-lcn.logger.username=root
 tx-lcn.logger.password=123456
+
+# 与TxManager通讯最大等待时间（秒）
+tx-lcn.message.netty.wait-time=5
+
 ```
 
-> `NOTE` TxClient所有配置均有默认配置，请按需覆盖默认配置。
+## 二、特别配置
+微服务`集群`且用到 `LCN` 事务模式时，为保证性能请开启 `TXLCN` 重写的负载策略。  
+
+* Dubbo 开启
+```$xslt
+@Reference(version = "${demo.service.version}",
+        application = "${dubbo.application.e}",
+        retries = -1,
+        registry = "${dubbo.registry.address}",
+        loadbalance = "txlcn_random")  // here
+private EDemoService eDemoService;
+```
+* SpringCloud 开启 (application.properties)
+```properties
+tx-lcn.springcloud.loadbalance.enabled=true
+```
+
+配置详情[参见](distributed.html)
+
+----------------
+
+`NOTE` TxClient所有配置均有默认配置，请按需覆盖默认配置。
+
+----------------

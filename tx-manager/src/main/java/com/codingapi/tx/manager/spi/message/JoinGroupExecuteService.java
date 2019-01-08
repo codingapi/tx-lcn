@@ -8,7 +8,7 @@ import com.codingapi.tx.logger.TxLogger;
 import com.codingapi.tx.manager.support.group.GroupRelationship;
 import com.codingapi.tx.manager.support.group.TransUnit;
 import com.codingapi.tx.manager.support.message.RpcExecuteService;
-import com.codingapi.tx.manager.support.TransactionCmd;
+import com.codingapi.tx.manager.support.message.TransactionCmd;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

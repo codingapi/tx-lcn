@@ -1,6 +1,6 @@
 # 快速开始
 
-## 一、微服务额外依赖`TXLCN`资源管理库
+## 一、微服务额外依赖`TXLCN` Client 代码库
 ```xml
 <dependency>
     <groupId>com.codingapi.txlcn</groupId>
@@ -20,31 +20,31 @@
 
 ## 二、微服务示例代码
 
-### (1) 微服务Client
+### (1) 微服务A
 ```java
-// Micro Service Client. As DTX starter
+// Micro Service A. As DTX starter
 @Service
 public class ServiceClient {
     private ValueDao valueDao;
-    private ServiceD serviceD;
-    public ServiceClient(ValueDao valueDao, ServiceD serviceD) {
+    private ServiceB serviceB;
+    public ServiceClient(ValueDao valueDao, ServiceB serviceB) {
         this.valueDao = valueDao;
-        this.serviceD = serviceD;
+        this.serviceB = serviceB;
     }
     
     @LcnTransaction
     @Transactional
     public String execute(String value) throws BusinessException {
-        // step1. call remote service D
-        String result = serviceD.rpc(value);
+        // step1. call remote service B
+        String result = serviceB.rpc(value);  // (1)
         // step2. local store operate. DTX commit if save success, rollback if not.
-        valueDao.save(value);
-        valueDao.saveBak(value);
+        valueDao.save(value);  // (2)
+        valueDao.saveBackup(value);  // (3)
         return result + " > " + "ok-client";
     }
 }
 ```
-### (2) 微服务D
+### (2) 微服务B
 ```java
 // Micro Service D
 @Service
@@ -57,12 +57,18 @@ public class ServiceD {
     @LcnTransaction
     @Transactional
     public String rpc(String value) throws BusinessException {
-        valueDao.save(value);
-        valueDao.saveBak(value);
+        valueDao.save(value);  // (4)
+        valueDao.saveBackup(value);  // (5)
         return "ok-D";
     }
 }
 ```
+```
+(1) 服务A作为DTX发起方，远程调用服务B  
+(2)与(3) 构成A服务本地事务  
+(4)与(5) 构成B服务本地事务  
+```
+
 >`NOTES`  
 1、@LcnTransaction 
 标注事务单元用Lcn事务模式参与分布式事务[[原理]](principle/lcn.html)。还有 

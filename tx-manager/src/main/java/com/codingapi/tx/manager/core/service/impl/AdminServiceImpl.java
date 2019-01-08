@@ -11,8 +11,10 @@ import com.codingapi.tx.manager.core.restapi.model.DTXInfo;
 import com.codingapi.tx.manager.core.restapi.model.TxManagerLog;
 import com.codingapi.tx.manager.core.restapi.model.TxLogList;
 import com.codingapi.tx.manager.core.restapi.model.TxManagerInfo;
+import com.codingapi.tx.spi.message.RpcClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -35,11 +37,21 @@ public class AdminServiceImpl implements AdminService {
 
     private final TxLoggerHelper txLoggerHelper;
 
+    private final RpcClient rpcClient;
+
+    private final RedisTemplate<String, String> redisTemplate;
+
     @Autowired
-    public AdminServiceImpl(TxManagerConfig managerConfig, DefaultTokenStorage defaultTokenStorage, TxLoggerHelper txLoggerHelper) {
+    public AdminServiceImpl(TxManagerConfig managerConfig,
+                            DefaultTokenStorage defaultTokenStorage,
+                            TxLoggerHelper txLoggerHelper,
+                            RpcClient rpcClient,
+                            RedisTemplate<String, String> redisTemplate) {
         this.managerConfig = managerConfig;
         this.defaultTokenStorage = defaultTokenStorage;
         this.txLoggerHelper = txLoggerHelper;
+        this.rpcClient = rpcClient;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -115,16 +127,16 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public TxManagerInfo getTxManagerInfo() {
+
         TxManagerInfo txManagerInfo = new TxManagerInfo();
-        txManagerInfo.setClientCount(1);
+        txManagerInfo.setClientCount(rpcClient.loadAllRemoteKey().size());
         txManagerInfo.setConcurrentLevel(Math.max(
                 (int) (Runtime.getRuntime().availableProcessors() / (1 - 0.8)), managerConfig.getConcurrentLevel()));
         txManagerInfo.setDtxTime(managerConfig.getDtxTime());
         txManagerInfo.setHeartbeatTime(managerConfig.getHeartTime());
-        txManagerInfo.setRedisState((short) 1);
         txManagerInfo.setSocketHost(managerConfig.getHost());
         txManagerInfo.setSocketPort(managerConfig.getPort());
-        txManagerInfo.setExUrl(managerConfig.getExUrl());
+        txManagerInfo.setExUrl(managerConfig.isExUrlEnabled() ? managerConfig.getExUrl() : "disabled");
         return txManagerInfo;
     }
 }

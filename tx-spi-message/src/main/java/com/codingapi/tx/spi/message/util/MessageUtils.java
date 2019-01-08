@@ -18,6 +18,6 @@ public class MessageUtils {
      * @return
      */
     public static boolean statusOk(MessageDto messageDto) {
-        return messageDto.getAction().equalsIgnoreCase(MessageConstants.ACTION_RPC_OK);
+        return messageDto.getState() == MessageConstants.STATE_OK;
     }
 }

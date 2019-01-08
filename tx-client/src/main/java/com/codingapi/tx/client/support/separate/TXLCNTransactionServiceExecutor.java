@@ -43,7 +43,7 @@ public class TXLCNTransactionServiceExecutor {
 
         // 2. 事务状态抉择器
         TXLCNTransactionSeparator lcnTransactionSeparator =
-                lcnTransactionBeanHelper.loadLCNTransactionStateResolver(info.getTransactionType());
+                lcnTransactionBeanHelper.loadLCNTransactionStateResolver(transactionType);
 
         // 3. 获取事务状态
         TXLCNTransactionState lcnTransactionState = lcnTransactionSeparator.loadTransactionState(info);

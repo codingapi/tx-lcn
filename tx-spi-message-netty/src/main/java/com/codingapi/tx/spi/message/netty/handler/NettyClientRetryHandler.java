@@ -43,7 +43,7 @@ public class NettyClientRetryHandler extends ChannelInboundHandlerAdapter {
 
     public NettyClientRetryHandler() {
         MessageDto messageDto = new MessageDto();
-        messageDto.setAction(MessageConstants.ACTION_RPC_HEART);
+        messageDto.setAction(MessageConstants.ACTION_HEART_CHECK);
         heartCmd = new NettyRpcCmd();
         heartCmd.setMsg(messageDto);
         heartCmd.setKey(RandomUtils.randomKey());

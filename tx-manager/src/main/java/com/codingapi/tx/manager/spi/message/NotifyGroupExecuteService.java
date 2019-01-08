@@ -6,7 +6,7 @@ import com.codingapi.tx.commons.exception.TxManagerException;
 import com.codingapi.tx.commons.util.Transactions;
 import com.codingapi.tx.commons.util.serializer.SerializerContext;
 import com.codingapi.tx.logger.TxLogger;
-import com.codingapi.tx.manager.support.TransactionCmd;
+import com.codingapi.tx.manager.support.message.TransactionCmd;
 import com.codingapi.tx.manager.support.group.GroupRelationship;
 import com.codingapi.tx.manager.support.group.TransUnit;
 import com.codingapi.tx.manager.support.message.MessageCreator;

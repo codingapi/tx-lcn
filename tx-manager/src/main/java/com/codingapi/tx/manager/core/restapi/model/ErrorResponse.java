@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
  * Description:
  * Date: 2018/11/23
  *
- * @auther ujued
+ * @author ujued
  */
 @AllArgsConstructor
 @NoArgsConstructor

@@ -1,5 +1,6 @@
 package com.codingapi.tx.client.spi.transaction.lcn.control;
 
+import com.codingapi.tx.commons.util.Transactions;
 import com.codingapi.tx.spi.sleuth.TracerHelper;
 import com.codingapi.tx.client.bean.TxTransactionInfo;
 import com.codingapi.tx.client.support.separate.CustomizableTransactionSeparator;
@@ -43,7 +44,7 @@ public class LCNTypeTransactionSeparator extends CustomizableTransactionSeparato
         // 一个模块存在多个LCN类型的事务单元在一个事务内走DEFAULT
         Optional<TransactionUnitTypeList> sameTransUnitTypeList =
                 transactionAttachmentCache.attachment(tracerHelper.getGroupId(), TransactionUnitTypeList.class);
-        if (sameTransUnitTypeList.isPresent() && sameTransUnitTypeList.get().contains("lcn")) {
+        if (sameTransUnitTypeList.isPresent() && sameTransUnitTypeList.get().contains(Transactions.LCN)) {
             log.info("Default by LCN assert !");
             return TXLCNTransactionState.DEFAULT;
         }

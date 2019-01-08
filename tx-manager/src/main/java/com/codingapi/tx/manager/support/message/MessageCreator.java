@@ -33,9 +33,9 @@ public class MessageCreator {
      * @param notifyConnectParams
      * @return
      */
-    public static MessageDto notifyConnect(NotifyConnectParams notifyConnectParams) {
+    public static MessageDto newTxManager(NotifyConnectParams notifyConnectParams) {
         MessageDto msg = new MessageDto();
-        msg.setAction(MessageConstants.ACTION_NOTIFY_CONNECT);
+        msg.setAction(MessageConstants.ACTION_NEW_TXMANAGER);
         msg.setBytes(serialize(notifyConnectParams));
         return msg;
     }
@@ -59,9 +59,10 @@ public class MessageCreator {
      *
      * @return
      */
-    public static MessageDto notifyGroupOkResponse(Object message) {
+    public static MessageDto notifyGroupOkResponse(Object message,String action) {
         MessageDto messageDto = new MessageDto();
-        messageDto.setAction(MessageConstants.ACTION_RPC_OK);
+        messageDto.setState(MessageConstants.STATE_OK);
+        messageDto.setAction(action);
         messageDto.setBytes(Objects.isNull(message) ? null : serialize(message));
         return messageDto;
     }
@@ -71,9 +72,10 @@ public class MessageCreator {
      *
      * @return
      */
-    public static MessageDto notifyGroupFailResponse(Object message) {
+    public static MessageDto notifyGroupFailResponse(Object message,String action) {
         MessageDto messageDto = new MessageDto();
-        messageDto.setAction(MessageConstants.ACTION_RPC_EXCEPTION);
+        messageDto.setAction(action);
+        messageDto.setState(MessageConstants.STATE_EXCEPTION);
         messageDto.setBytes(Objects.isNull(message) ? null : serialize(message));
         return messageDto;
     }
@@ -83,9 +85,10 @@ public class MessageCreator {
      *
      * @return
      */
-    public static MessageDto serverException() {
+    public static MessageDto serverException(String action) {
         MessageDto messageDto = new MessageDto();
-        messageDto.setAction(MessageConstants.ACTION_RPC_EXCEPTION);
+        messageDto.setAction(action);
+        messageDto.setState(MessageConstants.STATE_EXCEPTION);
         messageDto.setBytes(serialize("Internal Server Error"));
         return messageDto;
     }

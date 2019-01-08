@@ -46,14 +46,14 @@ public enum LCNCmdType {
      * 记录补偿
      * 简写 wc
      */
-    writeCompensation("write-compensation", MessageConstants.ACTION_WRITE_COMPENSATION),
+    writeCompensation("write-compensation", MessageConstants.ACTION_WRITE_EXCEPTION),
 
 
     /**
      * TxManager请求连接
      * 简写 nc
      */
-    notifyConnect("notify-connect", MessageConstants.ACTION_NOTIFY_CONNECT),
+    notifyConnect("notify-connect", MessageConstants.ACTION_NEW_TXMANAGER),
 
 
     /**
@@ -99,9 +99,9 @@ public enum LCNCmdType {
                 return joinGroup;
             case MessageConstants.ACTION_ASK_TRANSACTION_STATE:
                 return askTransactionState;
-            case MessageConstants.ACTION_WRITE_COMPENSATION:
+            case MessageConstants.ACTION_WRITE_EXCEPTION:
                 return writeCompensation;
-            case MessageConstants.ACTION_NOTIFY_CONNECT:
+            case MessageConstants.ACTION_NEW_TXMANAGER:
                 return notifyConnect;
             case MessageConstants.ACTION_GET_ASPECT_LOG:
                 return getAspectLog;

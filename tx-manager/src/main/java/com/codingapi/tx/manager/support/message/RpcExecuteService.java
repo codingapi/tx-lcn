@@ -1,7 +1,6 @@
 package com.codingapi.tx.manager.support.message;
 
 import com.codingapi.tx.commons.exception.TxManagerException;
-import com.codingapi.tx.manager.support.TransactionCmd;
 
 /**
  * @author lorne

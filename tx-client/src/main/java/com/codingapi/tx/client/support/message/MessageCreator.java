@@ -71,9 +71,10 @@ public class MessageCreator {
      * @param message
      * @return
      */
-    public static MessageDto notifyUnitOkResponse(Object message) {
+    public static MessageDto notifyUnitOkResponse(Object message,String action) {
         MessageDto messageDto = new MessageDto();
-        messageDto.setAction(MessageConstants.ACTION_RPC_OK);
+        messageDto.setAction(action);
+        messageDto.setState(MessageConstants.STATE_OK);
         messageDto.setBytes(Objects.isNull(message) ? null : (message instanceof byte[] ? (byte[]) message : serialize(message)));
         return messageDto;
     }
@@ -84,9 +85,10 @@ public class MessageCreator {
      * @param message
      * @return
      */
-    public static MessageDto notifyUnitFailResponse(Object message) {
+    public static MessageDto notifyUnitFailResponse(Object message,String action) {
         MessageDto messageDto = new MessageDto();
-        messageDto.setAction(MessageConstants.ACTION_RPC_EXCEPTION);
+        messageDto.setAction(action);
+        messageDto.setState(MessageConstants.STATE_EXCEPTION);
         messageDto.setBytes(Objects.isNull(message) ? null : serialize(message));
         return messageDto;
     }
@@ -114,7 +116,7 @@ public class MessageCreator {
      */
     public static MessageDto writeTxException(TxExceptionParams txExceptionParams) {
         MessageDto messageDto = new MessageDto();
-        messageDto.setAction(MessageConstants.ACTION_WRITE_COMPENSATION);
+        messageDto.setAction(MessageConstants.ACTION_WRITE_EXCEPTION);
         messageDto.setGroupId(txExceptionParams.getGroupId());
         messageDto.setBytes(serialize(txExceptionParams));
         return messageDto;
@@ -128,7 +130,7 @@ public class MessageCreator {
         InitClientParams initClientParams = new InitClientParams();
         initClientParams.setAppName(appName);
         MessageDto messageDto = new MessageDto();
-        messageDto.setGroupId("init");
+        messageDto.setGroupId("INITCLIENTGROUPID");
         messageDto.setBytes(serialize(initClientParams));
         messageDto.setAction(MessageConstants.ACTION_INIT_CLIENT);
         return messageDto;

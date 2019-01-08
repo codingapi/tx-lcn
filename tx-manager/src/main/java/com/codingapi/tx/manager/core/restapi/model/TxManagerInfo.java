@@ -49,9 +49,4 @@ public class TxManagerInfo {
      * 异常通知
      */
     private String exUrl;
-
-    /**
-     * Redis状态
-     */
-    private short redisState;
 }

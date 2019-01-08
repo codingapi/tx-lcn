@@ -58,6 +58,11 @@ public class TxManagerConfig {
     private String adminKey;
 
     /**
+     * 是否允许异常回调
+     */
+    private boolean exUrlEnabled = true;
+
+    /**
      * 异常回调地址
      */
     private String exUrl;
