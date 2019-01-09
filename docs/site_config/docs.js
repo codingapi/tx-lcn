@@ -54,6 +54,10 @@ export default {
                         title: '示例',
                         children: [
                             {
+                                title: '基础环境',
+                                link: '/zh-cn/docs/demo/env.html',
+                            },
+                            {
                                 title: 'dubbo示例',
                                 link: '/zh-cn/docs/demo/dubbo.html',
                             },

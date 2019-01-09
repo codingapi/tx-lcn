@@ -1,4 +1,4 @@
-package com.example.demoe.mapper;
+package com.example.mapper;
 
 import com.codingapi.example.common.db.mapper.DemoMapper;
 import org.apache.ibatis.annotations.Mapper;

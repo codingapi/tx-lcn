@@ -10,11 +10,8 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <groupId>com.example</groupId>
     <artifactId>dubbo-demo-client</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <name>dubbo-demo-client</name>
-    <description>Demo project for Spring Boot</description>
 
     <dependencies>
 

@@ -39,7 +39,6 @@
         <module>example/spring-demo-client</module>
         <module>example/spring-demo-d</module>
         <module>example/spring-demo-e</module>
-
     </modules>
 
     <properties>

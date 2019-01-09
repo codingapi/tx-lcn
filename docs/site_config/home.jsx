@@ -8,7 +8,7 @@ export default {
       buttons: [
         {
           text: '立即开始',
-          link: '/zh-cn/docs/demo.html',
+          link: '/zh-cn/docs/demo/env.html',
           type: 'primary',
         },
         {

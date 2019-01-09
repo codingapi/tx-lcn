@@ -80,7 +80,6 @@ public class TXLCNTransactionServiceExecutor {
             throw e;
         } finally {
             // 5.6 业务执行完毕
-            txLogger.trace(info.getGroupId(), info.getUnitId(), "transaction", "finally business code");
             lcnTransactionControl.postBusinessCode(info);
         }
     }

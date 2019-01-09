@@ -29,10 +29,10 @@ tx-lcn.message.netty.wait-time=5
 ```
 
 ## 二、特别配置
-微服务`集群`且用到 `LCN` 事务模式时，为保证性能请开启 `TXLCN` 重写的负载策略。  
+### 1、微服务`集群`且用到 `LCN` 事务模式时，为保证性能请开启 `TXLCN` 重写的负载策略。  
 
 * Dubbo 开启
-```$xslt
+```java
 @Reference(version = "${demo.service.version}",
         application = "${dubbo.application.e}",
         retries = -1,
@@ -44,11 +44,31 @@ private EDemoService eDemoService;
 ```properties
 tx-lcn.springcloud.loadbalance.enabled=true
 ```
-
 配置详情[参见](distributed.html)
+
+### 2、关闭业务RPC重试
+* Dubbo 开启
+```java
+@Reference(version = "${demo.service.version}",
+        application = "${dubbo.application.e}",
+        retries = -1,
+        registry = "${dubbo.registry.address}",
+        loadbalance = "txlcn_random")  // here
+private EDemoService eDemoService;
+```
+* SpringCloud 开启 (application.properties)
+```properties
+# 关闭Ribbon的重试机制
+ribbon.MaxAutoRetriesNextServer=0
+```
+
 
 ----------------
 
-`NOTE` TxClient所有配置均有默认配置，请按需覆盖默认配置。
+`NOTE`  
+1、TxClient所有配置均有默认配置，请按需覆盖默认配置。  
+2、为什么要关闭服务调用的重试。远程业务调用失败有两种可能：
+（1），远程业务执行失败 （2）、远程业务执行成功，网络失败。对于第2种，事务场景下重试会发生，某个业务执行两次的问题。
+如果业务上控制某个事务接口的幂等，则不用关闭重试。
 
 ----------------
