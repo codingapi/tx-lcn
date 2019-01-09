@@ -40,6 +40,11 @@ public class RpcNettyConfiguration {
      */
     private int cacheSize = 1024;
 
+    /**
+     * appName 参数延迟删除时间 单位：(s)
+     */
+    private int attrDelayTime = 10;
+
 
     @Bean
     @ConditionalOnMissingBean
@@ -64,5 +69,6 @@ public class RpcNettyConfiguration {
     public void init(){
         RpcCmdContext.getInstance().setWaitTime(getWaitTime());
         RpcCmdContext.getInstance().setCacheSize(getCacheSize());
+        SocketManager.getInstance().setAttrDelayTime(getAttrDelayTime());
     }
 }

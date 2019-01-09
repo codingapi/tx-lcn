@@ -38,6 +38,8 @@ public class SocketManager {
 
     private static SocketManager manager = null;
 
+    private int attrDelayTime;
+
 
     private SocketManager() {
         channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
@@ -123,6 +125,9 @@ public class SocketManager {
         return allKeys;
     }
 
+    public void setAttrDelayTime(int attrDelayTime) {
+        this.attrDelayTime = attrDelayTime;
+    }
 
     public ChannelGroup getChannels() {
         return channels;
