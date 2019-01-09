@@ -1,10 +1,9 @@
 package com.codingapi.tx.manager.support.message;
 
-import com.codingapi.tx.spi.message.params.NotifyUnitParams;
 import com.codingapi.tx.manager.core.service.TxExceptionService;
 import com.codingapi.tx.manager.core.service.WriteTxExceptionDTO;
 import com.codingapi.tx.spi.message.RpcClient;
-import com.codingapi.tx.spi.message.exception.RpcException;
+import com.codingapi.tx.spi.message.params.NotifyUnitParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,12 +40,8 @@ public class ManagerRpcExceptionHandler implements RpcExceptionHandler {
     public void handleNotifyUnitMessageException(Object params, Throwable e) {
         // notify unit message error, write txEx
         List paramList = ((List) params);
-        String modName = (String) paramList.get(1);
-        try {
-            modName = rpcClient.getAppName((String) paramList.get(1));
-        } catch (RpcException e1) {
-            log.warn(e1.getMessage());
-        }
+        String modName =  rpcClient.getAppName((String) paramList.get(1));
+
         NotifyUnitParams notifyUnitParams = (NotifyUnitParams) paramList.get(0);
         WriteTxExceptionDTO writeTxExceptionReq = new WriteTxExceptionDTO(notifyUnitParams.getGroupId(),
                 notifyUnitParams.getUnitId(), modName, (short) notifyUnitParams.getState());

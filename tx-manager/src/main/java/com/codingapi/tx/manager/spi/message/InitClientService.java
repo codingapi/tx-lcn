@@ -3,10 +3,9 @@ package com.codingapi.tx.manager.spi.message;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TxManagerException;
 import com.codingapi.tx.manager.config.TxManagerConfig;
-import com.codingapi.tx.manager.support.message.TransactionCmd;
 import com.codingapi.tx.manager.support.message.RpcExecuteService;
+import com.codingapi.tx.manager.support.message.TransactionCmd;
 import com.codingapi.tx.spi.message.RpcClient;
-import com.codingapi.tx.spi.message.exception.RpcException;
 import com.codingapi.tx.spi.message.params.InitClientParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,7 @@ public class InitClientService implements RpcExecuteService {
             rpcClient.bindAppName(transactionCmd.getRemoteKey(),initClientParams.getAppName());
             initClientParams.setDtxTime(txManagerConfig.getDtxTime());
             return initClientParams;
-        } catch (SerializerException | RpcException e) {
+        } catch (SerializerException e) {
             throw new TxManagerException(e);
         }
     }
