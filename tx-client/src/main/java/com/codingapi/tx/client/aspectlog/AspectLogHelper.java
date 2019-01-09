@@ -82,15 +82,12 @@ public class AspectLogHelper {
 
     public List<AspectLog> findAll() {
         String sql = "SELECT * FROM TXLCN_LOG";
-        return aspectLogDbHelper.query(sql, new ResultSetHandler<List<AspectLog>>() {
-            @Override
-            public List<AspectLog> handle(ResultSet resultSet) throws SQLException {
-                List<AspectLog> list = new ArrayList<>();
-                while (resultSet.next()) {
-                    list.add(fill(resultSet));
-                }
-                return list;
+        return aspectLogDbHelper.query(sql, resultSet -> {
+            List<AspectLog> list = new ArrayList<>();
+            while (resultSet.next()) {
+                list.add(fill(resultSet));
             }
+            return list;
         });
     }
 
@@ -109,14 +106,11 @@ public class AspectLogHelper {
         return aspectLogDbHelper.query(sql, resultSetHandler, id);
     }
 
-    private final ResultSetHandler<AspectLog> resultSetHandler = new ResultSetHandler<AspectLog>() {
-        @Override
-        public AspectLog handle(ResultSet resultSet) throws SQLException {
-            if (resultSet.next()) {
-                return fill(resultSet);
-            }
-            return null;
+    private final ResultSetHandler<AspectLog> resultSetHandler = resultSet -> {
+        if (resultSet.next()) {
+            return fill(resultSet);
         }
+        return null;
     };
 
 
