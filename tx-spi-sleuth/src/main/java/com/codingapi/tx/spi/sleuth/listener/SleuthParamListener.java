@@ -10,11 +10,10 @@ import java.util.List;
  * @author ujued
  */
 public interface SleuthParamListener {
-
-
+    
     List<String> beforeBalance(String localKey);
 
 
-    void alfterNewBalance(String key);
+    void afterNewBalance(String key);
 
 }

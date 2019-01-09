@@ -52,7 +52,7 @@ public class TXLCNZoneAvoidanceRule extends ZoneAvoidanceRule {
         }
         if (balanceServer == null) {
             Server server = super.choose(key);
-            sleuthParamListener.alfterNewBalance(String.format("%s:%s", server.getMetaInfo().getAppName(), server.getHostPort()));
+            sleuthParamListener.afterNewBalance(String.format("%s:%s", server.getMetaInfo().getAppName(), server.getHostPort()));
             return server;
         } else {
             return balanceServer;
