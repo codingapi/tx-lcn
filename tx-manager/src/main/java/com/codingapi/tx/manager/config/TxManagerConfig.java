@@ -22,7 +22,7 @@ public class TxManagerConfig {
         this.host = "127.0.0.1";
         this.heartTime = 5;
         this.concurrentLevel = 0;
-        this.dtxTime = 30000;
+        this.dtxTime = 36000;
         this.adminKey = "codingapi";
         this.exUrl = "/provider/email-to/ujued@qq.com";
     }
