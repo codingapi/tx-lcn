@@ -69,7 +69,7 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
                     transactionCmd.getGroupId(), "",
                     Transactions.TAG_TRANSACTION, "notify group " + notifyGroupParams.getState());
 
-            groupRelationship.setTransactionState(transactionCmd.getGroupId(),(short)notifyGroupParams.getState());
+            groupRelationship.setTransactionState(transactionCmd.getGroupId(), (short) notifyGroupParams.getState());
             List<TransUnit> transUnits = groupRelationship.unitsOfGroup(transactionCmd.getGroupId());
             for (TransUnit transUnit : transUnits) {
                 NotifyUnitParams notifyUnitParams = new NotifyUnitParams();
@@ -81,7 +81,7 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
                 try {
                     MessageDto respMsg =
                             rpcClient.request(transUnit.getRemoteKey(), MessageCreator.notifyUnit(notifyUnitParams));
-                    log.info("notify unit: {}", transUnit.getRemoteKey());
+                    log.debug("notify unit: {}", transUnit.getRemoteKey());
 
                     txLogger.trace(
                             transactionCmd.getGroupId(), notifyUnitParams.getUnitId(), Transactions.TAG_TRANSACTION,
@@ -89,7 +89,7 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
 
                     if (!MessageUtils.statusOk(respMsg)) {
                         // 提交/回滚失败的消息处理
-                        log.warn("unit business exception.");
+                        log.error("unit business exception.");
                         rpcExceptionHandler.handleNotifyUnitBusinessException(
                                 Arrays.asList(notifyUnitParams, transactionCmd.getRemoteKey()),
                                 SerializerContext.getInstance().deSerialize(respMsg.getBytes(), Throwable.class));
@@ -99,7 +99,7 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
                 } catch (RpcException e) {
                     txLogger.trace(transactionCmd.getGroupId(), "", "manager", "notify unit exception");
                     // 提交/回滚通讯失败
-                    log.warn("unit message exception.");
+                    log.error("unit message exception.");
                     rpcExceptionHandler.handleNotifyUnitMessageException(
                             Arrays.asList(notifyUnitParams, transactionCmd.getRemoteKey()), e);
                 }
