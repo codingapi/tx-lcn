@@ -18,12 +18,7 @@ public class TXLCNRoundRobinLoadBalance extends RoundRobinLoadBalance {
 
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) {
-        return TXLCNLoadbalance.chooseInvoker(invokers, url, invocation, new TXLCNLoadbalance.TxLcnLoadBalance() {
-            @Override
-            public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) {
-                return loadSelect(invokers, url, invocation);
-            }
-        });
+        return TXLCNLoadBalance.chooseInvoker(invokers, url, invocation, this::loadSelect);
     }
 
     public <T> Invoker<T> loadSelect(List<Invoker<T>> invokers, URL url, Invocation invocation){
