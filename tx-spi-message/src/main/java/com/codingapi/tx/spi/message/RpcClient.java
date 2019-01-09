@@ -89,7 +89,7 @@ public abstract class RpcClient {
      * @param remoteKey 远程标识
      * @param appName   应用名称
      */
-    public abstract void bindAppName(String remoteKey,String appName) throws RpcException;
+    public abstract void bindAppName(String remoteKey,String appName) ;
 
 
 
@@ -98,6 +98,6 @@ public abstract class RpcClient {
      * @param remoteKey 远程标识
      * @return   应用名称
      */
-    public abstract  String getAppName(String remoteKey) throws RpcException;
+    public abstract  String getAppName(String remoteKey) ;
 
 }

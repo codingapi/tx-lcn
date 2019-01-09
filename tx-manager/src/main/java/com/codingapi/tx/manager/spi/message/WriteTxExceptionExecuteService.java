@@ -4,10 +4,9 @@ import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TxManagerException;
 import com.codingapi.tx.manager.core.service.TxExceptionService;
 import com.codingapi.tx.manager.core.service.WriteTxExceptionDTO;
-import com.codingapi.tx.manager.support.message.TransactionCmd;
 import com.codingapi.tx.manager.support.message.RpcExecuteService;
+import com.codingapi.tx.manager.support.message.TransactionCmd;
 import com.codingapi.tx.spi.message.RpcClient;
-import com.codingapi.tx.spi.message.exception.RpcException;
 import com.codingapi.tx.spi.message.params.TxExceptionParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +47,6 @@ public class WriteTxExceptionExecuteService implements RpcExecuteService {
             compensationService.writeTxException(writeTxExceptionReq);
         } catch (SerializerException e) {
             throw new TxManagerException(e);
-        } catch (RpcException ignored) {
         }
         return null;
     }
