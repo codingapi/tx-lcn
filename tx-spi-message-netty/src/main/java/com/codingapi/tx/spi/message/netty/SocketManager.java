@@ -78,10 +78,9 @@ public class SocketManager {
         executorService.schedule(() -> {
             String key = channel.toString();
             appNames.remove(key);
-        }, RpcCmdContext.getInstance().getWaitTime(), TimeUnit.SECONDS);
+        }, attrDelayTime, TimeUnit.SECONDS);
 
     }
-
 
 
     private Channel getChannel(String key) throws RpcException {
