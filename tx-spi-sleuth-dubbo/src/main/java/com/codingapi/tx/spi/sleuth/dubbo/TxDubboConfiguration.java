@@ -1,7 +1,7 @@
 package com.codingapi.tx.spi.sleuth.dubbo;
 
 import com.codingapi.tx.spi.sleuth.listener.SleuthParamListener;
-import com.codingapi.tx.spi.sleuth.dubbo.loadbalance.TXLCNLoadbalance;
+import com.codingapi.tx.spi.sleuth.dubbo.loadbalance.TXLCNLoadBalance;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -31,7 +31,7 @@ public class TxDubboConfiguration {
 
     @PostConstruct
     public void init(){
-        TXLCNLoadbalance.sleuthParamListener = sleuthParamListener;
+        TXLCNLoadBalance.sleuthParamListener = sleuthParamListener;
         log.info("init sleuthParamListener->{}",sleuthParamListener);
     }
 }

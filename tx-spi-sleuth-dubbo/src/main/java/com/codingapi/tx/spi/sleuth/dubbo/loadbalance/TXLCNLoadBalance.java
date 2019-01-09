@@ -18,36 +18,36 @@ import java.util.List;
  * @author ujued
  */
 @Slf4j
-public class TXLCNLoadbalance  {
-
+public class TXLCNLoadBalance {
+    
     public static SleuthParamListener sleuthParamListener;
-
-     static  <T> Invoker<T>  chooseInvoker(List<Invoker<T>> invokers, URL url, Invocation invocation, TxLcnLoadBalance loadBalance){
+    
+    static <T> Invoker<T> chooseInvoker(List<Invoker<T>> invokers, URL url, Invocation invocation, TxLcnLoadBalance loadBalance) {
         String localKey = RpcContext.getContext().getLocalAddressString();
-        List<String> appList =  sleuthParamListener.beforeBalance(localKey);
+        List<String> appList = sleuthParamListener.beforeBalance(localKey);
         Invoker<T> chooseInvoker = null;
-        for(Invoker<T> tInvoker:invokers){
+        for (Invoker<T> tInvoker : invokers) {
             String serverKey = tInvoker.getUrl().getAddress();
-            for(String appKey:appList){
-                if(appKey.equals(serverKey)){
+            for (String appKey : appList) {
+                if (appKey.equals(serverKey)) {
                     chooseInvoker = tInvoker;
                 }
             }
         }
-        if(chooseInvoker==null) {
-            Invoker invoker = loadBalance.select(invokers, url, invocation);
+        if (chooseInvoker == null) {
+            Invoker<T> invoker = loadBalance.select(invokers, url, invocation);
             sleuthParamListener.alfterNewBalance(invoker.getUrl().getAddress());
             return invoker;
-        }else {
+        } else {
             return chooseInvoker;
         }
-
+        
     }
-
-
-    public interface TxLcnLoadBalance{
-
-          <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation);
-
+    
+    @FunctionalInterface
+    public interface TxLcnLoadBalance {
+        
+        <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation);
+        
     }
 }
