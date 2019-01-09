@@ -19,7 +19,7 @@ tx-lcn.manager.concurrent-level=0
 tx-lcn.manager.admin-key=codingapi
 
 # 分布式事务执行总时间（ms）
-tx-lcn.manager.dtx-time=40000
+tx-lcn.manager.dtx-time=36000
 
 # 与TxClient通讯最大等待时间（秒）
 tx-lcn.message.netty.wait-time=5
