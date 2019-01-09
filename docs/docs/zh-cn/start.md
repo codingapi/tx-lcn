@@ -23,6 +23,7 @@
 ### (1) 微服务A
 ```java
 // Micro Service A. As DTX starter
+@Service
 public class ServiceClient {
     private ValueDao valueDao;
     private ServiceB serviceB;
@@ -46,6 +47,7 @@ public class ServiceClient {
 ### (2) 微服务B
 ```java
 // Micro Service D
+@Service
 public class ServiceD {
     private ValueDao valueDao;
     public ServiceD(ValueDao valueDao) {

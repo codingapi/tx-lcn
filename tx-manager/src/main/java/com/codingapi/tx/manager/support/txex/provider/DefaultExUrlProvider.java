@@ -1,6 +1,7 @@
 package com.codingapi.tx.manager.support.txex.provider;
 
 import com.alibaba.fastjson.JSON;
+import com.codingapi.tx.manager.config.TxManagerConfig;
 import com.codingapi.tx.manager.db.domain.TxException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +27,22 @@ public class DefaultExUrlProvider {
 
     private final MailProperties mailProperties;
     private final JavaMailSender javaMailSender;
-
     @Autowired(required = false)
-    public DefaultExUrlProvider() {
-        this.javaMailSender = null;
-        this.mailProperties = null;
+    public DefaultExUrlProvider(TxManagerConfig txManagerConfig) {
+        this(null, null, txManagerConfig);
     }
 
     @Autowired(required = false)
-    public DefaultExUrlProvider(JavaMailSender javaMailSender, MailProperties mailProperties) {
+    public DefaultExUrlProvider(JavaMailSender javaMailSender,
+                                MailProperties mailProperties,
+                                TxManagerConfig txManagerConfig) {
         this.javaMailSender = javaMailSender;
         this.mailProperties = mailProperties;
+        if (Objects.isNull(javaMailSender)) {
+            if (txManagerConfig.getExUrl().contains("ujued@qq.com")) {
+                txManagerConfig.setExUrlEnabled(false);
+            }
+        }
     }
 
     @PostMapping("/provider/email-to/{email}")

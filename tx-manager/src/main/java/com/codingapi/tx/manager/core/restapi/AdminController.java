@@ -1,6 +1,7 @@
 package com.codingapi.tx.manager.core.restapi;
 
 import com.alibaba.fastjson.JSONObject;
+import com.codingapi.tx.commons.exception.TransactionStateException;
 import com.codingapi.tx.commons.exception.TxManagerException;
 import com.codingapi.tx.manager.core.restapi.model.ExceptionList;
 import com.codingapi.tx.manager.core.restapi.model.Token;
@@ -61,7 +62,11 @@ public class AdminController {
     public JSONObject transactionInfo(
             @RequestParam("groupId") String groupId,
             @RequestParam("unitId") String unitId) throws TxManagerException {
-        return txExceptionService.getTransactionInfo(groupId, unitId);
+        try {
+            return txExceptionService.getTransactionInfo(groupId, unitId);
+        } catch (TransactionStateException e) {
+            throw new TxManagerException(e);
+        }
     }
 
     /**

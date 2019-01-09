@@ -2,6 +2,7 @@ package com.codingapi.tx.manager.core.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.tx.commons.exception.SerializerException;
+import com.codingapi.tx.commons.exception.TransactionStateException;
 import com.codingapi.tx.commons.exception.TxManagerException;
 import com.codingapi.tx.commons.util.Transactions;
 import com.codingapi.tx.logger.TxLogger;
@@ -68,6 +69,7 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         txException.setUnitId(writeTxExceptionReq.getUnitId());
         txException.setRegistrar(writeTxExceptionReq.getRegistrar());
         txException.setModId(writeTxExceptionReq.getModId());
+        txException.setExState((short) 0);
         txExceptionMapper.save(txException);
         txExceptionListener.onException(txException);
     }
@@ -110,10 +112,12 @@ public class TxExceptionServiceImpl implements TxExceptionService {
                 try {
                     JSONObject transactionInfo = getTransactionInfo(exceptionInfo.getGroupId(), exceptionInfo.getUnitId());
                     exceptionInfo.setTransactionInfo(transactionInfo);
-                } catch (TxManagerException e) {
-                    // 不存在异常日志，正常
-                    txExceptionMapper.changeExState(txException.getId(), (short) 1);
-                    exceptionInfo.setExState((short) 1);
+                } catch (TransactionStateException e) {
+                    if (e.getCode() == TransactionStateException.NON_ASPECT) {
+                        // 不存在异常日志，正常
+                        txExceptionMapper.changeExState(txException.getId(), (short) 1);
+                        exceptionInfo.setExState((short) 1);
+                    }
                 }
             }
             exceptionInfoList.add(exceptionInfo);
@@ -125,14 +129,14 @@ public class TxExceptionServiceImpl implements TxExceptionService {
     }
 
     @Override
-    public JSONObject getTransactionInfo(String groupId, String unitId) throws TxManagerException {
+    public JSONObject getTransactionInfo(String groupId, String unitId) throws TransactionStateException {
         TxException exception = txExceptionMapper.getByGroupAndUnitId(groupId, unitId);
         if (Objects.isNull(exception)) {
-            throw new TxManagerException("non exists aspect log");
+            throw new TransactionStateException("non exists aspect log", TransactionStateException.NON_ASPECT);
         }
         List<String> modList = rpcClient.moduleList(exception.getModId());
-        if (Objects.isNull(modList)) {
-            throw new TxManagerException("non mod found");
+        if (modList.isEmpty()) {
+            throw new TransactionStateException("non mod found", TransactionStateException.NON_MOD);
         }
         try {
             for (String mod : modList) {
@@ -141,9 +145,9 @@ public class TxExceptionServiceImpl implements TxExceptionService {
                     return messageDto.loadData(JSONObject.class);
                 }
             }
-            throw new TxManagerException("non exists aspect log");
+            throw new TransactionStateException("non exists aspect log", TransactionStateException.NON_ASPECT);
         } catch (RpcException | SerializerException e) {
-            throw new TxManagerException(e);
+            throw new TransactionStateException(e, TransactionStateException.RPC_ERR);
         }
     }
 }
