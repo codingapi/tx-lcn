@@ -1,7 +1,6 @@
 package com.codingapi.tx.manager.core.restapi.model;
 
 import com.alibaba.fastjson.JSONObject;
-import jdk.nashorn.api.scripting.JSObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
