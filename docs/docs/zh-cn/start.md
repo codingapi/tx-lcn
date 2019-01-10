@@ -22,15 +22,10 @@ dubbo pom
 
 ## 二、微服务示例代码
 
-ServiceA 事务发起方   
-ServiceB 事务参与方(被调方)  
-`ServiceA->ServiceB`
+### （1）架构
+![arch](/img/quick_arch.png)  
 
-ServiceA调用ServiceB.rpc(String value)方法   
-`ServiceA=>ServiceB.rpc(String value) `
-
-
-### (1) 微服务A
+### (2) 微服务A
 ```java
 // Micro Service A. As DTX starter
 @Service
@@ -53,7 +48,7 @@ public class ServiceA {
     }
 }
 ```
-### (2) 微服务B
+### (3) 微服务B
 ```java
 // Micro Service D
 @Service
