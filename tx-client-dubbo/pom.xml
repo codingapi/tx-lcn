@@ -8,27 +8,31 @@
         <version>5.0.0.beta</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <packaging>pom</packaging>
 
     <artifactId>tx-client-dubbo</artifactId>
 
+
     <dependencies>
+
+        <dependency>
+            <groupId>com.alibaba.boot</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.zipkin.brave</groupId>
+            <artifactId>brave-instrumentation-dubbo-rpc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>tx-spi-sleuth</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.codingapi.txlcn</groupId>
             <artifactId>tx-client</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>tx-spi-sleuth-dubbo</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>tx-spi-message-netty</artifactId>
-        </dependency>
-
     </dependencies>
-
 </project>

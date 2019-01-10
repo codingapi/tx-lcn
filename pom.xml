@@ -22,8 +22,6 @@
         <module>tx-spi-message</module>
         <module>tx-spi-message-netty</module>
         <module>tx-spi-sleuth</module>
-        <module>tx-spi-sleuth-springcloud</module>
-        <module>tx-spi-sleuth-dubbo</module>
         <module>tx-client-springcloud</module>
         <module>tx-client-dubbo</module>
         <module>tx-manager</module>
