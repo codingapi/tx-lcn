@@ -3,7 +3,7 @@ pages:
  home:
   # 首页配置
   zh-cn:
-   title: '网页标签title'
+   title: 'TX-LCN'
    keywords: '关键词1，关键词2'
    description: '页面内容简介'
   # home config
@@ -14,7 +14,7 @@ pages:
  community:
   # 社区页配置
   zh-cn:
-   title: '网页标签title'
+   title: 'TX-LCN'
    keywords: '关键词1，关键词2'
    description: '页面内容简介'
   # community page config
@@ -25,7 +25,7 @@ pages:
  blog:
   # 博客列表页配置
   zh-cn:
-   title: '网页标签title'
+   title: 'TX-LCN'
    keywords: '关键词1，关键词2'
    description: '页面内容简介'
   en-us:

@@ -17,15 +17,16 @@ export default {
         text: 'DOCS',
         link: '/en-us/docs/preface.html',
       },
-      {
-        key: 'blog',
-        text: 'BLOG',
-        link: '/en-us/blog/index.html',
-      },
+      // {
+      //   key: 'blog',
+      //   text: 'BLOG',
+      //   link: '/en-us/blog/index.html',
+      // },
       {
         key: 'community',
         text: 'COMMUNITY',
-        link: '/en-us/community/index.html',
+        link: 'https://meta.discoursecn.org/',
+        target:'_blank',
       },
     ],
     disclaimer: {
@@ -62,7 +63,7 @@ export default {
         },
       ],
     },
-    copyright: 'Copyright © 2018 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    copyright: 'Copyright © 2018 CodingApi',
   },
   'zh-cn': {
     pageMenu: [
@@ -76,15 +77,16 @@ export default {
         text: '文档',
         link: '/zh-cn/docs/preface.html',
       },
-      {
-        key: 'blog',
-        text: '博客',
-        link: '/zh-cn/blog/index.html',
-      },
+      // {
+      //   key: 'blog',
+      //   text: '博客',
+      //   link: '/zh-cn/blog/index.html',
+      // },
       {
         key: 'community',
         text: '社区',
-        link: '/zh-cn/community/index.html',
+        link: 'https://meta.discoursecn.org/',
+        target:'_blank',
       },
     ],
     disclaimer: {
