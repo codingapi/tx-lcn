@@ -1,6 +1,6 @@
 package com.codingapi.tx.manager.config;
 
-import com.codingapi.tx.spi.message.netty.MessageConfig;
+import com.codingapi.tx.client.springcloud.spi.message.netty.MessageConfig;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

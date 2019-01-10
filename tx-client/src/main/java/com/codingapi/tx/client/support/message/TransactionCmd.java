@@ -1,8 +1,8 @@
 package com.codingapi.tx.client.support.message;
 
 
-import com.codingapi.tx.spi.message.LCNCmdType;
-import com.codingapi.tx.spi.message.dto.MessageDto;
+import com.codingapi.tx.client.springcloud.spi.message.LCNCmdType;
+import com.codingapi.tx.client.springcloud.spi.message.dto.MessageDto;
 import lombok.Data;
 
 /**

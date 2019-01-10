@@ -1,5 +1,8 @@
 package com.codingapi.tx.commons.annotation;
 
+import com.codingapi.tx.commons.util.Transactions;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.lang.annotation.*;
 
 /**
@@ -12,6 +15,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
+@Transactional
 public @interface TccTransaction {
 
 

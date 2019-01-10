@@ -12,4 +12,11 @@
     <artifactId>tx-commons</artifactId>
 
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

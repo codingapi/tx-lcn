@@ -36,7 +36,6 @@ public class DemoServiceImpl implements DemoService {
 
     @Override
     @LcnTransaction
-    @Transactional
     public String execute(String value) {
         String dResp = dDemoClient.rpc(value);
         String eResp = eDemoClient.rpc(value);
