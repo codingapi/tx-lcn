@@ -22,12 +22,12 @@ export default {
       //   text: 'BLOG',
       //   link: '/en-us/blog/index.html',
       // },
-      {
-        key: 'community',
-        text: 'COMMUNITY',
-        link: 'https://meta.discoursecn.org/',
-        target:'_blank',
-      },
+      // {
+      //   key: 'community',
+      //   text: 'COMMUNITY',
+      //   link: 'https://meta.discoursecn.org/',
+      //   target:'_blank',
+      // },
     ],
     disclaimer: {
         title: 'Vision',
@@ -83,12 +83,12 @@ export default {
       //   text: '博客',
       //   link: '/zh-cn/blog/index.html',
       // },
-      {
-        key: 'community',
-        text: '社区',
-          link: 'https://meta.discoursecn.org/',
-          target:'_blank',
-      },
+      // {
+      //   key: 'community',
+      //   text: '社区',
+      //     link: 'https://meta.discoursecn.org/',
+      //     target:'_blank',
+      // },
     ],
     disclaimer: {
         title: '愿景',

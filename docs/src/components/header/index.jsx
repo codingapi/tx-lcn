@@ -126,7 +126,7 @@ class Header extends React.Component {
         }
       >
         <div className="header-body">
-          <a href={getLink(`/${language}/index.html`)}>
+          <a href="http://www.codingapi.com" target="_blank">
             <img className="logo" alt={siteConfig.name} title={siteConfig.name} src={getLink(logo)} />
           </a>
           {
