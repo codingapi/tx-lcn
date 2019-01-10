@@ -36,7 +36,7 @@ public class TXLCNLoadBalance {
         }
         if (chooseInvoker == null) {
             Invoker<T> invoker = loadBalance.select(invokers, url, invocation);
-            sleuthParamListener.alfterNewBalance(invoker.getUrl().getAddress());
+            sleuthParamListener.afterNewBalance(invoker.getUrl().getAddress());
             return invoker;
         } else {
             return chooseInvoker;

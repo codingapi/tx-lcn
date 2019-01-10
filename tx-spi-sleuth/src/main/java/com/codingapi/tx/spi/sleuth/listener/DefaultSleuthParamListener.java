@@ -37,7 +37,7 @@ public class DefaultSleuthParamListener implements SleuthParamListener {
     }
 
     @Override
-    public void alfterNewBalance(String key) {
+    public void afterNewBalance(String key) {
         String oldKey = tracerHelper.getAppList();
         tracerHelper.createAppList(oldKey+","+key);
     }
