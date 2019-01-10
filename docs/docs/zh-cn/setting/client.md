@@ -1,4 +1,4 @@
-# client配置说明
+# TxClient配置说明
 ## 一、application.properties
 ```properties
 # 事务控制切面控制次序
