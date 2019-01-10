@@ -1,8 +1,8 @@
-package com.codingapi.tx.client.spi.transaction.txc.resource.sql.rs;
+package com.codingapi.tx.client.spi.transaction.txc.resource.rs;
 
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.FieldValue;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.ModifiedRecord;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.util.SqlUtils;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.FieldValue;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.ModifiedRecord;
+import com.codingapi.tx.client.spi.transaction.txc.resource.util.SqlUtils;
 import org.apache.commons.dbutils.ResultSetHandler;
 
 import java.sql.ResultSet;

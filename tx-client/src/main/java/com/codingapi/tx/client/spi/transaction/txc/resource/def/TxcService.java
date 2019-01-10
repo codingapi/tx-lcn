@@ -1,6 +1,6 @@
-package com.codingapi.tx.client.spi.transaction.txc.resource.sql.def;
+package com.codingapi.tx.client.spi.transaction.txc.resource.def;
 
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.*;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.*;
 
 import java.sql.SQLException;
 

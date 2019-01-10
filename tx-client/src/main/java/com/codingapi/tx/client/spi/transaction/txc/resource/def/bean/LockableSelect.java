@@ -1,6 +1,6 @@
-package com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean;
+package com.codingapi.tx.client.spi.transaction.txc.resource.def.bean;
 
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.util.SqlUtils;
+import com.codingapi.tx.client.spi.transaction.txc.resource.util.SqlUtils;
 import net.sf.jsqlparser.statement.select.Select;
 import org.springframework.util.StringUtils;
 

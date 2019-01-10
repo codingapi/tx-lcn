@@ -1,4 +1,4 @@
-package com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean;
+package com.codingapi.tx.client.spi.transaction.txc.resource.def.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

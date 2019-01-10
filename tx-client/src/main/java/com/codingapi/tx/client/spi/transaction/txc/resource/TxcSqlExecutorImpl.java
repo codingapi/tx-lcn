@@ -1,10 +1,10 @@
-package com.codingapi.tx.client.spi.transaction.txc.resource.sql;
+package com.codingapi.tx.client.spi.transaction.txc.resource;
 
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.TxcSqlExecutor;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.*;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.rs.UpdateSqlPreDataHandler;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.init.TxcSettingFactory;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.util.SqlUtils;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.TxcSqlExecutor;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.*;
+import com.codingapi.tx.client.spi.transaction.txc.resource.rs.UpdateSqlPreDataHandler;
+import com.codingapi.tx.client.spi.transaction.txc.resource.init.TxcSettingFactory;
+import com.codingapi.tx.client.spi.transaction.txc.resource.util.SqlUtils;
 import com.codingapi.tx.logger.TxLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.*;

@@ -2,8 +2,8 @@ package com.codingapi.tx.client.spi.transaction.txc.control;
 
 import com.codingapi.tx.client.bean.TxTransactionInfo;
 import com.codingapi.tx.client.bean.DTXLocal;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.TxcService;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.RollbackInfo;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.TxcService;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.RollbackInfo;
 import com.codingapi.tx.client.support.separate.TXLCNTransactionControl;
 import com.codingapi.tx.client.support.common.template.TransactionControlTemplate;
 import com.codingapi.tx.commons.exception.BeforeBusinessException;

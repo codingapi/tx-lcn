@@ -1,8 +1,8 @@
-package com.codingapi.tx.client.spi.transaction.txc.resource.sql.util;
+package com.codingapi.tx.client.spi.transaction.txc.resource.util;
 
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.FieldCluster;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.FieldValue;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.ModifiedRecord;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.FieldCluster;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.FieldValue;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.ModifiedRecord;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.util.serializer.SerializerContext;
 

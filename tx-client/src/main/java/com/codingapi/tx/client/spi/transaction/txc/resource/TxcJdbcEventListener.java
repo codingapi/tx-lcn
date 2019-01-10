@@ -1,8 +1,8 @@
-package com.codingapi.tx.client.spi.transaction.txc.resource.sql;
+package com.codingapi.tx.client.spi.transaction.txc.resource;
 
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.SqlExecuteInterceptor;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.LockableSelect;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.init.TxcSettingFactory;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.SqlExecuteInterceptor;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.LockableSelect;
+import com.codingapi.tx.client.spi.transaction.txc.resource.init.TxcSettingFactory;
 import com.codingapi.tx.jdbcproxy.p6spy.common.PreparedStatementInformation;
 import com.codingapi.tx.jdbcproxy.p6spy.common.StatementInformation;
 import com.codingapi.tx.jdbcproxy.p6spy.event.SimpleJdbcEventListener;

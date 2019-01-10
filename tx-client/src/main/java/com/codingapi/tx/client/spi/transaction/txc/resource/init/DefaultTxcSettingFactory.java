@@ -1,4 +1,4 @@
-package com.codingapi.tx.client.spi.transaction.txc.resource.sql.init;
+package com.codingapi.tx.client.spi.transaction.txc.resource.init;
 
 /**
  * Description:

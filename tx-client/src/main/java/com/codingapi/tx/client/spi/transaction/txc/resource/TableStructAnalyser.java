@@ -1,7 +1,7 @@
-package com.codingapi.tx.client.spi.transaction.txc.resource.sql;
+package com.codingapi.tx.client.spi.transaction.txc.resource;
 
 import com.codingapi.tx.client.bean.DTXLocal;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.TableStruct;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.TableStruct;
 import org.apache.commons.dbutils.DbUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
