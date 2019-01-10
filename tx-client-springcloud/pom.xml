@@ -34,5 +34,10 @@
             <artifactId>tx-client</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>tx-spi-message-netty</artifactId>
+        </dependency>
+
     </dependencies>
 </project>
