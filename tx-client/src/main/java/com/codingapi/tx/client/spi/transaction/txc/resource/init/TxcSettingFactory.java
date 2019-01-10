@@ -1,6 +1,6 @@
-package com.codingapi.tx.client.spi.transaction.txc.resource.sql.init;
+package com.codingapi.tx.client.spi.transaction.txc.resource.init;
 
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.util.SqlUtils;
+import com.codingapi.tx.client.spi.transaction.txc.resource.util.SqlUtils;
 
 /**
  * Description:

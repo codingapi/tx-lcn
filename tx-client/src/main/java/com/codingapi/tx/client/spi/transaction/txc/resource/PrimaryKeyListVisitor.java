@@ -1,4 +1,4 @@
-package com.codingapi.tx.client.spi.transaction.txc.resource.sql;
+package com.codingapi.tx.client.spi.transaction.txc.resource;
 
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;

@@ -1,10 +1,10 @@
-package com.codingapi.tx.client.spi.transaction.txc.resource.sql;
+package com.codingapi.tx.client.spi.transaction.txc.resource;
 
 import com.codingapi.tx.client.bean.DTXLocal;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.SqlExecuteInterceptor;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.TxcService;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.*;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.util.SqlUtils;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.SqlExecuteInterceptor;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.TxcService;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.*;
+import com.codingapi.tx.client.spi.transaction.txc.resource.util.SqlUtils;
 import com.codingapi.tx.jdbcproxy.p6spy.common.StatementInformation;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.schema.Column;

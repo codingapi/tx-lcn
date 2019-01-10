@@ -1,7 +1,7 @@
-package com.codingapi.tx.client.spi.transaction.txc.resource.sql.init;
+package com.codingapi.tx.client.spi.transaction.txc.resource.init;
 
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.TableStructAnalyser;
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.TxcSqlExecutor;
+import com.codingapi.tx.client.spi.transaction.txc.resource.TableStructAnalyser;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.TxcSqlExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;

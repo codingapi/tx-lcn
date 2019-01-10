@@ -1,6 +1,6 @@
-package com.codingapi.tx.client.spi.transaction.txc.resource.sql.def;
+package com.codingapi.tx.client.spi.transaction.txc.resource.def;
 
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.bean.LockableSelect;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.LockableSelect;
 import com.codingapi.tx.jdbcproxy.p6spy.common.StatementInformation;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;

@@ -1,6 +1,6 @@
 package com.codingapi.tx.client.spi.message.txc;
 
-import com.codingapi.tx.client.spi.transaction.txc.resource.sql.def.TxcService;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.TxcService;
 import com.codingapi.tx.commons.exception.TransactionClearException;
 import com.codingapi.tx.client.support.common.TransactionCleanService;
 import com.codingapi.tx.logger.TxLogger;
