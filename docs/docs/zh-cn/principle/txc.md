@@ -50,14 +50,4 @@ public interface TxcSettingFactory {
      */
     String lockTableSql();
 
-    /**
-     * 撤销日志表创建SQL
-     *
-     * @return
-     */
-    String undoLogTableSql();
-}
-
-
-``` 
-
+// todo 
