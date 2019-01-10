@@ -26,8 +26,6 @@ tx-manager:TXLCN事务管理器
 tx-spi-rpc:rpc扩展接口   
 tx-spi-rpc-netty:rpc netty实现  
 tx-spi-sleuth:sleuth扩展接口   
-tx-spi-sleuth-dubbo:sleuth-dubbo实现   
-tx-spi-sleuth-springcloud:sleuth-springcloud实现   
 
 
 
