@@ -91,7 +91,7 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
                         // 提交/回滚失败的消息处理
                         log.error("unit business exception.");
                         rpcExceptionHandler.handleNotifyUnitBusinessException(
-                                Arrays.asList(notifyUnitParams, transactionCmd.getRemoteKey()),
+                                Arrays.asList(notifyUnitParams, transUnit.getRemoteKey()),
                                 SerializerContext.getInstance().deSerialize(respMsg.getBytes(), Throwable.class));
                     }
 
@@ -101,7 +101,7 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
                     // 提交/回滚通讯失败
                     log.error("unit message exception.");
                     rpcExceptionHandler.handleNotifyUnitMessageException(
-                            Arrays.asList(notifyUnitParams, transactionCmd.getRemoteKey()), e);
+                            Arrays.asList(notifyUnitParams, transUnit.getRemoteKey()), e);
                 }
             }
         } catch (SerializerException e) {
