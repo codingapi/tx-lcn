@@ -1,4 +1,4 @@
-# manager配置说明
+# TxManager配置说明
 
 ## application.properties
 ```properties
