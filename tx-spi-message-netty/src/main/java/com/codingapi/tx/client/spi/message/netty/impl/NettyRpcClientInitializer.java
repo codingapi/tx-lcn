@@ -55,16 +55,13 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
 
     @Override
     public synchronized void connect(SocketAddress socketAddress) {
-
         boolean connected = false;
-
         for (int i = 0; i < rpcConfig.getReconnectCount(); i++) {
-
             if (SocketManager.getInstance().noConnect(socketAddress)) {
                 try {
                     log.warn("current manager size:{}", SocketManager.getInstance().currentSize());
 
-                    log.info(" try connect {} ", socketAddress);
+                    log.info("try reconnect {} - {}", socketAddress, i + 1);
                     Bootstrap b = new Bootstrap();
                     b.group(workerGroup);
                     b.channel(NioSocketChannel.class);
@@ -77,18 +74,17 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
                     break;
 
                 } catch (Exception e) {
-                    log.error("netty connection error", e);
+                    log.warn("reconnect fail. will latter try again.");
                     try {
                         Thread.sleep(1000 * rpcConfig.getReconnectDelay());
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }
-                    log.info("netty will wait then  try connection. ");
                 }
             }
         }
         if (!connected) {
-            log.warn("netty connection fail , address is {}", socketAddress);
+            log.warn("finally, netty connection fail , address is {}", socketAddress);
         }
     }
 

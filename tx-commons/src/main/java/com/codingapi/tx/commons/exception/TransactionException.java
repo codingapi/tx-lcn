@@ -1,7 +1,7 @@
-package com.codingapi.tx.manager.core.ex;
+package com.codingapi.tx.commons.exception;
 
 /**
- * Description:
+ * Description: 事务异常
  * Date: 19-1-11 下午6:16
  *
  * @author ujued

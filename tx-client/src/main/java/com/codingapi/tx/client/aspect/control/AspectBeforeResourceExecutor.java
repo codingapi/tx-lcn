@@ -33,7 +33,7 @@ public class AspectBeforeResourceExecutor {
                 try {
                     return (Connection) point.proceed();
                 } catch (Throwable throwable) {
-                    throw new RuntimeException(throwable);
+                    throw new IllegalStateException(throwable);
                 }
             });
             log.info("proxy a sql connection: {}.", connection);

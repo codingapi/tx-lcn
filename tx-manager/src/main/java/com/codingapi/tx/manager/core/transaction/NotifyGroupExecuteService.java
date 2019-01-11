@@ -6,8 +6,9 @@ import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TxManagerException;
 import com.codingapi.tx.commons.util.Transactions;
 import com.codingapi.tx.logger.TxLogger;
-import com.codingapi.tx.manager.core.GroupTransaction;
-import com.codingapi.tx.manager.core.TransactionManager;
+import com.codingapi.tx.manager.core.context.DTXTransaction;
+import com.codingapi.tx.manager.core.context.TransactionManager;
+import com.codingapi.tx.manager.core.context.DTXTransactionContext;
 import com.codingapi.tx.manager.core.message.RpcExecuteService;
 import com.codingapi.tx.manager.core.message.TransactionCmd;
 import lombok.extern.slf4j.Slf4j;
@@ -28,34 +29,42 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
 
     private final TransactionManager transactionManager;
 
+    private final DTXTransactionContext transactionContext;
+
     @Autowired
-    public NotifyGroupExecuteService(TxLogger txLogger, TransactionManager transactionManager) {
+    public NotifyGroupExecuteService(TxLogger txLogger, TransactionManager transactionManager, DTXTransactionContext transactionContext) {
         this.txLogger = txLogger;
         this.transactionManager = transactionManager;
+        this.transactionContext = transactionContext;
     }
 
     @Override
     public Object execute(TransactionCmd transactionCmd) throws TxManagerException {
+        DTXTransaction dtxTransaction = transactionContext.getTransaction(transactionCmd.getGroupId());
         try {
             // 解析参数
             NotifyGroupParams notifyGroupParams = transactionCmd.getMsg().loadData(NotifyGroupParams.class);
             log.debug("notify group params: {}", JSON.toJSONString(notifyGroupParams));
 
+            // 系统日志
             txLogger.trace(
                     transactionCmd.getGroupId(), "",
                     Transactions.TAG_TRANSACTION, "notify group " + notifyGroupParams.getState());
 
             if (notifyGroupParams.getState() == 1) {
-                transactionManager.commit(new GroupTransaction(transactionCmd.getGroupId()));
+                transactionManager.commit(dtxTransaction);
+                return null;
             } else if (notifyGroupParams.getState() == 0) {
-                transactionManager.rollback(new GroupTransaction(transactionCmd.getGroupId()));
+                transactionManager.rollback(dtxTransaction);
+                return null;
             }
-
-            // ignore
+            log.error("ignored transaction state:{}", notifyGroupParams.getState());
         } catch (SerializerException e) {
             throw new TxManagerException(e.getMessage());
         } finally {
-            transactionManager.close(new GroupTransaction(transactionCmd.getGroupId()));
+            transactionManager.close(dtxTransaction);
+
+            // 系统日志
             txLogger.trace(transactionCmd.getGroupId(), "", Transactions.TAG_TRANSACTION, "notify group over");
         }
         return null;

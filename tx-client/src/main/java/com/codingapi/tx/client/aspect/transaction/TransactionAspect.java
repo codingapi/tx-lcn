@@ -67,7 +67,7 @@ public class TransactionAspect implements Ordered {
         DTXInfo dtxInfo = DTXInfoPool.get(point);
         TxTransaction txTransaction = dtxInfo.getBusinessMethod().getAnnotation(TxTransaction.class);
         dtxInfo.setTransactionType(txTransaction.type());
-        dtxInfo.setTransactionPropagation(txTransaction.propagation());
+        dtxInfo.setTransactionPropagation(txTransaction.dtxp());
         return aspectBeforeServiceExecutor.runTransaction(dtxInfo, point::proceed);
     }
 
@@ -77,7 +77,7 @@ public class TransactionAspect implements Ordered {
         DTXInfo dtxInfo = DTXInfoPool.get(point);
         LcnTransaction lcnTransaction = dtxInfo.getBusinessMethod().getAnnotation(LcnTransaction.class);
         dtxInfo.setTransactionType(Transactions.LCN);
-        dtxInfo.setTransactionPropagation(lcnTransaction.propagation());
+        dtxInfo.setTransactionPropagation(lcnTransaction.dtxp());
         return aspectBeforeServiceExecutor.runTransaction(dtxInfo, point::proceed);
     }
 
@@ -87,7 +87,7 @@ public class TransactionAspect implements Ordered {
         DTXInfo dtxInfo = DTXInfoPool.get(point);
         TxcTransaction txcTransaction = dtxInfo.getBusinessMethod().getAnnotation(TxcTransaction.class);
         dtxInfo.setTransactionType(Transactions.TXC);
-        dtxInfo.setTransactionPropagation(txcTransaction.propagation());
+        dtxInfo.setTransactionPropagation(txcTransaction.dtxp());
         return aspectBeforeServiceExecutor.runTransaction(dtxInfo, point::proceed);
     }
 
@@ -97,7 +97,7 @@ public class TransactionAspect implements Ordered {
         DTXInfo dtxInfo = DTXInfoPool.get(point);
         TccTransaction tccTransaction = dtxInfo.getBusinessMethod().getAnnotation(TccTransaction.class);
         dtxInfo.setTransactionType(Transactions.TCC);
-        dtxInfo.setTransactionPropagation(tccTransaction.propagation());
+        dtxInfo.setTransactionPropagation(tccTransaction.dtxp());
         return aspectBeforeServiceExecutor.runTransaction(dtxInfo, point::proceed);
     }
 

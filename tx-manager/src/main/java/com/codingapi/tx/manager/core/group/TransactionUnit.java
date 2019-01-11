@@ -1,8 +1,8 @@
-package com.codingapi.tx.manager.core;
+package com.codingapi.tx.manager.core.group;
 
 /**
  * Description:
- * Date: 19-1-11 下午6:09
+ * Date: 19-1-9 下午6:09
  *
  * @author ujued
  */

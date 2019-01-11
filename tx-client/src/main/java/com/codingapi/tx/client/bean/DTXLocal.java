@@ -127,7 +127,7 @@ public class DTXLocal {
      */
     public static void makeNeverAppeared() {
         if (currentLocal.get() != null) {
-            log.info("clean thread local[{}]: {}", DTXLocal.class.getSimpleName(), cur());
+            log.debug("clean thread local[{}]: {}", DTXLocal.class.getSimpleName(), cur());
             currentLocal.set(null);
         }
     }

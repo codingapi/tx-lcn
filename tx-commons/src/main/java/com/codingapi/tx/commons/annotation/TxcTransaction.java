@@ -1,7 +1,5 @@
 package com.codingapi.tx.commons.annotation;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import java.lang.annotation.*;
 
 /**
@@ -14,11 +12,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@Transactional
 public @interface TxcTransaction {
 
     /**
-     * 资源锁定时等待时间，默认不等待。（可能会在下一个版本实现）
+     * 资源锁定时等待时间，默认不等待。（可能会在下一个小版本实现）
      *
      * @return 等待时间
      */
@@ -30,5 +27,5 @@ public @interface TxcTransaction {
      * @return 传播行为
      * @see DTXPropagation
      */
-    DTXPropagation propagation() default DTXPropagation.REQUIRED;
+    DTXPropagation dtxp() default DTXPropagation.REQUIRED;
 }

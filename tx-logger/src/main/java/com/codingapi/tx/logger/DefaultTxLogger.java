@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -63,7 +64,7 @@ public class DefaultTxLogger implements TxLogger {
             txLog.setContent(content);
             txLog.setGroupId(groupId);
             txLog.setTag(tag);
-            txLog.setUnitId(unitId);
+            txLog.setUnitId(Objects.isNull(unitId) ? "" : unitId);
             txLog.setAppName(appName);
             txLog.setCreateTime(getTime());
             log.debug("txLoggerInfoEvent->{}", txLog);

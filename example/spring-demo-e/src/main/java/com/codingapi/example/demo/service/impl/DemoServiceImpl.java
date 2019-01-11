@@ -33,7 +33,7 @@ public class DemoServiceImpl implements DemoService {
     private String appName;
 
     @Override
-    @TccTransaction(propagation = DTXPropagation.SUPPORTS)
+    @TccTransaction(dtxp = DTXPropagation.SUPPORTS)
     public String rpc(String value) {
         Demo demo = new Demo();
         demo.setDemoField(value);
