@@ -3,8 +3,8 @@ package com.codingapi.tx.manager.db.redis;
 import com.alibaba.fastjson.JSON;
 import com.codingapi.tx.commons.exception.JoinGroupException;
 import com.codingapi.tx.manager.config.TxManagerConfig;
-import com.codingapi.tx.manager.support.group.GroupRelationship;
-import com.codingapi.tx.manager.support.group.TransUnit;
+import com.codingapi.tx.manager.core.group.GroupRelationship;
+import com.codingapi.tx.manager.core.group.TransUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -80,7 +80,7 @@ public class RedisGroupRelationship implements GroupRelationship {
     }
 
     @Override
-    public void setTransactionState(String groupId, Short state) {
+    public void setTransactionState(String groupId, int state) {
         redisTemplate.opsForValue().set(REDIS_GROUP_STATE + groupId, String.valueOf(state));
         redisTemplate.expire(REDIS_GROUP_STATE + groupId, managerConfig.getDtxTime() + 10000, TimeUnit.MILLISECONDS);
     }
