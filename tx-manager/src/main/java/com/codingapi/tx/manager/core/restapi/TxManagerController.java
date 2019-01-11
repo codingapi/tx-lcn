@@ -1,8 +1,8 @@
 package com.codingapi.tx.manager.core.restapi;
 
-import com.codingapi.tx.spi.message.params.NotifyConnectParams;
+import com.codingapi.tx.client.springcloud.spi.message.params.NotifyConnectParams;
 import com.codingapi.tx.manager.core.service.ManagerService;
-import com.codingapi.tx.spi.message.exception.RpcException;
+import com.codingapi.tx.client.springcloud.spi.message.exception.RpcException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

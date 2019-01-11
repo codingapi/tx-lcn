@@ -11,7 +11,7 @@ import com.codingapi.tx.manager.core.restapi.model.DTXInfo;
 import com.codingapi.tx.manager.core.restapi.model.TxManagerLog;
 import com.codingapi.tx.manager.core.restapi.model.TxLogList;
 import com.codingapi.tx.manager.core.restapi.model.TxManagerInfo;
-import com.codingapi.tx.spi.message.RpcClient;
+import com.codingapi.tx.client.springcloud.spi.message.RpcClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

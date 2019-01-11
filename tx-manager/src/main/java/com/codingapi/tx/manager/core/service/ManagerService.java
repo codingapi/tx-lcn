@@ -1,7 +1,7 @@
 package com.codingapi.tx.manager.core.service;
 
-import com.codingapi.tx.spi.message.params.NotifyConnectParams;
-import com.codingapi.tx.spi.message.exception.RpcException;
+import com.codingapi.tx.client.springcloud.spi.message.params.NotifyConnectParams;
+import com.codingapi.tx.client.springcloud.spi.message.exception.RpcException;
 
 /**
  * Description:

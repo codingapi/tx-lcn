@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.codingapi.tx.spi.sleuth.TxSleuthApiConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.codingapi.tx.client.springcloud.spi.sleuth.TxSleuthApiConfiguration

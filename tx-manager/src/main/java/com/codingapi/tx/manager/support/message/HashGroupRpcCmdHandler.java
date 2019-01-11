@@ -2,7 +2,7 @@ package com.codingapi.tx.manager.support.message;
 
 import com.codingapi.tx.manager.config.TxManagerConfig;
 import com.codingapi.tx.manager.support.ManagerRpcBeanHelper;
-import com.codingapi.tx.spi.message.dto.RpcCmd;
+import com.codingapi.tx.client.springcloud.spi.message.dto.RpcCmd;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -33,6 +33,7 @@ class Footer extends React.Component {
                 }
               </dl>
             </div>
+           
             <div className="col col-6">
             <dl>
             <dt>{dataSource.resources.title}</dt>

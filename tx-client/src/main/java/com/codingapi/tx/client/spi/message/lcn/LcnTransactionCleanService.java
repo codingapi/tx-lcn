@@ -4,7 +4,7 @@ import com.codingapi.tx.client.spi.transaction.lcn.resource.LCNConnectionProxy;
 import com.codingapi.tx.commons.exception.TransactionClearException;
 import com.codingapi.tx.client.support.common.cache.TransactionAttachmentCache;
 import com.codingapi.tx.client.support.common.TransactionCleanService;
-import com.codingapi.tx.spi.message.dto.RpcResponseState;
+import com.codingapi.tx.client.springcloud.spi.message.dto.RpcResponseState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
