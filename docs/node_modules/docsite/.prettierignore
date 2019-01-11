@@ -1,0 +1,3 @@
+**/*.md
+**/*.svg
+package.json

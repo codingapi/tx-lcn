@@ -1,6 +1,11 @@
 package com.codingapi.tx.commons.annotation;
 
+<<<<<<< HEAD
 import com.codingapi.tx.commons.util.DTXFunctions;
+=======
+import com.codingapi.tx.commons.util.Transactions;
+import org.springframework.transaction.annotation.Transactional;
+>>>>>>> 4a50e1937323b1e4422f87687c88cc6401007275
 
 import java.lang.annotation.*;
 
@@ -14,6 +19,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
+@Transactional
 public @interface TccTransaction {
 
     /**
