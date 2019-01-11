@@ -1,6 +1,6 @@
 package com.codingapi.tx.manager.support;
 
-import com.codingapi.tx.client.springcloud.spi.message.params.NotifyConnectParams;
+import com.codingapi.tx.client.spi.message.params.NotifyConnectParams;
 import com.codingapi.tx.manager.config.TxManagerConfig;
 import com.codingapi.tx.manager.db.ManagerStorage;
 import lombok.extern.slf4j.Slf4j;

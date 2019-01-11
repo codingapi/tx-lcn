@@ -1,10 +1,10 @@
 package com.codingapi.tx.manager.core.service.impl;
 
-import com.codingapi.tx.client.springcloud.spi.message.params.NotifyConnectParams;
+import com.codingapi.tx.client.spi.message.params.NotifyConnectParams;
 import com.codingapi.tx.manager.core.service.ManagerService;
 import com.codingapi.tx.manager.support.message.MessageCreator;
-import com.codingapi.tx.client.springcloud.spi.message.RpcClient;
-import com.codingapi.tx.client.springcloud.spi.message.exception.RpcException;
+import com.codingapi.tx.client.spi.message.RpcClient;
+import com.codingapi.tx.client.spi.message.exception.RpcException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

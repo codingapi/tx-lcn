@@ -2,15 +2,10 @@ package com.codingapi.tx.client.aspect.transaction;
 
 import com.codingapi.tx.client.bean.DTXInfo;
 import com.codingapi.tx.client.bean.DTXLocal;
-<<<<<<< HEAD
-=======
-import com.codingapi.tx.client.springcloud.spi.sleuth.TracerHelper;
-import com.codingapi.tx.commons.annotation.TxTransaction;
->>>>>>> 4a50e1937323b1e4422f87687c88cc6401007275
 import com.codingapi.tx.client.bean.TxTransactionInfo;
+import com.codingapi.tx.client.spi.sleuth.TracerHelper;
 import com.codingapi.tx.client.support.separate.TXLCNTransactionServiceExecutor;
 import com.codingapi.tx.commons.util.RandomUtils;
-import com.codingapi.tx.spi.sleuth.TracerHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -62,7 +57,7 @@ public class AspectBeforeServiceExecutor {
                 unitId,
                 dtxInfo.getTransactionInfo(),
                 business,
-                dtxInfo.getBusinessMethod());
+                dtxInfo.getBusinessMethod(), dtxInfo.getTransactionFunc());
 
         //LCN事务处理器
         try {

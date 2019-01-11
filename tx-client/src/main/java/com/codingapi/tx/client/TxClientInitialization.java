@@ -1,8 +1,8 @@
 package com.codingapi.tx.client;
 
 import com.codingapi.tx.client.config.TxClientConfig;
-import com.codingapi.tx.client.springcloud.spi.message.RpcClientInitializer;
-import com.codingapi.tx.client.springcloud.spi.message.dto.TxManagerHost;
+import com.codingapi.tx.client.spi.message.RpcClientInitializer;
+import com.codingapi.tx.client.spi.message.dto.TxManagerHost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

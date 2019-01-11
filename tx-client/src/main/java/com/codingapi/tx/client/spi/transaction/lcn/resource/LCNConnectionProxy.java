@@ -1,6 +1,6 @@
 package com.codingapi.tx.client.spi.transaction.lcn.resource;
 
-import com.codingapi.tx.client.springcloud.spi.message.dto.RpcResponseState;
+import com.codingapi.tx.client.spi.message.dto.RpcResponseState;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;

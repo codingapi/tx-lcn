@@ -3,7 +3,7 @@ package com.codingapi.tx.manager.spi.message;
 import com.codingapi.tx.commons.exception.JoinGroupException;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TxManagerException;
-import com.codingapi.tx.client.springcloud.spi.message.params.JoinGroupParams;
+import com.codingapi.tx.client.spi.message.params.JoinGroupParams;
 import com.codingapi.tx.logger.TxLogger;
 import com.codingapi.tx.manager.support.group.GroupRelationship;
 import com.codingapi.tx.manager.support.group.TransUnit;

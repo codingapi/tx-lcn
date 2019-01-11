@@ -9,7 +9,7 @@
 
 主要实现6个接口，其中下面4个是由tx-spi-message的实现方提供:
 
-* 发起请求调用客户端 `com.codingapi.tx.client.springcloud.spi.message.RpcClient`
+* 发起请求调用客户端 `RpcClient`
 
 ```
 public abstract class RpcClient {
@@ -99,7 +99,7 @@ public abstract class RpcClient {
 }
 ```
 
-* 发起请求调用客户端初始化接口 `com.codingapi.tx.client.springcloud.spi.message.RpcClientInitializer` 
+* 发起请求调用客户端初始化接口 `RpcClientInitializer` 
 
 ```
 public interface RpcClientInitializer {
@@ -121,7 +121,7 @@ public interface RpcClientInitializer {
 
 ```
 
-* TxManager message初始化接口 `com.codingapi.tx.client.springcloud.spi.message.RpcServerInitializer`
+* TxManager message初始化接口 `RpcServerInitializer`
 
 ```
 public interface RpcServerInitializer {
@@ -138,7 +138,7 @@ public interface RpcServerInitializer {
 
 ```
 
-* 客户端请求TxManager的负载策略 `com.codingapi.tx.client.springcloud.spi.message.loadbalance.RpcLoadBalance`
+* 客户端请求TxManager的负载策略 `RpcLoadBalance`
 
 ```
 public interface RpcLoadBalance {
@@ -158,7 +158,7 @@ public interface RpcLoadBalance {
 
 下面两个用于Tx-Manager与Tx-Client的回调业务
 
-`com.codingapi.tx.client.springcloud.spi.message.RpcAnswer`接口 Tx-Manager与Tx-Client都会实现用于接受响应数据。
+`RpcAnswer`接口 Tx-Manager与Tx-Client都会实现用于接受响应数据。
 
 
 ```
@@ -175,7 +175,7 @@ public interface RpcAnswer {
 
 ```
 
-`com.codingapi.tx.client.springcloud.spi.message.ClientInitCallBack` 接口，用于Tx-Manager下需要处理客户端与TxManager建立连接的初始化回调业务。
+`ClientInitCallBack` 接口，用于Tx-Manager下需要处理客户端与TxManager建立连接的初始化回调业务。
 
 
 ```

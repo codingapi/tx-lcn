@@ -9,7 +9,7 @@ import com.codingapi.tx.commons.bean.TransactionInfo;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TxClientException;
 import com.codingapi.tx.commons.util.serializer.SerializerContext;
-import com.codingapi.tx.client.springcloud.spi.message.params.GetAspectLogParams;
+import com.codingapi.tx.client.spi.message.params.GetAspectLogParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
