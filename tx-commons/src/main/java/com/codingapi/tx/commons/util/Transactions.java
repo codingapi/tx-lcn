@@ -26,7 +26,6 @@ public class Transactions {
 
     public static final String TAG_COMPENSATION = "compensation";
 
-
     /////////// 工具方法  ////////////////////////////////////////////
 
     /**

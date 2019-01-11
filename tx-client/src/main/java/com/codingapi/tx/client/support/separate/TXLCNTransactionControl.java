@@ -16,7 +16,7 @@ public interface TXLCNTransactionControl {
      *
      * @param info
      */
-    default void preBusinessCode(TxTransactionInfo info)throws BeforeBusinessException {
+    default void preBusinessCode(TxTransactionInfo info) throws BeforeBusinessException {
 
     }
 
@@ -27,7 +27,7 @@ public interface TXLCNTransactionControl {
      * @throws Throwable
      */
     default Object doBusinessCode(TxTransactionInfo info) throws Throwable {
-        return info.getJoinPoint().proceed();
+        return info.getBusinessSupplier().get();
     }
 
 
@@ -55,7 +55,7 @@ public interface TXLCNTransactionControl {
      *
      * @param info
      */
-    default void postBusinessCode(TxTransactionInfo info){
+    default void postBusinessCode(TxTransactionInfo info) {
 
     }
 }

@@ -84,9 +84,7 @@ public class SocketManager {
 
 
     private Channel getChannel(String key) throws RpcException {
-        Iterator<Channel> iterator = channels.iterator();
-        while (iterator.hasNext()) {
-            Channel channel = iterator.next();
+        for (Channel channel : channels) {
             String val = channel.remoteAddress().toString();
             if (key.equals(val)) {
                 return channel;

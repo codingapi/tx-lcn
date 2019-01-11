@@ -1,6 +1,6 @@
 package com.codingapi.tx.manager.config;
 
-import com.codingapi.tx.spi.message.netty.MessageConfig;
+import com.codingapi.tx.spi.message.RpcConfig;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -12,16 +12,16 @@ import org.springframework.context.annotation.Configuration;
  * @author ujued
  */
 @Configuration
-public class NettyMessageConfig implements InitializingBean {
+public class MyRpcConfig implements InitializingBean {
 
     @Autowired
-    private MessageConfig messageConfig;
+    private RpcConfig rpcConfig;
 
     @Autowired
     private TxManagerConfig managerConfig;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        messageConfig.setAttrDelayTime(managerConfig.getDtxTime() / 1000);
+    public void afterPropertiesSet() {
+        rpcConfig.setAttrDelayTime(managerConfig.getDtxTime() / 1000);
     }
 }

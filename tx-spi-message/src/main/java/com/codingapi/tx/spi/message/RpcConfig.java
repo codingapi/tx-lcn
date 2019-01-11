@@ -1,4 +1,4 @@
-package com.codingapi.tx.spi.message.netty;
+package com.codingapi.tx.spi.message;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @Data
-public class MessageConfig {
+public class RpcConfig {
     /**
      * 最大等待时间 单位:(s)
      */
@@ -26,5 +26,15 @@ public class MessageConfig {
      * appName 参数延迟删除时间 单位：(s)
      */
     private int attrDelayTime = 10;
+
+    /**
+     * 断线重连次数
+     */
+    private int reconnectCount = 5;
+
+    /**
+     * 重连延迟时间 （s）
+     */
+    private int reconnectDelay = 10;
 
 }

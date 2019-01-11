@@ -1,21 +1,14 @@
 package com.codingapi.tx.client.aspect.transaction;
 
+import com.codingapi.tx.client.bean.DTXInfo;
 import com.codingapi.tx.client.bean.DTXLocal;
-import com.codingapi.tx.spi.sleuth.TracerHelper;
-import com.codingapi.tx.commons.annotation.TxTransaction;
 import com.codingapi.tx.client.bean.TxTransactionInfo;
 import com.codingapi.tx.client.support.separate.TXLCNTransactionServiceExecutor;
-import com.codingapi.tx.commons.util.Transactions;
-import com.codingapi.tx.commons.bean.TransactionInfo;
 import com.codingapi.tx.commons.util.RandomUtils;
+import com.codingapi.tx.spi.sleuth.TracerHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.lang.reflect.Method;
-import java.util.Objects;
 
 /**
  * Description:
@@ -39,34 +32,14 @@ public class AspectBeforeServiceExecutor {
         this.transactionServiceExecutor = transactionServiceExecutor;
     }
 
-    Object runTransaction(String transactionType, ProceedingJoinPoint point) throws Throwable {
+    Object runTransaction(DTXInfo dtxInfo, BusinessSupplier business) throws Throwable {
         log.info("TX-LCN local start---->");
-        // build TransactionInfo 获取切面方法参数
-        MethodSignature signature = (MethodSignature) point.getSignature();
-        Method method = signature.getMethod();
-        Class<?> clazz = point.getTarget().getClass();
-        Object[] parameters = point.getArgs();
-        Method thisMethod = clazz.getMethod(method.getName(), method.getParameterTypes());
-
-        if (Objects.isNull(transactionType)){
-            TxTransaction transaction = thisMethod.getAnnotation(TxTransaction.class);
-            assert Objects.nonNull(transaction);
-            transactionType = transaction.type();
-        }
-
-        TransactionInfo transactionInfo = new TransactionInfo(clazz,
-                thisMethod.getName(),
-                thisMethod.toString(),
-                parameters,
-                method.getParameterTypes());
-
         // 事务发起方判断
         boolean isTransactionStart = tracerHelper.getGroupId() == null;
 
-
         // 该线程事务
         String groupId = isTransactionStart ? RandomUtils.randomKey() : tracerHelper.getGroupId();
-        String unitId = Transactions.unitId(transactionInfo.getMethodStr());
+        String unitId = dtxInfo.getUnitId();
         DTXLocal dtxLocal = DTXLocal.getOrNew();
         if (dtxLocal.getUnitId() != null) {
             dtxLocal.setInUnit(true);
@@ -74,17 +47,17 @@ public class AspectBeforeServiceExecutor {
         }
         dtxLocal.setUnitId(unitId);
         dtxLocal.setGroupId(groupId);
-        dtxLocal.setTransactionType(transactionType);
+        dtxLocal.setTransactionType(dtxInfo.getTransactionType());
 
         // 事务参数
         TxTransactionInfo info = new TxTransactionInfo(
-                transactionType,
+                dtxInfo.getTransactionType(),
                 isTransactionStart,
                 groupId,
                 unitId,
-                transactionInfo,
-                point,
-                thisMethod);
+                dtxInfo.getTransactionInfo(),
+                business,
+                dtxInfo.getBusinessMethod());
 
         //LCN事务处理器
         try {

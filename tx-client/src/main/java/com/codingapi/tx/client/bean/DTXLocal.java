@@ -4,6 +4,8 @@ package com.codingapi.tx.client.bean;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Optional;
+
 /**
  * 分布式事务远程调用控制对象
  * Created by lorne on 2017/6/5.
@@ -95,7 +97,7 @@ public class DTXLocal {
      * 设置代理资源
      */
     public static void makeProxy() {
-        if (cur() != null) {
+        if (currentLocal.get() != null) {
             cur().proxyTmp = cur().proxy;
             cur().proxy = true;
         }
@@ -105,7 +107,7 @@ public class DTXLocal {
      * 设置不代理资源
      */
     public static void makeUnProxy() {
-        if (cur() != null) {
+        if (currentLocal.get() != null) {
             cur().proxyTmp = cur().proxy;
             cur().proxy = false;
         }
@@ -115,7 +117,7 @@ public class DTXLocal {
      * 撤销到上一步的资源代理状态
      */
     public static void undoProxyStatus() {
-        if (cur() != null) {
+        if (currentLocal.get() != null) {
             cur().proxy = cur().proxyTmp;
         }
     }

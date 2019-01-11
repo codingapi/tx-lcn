@@ -1,5 +1,6 @@
 package com.codingapi.tx.commons.annotation;
 
+import com.codingapi.tx.commons.util.DTXFunctions;
 import com.codingapi.tx.commons.util.Transactions;
 
 import java.lang.annotation.*;
@@ -13,14 +14,20 @@ import java.lang.annotation.*;
 @Documented
 public @interface TxTransaction {
 
-    
+
     /**
      * 事务模式 transaction type
      *
-     * @see com.codingapi.tx.commons.util.Transactions
-     * @return lcn,tcc,txc
+     * @return lcn, tcc, txc
+     * @see Transactions
      */
     String type() default Transactions.LCN;
-    
-    
+
+    /**
+     * 事务单元职责
+     *
+     * @return 功能代号
+     * @see DTXFunctions
+     */
+    int func() default DTXFunctions.CREATE_OR_JOIN;
 }

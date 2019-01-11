@@ -2,6 +2,7 @@ package com.codingapi.tx.spi.message.netty.impl;
 
 import com.codingapi.tx.spi.message.RpcClientInitializer;
 import com.codingapi.tx.spi.message.dto.TxManagerHost;
+import com.codingapi.tx.spi.message.RpcConfig;
 import com.codingapi.tx.spi.message.netty.SocketManager;
 import com.codingapi.tx.spi.message.netty.em.NettyType;
 import com.codingapi.tx.spi.message.netty.handler.NettyRpcClientHandlerInitHandler;
@@ -16,10 +17,10 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Description:
@@ -36,6 +37,9 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
     @Autowired
     private NettyRpcClientHandlerInitHandler nettyRpcClientHandlerInitHandler;
 
+    @Autowired
+    private RpcConfig rpcConfig;
+
     private EventLoopGroup workerGroup;
 
 
@@ -44,35 +48,35 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
         NettyContext.type = NettyType.client;
         NettyContext.params = hosts;
         workerGroup = new NioEventLoopGroup();
-        for(TxManagerHost host:hosts){
-            connect(new InetSocketAddress(host.getHost(),host.getPort()));
+        for (TxManagerHost host : hosts) {
+            connect(new InetSocketAddress(host.getHost(), host.getPort()));
         }
     }
 
 
     @Override
-    public synchronized void connect(SocketAddress socketAddress){
-        if(SocketManager.getInstance().noConnect(socketAddress)) {
-            try {
-                log.info(" try connect {} ",socketAddress);
-                Bootstrap b = new Bootstrap();
-                b.group(workerGroup);
-                b.channel(NioSocketChannel.class);
-                b.option(ChannelOption.SO_KEEPALIVE, true);
-                b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
-                b.handler(nettyRpcClientHandlerInitHandler);
-                ChannelFuture channelFuture = b.connect(socketAddress).syncUninterruptibly();
-                log.info("client -> {} , state:{}", socketAddress, channelFuture.isSuccess());
-            } catch (Exception e) {
-
-                if (e instanceof ConnectException) {
+    public synchronized void connect(SocketAddress socketAddress) {
+        int reconnect = rpcConfig.getReconnectCount();
+        while (true) {
+            if (SocketManager.getInstance().noConnect(socketAddress) && reconnect >= 0) {
+                try {
+                    log.info("try reconnect {} [{}]", socketAddress, rpcConfig.getReconnectCount() - reconnect + 1);
+                    Bootstrap b = new Bootstrap();
+                    b.group(workerGroup);
+                    b.channel(NioSocketChannel.class);
+                    b.option(ChannelOption.SO_KEEPALIVE, true);
+                    b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
+                    b.handler(nettyRpcClientHandlerInitHandler);
+                    ChannelFuture channelFuture = b.connect(socketAddress).syncUninterruptibly();
+                    log.info("client -> {}, state:{}", socketAddress, channelFuture.isSuccess());
+                    break;
+                } catch (Exception ignored) {
+                    reconnect--;
                     try {
-                        Thread.sleep(1000 * 15);
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
+                        TimeUnit.SECONDS.sleep(rpcConfig.getAttrDelayTime());
+                    } catch (InterruptedException e) {
+                        break;
                     }
-                    log.warn("current manager size:{}", SocketManager.getInstance().currentSize());
-                    connect(socketAddress);
                 }
             }
         }
@@ -80,7 +84,7 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
 
 
     @Override
-    public void destroy() throws Exception {
+    public void destroy() {
         workerGroup.shutdownGracefully();
         log.info("client was down.");
     }

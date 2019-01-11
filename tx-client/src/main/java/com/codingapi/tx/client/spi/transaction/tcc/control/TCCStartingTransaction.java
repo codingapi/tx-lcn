@@ -53,7 +53,7 @@ public class TCCStartingTransaction implements TXLCNTransactionControl {
             confirmMethod = "confirm" + StringUtils.capitalize(method.getName());
         }
         if (Void.class.isAssignableFrom(executeClass)) {
-            executeClass = info.getJoinPoint().getTarget().getClass();
+            executeClass = info.getTransactionInfo().getTargetClazz();
         }
 
         TCCTransactionInfo tccInfo = new TCCTransactionInfo();

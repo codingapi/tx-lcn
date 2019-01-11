@@ -1,6 +1,7 @@
 package com.codingapi.tx.spi.message.netty;
 
 import com.codingapi.tx.spi.message.ClientInitCallBack;
+import com.codingapi.tx.spi.message.RpcConfig;
 import com.codingapi.tx.spi.message.RpcAnswer;
 import com.codingapi.tx.spi.message.loadbalance.RpcLoadBalance;
 import com.codingapi.tx.spi.message.netty.bean.RpcCmdContext;
@@ -32,8 +33,8 @@ public class RpcNettyConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConfigurationProperties("tx-lcn.message.netty")
-    public MessageConfig messageConfig() {
-        return new MessageConfig();
+    public RpcConfig rpcConfig() {
+        return new RpcConfig();
     }
 
     @Bean
@@ -57,8 +58,8 @@ public class RpcNettyConfiguration {
 
     @PostConstruct
     public void init() {
-        RpcCmdContext.getInstance().setWaitTime(messageConfig().getWaitTime());
-        RpcCmdContext.getInstance().setCacheSize(messageConfig().getCacheSize());
-        SocketManager.getInstance().setAttrDelayTime(messageConfig().getAttrDelayTime());
+        RpcCmdContext.getInstance().setWaitTime(rpcConfig().getWaitTime());
+        RpcCmdContext.getInstance().setCacheSize(rpcConfig().getCacheSize());
+        SocketManager.getInstance().setAttrDelayTime(rpcConfig().getAttrDelayTime());
     }
 }
