@@ -1,10 +1,10 @@
 // 全局的一些配置
 export default {
-  rootPath: '/product', // 发布到服务器的根目录，需以/开头但不能有尾/，如果只有/，请填写空字符串
+  rootPath: '', // 发布到服务器的根目录，需以/开头但不能有尾/，如果只有/，请填写空字符串
   port: 8080, // 本地开发服务器的启动端口
   domain: 'txlcn.org', // 站点部署域名，无需协议和path等
-  defaultSearch: 'google', // 默认搜索引擎，baidu或者google
-  defaultLanguage: 'en-us',
+  defaultSearch: 'baidu', // 默认搜索引擎，baidu或者google
+  defaultLanguage: 'zh-cn',
   'en-us': {
     pageMenu: [
       {
@@ -22,12 +22,12 @@ export default {
       //   text: 'BLOG',
       //   link: '/en-us/blog/index.html',
       // },
-      {
-        key: 'community',
-        text: 'COMMUNITY',
-        link: 'https://meta.discoursecn.org/',
-        target:'_blank',
-      },
+      // {
+      //   key: 'community',
+      //   text: 'COMMUNITY',
+      //   link: 'https://meta.discoursecn.org/',
+      //   target:'_blank',
+      // },
     ],
     disclaimer: {
         title: 'Vision',
@@ -51,15 +51,15 @@ export default {
       ],
     },
     resources: {
-      title: 'Resources',
+      title: 'Friendship Link',
       list: [
         // {
         //   text: 'Blog',
         //   link: '/en-us/blog/index.html',
         // },
         {
-          text: 'Community',
-            link: 'https://meta.discoursecn.org/',
+          text: 'CodingApi',
+            link: 'https://www.codingapi.com/',
             target:'_blank',
         },
       ],
@@ -83,12 +83,12 @@ export default {
       //   text: '博客',
       //   link: '/zh-cn/blog/index.html',
       // },
-      {
-        key: 'community',
-        text: '社区',
-          link: 'https://meta.discoursecn.org/',
-          target:'_blank',
-      },
+      // {
+      //   key: 'community',
+      //   text: '社区',
+      //     link: 'https://meta.discoursecn.org/',
+      //     target:'_blank',
+      // },
     ],
     disclaimer: {
         title: '愿景',
@@ -112,15 +112,15 @@ export default {
       ],
     },
     resources: {
-      title: '资源',
+      title: '友情链接',
       list: [
         // {
         //   text: '博客',
         //   link: '/zh-cn/blog/index.html',
         // },
         {
-          text: '社区',
-            link: 'https://meta.discoursecn.org/',
+          text: 'CodingApi',
+            link: 'https://www.codingapi.com/',
             target:'_blank',
         },
       ],
