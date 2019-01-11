@@ -1,5 +1,7 @@
 # LCN分布式事务框架v4.0 
 
+[![Join the chat at https://gitter.im/codingapi/tx-lcn](https://badges.gitter.im/codingapi/tx-lcn.svg)](https://gitter.im/codingapi/tx-lcn?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
   "LCN并不生产事务，LCN只是本地事务的协调者"
 
  > 5.0.0.beta 版本发布 见5.0.0.beta 分支   
