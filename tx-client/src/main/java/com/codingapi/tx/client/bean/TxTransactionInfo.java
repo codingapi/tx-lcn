@@ -49,5 +49,10 @@ public class TxTransactionInfo {
      */
     private Method pointMethod;
 
+    /**
+     * 事务单元职责
+     */
+    private int transactionFunc;
+
 }
 
