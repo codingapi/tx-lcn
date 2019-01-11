@@ -51,15 +51,15 @@ export default {
       ],
     },
     resources: {
-      title: 'Resources',
+      title: 'Friendship Link',
       list: [
         // {
         //   text: 'Blog',
         //   link: '/en-us/blog/index.html',
         // },
         {
-          text: 'Community',
-            link: 'https://meta.discoursecn.org/',
+          text: 'CodingApi',
+            link: 'https://www.codingapi.com/',
             target:'_blank',
         },
       ],
@@ -112,15 +112,15 @@ export default {
       ],
     },
     resources: {
-      title: '资源',
+      title: '友情链接',
       list: [
         // {
         //   text: '博客',
         //   link: '/zh-cn/blog/index.html',
         // },
         {
-          text: '社区',
-            link: 'https://meta.discoursecn.org/',
+          text: 'CodingApi',
+            link: 'https://www.codingapi.com/',
             target:'_blank',
         },
       ],
