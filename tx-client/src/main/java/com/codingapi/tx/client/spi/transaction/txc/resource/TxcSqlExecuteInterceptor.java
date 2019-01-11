@@ -61,7 +61,6 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
         List<String> primaryKeys = new ArrayList<>(3);
         List<String> tables = new ArrayList<>(update.getTables().size());
         update.getColumns().forEach(column -> {
-            // TODO 记录Update 语句限制 当更新的字段名没有指定表名时，用第一张表
             column.setTable(update.getTables().get(0));
             columns.add(column.getFullyQualifiedName());
         });

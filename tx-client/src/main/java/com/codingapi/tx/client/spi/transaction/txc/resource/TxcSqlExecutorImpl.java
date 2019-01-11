@@ -33,13 +33,13 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
 
     private final TxcSettingFactory txcSettingFactory;
 
-    @Autowired
-    private TxLogger txLogger;
+    private final TxLogger txLogger;
 
     @Autowired
-    public TxcSqlExecutorImpl(QueryRunner queryRunner, TxcSettingFactory txcSettingFactory) {
+    public TxcSqlExecutorImpl(QueryRunner queryRunner, TxcSettingFactory txcSettingFactory, TxLogger txLogger) {
         this.queryRunner = queryRunner;
         this.txcSettingFactory = txcSettingFactory;
+        this.txLogger = txLogger;
     }
 
     @Override
@@ -161,7 +161,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
             UndoLogDO undoLogDo = queryRunner.query(undoLogSql, new BeanHandler<>(UndoLogDO.class, processor), groupId, unitId);
             txLogger.trace(groupId, unitId, "txc", "undoLogDo sql " + undoLogDo);
             if (Objects.isNull(undoLogDo)) {
-                log.warn("txc . undo log not found!");
+                log.warn("txc . undo log not found! if in 'the ex caused mod' can be ignored.");
                 return;
             }
             RollbackInfo rollbackInfo = SqlUtils.blobToObject(undoLogDo.getRollbackInfo(), RollbackInfo.class);
@@ -169,7 +169,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
             connection = queryRunner.getDataSource().getConnection();
             connection.setAutoCommit(false);
             for (StatementInfo statementInfo : rollbackInfo.getRollbackSqlList()) {
-                log.info("txc > Apply undo log. sql: {}, params: {}", statementInfo.getSql(), statementInfo.getParams());
+                log.debug("txc > Apply undo log. sql: {}, params: {}", statementInfo.getSql(), statementInfo.getParams());
                 queryRunner.update(connection, statementInfo.getSql(), statementInfo.getParams());
             }
             connection.commit();
