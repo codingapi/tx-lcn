@@ -2,6 +2,7 @@ package com.codingapi.tx.client.bean;
 
 
 import com.codingapi.tx.client.aspect.transaction.BusinessSupplier;
+import com.codingapi.tx.commons.annotation.DTXPropagation;
 import com.codingapi.tx.commons.bean.TransactionInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -52,7 +53,7 @@ public class TxTransactionInfo {
     /**
      * 事务单元职责
      */
-    private int transactionFunc;
+    private DTXPropagation propagation;
 
 }
 

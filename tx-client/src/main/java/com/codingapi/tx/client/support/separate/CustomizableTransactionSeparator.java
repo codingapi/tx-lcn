@@ -2,7 +2,7 @@ package com.codingapi.tx.client.support.separate;
 
 import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.bean.TxTransactionInfo;
-import com.codingapi.tx.commons.util.DTXFunctions;
+import com.codingapi.tx.commons.annotation.DTXPropagation;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -26,7 +26,7 @@ public class CustomizableTransactionSeparator implements TXLCNTransactionSeparat
         // 发起分布式事务条件
         if (txTransactionInfo.isTransactionStart()) {
             // 发起方时，对于只加入DTX的事务单元走默认处理
-            if (txTransactionInfo.getTransactionFunc() == DTXFunctions.JOIN) {
+            if (txTransactionInfo.getPropagation().equals(DTXPropagation.SUPPORTS)) {
                 return TXLCNTransactionState.DEFAULT;
             }
             return TXLCNTransactionState.STARTING;

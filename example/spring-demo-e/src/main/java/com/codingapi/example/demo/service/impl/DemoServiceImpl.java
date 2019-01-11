@@ -4,13 +4,12 @@ import com.codingapi.example.common.db.domain.Demo;
 import com.codingapi.example.demo.mapper.EDemoMapper;
 import com.codingapi.example.demo.service.DemoService;
 import com.codingapi.tx.client.bean.DTXLocal;
+import com.codingapi.tx.commons.annotation.DTXPropagation;
 import com.codingapi.tx.commons.annotation.TccTransaction;
-import com.codingapi.tx.commons.util.DTXFunctions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,7 +33,7 @@ public class DemoServiceImpl implements DemoService {
     private String appName;
 
     @Override
-    @TccTransaction(func = DTXFunctions.JOIN)
+    @TccTransaction(propagation = DTXPropagation.SUPPORTS)
     public String rpc(String value) {
         Demo demo = new Demo();
         demo.setDemoField(value);

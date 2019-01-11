@@ -1,6 +1,5 @@
 package com.codingapi.tx.commons.annotation;
 
-import com.codingapi.tx.commons.util.DTXFunctions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.annotation.*;
@@ -26,10 +25,10 @@ public @interface TxcTransaction {
     long timeout() default 0;
 
     /**
-     * 事务单元职责
+     * 分布式事务传播行为
      *
-     * @return 功能代号
-     * @see DTXFunctions
+     * @return 传播行为
+     * @see DTXPropagation
      */
-    int func() default DTXFunctions.CREATE_OR_JOIN;
+    DTXPropagation propagation() default DTXPropagation.REQUIRED;
 }

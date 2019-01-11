@@ -1,5 +1,6 @@
 package com.codingapi.tx.client.bean;
 
+import com.codingapi.tx.commons.annotation.DTXPropagation;
 import com.codingapi.tx.commons.bean.TransactionInfo;
 import com.codingapi.tx.commons.util.Transactions;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ public class DTXInfo {
 
     private String transactionType;
 
-    private int transactionFunc;
+    private DTXPropagation transactionPropagation;
 
     private TransactionInfo transactionInfo;
 

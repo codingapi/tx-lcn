@@ -4,12 +4,11 @@ import com.codingapi.example.common.db.domain.Demo;
 import com.codingapi.example.demod.mapper.DDemoMapper;
 import com.codingapi.example.demod.service.DemoService;
 import com.codingapi.tx.client.bean.DTXLocal;
+import com.codingapi.tx.commons.annotation.DTXPropagation;
 import com.codingapi.tx.commons.annotation.TxcTransaction;
-import com.codingapi.tx.commons.util.DTXFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -30,7 +29,7 @@ public class DemoServiceImpl implements DemoService {
 
 
     @Override
-    @TxcTransaction(func = DTXFunctions.JOIN)
+    @TxcTransaction(propagation = DTXPropagation.SUPPORTS)
     public String rpc(String value) {
         Demo demo = new Demo();
         demo.setCreateTime(new Date());

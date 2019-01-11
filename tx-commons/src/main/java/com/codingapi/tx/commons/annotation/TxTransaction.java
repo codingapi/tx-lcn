@@ -1,6 +1,5 @@
 package com.codingapi.tx.commons.annotation;
 
-import com.codingapi.tx.commons.util.DTXFunctions;
 import com.codingapi.tx.commons.util.Transactions;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,10 +25,10 @@ public @interface TxTransaction {
     String type() default Transactions.LCN;
 
     /**
-     * 事务单元职责
+     * 分布式事务传播行为
      *
-     * @return 功能代号
-     * @see DTXFunctions
+     * @return 传播行为
+     * @see DTXPropagation
      */
-    int func() default DTXFunctions.CREATE_OR_JOIN;
+    DTXPropagation propagation() default DTXPropagation.REQUIRED;
 }

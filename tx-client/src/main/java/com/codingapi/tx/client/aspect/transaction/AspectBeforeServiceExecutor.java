@@ -57,7 +57,7 @@ public class AspectBeforeServiceExecutor {
                 unitId,
                 dtxInfo.getTransactionInfo(),
                 business,
-                dtxInfo.getBusinessMethod(), dtxInfo.getTransactionFunc());
+                dtxInfo.getBusinessMethod(), dtxInfo.getTransactionPropagation());
 
         //LCN事务处理器
         try {
