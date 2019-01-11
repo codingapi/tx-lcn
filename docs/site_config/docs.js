@@ -26,15 +26,15 @@ export default {
                         title: '示例',
                         children: [
                             {
-                                title: '基础环境',
+                                title: '分布式事务示例',
                                 link: '/en-us/docs/demo/env.html',
                             },
                             {
-                                title: 'dubbo示例',
+                                title: 'TxClient之dubbo',
                                 link: '/en-us/docs/demo/dubbo.html',
                             },
                             {
-                                title: 'springcloud示例',
+                                title: 'TxClient之springcloud',
                                 link: '/en-us/docs/demo/springcloud.html',
                             },
                         ],
