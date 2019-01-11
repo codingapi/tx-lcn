@@ -2,6 +2,7 @@ package com.codingapi.tx.client.springcloud.spi.message.netty.impl;
 
 import com.codingapi.tx.client.springcloud.spi.message.RpcClientInitializer;
 import com.codingapi.tx.client.springcloud.spi.message.dto.TxManagerHost;
+import com.codingapi.tx.client.springcloud.spi.message.netty.MessageConfig;
 import com.codingapi.tx.client.springcloud.spi.message.netty.SocketManager;
 import com.codingapi.tx.client.springcloud.spi.message.netty.em.NettyType;
 import com.codingapi.tx.client.springcloud.spi.message.netty.handler.NettyRpcClientHandlerInitHandler;
