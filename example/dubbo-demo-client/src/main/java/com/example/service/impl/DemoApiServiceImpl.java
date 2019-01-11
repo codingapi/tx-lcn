@@ -11,7 +11,6 @@ import com.example.service.DemoApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -47,7 +46,6 @@ public class DemoApiServiceImpl implements DemoApiService {
 
     @Override
     @TxTransaction
-    @Transactional
     public String execute(String name) {
         String dResp = dDemoService.rpc(name);
         String eResp = eDemoService.rpc(name);

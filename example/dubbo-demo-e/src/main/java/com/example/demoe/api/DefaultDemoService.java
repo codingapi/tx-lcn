@@ -5,12 +5,10 @@ import com.codingapi.example.common.db.domain.Demo;
 import com.codingapi.example.common.dubbo.EDemoService;
 import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.commons.annotation.TccTransaction;
-import com.codingapi.tx.commons.annotation.TxTransaction;
 import com.example.demoe.mapper.EDemoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,8 +38,6 @@ public class DefaultDemoService implements EDemoService {
     private String appName;
 
     @Override
-    @Transactional
-    @TxTransaction(type = "tcc")
     @TccTransaction(confirmMethod = "cm", cancelMethod = "cl", executeClass = DefaultDemoService.class)
     public String rpc(String name) {
         Demo demo = new Demo();

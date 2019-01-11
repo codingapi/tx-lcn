@@ -5,6 +5,7 @@ import com.codingapi.example.demo.mapper.EDemoMapper;
 import com.codingapi.example.demo.service.DemoService;
 import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.commons.annotation.TccTransaction;
+import com.codingapi.tx.commons.util.DTXFunctions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +34,7 @@ public class DemoServiceImpl implements DemoService {
     private String appName;
 
     @Override
-    @TccTransaction
+    @TccTransaction(func = DTXFunctions.JOIN)
     public String rpc(String value) {
         Demo demo = new Demo();
         demo.setDemoField(value);

@@ -5,6 +5,7 @@ import com.codingapi.example.demod.mapper.DDemoMapper;
 import com.codingapi.example.demod.service.DemoService;
 import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.commons.annotation.TxcTransaction;
+import com.codingapi.tx.commons.util.DTXFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,7 @@ public class DemoServiceImpl implements DemoService {
 
 
     @Override
-    @TxcTransaction
-    @Transactional
+    @TxcTransaction(func = DTXFunctions.JOIN)
     public String rpc(String value) {
         Demo demo = new Demo();
         demo.setCreateTime(new Date());
