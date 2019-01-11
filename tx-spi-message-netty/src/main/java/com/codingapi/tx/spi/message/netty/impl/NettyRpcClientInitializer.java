@@ -2,6 +2,7 @@ package com.codingapi.tx.spi.message.netty.impl;
 
 import com.codingapi.tx.spi.message.RpcClientInitializer;
 import com.codingapi.tx.spi.message.dto.TxManagerHost;
+import com.codingapi.tx.spi.message.netty.MessageConfig;
 import com.codingapi.tx.spi.message.netty.SocketManager;
 import com.codingapi.tx.spi.message.netty.em.NettyType;
 import com.codingapi.tx.spi.message.netty.handler.NettyRpcClientHandlerInitHandler;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
@@ -38,6 +38,9 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
 
     private EventLoopGroup workerGroup;
 
+    @Autowired
+    private MessageConfig messageConfig;
+
 
     @Override
     public void init(List<TxManagerHost> hosts) {
@@ -52,29 +55,40 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
 
     @Override
     public synchronized void connect(SocketAddress socketAddress){
-        if(SocketManager.getInstance().noConnect(socketAddress)) {
-            try {
-                log.info(" try connect {} ",socketAddress);
-                Bootstrap b = new Bootstrap();
-                b.group(workerGroup);
-                b.channel(NioSocketChannel.class);
-                b.option(ChannelOption.SO_KEEPALIVE, true);
-                b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
-                b.handler(nettyRpcClientHandlerInitHandler);
-                ChannelFuture channelFuture = b.connect(socketAddress).syncUninterruptibly();
-                log.info("client -> {} , state:{}", socketAddress, channelFuture.isSuccess());
-            } catch (Exception e) {
 
-                if (e instanceof ConnectException) {
+        boolean connected = false;
+
+        for(int i=0;i<messageConfig.getTryConnectTime();i++) {
+
+            if (SocketManager.getInstance().noConnect(socketAddress)) {
+                try {
+                    log.warn("current manager size:{}", SocketManager.getInstance().currentSize());
+
+                    log.info(" try connect {} ", socketAddress);
+                    Bootstrap b = new Bootstrap();
+                    b.group(workerGroup);
+                    b.channel(NioSocketChannel.class);
+                    b.option(ChannelOption.SO_KEEPALIVE, true);
+                    b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
+                    b.handler(nettyRpcClientHandlerInitHandler);
+                    ChannelFuture channelFuture = b.connect(socketAddress).syncUninterruptibly();
+                    log.info("client -> {} , state:{}", socketAddress, channelFuture.isSuccess());
+                    connected = true;
+                    break;
+
+                } catch (Exception e) {
+                    log.error("netty connection error",e);
                     try {
-                        Thread.sleep(1000 * 15);
+                        Thread.sleep(1000 * messageConfig.getTryConnectWaitTime());
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }
-                    log.warn("current manager size:{}", SocketManager.getInstance().currentSize());
-                    connect(socketAddress);
+                    log.info("netty will wait then  try connection. ");
                 }
             }
+        }
+        if(!connected){
+            log.warn("netty connection fail , address is {}",socketAddress);
         }
     }
 

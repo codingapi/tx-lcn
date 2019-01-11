@@ -27,4 +27,15 @@ public class MessageConfig {
      */
     private int attrDelayTime = 10;
 
+
+    /**
+     * 重连次数默认10次，注意超过12次将出现netty递归异常
+     */
+    private int tryConnectTime = 10;
+
+    /**
+     * 重连的间隔等待时间默认15(秒)
+     */
+    private int tryConnectWaitTime = 15;
+
 }
