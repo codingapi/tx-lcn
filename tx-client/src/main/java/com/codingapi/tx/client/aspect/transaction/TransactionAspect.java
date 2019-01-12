@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 /**
  * LCN 事务拦截器
  * create by lorne on 2018/1/5
@@ -115,7 +117,8 @@ public class TransactionAspect implements Ordered {
 
     @Override
     public int getOrder() {
-        return txClientConfig.getControlOrder();
+        return Objects.isNull(txClientConfig.getDtxAspectOrder()) ?
+                txClientConfig.getControlOrder() : txClientConfig.getDtxAspectOrder();
     }
 
 }
