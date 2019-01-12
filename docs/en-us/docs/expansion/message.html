@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="message" />
+	<meta name="description" content="message" />
+	<!-- 网页标签标题 -->
+	<title>message</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a href="/en-us/index.html"><img class="logo" src="/img/txlcn.png"/></a><div class="search search-normal"><span class="icon-search"></span></div><span class="language-switch language-switch-normal">中</span><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/en-us/index.html" target="_self">HOME</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/en-us/docs/preface.html" target="_self">DOCS</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>用户文档</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/en-us/docs/preface.html" target="_self">入门</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/en-us/docs/background.html" target="_self">背景</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/en-us/docs/start.html" target="_self">快速开始</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/en-us/docs/dependencies.html" target="_self">依赖</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>示例<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/en-us/docs/demo/env.html" target="_self">分布式事务示例</a></li><li class="menu-item menu-item-level-3"><a href="/en-us/docs/demo/dubbo.html" target="_self">TxClient之dubbo</a></li><li class="menu-item menu-item-level-3"><a href="/en-us/docs/demo/springcloud.html" target="_self">TxClient之springcloud</a></li></ul></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>原理介绍<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/en-us/docs/principle/control.html" target="_self">控制原理</a></li><li class="menu-item menu-item-level-3"><a href="/en-us/docs/principle/lcn.html" target="_self">LCN模式</a></li><li class="menu-item menu-item-level-3"><a href="/en-us/docs/principle/tcc.html" target="_self">TCC模式</a></li><li class="menu-item menu-item-level-3"><a href="/en-us/docs/principle/txc.html" target="_self">TXC模式</a></li></ul></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>配置手册<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/en-us/docs/setting/client.html" target="_self">TxClient配置</a></li><li class="menu-item menu-item-level-3"><a href="/en-us/docs/setting/manager.html" target="_self">TxManager配置</a></li><li class="menu-item menu-item-level-3"><a href="/en-us/docs/setting/distributed.html" target="_self">集群与负载</a></li></ul></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>扩展支持<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/en-us/docs/expansion/transaction.html" target="_self">事务模式扩展</a></li><li class="menu-item menu-item-level-3"><a href="/en-us/docs/expansion/message.html" target="_self">通讯协议扩展</a></li><li class="menu-item menu-item-level-3"><a href="/en-us/docs/expansion/rpc.html" target="_self">RPC框架扩展</a></li></ul></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/en-us/docs/communication.html" target="_self">通讯指令手册</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/en-us/docs/manageradmin.html" target="_self">TM管理手册</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/en-us/docs/debug.html" target="_self">问题排查手册</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/en-us/docs/developer.html" target="_self">开发者</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/en-us/docs/fqa.html" target="_self">FQA</a></li></ul></li></ul></div><div class="doc-content markdown-body"><h1>通讯协议扩展</h1>
+<p>通讯协议扩展是指txclient与txmanager通讯的协议扩展。</p>
+<p>目前TX-LCN默认采用了netty方式通讯。关于拓展也以netty方式来说明如何拓展。</p>
+<h2>拓展tx-spi-message</h2>
+<p>主要实现6个接口，其中下面4个是由tx-spi-message的实现方提供:</p>
+<ul>
+<li>发起请求调用客户端 <code>RpcClient</code></li>
+</ul>
+<pre><code>public abstract class RpcClient {
+
+    @Autowired
+    private RpcLoadBalance rpcLoadBalance;
+
+    /**
+     * 发送指令不需要返回数据，需要知道返回的状态
+     * @param rpcCmd    指令内容
+     * @return  指令状态
+     * @throws RpcException
+     */
+   public abstract RpcResponseState send(RpcCmd rpcCmd) throws RpcException;
+
+
+    /**
+     * 发送指令不需要返回数据，需要知道返回的状态
+     * @param remoteKey 远程标识关键字
+     * @param msg    指令内容
+     * @return  指令状态
+     * @throws RpcException
+     */
+    public abstract RpcResponseState send(String remoteKey,MessageDto msg) throws RpcException;
+
+
+    /**
+     * 发送请求并相应
+     * @param rpcCmd   指令内容
+     * @return  相应指令数据
+     * @throws RpcException
+     */
+    public abstract  MessageDto request(RpcCmd rpcCmd)throws RpcException;
+
+
+    /**
+     * 发送请求并相应
+     * @param remoteKey   远程标识关键字
+     * @param msg    指令内容
+     * @return  相应指令数据
+     * @throws RpcException
+     */
+    public abstract  MessageDto request(String remoteKey,MessageDto msg)throws RpcException;
+
+
+    /**
+     * 获取一个远程标识关键字
+     * @return
+     * @throws RpcException
+     */
+    public  String loadRemoteKey() throws RpcException{
+        return rpcLoadBalance.getRemoteKey();
+    }
+
+
+    /**
+     * 获取所有的远程连接对象
+     * @return  远程连接对象数组.
+     */
+    public abstract List&lt;String&gt; loadAllRemoteKey();
+
+
+    /**
+     * 获取模块远程标识
+     * @param moduleName 模块名称
+     * @return 远程标识
+     */
+    public abstract List&lt;String&gt; moduleList(String moduleName);
+
+
+    /**
+     * 绑定模块名称
+     * @param remoteKey 远程标识
+     * @param appName   应用名称
+     */
+    public abstract void bindAppName(String remoteKey,String appName) throws RpcException;
+
+
+
+    /**
+     * 获取模块名称
+     * @param remoteKey 远程标识
+     * @return   应用名称
+     */
+    public abstract  String getAppName(String remoteKey) throws RpcException;
+
+}
+</code></pre>
+<ul>
+<li>发起请求调用客户端初始化接口 <code>RpcClientInitializer</code></li>
+</ul>
+<pre><code>public interface RpcClientInitializer {
+
+
+    /**
+     * message client init
+     * @param hosts
+     */
+    void init(List&lt;TxManagerHost&gt; hosts);
+
+    /**
+     * 建立连接
+     * @param socketAddress
+     */
+    void connect(SocketAddress socketAddress);
+
+}
+
+</code></pre>
+<ul>
+<li>TxManager message初始化接口 <code>RpcServerInitializer</code></li>
+</ul>
+<pre><code>public interface RpcServerInitializer {
+
+
+    /**
+     * support server init
+     *
+     * @param managerProperties   配置信息
+     */
+    void init(ManagerProperties managerProperties);
+
+}
+
+</code></pre>
+<ul>
+<li>客户端请求TxManager的负载策略 <code>RpcLoadBalance</code></li>
+</ul>
+<pre><code>public interface RpcLoadBalance {
+
+    /**
+     * 获取一个远程标识关键字
+     * @return
+     * @throws RpcException
+     */
+    String getRemoteKey()throws RpcException;
+
+
+}
+
+
+</code></pre>
+<p>下面两个用于Tx-Manager与Tx-Client的回调业务</p>
+<p><code>RpcAnswer</code>接口 Tx-Manager与Tx-Client都会实现用于接受响应数据。</p>
+<pre><code>public interface RpcAnswer {
+
+    /**
+     * 业务处理
+     * @param rpcCmd    message 曾业务回调函数
+     *
+     */
+    void callback(RpcCmd rpcCmd);
+
+}
+
+</code></pre>
+<p><code>ClientInitCallBack</code> 接口，用于Tx-Manager下需要处理客户端与TxManager建立连接的初始化回调业务。</p>
+<pre><code>public interface ClientInitCallBack {
+
+
+    /**
+     * 初始化连接成功回调
+     * @param remoteKey 远程调用唯一key
+     */
+    void connected(String remoteKey);
+
+
+}
+
+
+</code></pre>
+<p>实现细节可借鉴 tx-spi-message-netty 模块源码</p>
+</div></section><footer class="footer-container"><div class="footer-body"><img src="/img/txlcn.png"/><div class="cols-container"><div class="col col-12"><h3>Vision</h3><p>We will devote ourselves to creating a fast, efficient and concurrent distributed transaction solution.</p></div><div class="col col-6"><dl><dt>Documentation</dt><dd><a href="/en-us/docs/background.html" target="_self">Overview</a></dd><dd><a href="/en-us/docs/start.html" target="_self">Quick start</a></dd><dd><a href="/en-us/docs/demo/env.html" target="_self">Developer guide</a></dd></dl></div><div class="col col-6"><dl><dt>Friendship Link</dt><dd><a href="https://www.codingapi.com/" target="_blank">CodingApi</a></dd></dl></div></div><div class="copyright"><span>Copyright © 2018 CodingApi</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>
