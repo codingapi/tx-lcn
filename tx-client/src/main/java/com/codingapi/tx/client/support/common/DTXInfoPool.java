@@ -4,8 +4,10 @@ import com.codingapi.tx.client.bean.DTXInfo;
 import com.codingapi.tx.commons.util.Transactions;
 import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.util.ConcurrentReferenceHashMap;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Objects;
 
@@ -27,19 +29,24 @@ public class DTXInfoPool {
         String unitId = Transactions.unitId(signature);
         DTXInfo dtxInfo = dtxInfoCache.get(unitId);
         if (Objects.isNull(dtxInfo)) {
-            dtxInfo = new DTXInfo(proceedingJoinPoint);
+            MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
+            Method method = methodSignature.getMethod();
+            Class<?> targetClass = proceedingJoinPoint.getTarget().getClass();
+            Method thisMethod = targetClass.getMethod(method.getName(), method.getParameterTypes());
+            dtxInfo = new DTXInfo(thisMethod, proceedingJoinPoint.getArgs(), targetClass);
             dtxInfoCache.put(unitId, dtxInfo);
         }
         dtxInfo.reanalyseMethodArgs(proceedingJoinPoint.getArgs());
         return dtxInfo;
     }
 
-    private DTXInfo get0(MethodInvocation methodInvocation) throws Throwable {
+    private DTXInfo get0(MethodInvocation methodInvocation) {
         String signature = methodInvocation.getMethod().toString();
         String unitId = Transactions.unitId(signature);
         DTXInfo dtxInfo = dtxInfoCache.get(unitId);
         if (Objects.isNull(dtxInfo)) {
-            dtxInfo = new DTXInfo(methodInvocation);
+            dtxInfo = new DTXInfo(methodInvocation.getMethod(),
+                    methodInvocation.getArguments(), methodInvocation.getThis().getClass());
             dtxInfoCache.put(unitId, dtxInfo);
         }
         dtxInfo.reanalyseMethodArgs(methodInvocation.getArguments());
@@ -50,7 +57,7 @@ public class DTXInfoPool {
         return dtxInfoPool.get0(proceedingJoinPoint);
     }
 
-    public static DTXInfo get(MethodInvocation methodInvocation) throws Throwable {
+    public static DTXInfo get(MethodInvocation methodInvocation) {
         return dtxInfoPool.get0(methodInvocation);
     }
 }
