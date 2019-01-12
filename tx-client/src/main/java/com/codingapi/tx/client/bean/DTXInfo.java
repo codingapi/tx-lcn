@@ -6,6 +6,7 @@ import com.codingapi.tx.commons.util.Transactions;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
@@ -50,7 +51,23 @@ public class DTXInfo {
         this.unitId = Transactions.unitId(point.getSignature().toString());
     }
 
-    public void reanalyseMethodArgs(ProceedingJoinPoint point) {
-        this.transactionInfo.setArgumentValues(point.getArgs());
+    public DTXInfo(MethodInvocation invocation) {
+        Class<?>[] types = new Class[invocation.getArguments().length];
+        for (int i = 0; i < invocation.getArguments().length; i++) {
+            types[i] = invocation.getArguments()[i].getClass();
+        }
+        this.transactionInfo = new TransactionInfo();
+        this.transactionInfo.setTargetClazz(invocation.getThis().getClass());
+        this.transactionInfo.setArgumentValues(invocation.getArguments());
+        this.transactionInfo.setMethod(invocation.getMethod().getName());
+        this.transactionInfo.setMethodStr(invocation.getMethod().toString());
+        this.transactionInfo.setParameterTypes(types);
+
+        this.businessMethod = invocation.getMethod();
+        this.unitId = Transactions.unitId(invocation.getMethod().toString());
+    }
+
+    public void reanalyseMethodArgs(Object[] args) {
+        this.transactionInfo.setArgumentValues(args);
     }
 }

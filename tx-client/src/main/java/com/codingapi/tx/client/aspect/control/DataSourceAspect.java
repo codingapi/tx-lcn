@@ -23,12 +23,12 @@ public class DataSourceAspect implements Ordered {
     private TxClientConfig txClientConfig;
 
     @Autowired
-    private AspectBeforeResourceExecutor aspectBeforeResourceExecutor;
+    private DTXResourceServiceExecutor DTXResourceServiceExecutor;
 
 
     @Around("execution(* javax.sql.DataSource.getConnection(..))")
     public Object around(ProceedingJoinPoint point) throws Throwable {
-        return aspectBeforeResourceExecutor.around(point);
+        return DTXResourceServiceExecutor.around(point);
     }
 
 

@@ -25,12 +25,12 @@ public class TransactionAspect implements Ordered {
 
     private final TxClientConfig txClientConfig;
 
-    private final AspectBeforeServiceExecutor aspectBeforeServiceExecutor;
+    private final DTXServiceExecutor DTXServiceExecutor;
 
     @Autowired
-    public TransactionAspect(TxClientConfig txClientConfig, AspectBeforeServiceExecutor aspectBeforeServiceExecutor) {
+    public TransactionAspect(TxClientConfig txClientConfig, DTXServiceExecutor DTXServiceExecutor) {
         this.txClientConfig = txClientConfig;
-        this.aspectBeforeServiceExecutor = aspectBeforeServiceExecutor;
+        this.DTXServiceExecutor = DTXServiceExecutor;
     }
 
     /**
@@ -68,7 +68,7 @@ public class TransactionAspect implements Ordered {
         TxTransaction txTransaction = dtxInfo.getBusinessMethod().getAnnotation(TxTransaction.class);
         dtxInfo.setTransactionType(txTransaction.type());
         dtxInfo.setTransactionPropagation(txTransaction.dtxp());
-        return aspectBeforeServiceExecutor.runTransaction(dtxInfo, point::proceed);
+        return DTXServiceExecutor.runTransaction(dtxInfo, point::proceed);
     }
 
     @Around("lcnTransactionPointcut() && !txcTransactionPointcut()" +
@@ -78,7 +78,7 @@ public class TransactionAspect implements Ordered {
         LcnTransaction lcnTransaction = dtxInfo.getBusinessMethod().getAnnotation(LcnTransaction.class);
         dtxInfo.setTransactionType(Transactions.LCN);
         dtxInfo.setTransactionPropagation(lcnTransaction.dtxp());
-        return aspectBeforeServiceExecutor.runTransaction(dtxInfo, point::proceed);
+        return DTXServiceExecutor.runTransaction(dtxInfo, point::proceed);
     }
 
     @Around("txcTransactionPointcut() && !lcnTransactionPointcut()" +
@@ -88,7 +88,7 @@ public class TransactionAspect implements Ordered {
         TxcTransaction txcTransaction = dtxInfo.getBusinessMethod().getAnnotation(TxcTransaction.class);
         dtxInfo.setTransactionType(Transactions.TXC);
         dtxInfo.setTransactionPropagation(txcTransaction.dtxp());
-        return aspectBeforeServiceExecutor.runTransaction(dtxInfo, point::proceed);
+        return DTXServiceExecutor.runTransaction(dtxInfo, point::proceed);
     }
 
     @Around("tccTransactionPointcut() && !lcnTransactionPointcut()" +
@@ -98,7 +98,7 @@ public class TransactionAspect implements Ordered {
         TccTransaction tccTransaction = dtxInfo.getBusinessMethod().getAnnotation(TccTransaction.class);
         dtxInfo.setTransactionType(Transactions.TCC);
         dtxInfo.setTransactionPropagation(tccTransaction.dtxp());
-        return aspectBeforeServiceExecutor.runTransaction(dtxInfo, point::proceed);
+        return DTXServiceExecutor.runTransaction(dtxInfo, point::proceed);
     }
 
     @Around("this(com.codingapi.tx.commons.annotation.ITxTransaction) && execution( * *(..))")
@@ -110,7 +110,7 @@ public class TransactionAspect implements Ordered {
         ITxTransaction txTransaction = (ITxTransaction) point.getThis();
         dtxInfo.setTransactionType(txTransaction.transactionType());
         dtxInfo.setTransactionPropagation(DTXPropagation.REQUIRED);
-        return aspectBeforeServiceExecutor.runTransaction(dtxInfo, point::proceed);
+        return DTXServiceExecutor.runTransaction(dtxInfo, point::proceed);
     }
 
     @Override

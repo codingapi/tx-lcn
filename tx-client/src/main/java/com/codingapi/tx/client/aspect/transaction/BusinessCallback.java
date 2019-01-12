@@ -7,7 +7,7 @@ package com.codingapi.tx.client.aspect.transaction;
  * @author ujued
  */
 @FunctionalInterface
-public interface BusinessSupplier {
+public interface BusinessCallback {
 
-    Object get() throws Throwable;
+    Object call() throws Throwable;
 }
