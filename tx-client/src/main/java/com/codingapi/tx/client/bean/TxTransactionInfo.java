@@ -1,7 +1,7 @@
 package com.codingapi.tx.client.bean;
 
 
-import com.codingapi.tx.client.aspect.transaction.BusinessCallback;
+import com.codingapi.tx.client.aspect.BusinessCallback;
 import com.codingapi.tx.commons.annotation.DTXPropagation;
 import com.codingapi.tx.commons.bean.TransactionInfo;
 import lombok.AllArgsConstructor;

@@ -1,5 +1,6 @@
-package com.codingapi.tx.client.aspect.transaction;
+package com.codingapi.tx.client.aspect.weave;
 
+import com.codingapi.tx.client.aspect.BusinessCallback;
 import com.codingapi.tx.client.bean.DTXInfo;
 import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.bean.TxTransactionInfo;
@@ -21,15 +22,15 @@ import java.util.Objects;
  */
 @Component
 @Slf4j
-public class DTXServiceExecutor {
+public class DTXLogicWeaver {
 
     private final TracerHelper tracerHelper;
 
     private final TXLCNTransactionServiceExecutor transactionServiceExecutor;
 
     @Autowired
-    public DTXServiceExecutor(TracerHelper tracerHelper,
-                              TXLCNTransactionServiceExecutor transactionServiceExecutor) {
+    public DTXLogicWeaver(TracerHelper tracerHelper,
+                          TXLCNTransactionServiceExecutor transactionServiceExecutor) {
         this.tracerHelper = tracerHelper;
         this.transactionServiceExecutor = transactionServiceExecutor;
     }

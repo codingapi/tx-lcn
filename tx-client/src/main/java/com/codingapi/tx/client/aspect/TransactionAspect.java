@@ -1,5 +1,6 @@
-package com.codingapi.tx.client.aspect.transaction;
+package com.codingapi.tx.client.aspect;
 
+import com.codingapi.tx.client.aspect.weave.DTXLogicWeaver;
 import com.codingapi.tx.client.bean.DTXInfo;
 import com.codingapi.tx.client.config.TxClientConfig;
 import com.codingapi.tx.client.support.common.DTXInfoPool;
@@ -27,12 +28,12 @@ public class TransactionAspect implements Ordered {
 
     private final TxClientConfig txClientConfig;
 
-    private final DTXServiceExecutor DTXServiceExecutor;
+    private final com.codingapi.tx.client.aspect.weave.DTXLogicWeaver DTXLogicWeaver;
 
     @Autowired
-    public TransactionAspect(TxClientConfig txClientConfig, DTXServiceExecutor DTXServiceExecutor) {
+    public TransactionAspect(TxClientConfig txClientConfig, DTXLogicWeaver DTXLogicWeaver) {
         this.txClientConfig = txClientConfig;
-        this.DTXServiceExecutor = DTXServiceExecutor;
+        this.DTXLogicWeaver = DTXLogicWeaver;
     }
 
     /**
@@ -70,7 +71,7 @@ public class TransactionAspect implements Ordered {
         TxTransaction txTransaction = dtxInfo.getBusinessMethod().getAnnotation(TxTransaction.class);
         dtxInfo.setTransactionType(txTransaction.type());
         dtxInfo.setTransactionPropagation(txTransaction.dtxp());
-        return DTXServiceExecutor.runTransaction(dtxInfo, point::proceed);
+        return DTXLogicWeaver.runTransaction(dtxInfo, point::proceed);
     }
 
     @Around("lcnTransactionPointcut() && !txcTransactionPointcut()" +
@@ -80,7 +81,7 @@ public class TransactionAspect implements Ordered {
         LcnTransaction lcnTransaction = dtxInfo.getBusinessMethod().getAnnotation(LcnTransaction.class);
         dtxInfo.setTransactionType(Transactions.LCN);
         dtxInfo.setTransactionPropagation(lcnTransaction.dtxp());
-        return DTXServiceExecutor.runTransaction(dtxInfo, point::proceed);
+        return DTXLogicWeaver.runTransaction(dtxInfo, point::proceed);
     }
 
     @Around("txcTransactionPointcut() && !lcnTransactionPointcut()" +
@@ -90,7 +91,7 @@ public class TransactionAspect implements Ordered {
         TxcTransaction txcTransaction = dtxInfo.getBusinessMethod().getAnnotation(TxcTransaction.class);
         dtxInfo.setTransactionType(Transactions.TXC);
         dtxInfo.setTransactionPropagation(txcTransaction.dtxp());
-        return DTXServiceExecutor.runTransaction(dtxInfo, point::proceed);
+        return DTXLogicWeaver.runTransaction(dtxInfo, point::proceed);
     }
 
     @Around("tccTransactionPointcut() && !lcnTransactionPointcut()" +
@@ -100,7 +101,7 @@ public class TransactionAspect implements Ordered {
         TccTransaction tccTransaction = dtxInfo.getBusinessMethod().getAnnotation(TccTransaction.class);
         dtxInfo.setTransactionType(Transactions.TCC);
         dtxInfo.setTransactionPropagation(tccTransaction.dtxp());
-        return DTXServiceExecutor.runTransaction(dtxInfo, point::proceed);
+        return DTXLogicWeaver.runTransaction(dtxInfo, point::proceed);
     }
 
     @Around("this(com.codingapi.tx.commons.annotation.ITxTransaction) && execution( * *(..))")
@@ -112,7 +113,7 @@ public class TransactionAspect implements Ordered {
         ITxTransaction txTransaction = (ITxTransaction) point.getThis();
         dtxInfo.setTransactionType(txTransaction.transactionType());
         dtxInfo.setTransactionPropagation(DTXPropagation.REQUIRED);
-        return DTXServiceExecutor.runTransaction(dtxInfo, point::proceed);
+        return DTXLogicWeaver.runTransaction(dtxInfo, point::proceed);
     }
 
     @Override
