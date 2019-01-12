@@ -17,10 +17,7 @@ import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * Created by lorne on 2017/6/30.
@@ -72,12 +69,14 @@ public class SocketManager {
 
     public void removeChannel(Channel channel) {
         channels.remove(channel);
-
-        executorService.schedule(() -> {
-            String key = channel.toString();
-            appNames.remove(key);
-        }, attrDelayTime, TimeUnit.SECONDS);
-
+        try {
+            executorService.schedule(() -> {
+                String key = channel.toString();
+                appNames.remove(key);
+            }, attrDelayTime, TimeUnit.SECONDS);
+        } catch (RejectedExecutionException ignored) {
+            // down server.
+        }
     }
 
 

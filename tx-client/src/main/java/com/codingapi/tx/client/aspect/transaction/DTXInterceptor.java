@@ -20,10 +20,10 @@ import java.util.Objects;
  */
 public class DTXInterceptor extends TransactionInterceptor {
 
-    private final DTXServiceExecutor DTXServiceExecutor;
+    private final DTXServiceExecutor dtxServiceExecutor;
 
-    public DTXInterceptor(DTXServiceExecutor DTXServiceExecutor) {
-        this.DTXServiceExecutor = DTXServiceExecutor;
+    public DTXInterceptor(DTXServiceExecutor dtxServiceExecutor) {
+        this.dtxServiceExecutor = dtxServiceExecutor;
     }
 
     @Override
@@ -31,28 +31,30 @@ public class DTXInterceptor extends TransactionInterceptor {
         DTXInfo dtxInfo = DTXInfoPool.get(invocation);
 
         TxTransaction txTransaction = dtxInfo.getBusinessMethod().getAnnotation(TxTransaction.class);
-        LcnTransaction lcnTransaction = dtxInfo.getBusinessMethod().getAnnotation(LcnTransaction.class);
-        TxcTransaction txcTransaction = dtxInfo.getBusinessMethod().getAnnotation(TxcTransaction.class);
-        TccTransaction tccTransaction = dtxInfo.getBusinessMethod().getAnnotation(TccTransaction.class);
-
         if (Objects.nonNull(txTransaction)) {
             dtxInfo.setTransactionType(txTransaction.type());
             dtxInfo.setTransactionPropagation(txTransaction.dtxp());
-
-            return DTXServiceExecutor.runTransaction(dtxInfo, () -> super.invoke(invocation));
-        } else if (Objects.nonNull(lcnTransaction)) {
+            return dtxServiceExecutor.runTransaction(dtxInfo, () -> super.invoke(invocation));
+        }
+        LcnTransaction lcnTransaction = dtxInfo.getBusinessMethod().getAnnotation(LcnTransaction.class);
+        if (Objects.nonNull(lcnTransaction)) {
             dtxInfo.setTransactionType(Transactions.LCN);
             dtxInfo.setTransactionPropagation(lcnTransaction.dtxp());
-            return DTXServiceExecutor.runTransaction(dtxInfo, () -> super.invoke(invocation));
-        } else if (Objects.nonNull(txcTransaction)) {
+            return dtxServiceExecutor.runTransaction(dtxInfo, () -> super.invoke(invocation));
+        }
+        TxcTransaction txcTransaction = dtxInfo.getBusinessMethod().getAnnotation(TxcTransaction.class);
+        if (Objects.nonNull(txcTransaction)) {
             dtxInfo.setTransactionType(Transactions.TXC);
             dtxInfo.setTransactionPropagation(txcTransaction.dtxp());
-            return DTXServiceExecutor.runTransaction(dtxInfo, () -> super.invoke(invocation));
-        } else if (Objects.nonNull(tccTransaction)) {
+            return dtxServiceExecutor.runTransaction(dtxInfo, () -> super.invoke(invocation));
+        }
+        TccTransaction tccTransaction = dtxInfo.getBusinessMethod().getAnnotation(TccTransaction.class);
+        if (Objects.nonNull(tccTransaction)) {
             dtxInfo.setTransactionType(Transactions.TCC);
             dtxInfo.setTransactionPropagation(tccTransaction.dtxp());
-            return DTXServiceExecutor.runTransaction(dtxInfo, () -> super.invoke(invocation));
+            return dtxServiceExecutor.runTransaction(dtxInfo, () -> super.invoke(invocation));
         }
+        
         return super.invoke(invocation);
     }
 }
