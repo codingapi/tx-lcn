@@ -27,7 +27,7 @@ public interface TXLCNTransactionControl {
      * @throws Throwable
      */
     default Object doBusinessCode(TxTransactionInfo info) throws Throwable {
-        return info.getBusinessSupplier().get();
+        return info.getBusinessCallback().call();
     }
 
 

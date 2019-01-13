@@ -8,6 +8,7 @@ import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.commons.annotation.LcnTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -19,6 +20,7 @@ import java.util.Date;
  * @author ujued
  */
 @Service
+@Order(Integer.MIN_VALUE)
 public class DemoServiceImpl implements DemoService {
 
     @Autowired

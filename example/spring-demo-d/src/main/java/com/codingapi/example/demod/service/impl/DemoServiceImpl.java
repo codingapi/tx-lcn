@@ -9,6 +9,7 @@ import com.codingapi.tx.commons.annotation.TxcTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -29,7 +30,7 @@ public class DemoServiceImpl implements DemoService {
 
 
     @Override
-    @TxcTransaction(propagation = DTXPropagation.SUPPORTS)
+    @TxcTransaction(dtxp = DTXPropagation.SUPPORTS)
     public String rpc(String value) {
         Demo demo = new Demo();
         demo.setCreateTime(new Date());

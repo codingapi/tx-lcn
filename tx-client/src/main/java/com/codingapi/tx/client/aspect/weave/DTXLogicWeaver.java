@@ -1,5 +1,6 @@
-package com.codingapi.tx.client.aspect.transaction;
+package com.codingapi.tx.client.aspect.weave;
 
+import com.codingapi.tx.client.aspect.BusinessCallback;
 import com.codingapi.tx.client.bean.DTXInfo;
 import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.bean.TxTransactionInfo;
@@ -10,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 /**
  * Description:
  * Company: CodingApi
@@ -19,20 +22,27 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class AspectBeforeServiceExecutor {
+public class DTXLogicWeaver {
 
     private final TracerHelper tracerHelper;
 
     private final TXLCNTransactionServiceExecutor transactionServiceExecutor;
 
     @Autowired
-    public AspectBeforeServiceExecutor(TracerHelper tracerHelper,
-                                       TXLCNTransactionServiceExecutor transactionServiceExecutor) {
+    public DTXLogicWeaver(TracerHelper tracerHelper,
+                          TXLCNTransactionServiceExecutor transactionServiceExecutor) {
         this.tracerHelper = tracerHelper;
         this.transactionServiceExecutor = transactionServiceExecutor;
     }
 
-    Object runTransaction(DTXInfo dtxInfo, BusinessSupplier business) throws Throwable {
+    public Object runTransaction(DTXInfo dtxInfo, BusinessCallback business) throws Throwable {
+
+        if (Objects.isNull(DTXLocal.cur())) {
+            DTXLocal.getOrNew();
+        } else {
+            return business.call();
+        }
+
         log.info("TX-LCN local start---->");
         // 事务发起方判断
         boolean isTransactionStart = tracerHelper.getGroupId() == null;

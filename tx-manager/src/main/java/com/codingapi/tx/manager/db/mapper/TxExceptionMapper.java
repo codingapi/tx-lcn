@@ -29,4 +29,7 @@ public interface TxExceptionMapper {
 
     @Select("select * from t_tx_exception where group_id=#{groupId}")
     TxException getByGroupId(String groupId);
+
+    @Select("select transaction_state from t_tx_exception where group_id=#{groupId} limit 1")
+    Integer getTransactionStateByGroupId(String groupId);
 }

@@ -1,30 +1,27 @@
 package com.codingapi.tx.manager.support.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.codingapi.tx.client.spi.message.RpcClient;
+import com.codingapi.tx.client.spi.message.dto.MessageDto;
+import com.codingapi.tx.client.spi.message.exception.RpcException;
+import com.codingapi.tx.client.spi.message.util.MessageUtils;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TransactionStateException;
-import com.codingapi.tx.commons.util.Transactions;
 import com.codingapi.tx.logger.TxLogger;
+import com.codingapi.tx.manager.core.message.MessageCreator;
+import com.codingapi.tx.manager.db.domain.TxException;
+import com.codingapi.tx.manager.db.mapper.TxExceptionMapper;
 import com.codingapi.tx.manager.support.restapi.model.ExceptionInfo;
 import com.codingapi.tx.manager.support.restapi.model.ExceptionList;
 import com.codingapi.tx.manager.support.service.TxExceptionService;
 import com.codingapi.tx.manager.support.service.WriteTxExceptionDTO;
-import com.codingapi.tx.manager.db.domain.TxException;
-import com.codingapi.tx.manager.db.mapper.TxExceptionMapper;
-import com.codingapi.tx.manager.core.message.MessageCreator;
 import com.codingapi.tx.manager.support.txex.TxExceptionListener;
-import com.codingapi.tx.client.spi.message.RpcClient;
-import com.codingapi.tx.client.spi.message.dto.MessageDto;
-import com.codingapi.tx.client.spi.message.exception.RpcException;
-import com.codingapi.tx.client.spi.message.params.TxExceptionParams;
-import com.codingapi.tx.client.spi.message.util.MessageUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,21 +72,13 @@ public class TxExceptionServiceImpl implements TxExceptionService {
     }
 
     @Override
-    @Transactional
-    public Short transactionUnitState(String groupId, String unitId) {
-        log.info("transactionUnitState > groupId: {}, unitId: {}", groupId, unitId);
-        TxException txException = txExceptionMapper.getByGroupAndUnitId(groupId, unitId);
-        if (Objects.isNull(txException)) {
-            txException = txExceptionMapper.getByGroupId(groupId);
-        }
-        if (Objects.isNull(txException) || Objects.isNull(txException.getTransactionState())) {
+    public int transactionState(String groupId) {
+        log.debug("transactionState > groupId: {}", groupId);
+        Integer state = txExceptionMapper.getTransactionStateByGroupId(groupId);
+        if (Objects.isNull(state)) {
             return -1;
         }
-        if (txException.getTransactionState() == 1 && txException.getRegistrar() == TxExceptionParams.NOTIFY_GROUP_ERROR) {
-            txLogger.trace(groupId, unitId, Transactions.TAG_COMPENSATION, "auto compensation");
-            txExceptionMapper.changeExState(txException.getId(), (short) 1);
-        }
-        return txException.getTransactionState();
+        return state;
     }
 
     @Override

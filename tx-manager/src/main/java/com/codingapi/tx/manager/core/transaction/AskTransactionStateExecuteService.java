@@ -1,12 +1,9 @@
 package com.codingapi.tx.manager.core.transaction;
 
-import com.codingapi.tx.commons.exception.SerializerException;
-import com.codingapi.tx.commons.exception.TxManagerException;
-import com.codingapi.tx.client.spi.message.params.AskTransactionStateParams;
-import com.codingapi.tx.manager.core.group.GroupRelationship;
+import com.codingapi.tx.manager.core.context.DTXTransactionContext;
+import com.codingapi.tx.manager.core.context.TransactionManager;
 import com.codingapi.tx.manager.core.message.RpcExecuteService;
 import com.codingapi.tx.manager.core.message.TransactionCmd;
-import com.codingapi.tx.manager.support.service.TxExceptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,31 +18,18 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class AskTransactionStateExecuteService implements RpcExecuteService {
 
-    private final TxExceptionService compensationService;
+    private final TransactionManager transactionManager;
 
-
-    @Autowired
-    private GroupRelationship groupRelationship;
+    private final DTXTransactionContext transactionContext;
 
     @Autowired
-    public AskTransactionStateExecuteService(TxExceptionService compensationService ) {
-        this.compensationService = compensationService;
+    public AskTransactionStateExecuteService(TransactionManager transactionManager, DTXTransactionContext transactionContext) {
+        this.transactionManager = transactionManager;
+        this.transactionContext = transactionContext;
     }
 
     @Override
-    public Object execute(TransactionCmd transactionCmd) throws TxManagerException {
-        try {
-            AskTransactionStateParams askTransactionStateParams =transactionCmd.getMsg().loadData(AskTransactionStateParams.class);
-
-            short state = compensationService.transactionUnitState(askTransactionStateParams.getGroupId(),
-                    askTransactionStateParams.getUnitId());
-
-            if (state != -1) {
-                return state;
-            }
-            return groupRelationship.transactionState(transactionCmd.getGroupId());
-        } catch (SerializerException e) {
-            throw new TxManagerException(e.getMessage());
-        }
+    public Object execute(TransactionCmd transactionCmd) {
+        return transactionManager.transactionState(transactionContext.getTransaction(transactionCmd.getGroupId()));
     }
 }

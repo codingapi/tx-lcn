@@ -1,4 +1,4 @@
-package com.codingapi.tx.client.aspect.control;
+package com.codingapi.tx.client.aspect;
 
 import com.codingapi.tx.client.config.TxClientConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +23,12 @@ public class DataSourceAspect implements Ordered {
     private TxClientConfig txClientConfig;
 
     @Autowired
-    private AspectBeforeResourceExecutor aspectBeforeResourceExecutor;
+    private com.codingapi.tx.client.aspect.weave.DTXResourceWeaver DTXResourceWeaver;
 
 
     @Around("execution(* javax.sql.DataSource.getConnection(..))")
     public Object around(ProceedingJoinPoint point) throws Throwable {
-        return aspectBeforeResourceExecutor.around(point);
+        return DTXResourceWeaver.around(point);
     }
 
 

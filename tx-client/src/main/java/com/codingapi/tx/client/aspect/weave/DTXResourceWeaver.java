@@ -1,4 +1,4 @@
-package com.codingapi.tx.client.aspect.control;
+package com.codingapi.tx.client.aspect.weave;
 
 import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.support.LCNTransactionBeanHelper;
@@ -12,17 +12,22 @@ import java.sql.Connection;
 import java.util.Objects;
 
 /**
+ * Description:
+ * Company: CodingApi
+ * Date: 2018/12/2
+ *
  * @author lorne
- * @date 2018/12/2
- * @description
  */
 @Component
 @Slf4j
-public class AspectBeforeResourceExecutor {
+public class DTXResourceWeaver {
 
+    private final LCNTransactionBeanHelper transactionBeanHelper;
 
     @Autowired
-    private LCNTransactionBeanHelper transactionBeanHelper;
+    public DTXResourceWeaver(LCNTransactionBeanHelper transactionBeanHelper) {
+        this.transactionBeanHelper = transactionBeanHelper;
+    }
 
     public Object around(ProceedingJoinPoint point) throws Throwable {
         DTXLocal dtxLocal = DTXLocal.cur();
@@ -33,7 +38,7 @@ public class AspectBeforeResourceExecutor {
                 try {
                     return (Connection) point.proceed();
                 } catch (Throwable throwable) {
-                    throw new RuntimeException(throwable);
+                    throw new IllegalStateException(throwable);
                 }
             });
             log.info("proxy a sql connection: {}.", connection);

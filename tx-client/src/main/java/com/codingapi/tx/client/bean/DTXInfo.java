@@ -6,8 +6,6 @@ import com.codingapi.tx.commons.util.Transactions;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.reflect.MethodSignature;
 
 import java.lang.reflect.Method;
 
@@ -28,29 +26,26 @@ public class DTXInfo {
 
     private TransactionInfo transactionInfo;
 
+    /**
+     * 用户实例对象的业务方法（包含注解信息）
+     */
     private Method businessMethod;
 
     private String unitId;
 
-    public DTXInfo(ProceedingJoinPoint point) throws Throwable {
-        // build TransactionInfo 获取切面方法参数
-        MethodSignature signature = (MethodSignature) point.getSignature();
-        Method method = signature.getMethod();
-
-        Method thisMethod = point.getTarget().getClass().getMethod(method.getName(), method.getParameterTypes());
+    public DTXInfo(Method method, Object[] args, Class<?> targetClass) {
         this.transactionInfo = new TransactionInfo();
-        this.transactionInfo.setTargetClazz(point.getTarget().getClass());
-        this.transactionInfo.setArgumentValues(point.getArgs());
-        this.transactionInfo.setMethod(thisMethod.getName());
-        this.transactionInfo.setMethodStr(thisMethod.toString());
+        this.transactionInfo.setTargetClazz(targetClass);
+        this.transactionInfo.setArgumentValues(args);
+        this.transactionInfo.setMethod(method.getName());
+        this.transactionInfo.setMethodStr(method.toString());
         this.transactionInfo.setParameterTypes(method.getParameterTypes());
 
-
-        this.businessMethod = thisMethod;
-        this.unitId = Transactions.unitId(point.getSignature().toString());
+        this.businessMethod = method;
+        this.unitId = Transactions.unitId(method.toString());
     }
 
-    public void reanalyseMethodArgs(ProceedingJoinPoint point) {
-        this.transactionInfo.setArgumentValues(point.getArgs());
+    public void reanalyseMethodArgs(Object[] args) {
+        this.transactionInfo.setArgumentValues(args);
     }
 }

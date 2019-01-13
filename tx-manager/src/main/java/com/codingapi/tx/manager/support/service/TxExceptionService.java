@@ -22,13 +22,12 @@ public interface TxExceptionService {
 
 
     /**
-     * 获取事务单元事务状态
+     * 获取事务状态
      *
      * @param groupId
-     * @param unitId
      * @return
      */
-    Short transactionUnitState(String groupId, String unitId);
+    int transactionState(String groupId);
 
     /**
      * 获取补偿列表
