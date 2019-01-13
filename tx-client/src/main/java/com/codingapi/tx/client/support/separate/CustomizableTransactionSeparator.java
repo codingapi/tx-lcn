@@ -27,7 +27,7 @@ public class CustomizableTransactionSeparator implements TXLCNTransactionSeparat
         if (txTransactionInfo.isTransactionStart()) {
             // 发起方时，对于只加入DTX的事务单元走默认处理
             if (txTransactionInfo.getPropagation().equals(DTXPropagation.SUPPORTS)) {
-                return TXLCNTransactionState.DEFAULT;
+                return TXLCNTransactionState.NON;
             }
             return TXLCNTransactionState.STARTING;
         }

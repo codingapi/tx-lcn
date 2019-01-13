@@ -47,6 +47,10 @@ public class TXLCNTransactionServiceExecutor {
 
         // 3. 获取事务状态
         TXLCNTransactionState lcnTransactionState = lcnTransactionSeparator.loadTransactionState(info);
+        // 3.1 如果不参与分布式事务立即终止
+        if (lcnTransactionState.equals(TXLCNTransactionState.NON)) {
+            return info.getBusinessCallback().call();
+        }
 
         // 4. 获取bean
         TXLCNTransactionControl lcnTransactionControl =
@@ -70,8 +74,8 @@ public class TXLCNTransactionServiceExecutor {
             txLogger.trace(info.getGroupId(), info.getUnitId(), "transaction", "business code success");
             lcnTransactionControl.onBusinessCodeSuccess(info, result);
             return result;
-        }catch (BeforeBusinessException e){
-            log.error("business",e);
+        } catch (BeforeBusinessException e) {
+            log.error("business", e);
             throw e;
         } catch (Throwable e) {
             // 5.5 业务执行失败

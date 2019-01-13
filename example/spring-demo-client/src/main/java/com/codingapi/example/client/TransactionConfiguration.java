@@ -1,6 +1,6 @@
 package com.codingapi.example.client;
 
-import com.codingapi.tx.client.aspect.DTXInterceptor;
+import com.codingapi.tx.client.aspect.interceptor.DTXInterceptor;
 import com.codingapi.tx.client.aspect.weave.DTXLogicWeaver;
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
 import org.springframework.boot.autoconfigure.transaction.TransactionProperties;

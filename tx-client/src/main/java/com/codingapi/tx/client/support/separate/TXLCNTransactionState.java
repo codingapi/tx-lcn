@@ -18,9 +18,14 @@ public enum TXLCNTransactionState {
     RUNNING("running"),
 
     /**
+     * 默认事务
+     */
+    DEFAULT("default"),
+
+    /**
      * 不参与分布式事务
      */
-    DEFAULT("default");
+    NON("non");
 
 
     private String code;
