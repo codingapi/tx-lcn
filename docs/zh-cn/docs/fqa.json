@@ -1,0 +1,6 @@
+{
+  "filename": "fqa.md",
+  "__html": "<h1>FQA</h1>\n<h4>1. TxManager配置分布式事务时间的作用是？为什么？</h4>\n<blockquote>\n<p>自动补偿机制会自动修复在分布式事务时间后系统存在的可修复异常。为什么是<code>a &gt;= 2c + (b + c + d) * (e - 1) - Δ</code>？\n一次分布式事务下，事务发起方两次与TM的RPC（创建和通知事务组， 2c）, 事务参与方一次与TM的RPC（加入事务组，1c）, TxManager会RPC通知所有事务参与方(通知事务单元，1b),\n再加上微服务间RPC，综合调用链长度，即为上面的计算方法。</p>\n</blockquote>\n",
+  "link": "/zh-cn/docs/fqa.html",
+  "meta": {}
+}

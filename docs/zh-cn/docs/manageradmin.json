@@ -1,0 +1,6 @@
+{
+  "filename": "manageradmin.md",
+  "__html": "<h1>TxManager管理手册</h1>\n<p>访问 <a href=\"http://127.0.0.1:8069/admin/index.html\">http://127.0.0.1:8069/admin/index.html</a>进入管理后台，默认密码时<code>codingapi</code>。<a href=\"setting/manager.html\">指定密码</a></p>\n<h2>后台使用说明</h2>\n<h4>首页信息</h4>\n<p>主要是TxManager的配置信息，不做特别说明。<a href=\"setting/manager.html\">注</a></p>\n<h4>异常记录</h4>\n<p><code>事务ID</code>：事务组标示</p>\n<p><code>事务单元ID</code>：参与事务单元标示</p>\n<p><code>TxClient标示</code>：模块标示</p>\n<p><code>异常情况</code>：【未知】【TxManager通知事务】【TxClient查询事务状态】【事务发起方通知事务组】, 这几种异常情况</p>\n<p><code>异常状态</code>：解决和未解决。对于系统未作出补偿的异常记录，需要系统管理员 【操作】查看当场信息，做出手动补偿</p>\n<p><code>时间</code>：发生时间</p>\n<p><code>操作</code>：查看异常时信息</p>\n<h4>系统日志</h4>\n<ul>\n<li>日志分类-TAG:<br>\ntransaction: TxClient下达命令记录\nmanager: TxManager执行协调记录</li>\n<li>日志内容:\ncreate group: TxClient创建事务组命令到达TxManager\nstart join group: TxClient 开始加入事务组\nover join group： TxClient 成功加事务组\nnotify group 1： TxManager通知TxClient提交本第事务（0回滚）\nnotify unit exception： TxManager通知事务单元失败（此处会记录异常信息）\nnotify group over：通知事务组结束（对于个别不能通知到的单元，会记下异常记录，不影响其它通知，异常的等待补偿）</li>\n</ul>\n",
+  "link": "/zh-cn/docs/manageradmin.html",
+  "meta": {}
+}

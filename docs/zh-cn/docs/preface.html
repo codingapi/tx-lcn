@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="preface" />
+	<meta name="description" content="preface" />
+	<!-- 网页标签标题 -->
+	<title>preface</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a href="/zh-cn/index.html"><img class="logo" src="/img/txlcn.png"/></a><div class="search search-normal"><span class="icon-search"></span></div><span class="language-switch language-switch-normal">En</span><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/preface.html" target="_self">文档</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>用户文档</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/zh-cn/docs/preface.html" target="_self">入门</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/zh-cn/docs/background.html" target="_self">背景</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/zh-cn/docs/start.html" target="_self">快速开始</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/zh-cn/docs/dependencies.html" target="_self">依赖</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>示例<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/demo/env.html" target="_self">基础环境</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/demo/dubbo.html" target="_self">dubbo示例</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/demo/springcloud.html" target="_self">springcloud示例</a></li></ul></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>原理介绍<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/principle/control.html" target="_self">控制原理</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/principle/lcn.html" target="_self">LCN模式</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/principle/tcc.html" target="_self">TCC模式</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/principle/txc.html" target="_self">TXC模式</a></li></ul></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>配置手册<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/setting/client.html" target="_self">TxClient配置</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/setting/manager.html" target="_self">TxManager配置</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/setting/distributed.html" target="_self">集群与负载</a></li></ul></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>扩展支持<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/expansion/transaction.html" target="_self">事务模式扩展</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/expansion/message.html" target="_self">通讯协议扩展</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/expansion/rpc.html" target="_self">RPC框架扩展</a></li></ul></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/zh-cn/docs/communication.html" target="_self">通讯指令手册</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/zh-cn/docs/manageradmin.html" target="_self">TM管理手册</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/zh-cn/docs/debug.html" target="_self">问题排查手册</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/zh-cn/docs/developer.html" target="_self">开发者</a></li><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><a href="/zh-cn/docs/fqa.html" target="_self">FQA</a></li></ul></li></ul></div><div class="doc-content markdown-body"><h1>入门</h1>
+<p>    随着互联化的蔓延，各种项目都逐渐向分布式服务做转换。如今微服务已经普遍存在，本地事务已经无法满足分布式的要求，由此分布式事务问题诞生。
+分布式事务被称为世界性的难题，目前分布式事务存在两大理论依据：CAP定律 BASE理论。</p>
+<h2>CAP定律</h2>
+<p>    这个定理的内容是指的是在一个分布式系统中、Consistency（一致性）、 Availability（可用性）、Partition tolerance（分区容错性），三者不可得兼。</p>
+<h3>一致性（C）</h3>
+<p>    在分布式系统中的所有数据备份，在同一时刻是否同样的值。（等同于所有节点访问同一份最新的数据副本）</p>
+<h3>可用性（A）</h3>
+<p>    在集群中一部分节点故障后，集群整体是否还能响应客户端的读写请求。（对数据更新具备高可用性）</p>
+<h3>分区容错性（P）</h3>
+<p>    以实际效果而言，分区相当于对通信的时限要求。系统如果不能在时限内达成数据一致性，就意味着发生了分区的情况，必须就当前操作在C和A之间做出选择。</p>
+<h2>BASE理论</h2>
+<p>    BASE是Basically Available（基本可用）、Soft state（软状态）和 Eventually consistent（最终一致性）三个短语的缩写。BASE理论是对CAP中一致性和可用性权衡的结果，其来源于对大规模互联网系统分布式实践的总结， 是基于CAP定理逐步演化而来的。BASE理论的核心思想是：即使无法做到强一致性，但每个应用都可以根据自身业务特点，采用适当的方式来使系统达到最终一致性。</p>
+<h3>基本可用</h3>
+<p>    基本可用是指分布式系统在出现不可预知故障的时候，允许损失部分可用性----注意，这绝不等价于系统不可用。比如：</p>
+<p>（1）响应时间上的损失。正常情况下，一个在线搜索引擎需要在0.5秒之内返回给用户相应的查询结果，但由于出现故障，查询结果的响应时间增加了1~2秒</p>
+<p>（2）系统功能上的损失：正常情况下，在一个电子商务网站上进行购物的时候，消费者几乎能够顺利完成每一笔订单，但是在一些节日大促购物高峰的时候，由于消费者的购物行为激增，为了保护购物系统的稳定性，部分消费者可能会被引导到一个降级页面</p>
+<h3>软状态</h3>
+<p>    软状态指允许系统中的数据存在中间状态，并认为该中间状态的存在不会影响系统的整体可用性，即允许系统在不同节点的数据副本之间进行数据同步的过程存在延时</p>
+<h3>最终一致性</h3>
+<p>    最终一致性强调的是所有的数据副本，在经过一段时间的同步之后，最终都能够达到一个一致的状态。因此，最终一致性的本质是需要系统保证最终数据能够达到一致，而不需要实时保证系统数据的强一致性。</p>
+</div></section><footer class="footer-container"><div class="footer-body"><img src="/img/txlcn.png"/><div class="cols-container"><div class="col col-12"><h3>愿景</h3><p>我们将致力于打造一个快捷、高效、兼任性强的分布式事务解决方案</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/background.html" target="_self">概览</a></dd><dd><a href="/zh-cn/docs/start.html" target="_self">快速开始</a></dd><dd><a href="/zh-cn/docs/demo/env.html" target="_self">开发者指南</a></dd></dl></div><div class="col col-6"><dl><dt>友情链接</dt><dd><a href="https://www.codingapi.com/" target="_blank">CodingApi</a></dd></dl></div></div><div class="copyright"><span>Copyright © 2018-2019 CodingApi</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

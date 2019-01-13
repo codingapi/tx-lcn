@@ -1,0 +1,236 @@
+{
+  "en-us": [
+    {
+      "filename": "background.md",
+      "link": "/en-us/docs/background.html",
+      "meta": {}
+    },
+    {
+      "filename": "communication.md",
+      "link": "/en-us/docs/communication.html",
+      "meta": {}
+    },
+    {
+      "filename": "debug.md",
+      "link": "/en-us/docs/debug.html",
+      "meta": {}
+    },
+    {
+      "filename": "dubbo.md",
+      "link": "/en-us/docs/demo/dubbo.html",
+      "meta": {}
+    },
+    {
+      "filename": "env.md",
+      "link": "/en-us/docs/demo/env.html",
+      "meta": {}
+    },
+    {
+      "filename": "springcloud.md",
+      "link": "/en-us/docs/demo/springcloud.html",
+      "meta": {}
+    },
+    {
+      "filename": "dependencies.md",
+      "link": "/en-us/docs/dependencies.html",
+      "meta": {}
+    },
+    {
+      "filename": "developer.md",
+      "link": "/en-us/docs/developer.html",
+      "meta": {}
+    },
+    {
+      "filename": "message.md",
+      "link": "/en-us/docs/expansion/message.html",
+      "meta": {}
+    },
+    {
+      "filename": "rpc.md",
+      "link": "/en-us/docs/expansion/rpc.html",
+      "meta": {}
+    },
+    {
+      "filename": "transaction.md",
+      "link": "/en-us/docs/expansion/transaction.html",
+      "meta": {}
+    },
+    {
+      "filename": "fqa.md",
+      "link": "/en-us/docs/fqa.html",
+      "meta": {}
+    },
+    {
+      "filename": "manageradmin.md",
+      "link": "/en-us/docs/manageradmin.html",
+      "meta": {}
+    },
+    {
+      "filename": "preface.md",
+      "link": "/en-us/docs/preface.html",
+      "meta": {}
+    },
+    {
+      "filename": "control.md",
+      "link": "/en-us/docs/principle/control.html",
+      "meta": {}
+    },
+    {
+      "filename": "lcn.md",
+      "link": "/en-us/docs/principle/lcn.html",
+      "meta": {}
+    },
+    {
+      "filename": "tcc.md",
+      "link": "/en-us/docs/principle/tcc.html",
+      "meta": {}
+    },
+    {
+      "filename": "txc.md",
+      "link": "/en-us/docs/principle/txc.html",
+      "meta": {}
+    },
+    {
+      "filename": "client.md",
+      "link": "/en-us/docs/setting/client.html",
+      "meta": {}
+    },
+    {
+      "filename": "distributed.md",
+      "link": "/en-us/docs/setting/distributed.html",
+      "meta": {}
+    },
+    {
+      "filename": "manager.md",
+      "link": "/en-us/docs/setting/manager.html",
+      "meta": {}
+    },
+    {
+      "filename": "start.md",
+      "link": "/en-us/docs/start.html",
+      "meta": {}
+    },
+    {
+      "filename": "test.md",
+      "link": "/en-us/docs/test.html",
+      "meta": {}
+    }
+  ],
+  "zh-cn": [
+    {
+      "filename": "background.md",
+      "link": "/zh-cn/docs/background.html",
+      "meta": {}
+    },
+    {
+      "filename": "communication.md",
+      "link": "/zh-cn/docs/communication.html",
+      "meta": {}
+    },
+    {
+      "filename": "debug.md",
+      "link": "/zh-cn/docs/debug.html",
+      "meta": {}
+    },
+    {
+      "filename": "dubbo.md",
+      "link": "/zh-cn/docs/demo/dubbo.html",
+      "meta": {}
+    },
+    {
+      "filename": "env.md",
+      "link": "/zh-cn/docs/demo/env.html",
+      "meta": {}
+    },
+    {
+      "filename": "springcloud.md",
+      "link": "/zh-cn/docs/demo/springcloud.html",
+      "meta": {}
+    },
+    {
+      "filename": "dependencies.md",
+      "link": "/zh-cn/docs/dependencies.html",
+      "meta": {}
+    },
+    {
+      "filename": "developer.md",
+      "link": "/zh-cn/docs/developer.html",
+      "meta": {}
+    },
+    {
+      "filename": "message.md",
+      "link": "/zh-cn/docs/expansion/message.html",
+      "meta": {}
+    },
+    {
+      "filename": "rpc.md",
+      "link": "/zh-cn/docs/expansion/rpc.html",
+      "meta": {}
+    },
+    {
+      "filename": "transaction.md",
+      "link": "/zh-cn/docs/expansion/transaction.html",
+      "meta": {}
+    },
+    {
+      "filename": "fqa.md",
+      "link": "/zh-cn/docs/fqa.html",
+      "meta": {}
+    },
+    {
+      "filename": "manageradmin.md",
+      "link": "/zh-cn/docs/manageradmin.html",
+      "meta": {}
+    },
+    {
+      "filename": "preface.md",
+      "link": "/zh-cn/docs/preface.html",
+      "meta": {}
+    },
+    {
+      "filename": "control.md",
+      "link": "/zh-cn/docs/principle/control.html",
+      "meta": {}
+    },
+    {
+      "filename": "lcn.md",
+      "link": "/zh-cn/docs/principle/lcn.html",
+      "meta": {}
+    },
+    {
+      "filename": "tcc.md",
+      "link": "/zh-cn/docs/principle/tcc.html",
+      "meta": {}
+    },
+    {
+      "filename": "txc.md",
+      "link": "/zh-cn/docs/principle/txc.html",
+      "meta": {}
+    },
+    {
+      "filename": "client.md",
+      "link": "/zh-cn/docs/setting/client.html",
+      "meta": {}
+    },
+    {
+      "filename": "distributed.md",
+      "link": "/zh-cn/docs/setting/distributed.html",
+      "meta": {}
+    },
+    {
+      "filename": "manager.md",
+      "link": "/zh-cn/docs/setting/manager.html",
+      "meta": {}
+    },
+    {
+      "filename": "start.md",
+      "link": "/zh-cn/docs/start.html",
+      "meta": {}
+    },
+    {
+      "filename": "test.md",
+      "link": "/zh-cn/docs/test.html",
+      "meta": {}
+    }
+  ]
+}
