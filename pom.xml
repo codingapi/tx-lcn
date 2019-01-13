@@ -6,7 +6,7 @@
 
     <groupId>com.codingapi.txlcn</groupId>
     <artifactId>tx-lcn</artifactId>
-    <version>5.0.0.beta</version>
+    <version>5.0.0.RC1</version>
     <packaging>pom</packaging>
 
 
@@ -57,7 +57,7 @@
         <maven.javadoc.plugin>2.10.3</maven.javadoc.plugin>
         <maven.gpg.plugin>1.6</maven.gpg.plugin>
 
-        <codingapi.txlcn.version>5.0.0.beta</codingapi.txlcn.version>
+        <codingapi.txlcn.version>5.0.0.RC1</codingapi.txlcn.version>
 
         <txlcn-org.projectlombok.version>1.18.0</txlcn-org.projectlombok.version>
         <txlcn-spring-cloud.version>Finchley.SR2</txlcn-spring-cloud.version>

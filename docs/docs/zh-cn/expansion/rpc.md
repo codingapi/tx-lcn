@@ -98,7 +98,7 @@ public class RibbonFirstRestTemplateCustomizer implements RestTemplateCustomizer
     <parent>
         <artifactId>tx-lcn</artifactId>
         <groupId>com.codingapi.txlcn</groupId>
-        <version>5.0.0.beta</version>
+        <version>5.0.0.RC1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>

@@ -8,5 +8,5 @@ ${AnsiColor.BRIGHT_GREEN}
          \_/ \/   \/     \_____/\____/\_| \_/
 
 
-         TX-LCN TxManager  version:5.0.0.beta
+         TX-LCN TxManager  version:5.0.0.RC1
 

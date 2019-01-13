@@ -6,7 +6,7 @@
     <parent>
         <artifactId>tx-lcn</artifactId>
         <groupId>com.codingapi.txlcn</groupId>
-        <version>5.0.0.beta</version>
+        <version>5.0.0.RC1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <groupId>com.example</groupId>

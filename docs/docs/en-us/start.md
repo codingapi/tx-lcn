@@ -7,7 +7,7 @@ springcloud pom
 <dependency>
     <groupId>com.codingapi.txlcn</groupId>
     <artifactId>tx-client-springcloud</artifactId>
-    <version>5.0.0.beta</version>
+    <version>5.0.0.RC1</version>
 </dependency>
 ```
 dubbo pom
@@ -15,7 +15,7 @@ dubbo pom
 <dependency>
     <groupId>com.codingapi.txlcn</groupId>
     <artifactId>tx-client-dubbo</artifactId>
-    <version>5.0.0.beta</version>
+    <version>5.0.0.RC1</version>
 </dependency>
 ```
 > `NOTE` 依微服务架构依赖其一

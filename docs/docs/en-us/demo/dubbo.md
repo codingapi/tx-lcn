@@ -129,7 +129,7 @@ spring.datasource.hikari.maximum-pool-size=20
 mybatis.configuration.map-underscore-to-camel-case=true
 mybatis.configuration.use-generated-keys=true
 ```
-src:[https://github.com/codingapi/tx-lcn/tree/5.0.0.beta/example/dubbo-demo-client](https://github.com/codingapi/tx-lcn/tree/5.0.0.beta/example/dubbo-demo-client)  
+src:[https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/dubbo-demo-client](https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/dubbo-demo-client)  
 
 ## 四、启动Dubbo微服务
 （1） 事务参与方 D  

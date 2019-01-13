@@ -18,7 +18,7 @@ mybatis.configuration.map-underscore-to-camel-case=true
 mybatis.configuration.use-generated-keys=true
 
 ```
-src:[https://github.com/codingapi/tx-lcn/tree/5.0.0.beta/example/spring-demo-d](https://github.com/codingapi/tx-lcn/tree/5.0.0.beta/example/spring-demo-d)  
+src:[https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/spring-demo-d](https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/spring-demo-d)  
 
 ## 二、事务参与方E
 （1）新建Maven 工程  
@@ -38,7 +38,7 @@ mybatis.configuration.map-underscore-to-camel-case=true
 mybatis.configuration.use-generated-keys=true
 
 ```
-src:[https://github.com/codingapi/tx-lcn/tree/5.0.0.beta/example/spring-demo-e](https://github.com/codingapi/tx-lcn/tree/5.0.0.beta/example/spring-demo-e)  
+src:[https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/spring-demo-e](https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/spring-demo-e)  
 
 ## 三、事务发起方Client
 （1）新建Maven 工程  
@@ -63,7 +63,7 @@ mybatis.configuration.use-generated-keys=true
 ribbon.MaxAutoRetriesNextServer=0
 
 ```
-src:[https://github.com/codingapi/tx-lcn/tree/5.0.0.beta/example/spring-demo-client](https://github.com/codingapi/tx-lcn/tree/5.0.0.beta/example/spring-demo-client)  
+src:[https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/spring-demo-client](https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/spring-demo-client)  
 
 ## 四、启动SpringCloud微服务
 （1） 事务参与方 D  

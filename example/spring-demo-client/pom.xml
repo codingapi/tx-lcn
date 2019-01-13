@@ -5,7 +5,7 @@
     <parent>
         <artifactId>tx-lcn</artifactId>
         <groupId>com.codingapi.txlcn</groupId>
-        <version>5.0.0.beta</version>
+        <version>5.0.0.RC1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.codingapi.txlcn</groupId>
             <artifactId>tx-client-springcloud</artifactId>
-            <version>5.0.0.beta</version>
+            <version>5.0.0.RC1</version>
         </dependency>
 
         <dependency>
