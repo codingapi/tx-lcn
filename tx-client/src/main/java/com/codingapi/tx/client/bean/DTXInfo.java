@@ -16,7 +16,6 @@ import java.lang.reflect.Method;
  * @author ujued
  */
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
 public class DTXInfo {
 

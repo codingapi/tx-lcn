@@ -43,7 +43,7 @@ public class DTXLogicWeaver {
             return business.call();
         }
 
-        log.info("TX-LCN local start---->");
+        log.info("tx-unit start---->");
         // 事务发起方判断
         boolean isTransactionStart = tracerHelper.getGroupId() == null;
 
@@ -60,13 +60,8 @@ public class DTXLogicWeaver {
         dtxLocal.setTransactionType(dtxInfo.getTransactionType());
 
         // 事务参数
-        TxTransactionInfo info = new TxTransactionInfo(
-                dtxInfo.getTransactionType(),
-                isTransactionStart,
-                groupId,
-                unitId,
-                dtxInfo.getTransactionInfo(),
-                business,
+        TxTransactionInfo info = new TxTransactionInfo(dtxInfo.getTransactionType(), isTransactionStart,
+                groupId, unitId, dtxInfo.getTransactionInfo(), business,
                 dtxInfo.getBusinessMethod(), dtxInfo.getTransactionPropagation());
 
         //LCN事务处理器
@@ -74,7 +69,7 @@ public class DTXLogicWeaver {
             return transactionServiceExecutor.transactionRunning(info);
         } finally {
             DTXLocal.makeNeverAppeared();
-            log.info("TX-LCN local end------>");
+            log.info("tx-unit end------>");
         }
     }
 }

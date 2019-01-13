@@ -53,11 +53,27 @@ public class DTXInfoPool {
         return dtxInfo;
     }
 
+    private DTXInfo get0(Method method, Object[] args, Class<?> targetClass) {
+        String signature = method.getName();
+        String unitId = Transactions.unitId(signature);
+        DTXInfo dtxInfo = dtxInfoCache.get(unitId);
+        if (Objects.isNull(dtxInfo)) {
+            dtxInfo = new DTXInfo(method, args, targetClass);
+            dtxInfoCache.put(unitId, dtxInfo);
+        }
+        dtxInfo.reanalyseMethodArgs(args);
+        return dtxInfo;
+    }
+
     public static DTXInfo get(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return dtxInfoPool.get0(proceedingJoinPoint);
     }
 
     public static DTXInfo get(MethodInvocation methodInvocation) {
         return dtxInfoPool.get0(methodInvocation);
+    }
+
+    public static DTXInfo get(Method method, Object[] args, Class<?> targetClass) {
+        return dtxInfoPool.get0(method, args, targetClass);
     }
 }
