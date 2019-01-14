@@ -18,9 +18,8 @@ package com.codingapi.txlcn.commons.util.serializer;
 import com.codingapi.txlcn.commons.exception.SerializerException;
 
 /**
- * @author lorne
- * @date 2018/12/31
- * @description
+ * @author lorne  2018/12/31
+ *
  */
 public class SerializerContext implements ISerializer {
 

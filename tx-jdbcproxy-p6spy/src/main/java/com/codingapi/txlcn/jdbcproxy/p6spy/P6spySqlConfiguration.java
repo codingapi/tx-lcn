@@ -27,8 +27,6 @@ import java.util.Map;
 
 /**
  * @author lorne
- * @date 2018/12/12
- * @description
  */
 @Configuration
 @ComponentScan

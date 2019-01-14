@@ -61,6 +61,11 @@ public class ConnectionWrapper extends AbstractWrapper implements Connection {
      * <p>
      * Setting to protected instead of private, so that CGLIB can create a subclass/proxy
      * See also: {@code net.sf.cglib.proxy.Enhancer#filterConstructors} (protectedOk: true)
+     *
+     *
+     * @param delegate   delegate
+     * @param jdbcEventListener jdbcEventListener
+     * @param connectionInformation connectionInformation
      */
     protected ConnectionWrapper(Connection delegate, JdbcEventListener jdbcEventListener, ConnectionInformation connectionInformation) {
         super(delegate);

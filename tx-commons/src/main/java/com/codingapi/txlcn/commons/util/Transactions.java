@@ -46,8 +46,8 @@ public class Transactions {
     /**
      * 方法签名生成事务单元ID
      *
-     * @param methodSignature
-     * @return
+     * @param methodSignature  方法签名key
+     * @return  md5hex val
      */
     public static String unitId(String methodSignature) {
         return DigestUtils.md5DigestAsHex(methodSignature.getBytes());
@@ -56,8 +56,8 @@ public class Transactions {
     /**
      * 方法签名生成补偿ID
      *
-     * @param startMethodSignature
-     * @return
+     * @param startMethodSignature 方法签名key
+     * @return md5hex val
      */
     public static String compensationId(String startMethodSignature) {
         return DigestUtils.md5DigestAsHex(startMethodSignature.getBytes());

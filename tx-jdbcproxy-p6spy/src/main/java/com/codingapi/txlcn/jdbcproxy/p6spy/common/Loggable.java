@@ -18,7 +18,7 @@
 package com.codingapi.txlcn.jdbcproxy.p6spy.common;
 
 /**
- * Assures capability of the class to be logged by {@link P6LogQuery}.
+ * Assures capability of the class to be logged by
  *
  * @author Peter Butkovic
  */

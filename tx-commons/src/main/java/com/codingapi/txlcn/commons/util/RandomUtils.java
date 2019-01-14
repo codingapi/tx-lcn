@@ -19,9 +19,7 @@ import java.util.Random;
 import java.util.UUID;
 
 /**
- * @author lorne
- * @date 2018/12/2
- * @description
+ * @author lorne 2018/12/2
  */
 public class RandomUtils {
 

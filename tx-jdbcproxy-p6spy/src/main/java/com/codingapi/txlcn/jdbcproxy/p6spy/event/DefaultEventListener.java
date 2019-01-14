@@ -29,7 +29,7 @@ import java.sql.SQLException;
 /**
  * This implementation of {@link JdbcEventListener} must always be applied as the first listener.
  * It populates the information objects {@link StatementInformation}, {@link PreparedStatementInformation},
- * {@link com.p6spy.engine.common.CallableStatementInformation} and {@link ResultSetInformation}
+ *  {@link ResultSetInformation}
  */
 public class DefaultEventListener extends JdbcEventListener {
 

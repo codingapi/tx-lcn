@@ -24,7 +24,7 @@ import java.util.*;
  * 
  * @author Peter Butkovic
  *
- * @param <T>
+ * @param <T> T
  */
 @SuppressWarnings("serial")
 public class CustomHashedHashSet<T> extends HashSet<T> {

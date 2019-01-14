@@ -31,9 +31,6 @@ import java.sql.*;
  * There are two ways to register your custom implementation of this class.
  * The fist way is to add the fully qualified class name of your implementation to
  * <code>src/main/resources/META-INF/services/com.p6spy.engine.event.JdbcEventListener</code>.
- * <p>
- * The second way is to implement a {@link com.p6spy.engine.spy.P6Factory}
- * <p>
  * <b>NOTE:</b> Exceptions thrown in this event listener won't be caught. So you have to make sure that your event
  * listener does not throw exceptions. For example, if your {@link #onConnectionWrapped} method throws an exception
  * your application won't be able to create any {@link Connection}.
@@ -44,8 +41,7 @@ public abstract class JdbcEventListener {
    * This callback method is executed before a {@link Connection} obtained from a {@link DataSource} or a {@link Driver}.
    * <p>
    * The {@link ConnectionInformation} holds information about the creator of the connection which is either
-   * {@link ConnectionInformation#dataSource}, {@link ConnectionInformation#driver} or
-   * {@link ConnectionInformation#pooledConnection}, though {@link ConnectionInformation#connection} itself is <code>null</code>.
+   * ,though {@link ConnectionInformation#connection} itself is <code>null</code>.
    *
    * @param connectionInformation The meta information about the wrapped {@link Connection}
    */
@@ -56,8 +52,7 @@ public abstract class JdbcEventListener {
    * This callback method is executed after a {@link Connection} obtained from a {@link DataSource} or a {@link Driver}.
    * <p>
    * The {@link ConnectionInformation} holds information about the creator of the connection which is either
-   * {@link ConnectionInformation#dataSource}, {@link ConnectionInformation#driver} or
-   * {@link ConnectionInformation#pooledConnection}, though {@link ConnectionInformation#connection} itself is <code>null</code>
+   * , though {@link ConnectionInformation#connection} itself is <code>null</code>
    * when {@link SQLException} is not <code>null</code> and vise versa.
    *
    * @param connectionInformation The meta information about the wrapped {@link Connection}
@@ -71,8 +66,6 @@ public abstract class JdbcEventListener {
    * This callback method is executed after a wrapped {@link Connection} has been created.
    * <p>
    * The {@link ConnectionInformation} holds information about the creator of the connection which is either
-   * {@link ConnectionInformation#dataSource}, {@link ConnectionInformation#driver} or
-   * {@link ConnectionInformation#pooledConnection}.
    *
    * @param connectionInformation The meta information about the wrapped {@link Connection}
    *
@@ -130,6 +123,7 @@ public abstract class JdbcEventListener {
    * This callback method is executed before any of the {@link PreparedStatement#execute()} methods are invoked.
    *
    * @param statementInformation The meta information about the {@link Statement} being invoked
+   * @throws  SQLException SQLException
    */
   public void onBeforeExecute(PreparedStatementInformation statementInformation)  throws SQLException{
   }
@@ -150,6 +144,7 @@ public abstract class JdbcEventListener {
    *
    * @param statementInformation The meta information about the {@link Statement} being invoked
    * @param sql                  The SQL string provided to the execute method
+   * @throws SQLException SQLException
    */
   public void onBeforeExecute(StatementInformation statementInformation, String sql) throws SQLException {
   }
@@ -171,6 +166,7 @@ public abstract class JdbcEventListener {
    * This callback method is executed before the {@link Statement#executeBatch()} method is invoked.
    *
    * @param statementInformation The meta information about the {@link Statement} being invoked
+   * @throws SQLException SQLException
    */
   public void onBeforeExecuteBatch(StatementInformation statementInformation) throws SQLException {
   }
@@ -192,6 +188,7 @@ public abstract class JdbcEventListener {
    * This callback method is executed before the {@link PreparedStatement#executeUpdate()} method is invoked.
    *
    * @param statementInformation The meta information about the {@link Statement} being invoked
+   * @throws SQLException SQLException
    */
   public void onBeforeExecuteUpdate(PreparedStatementInformation statementInformation) throws SQLException {
   }
@@ -214,6 +211,7 @@ public abstract class JdbcEventListener {
    *
    * @param statementInformation The meta information about the {@link Statement} being invoked
    * @param sql                  The SQL string provided to the execute method
+   * @throws SQLException SQLException
    */
   public void onBeforeExecuteUpdate(StatementInformation statementInformation, String sql)  throws SQLException{
   }
@@ -237,6 +235,7 @@ public abstract class JdbcEventListener {
    * This callback method is executed before the {@link PreparedStatement#executeQuery()} method is invoked.
    *
    * @param statementInformation The meta information about the {@link Statement} being invoked
+   * @throws  SQLException SQLException
    */
   public void onBeforeExecuteQuery(PreparedStatementInformation statementInformation) throws SQLException {
   }
@@ -257,6 +256,7 @@ public abstract class JdbcEventListener {
    *
    * @param statementInformation The meta information about the {@link Statement} being invoked
    * @param sql                  The SQL string provided to the execute method
+   * @throws SQLException SQLException
    */
   public void onBeforeExecuteQuery(StatementInformation statementInformation, String sql) throws SQLException {
   }

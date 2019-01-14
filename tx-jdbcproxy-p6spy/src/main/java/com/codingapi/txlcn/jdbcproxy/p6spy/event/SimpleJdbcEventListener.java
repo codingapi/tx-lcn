@@ -35,6 +35,7 @@ public abstract class SimpleJdbcEventListener extends JdbcEventListener {
    * This callback method is executed before any {@link java.sql.Statement}.execute* method is invoked
    *
    * @param statementInformation The meta information about the {@link java.sql.Statement} being invoked
+   * @throws SQLException SQLException
    */
   public void onBeforeAnyExecute(StatementInformation statementInformation) throws SQLException {
   }

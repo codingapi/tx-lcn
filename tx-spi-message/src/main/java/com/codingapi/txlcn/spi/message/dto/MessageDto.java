@@ -27,8 +27,6 @@ import java.io.Serializable;
 
 /**
  * @author lorne
- * @date 2018/12/2
- * @description
  */
 @Data
 @AllArgsConstructor

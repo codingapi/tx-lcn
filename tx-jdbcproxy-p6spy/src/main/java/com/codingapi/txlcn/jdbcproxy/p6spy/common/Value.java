@@ -74,8 +74,8 @@ public class Value {
    * <li>for other types string representation is simply returned.</li>
    * </ul>
    *
-   * @param value
-   * @return
+   * @param value value
+   * @return  String
    */
   public String convertToString(Object value) {
     String result;

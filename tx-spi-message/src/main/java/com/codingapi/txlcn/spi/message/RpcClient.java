@@ -40,7 +40,7 @@ public abstract class RpcClient {
      * 发送指令不需要返回数据，需要知道返回的状态
      * @param rpcCmd    指令内容
      * @return  指令状态
-     * @throws RpcException
+     * @throws RpcException 远程调用请求异常
      */
    public abstract RpcResponseState send(RpcCmd rpcCmd) throws RpcException;
 
@@ -50,7 +50,7 @@ public abstract class RpcClient {
      * @param remoteKey 远程标识关键字
      * @param msg    指令内容
      * @return  指令状态
-     * @throws RpcException
+     * @throws RpcException 远程调用请求异常
      */
     public abstract RpcResponseState send(String remoteKey,MessageDto msg) throws RpcException;
 
@@ -59,7 +59,7 @@ public abstract class RpcClient {
      * 发送请求并相应
      * @param rpcCmd   指令内容
      * @return  相应指令数据
-     * @throws RpcException
+     * @throws RpcException 远程调用请求异常
      */
     public abstract  MessageDto request(RpcCmd rpcCmd)throws RpcException;
 
@@ -69,15 +69,15 @@ public abstract class RpcClient {
      * @param remoteKey   远程标识关键字
      * @param msg    指令内容
      * @return  相应指令数据
-     * @throws RpcException
+     * @throws RpcException 远程调用请求异常
      */
     public abstract  MessageDto request(String remoteKey,MessageDto msg)throws RpcException;
 
 
     /**
      * 获取一个远程标识关键字
-     * @return
-     * @throws RpcException
+     * @return 远程标识关键字
+     * @throws RpcException 远程调用请求异常
      */
     public  String loadRemoteKey() throws RpcException{
         return rpcLoadBalance.getRemoteKey();

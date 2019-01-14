@@ -16,9 +16,8 @@
 package com.codingapi.txlcn.spi.message.dto;
 
 /**
+ * 业务响应状态
  * @author lorne
- * @date 2018/12/2
- * @description 业务响应状态
  */
 public enum RpcResponseState {
 

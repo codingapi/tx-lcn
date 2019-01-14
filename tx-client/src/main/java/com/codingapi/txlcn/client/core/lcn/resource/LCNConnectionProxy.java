@@ -25,8 +25,6 @@ import java.util.concurrent.Executor;
 
 /**
  * @author lorne
- * @date 2018/12/2
- * @description
  */
 @Slf4j
 public class LCNConnectionProxy implements Connection {
@@ -40,8 +38,8 @@ public class LCNConnectionProxy implements Connection {
     /**
      * 通知事务
      *
-     * @param state
-     * @return
+     * @param state state
+     * @return RpcResponseState RpcResponseState
      */
     public RpcResponseState notify(int state) {
         try {

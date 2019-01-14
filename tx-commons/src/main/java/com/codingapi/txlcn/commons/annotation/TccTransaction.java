@@ -18,10 +18,8 @@ package com.codingapi.txlcn.commons.annotation;
 import java.lang.annotation.*;
 
 /**
- * @author 侯存路
- * @date 2018/12/3
- * @company codingApi
- * @description type [tcc] of DTX
+ * @author 侯存路 2018/12/3
+ *
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -32,7 +30,7 @@ public @interface TccTransaction {
     /**
      * tcc事务回调执行类  该类需交由spring管理
      *
-     * @return
+     * @return 作用类对象
      */
     Class<?> executeClass() default Void.class;
 
@@ -41,7 +39,7 @@ public @interface TccTransaction {
      * 确认事务执行方法
      * 该方法参数需要和事务单元的参数保持一致
      *
-     * @return
+     * @return  确认方法
      */
     String confirmMethod() default "";
 
@@ -50,7 +48,7 @@ public @interface TccTransaction {
      * 取消事务执行方法
      * 该方法参数需要和事务单元的参数保持一致
      *
-     * @return
+     * @return  取消方法
      */
     String cancelMethod() default "";
 

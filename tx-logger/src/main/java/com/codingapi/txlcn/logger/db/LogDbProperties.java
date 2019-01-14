@@ -26,8 +26,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author lorne
- * @date 2018/12/20
- * @description
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

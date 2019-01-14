@@ -72,6 +72,7 @@ public abstract class RpcCmd implements Serializable {
     
     /**
      * get rpc result
+     *@return  result
      */
     public abstract MessageDto loadResult() throws RpcException;
     

@@ -24,8 +24,6 @@ import java.sql.Connection;
 
 /**
  * @author lorne
- * @date 2018/12/12
- * @description
  */
 @Component
 public class ConnectionHelper {

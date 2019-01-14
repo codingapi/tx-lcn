@@ -123,6 +123,7 @@ public class P6Util {
      *
      * @param name class name to load
      * @return the newly loaded class
+     * @throws  ClassNotFoundException ClassNotFoundException
      */
     public static Class<?> forName(String name) throws ClassNotFoundException {
         ClassLoader ctxLoader = null;

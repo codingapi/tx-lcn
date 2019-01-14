@@ -32,13 +32,13 @@ public interface RpcClientInitializer {
 
     /**
      * message client init
-     * @param hosts
+     * @param hosts manager host list
      */
     void init(List<TxManagerHost> hosts);
 
     /**
      * 建立连接
-     * @param socketAddress
+     * @param socketAddress 远程连接对象
      */
     void connect(SocketAddress socketAddress);
 

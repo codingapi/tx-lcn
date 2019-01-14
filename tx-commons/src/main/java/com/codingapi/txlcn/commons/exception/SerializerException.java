@@ -16,9 +16,8 @@
 package com.codingapi.txlcn.commons.exception;
 
 /**
- * @author lorne
- * @date 2018/12/2
- * @description
+ * @author lorne  2018/12/2
+ *
  */
 public class SerializerException extends Exception {
 

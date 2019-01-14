@@ -20,8 +20,6 @@ import com.codingapi.txlcn.spi.message.dto.RpcCmd;
 
 /**
  * @author lorne
- * @date 2018/12/2
- * @description
  */
 public interface RpcAnswer {
 

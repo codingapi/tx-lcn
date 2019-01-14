@@ -23,7 +23,7 @@ public interface ITxTransaction {
     /**
      * 指定事务类型
      *
-     * @return
+     * @return 事务类型
      */
     String transactionType();
 }

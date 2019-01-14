@@ -27,8 +27,6 @@ import java.util.function.Supplier;
 
 /**
  * @author lorne
- * @date 2018/12/2
- * @description
  */
 @Service(value = "transaction_lcn")
 @Slf4j

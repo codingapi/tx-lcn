@@ -20,8 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author lorne
- * @date 2018/12/2
- * @description
  */
 @Slf4j
 public enum LCNCmdType {
