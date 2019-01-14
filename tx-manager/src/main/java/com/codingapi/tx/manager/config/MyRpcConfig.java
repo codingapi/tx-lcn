@@ -14,11 +14,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MyRpcConfig implements InitializingBean {
 
-    @Autowired
-    private RpcConfig rpcConfig;
+    private final RpcConfig rpcConfig;
+
+    private final TxManagerConfig managerConfig;
 
     @Autowired
-    private TxManagerConfig managerConfig;
+    public MyRpcConfig(RpcConfig rpcConfig, TxManagerConfig managerConfig) {
+        this.rpcConfig = rpcConfig;
+        this.managerConfig = managerConfig;
+    }
 
     @Override
     public void afterPropertiesSet() {

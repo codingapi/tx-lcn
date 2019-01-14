@@ -5,7 +5,7 @@ import com.codingapi.tx.client.bean.DTXInfo;
 import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.bean.TxTransactionInfo;
 import com.codingapi.tx.client.spi.sleuth.TracerHelper;
-import com.codingapi.tx.client.support.separate.TXLCNTransactionServiceExecutor;
+import com.codingapi.tx.client.support.TXLCNTransactionServiceExecutor;
 import com.codingapi.tx.commons.util.RandomUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

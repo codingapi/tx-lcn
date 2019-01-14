@@ -56,5 +56,5 @@ public interface TxcSettingFactory {
 1、Update SQL 在更新多张表时，请明确指定字段所属表名
 
 
->@see com.codingapi.tx.client.spi.transaction.txc.resource.TxcSqlExecuteInterceptor.preUpdate  
-@see com.codingapi.tx.client.spi.transaction.txc.resource.TxcSqlExecuteInterceptor.preSelect
+>@see TxcSqlExecuteInterceptor.preUpdate  
+@see TxcSqlExecuteInterceptor.preSelect

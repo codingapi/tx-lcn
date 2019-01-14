@@ -1,6 +1,6 @@
 package com.codingapi.tx.client.support.checking;
 
-import com.codingapi.tx.client.support.message.TxMangerReporter;
+import com.codingapi.tx.client.message.helper.TxMangerReporter;
 import com.codingapi.tx.client.support.common.template.TransactionCleanTemplate;
 import com.codingapi.tx.commons.exception.BeforeBusinessException;
 import com.codingapi.tx.commons.exception.TransactionClearException;

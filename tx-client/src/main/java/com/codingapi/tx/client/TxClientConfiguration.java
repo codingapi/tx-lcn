@@ -1,7 +1,7 @@
 package com.codingapi.tx.client;
 
-import com.codingapi.tx.client.spi.transaction.txc.resource.init.DefaultTxcSettingFactory;
-import com.codingapi.tx.client.spi.transaction.txc.resource.init.TxcSettingFactory;
+import com.codingapi.tx.client.core.txc.resource.init.DefaultTxcSettingFactory;
+import com.codingapi.tx.client.core.txc.resource.init.TxcSettingFactory;
 import com.codingapi.tx.client.support.checking.DTXChecking;
 import com.codingapi.tx.client.support.checking.SimpleDTXChecking;
 import com.codingapi.tx.client.support.common.template.TransactionCleanTemplate;

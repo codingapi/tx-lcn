@@ -2,8 +2,8 @@ package com.codingapi.tx.client.support.common;
 
 import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.support.common.template.TransactionCleanTemplate;
-import com.codingapi.tx.client.support.message.RpcExecuteService;
-import com.codingapi.tx.client.support.message.TransactionCmd;
+import com.codingapi.tx.client.message.helper.RpcExecuteService;
+import com.codingapi.tx.client.message.helper.TransactionCmd;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TransactionClearException;
 import com.codingapi.tx.commons.exception.TxClientException;
@@ -34,6 +34,7 @@ public class DefaultNotifiedUnitService implements RpcExecuteService {
     public Object execute(TransactionCmd transactionCmd) throws TxClientException {
         try {
             NotifyUnitParams notifyUnitParams = transactionCmd.getMsg().loadData(NotifyUnitParams.class);
+            // 保证业务线程执行完毕后执行事务清理操作
             if (DTXLocal.cur() != null) {
                 synchronized (DTXLocal.cur()) {
                     txLogger.trace(transactionCmd.getGroupId(), notifyUnitParams.getUnitId(), Transactions.TAG_TRANSACTION,
@@ -41,6 +42,7 @@ public class DefaultNotifiedUnitService implements RpcExecuteService {
                     DTXLocal.cur().wait();
                 }
             }
+            // 事务清理操作
             transactionCleanTemplate.clean(
                     notifyUnitParams.getGroupId(),
                     notifyUnitParams.getUnitId(),
