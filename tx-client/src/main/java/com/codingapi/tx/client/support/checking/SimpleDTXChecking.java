@@ -1,6 +1,7 @@
 package com.codingapi.tx.client.support.checking;
 
 import com.codingapi.tx.client.aspectlog.AspectLogger;
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.config.TxClientConfig;
 import com.codingapi.tx.client.spi.message.RpcClient;
 import com.codingapi.tx.client.spi.message.dto.MessageDto;
@@ -80,6 +81,13 @@ public class SimpleDTXChecking implements DTXChecking {
         txLogger.trace(groupId, unitId, Transactions.TAG_TASK, "start delay checking task");
         ScheduledFuture scheduledFuture = scheduledExecutorService.schedule(() -> {
             try {
+                if (Objects.nonNull(DTXLocal.cur())) {
+                    synchronized (DTXLocal.cur()) {
+                        txLogger.trace(groupId, unitId, Transactions.TAG_TASK,
+                                "checking waiting for business code finish.");
+                        DTXLocal.cur().wait();
+                    }
+                }
                 String channel = rpcClient.loadRemoteKey();
                 MessageDto messageDto = rpcClient.request(channel, MessageCreator.askTransactionState(groupId, unitId));
                 int state = SerializerContext.getInstance().deSerialize(messageDto.getBytes(), Short.class);
@@ -95,7 +103,7 @@ public class SimpleDTXChecking implements DTXChecking {
 
             } catch (RpcException e) {
                 onAskTransactionStateException(groupId, unitId, transactionType);
-            } catch (TransactionClearException | SerializerException e) {
+            } catch (TransactionClearException | SerializerException | InterruptedException e) {
                 log.error("{} > [transaction state message] error or [clean transaction] error.", transactionType);
             }
         }, clientConfig.getDtxTime(), TimeUnit.MILLISECONDS);

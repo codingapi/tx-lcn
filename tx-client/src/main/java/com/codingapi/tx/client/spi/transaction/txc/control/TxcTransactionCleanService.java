@@ -1,15 +1,16 @@
-package com.codingapi.tx.client.spi.message.txc;
+package com.codingapi.tx.client.spi.transaction.txc.control;
 
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.TxcService;
-import com.codingapi.tx.commons.exception.TransactionClearException;
+import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.RollbackInfo;
 import com.codingapi.tx.client.support.common.TransactionCleanService;
+import com.codingapi.tx.commons.exception.TransactionClearException;
 import com.codingapi.tx.commons.exception.TxcLogicException;
-import com.codingapi.tx.logger.TxLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.SQLException;
+import java.util.Objects;
 
 /**
  * Description:
@@ -31,9 +32,18 @@ public class TxcTransactionCleanService implements TransactionCleanService {
     @Override
     public void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException {
         try {
-            // 若需要回滚读undo_log，进行回滚
-            if (state != 1 && state != -1) {
-                txcService.undo(groupId, unitId);
+            try {
+                // 若需要回滚读undo_log，进行回滚
+                if (state != 1 && state != -1) {
+                    txcService.undo(groupId, unitId);
+                }
+            } catch (Exception e) {
+                if (Objects.nonNull(DTXLocal.cur())) {
+                    RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
+                    if (Objects.nonNull(rollbackInfo)) {
+                        txcService.undoByRollbackInfo(rollbackInfo);
+                    }
+                }
             }
 
             // 清理TXC

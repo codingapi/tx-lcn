@@ -81,5 +81,5 @@ public interface TxcService {
      *
      * @throws TxcLogicException
      */
-    void undoRollbackInfo(RollbackInfo rollbackInfo) throws TxcLogicException;
+    void undoByRollbackInfo(RollbackInfo rollbackInfo) throws TxcLogicException;
 }

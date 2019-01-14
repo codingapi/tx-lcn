@@ -6,6 +6,7 @@ import com.codingapi.tx.client.support.LCNTransactionBeanHelper;
 import com.codingapi.tx.client.support.common.TransactionUnitTypeList;
 import com.codingapi.tx.client.support.common.cache.TransactionAttachmentCache;
 import com.codingapi.tx.commons.exception.BeforeBusinessException;
+import com.codingapi.tx.commons.util.Transactions;
 import com.codingapi.tx.logger.TxLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,14 +65,14 @@ public class TXLCNTransactionServiceExecutor {
 
         try {
             // 5.2 业务执行前
-            txLogger.trace(info.getGroupId(), info.getUnitId(), "transaction", "pre service business code");
+            txLogger.trace(info.getGroupId(), info.getUnitId(), Transactions.TAG_TRANSACTION, "pre service business code");
             lcnTransactionControl.preBusinessCode(info);
             // 5.3 执行业务
-            txLogger.trace(info.getGroupId(), info.getUnitId(), "transaction", "do service business code");
+            txLogger.trace(info.getGroupId(), info.getUnitId(), Transactions.TAG_TRANSACTION, "do service business code");
             Object result = lcnTransactionControl.doBusinessCode(info);
 
             // 5.4 业务执行成功
-            txLogger.trace(info.getGroupId(), info.getUnitId(), "transaction", "service business success");
+            txLogger.trace(info.getGroupId(), info.getUnitId(), Transactions.TAG_TRANSACTION, "service business success");
             lcnTransactionControl.onBusinessCodeSuccess(info, result);
             return result;
         } catch (BeforeBusinessException e) {
@@ -79,7 +80,7 @@ public class TXLCNTransactionServiceExecutor {
             throw e;
         } catch (Throwable e) {
             // 5.5 业务执行失败
-            txLogger.trace(info.getGroupId(), info.getUnitId(), "transaction", "business code error");
+            txLogger.trace(info.getGroupId(), info.getUnitId(), Transactions.TAG_TRANSACTION, "business code error");
             lcnTransactionControl.onBusinessCodeError(info, e);
             throw e;
         } finally {

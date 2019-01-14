@@ -1,4 +1,4 @@
-package com.codingapi.tx.client.spi.message.lcn;
+package com.codingapi.tx.client.spi.transaction.lcn.control;
 
 import com.codingapi.tx.client.spi.transaction.lcn.resource.LCNConnectionProxy;
 import com.codingapi.tx.commons.exception.TransactionClearException;
