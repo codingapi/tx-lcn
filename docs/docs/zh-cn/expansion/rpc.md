@@ -69,17 +69,22 @@ public class TXLCNZoneAvoidanceRule extends ZoneAvoidanceRule {
 public class RibbonFirstRestTemplateCustomizer implements RestTemplateCustomizer {
 
 
+    @Autowired(required = false)
     private LoadBalancerInterceptor loadBalancerInterceptor;
 
-    @Autowired
-    public RibbonFirstRestTemplateCustomizer(LoadBalancerInterceptor loadBalancerInterceptor) {
-        this.loadBalancerInterceptor = loadBalancerInterceptor;
-    }
+    @Autowired(required = false)
+    private RetryLoadBalancerInterceptor retryLoadBalancerInterceptor;
+
 
     @Override
     public void customize(RestTemplate restTemplate) {
         List<ClientHttpRequestInterceptor> list = new ArrayList<>(restTemplate.getInterceptors());
-        list.add(0,loadBalancerInterceptor);
+        if(loadBalancerInterceptor!=null) {
+            list.add(0, loadBalancerInterceptor);
+        }
+        if(retryLoadBalancerInterceptor!=null){
+            list.add(0, retryLoadBalancerInterceptor);
+        }
         restTemplate.setInterceptors(list);
     }
 

@@ -2,7 +2,7 @@
 
 ## 一、事务参与方 D
 （1）新建Maven 工程  
-![maven project](img/maven-d.png)  
+![maven project](../../../img/docs/maven-d.png)
 （2）项目配置文件 application.properties
 ```properties
 # Spring boot application
@@ -42,11 +42,11 @@ spring.datasource.hikari.maximum-pool-size=20
 mybatis.configuration.map-underscore-to-camel-case=true
 mybatis.configuration.use-generated-keys=true
 ```
-src: [https://github.com/codingapi/tx-lcn/tree/5.0.0/example/dubbo-demo-d](https://github.com/codingapi/tx-lcn/tree/5.0.0-dev/example/dubbo-demo-d)  
+src: [https://github.com/codingapi/txlcn-demo/dubbo-demo-d](https://github.com/codingapi/txlcn-demo/tree/master/dubbo-demo-d)
 
 ## 二、事务参与方 E
 （1）新建Maven 工程  
-![maven project](img/maven-e.png)  
+![maven project](../../../img/docs/maven-e.png)
 （2）项目配置文件 application.properties
 ```properties
 # Spring boot application
@@ -89,11 +89,11 @@ mybatis.configuration.map-underscore-to-camel-case=true
 mybatis.configuration.use-generated-keys=true
 
 ```
-src:[https://github.com/codingapi/tx-lcn/tree/5.0.0/example/dubbo-demo-e](https://github.com/codingapi/tx-lcn/tree/5.0.0-dev/example/dubbo-demo-e)  
+src:[https://github.com/codingapi/txlcn-demo/dubbo-demo-e](https://github.com/codingapi/txlcn-demo/tree/master/dubbo-demo-e)
 
 ## 三、事务发起方 Client
 （1）新建Maven 工程  
-![maven project](img/maven.png)  
+![maven project](../../../img/docs/maven.png)
 （2）项目配置文件 application.properties
 ```properties
 # Spring boot application
@@ -129,12 +129,12 @@ spring.datasource.hikari.maximum-pool-size=20
 mybatis.configuration.map-underscore-to-camel-case=true
 mybatis.configuration.use-generated-keys=true
 ```
-src:[https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/dubbo-demo-client](https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/dubbo-demo-client)  
+src:[https://github.com/codingapi/txlcn-demo/dubbo-demo-client](https://github.com/codingapi/txlcn-demo/tree/master/dubbo-demo-client)
 
 ## 四、启动Dubbo微服务
 （1） 事务参与方 D  
-![dubbo-d](img/dubbo-d.png)
+![dubbo-d](../../../img/docs/dubbo-d.png)
 （2） 事务参与方 E  
-![dubbo-e](img/dubbo-e.png)
+![dubbo-e](../../../img/docs/dubbo-e.png)
 （3） 事务发起方 Client  
-![dubbo-client](img/dubbo-client.png)
+![dubbo-client](../../../img/docs/dubbo-client.png)

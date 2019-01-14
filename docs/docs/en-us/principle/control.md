@@ -4,7 +4,7 @@
 
 原理图:
 
-![](../img/yuanli.png)
+![](../../../img/docs/yuanli.png)
 
 ### 核心步骤
 

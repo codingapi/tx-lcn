@@ -2,7 +2,7 @@
 
 ## 一、事务参与方D
 （1）新建Maven 工程  
-![maven project](img/maven-sd.png)  
+![maven project](../../../img/docs/maven-sd.png)
 （2）项目配置文件 application.properties  
 ```properties
 spring.application.name=spring-demo-d
@@ -18,11 +18,11 @@ mybatis.configuration.map-underscore-to-camel-case=true
 mybatis.configuration.use-generated-keys=true
 
 ```
-src:[https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/spring-demo-d](https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/spring-demo-d)  
+src:[https://github.com/codingapi/txlcn-demo/spring-demo-d](https://github.com/codingapi/txlcn-demo/tree/master/spring-demo-d)
 
 ## 二、事务参与方E
 （1）新建Maven 工程  
-![maven project](img/maven-se.png)  
+![maven project](../../../img/docs/maven-se.png)
 （2）项目配置文件 application.properties  
 ```properties
 spring.application.name=spring-demo-e
@@ -38,11 +38,11 @@ mybatis.configuration.map-underscore-to-camel-case=true
 mybatis.configuration.use-generated-keys=true
 
 ```
-src:[https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/spring-demo-e](https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/spring-demo-e)  
+src:[https://github.com/codingapi/txlcn-demo/spring-demo-e](https://github.com/codingapi/txlcn-demo/tree/master/spring-demo-e)
 
 ## 三、事务发起方Client
 （1）新建Maven 工程  
-![maven project](img/maven-s.png)  
+![maven project](../../../img/docs/maven-s.png)
 （2）项目配置文件 application.properties  
 ```properties
 spring.application.name=spring-demo-client
@@ -63,12 +63,12 @@ mybatis.configuration.use-generated-keys=true
 ribbon.MaxAutoRetriesNextServer=0
 
 ```
-src:[https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/spring-demo-client](https://github.com/codingapi/tx-lcn/tree/5.0.0.RC1/example/spring-demo-client)  
+src:[https://github.com/codingapi/txlcn-demo/spring-demo-client](https://github.com/codingapi/txlcn-demo/tree/master/spring-demo-client)
 
 ## 四、启动SpringCloud微服务
 （1） 事务参与方 D  
-![spring-d](img/spring-d.png)
+![spring-d](../../../img/docs/spring-d.png)
 （2） 事务参与方 E  
-![spring-e](img/spring-e.png)
+![spring-e](../../../img/docs/spring-e.png)
 （3） 事务发起方 Client  
-![spring-client](img/spring-client.png)
+![spring-client](../../../img/docs/spring-client.png)

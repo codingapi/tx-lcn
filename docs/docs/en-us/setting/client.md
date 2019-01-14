@@ -29,7 +29,7 @@ tx-lcn.message.netty.wait-time=5
 ```
 
 ## 二、特别配置
-### 1、微服务`集群`且用到 `LCN` 事务模式时，为保证性能请开启 `TXLCN` 重写的负载策略。  
+### 1、微服务`集群`且用到 LCN事务模式时，为保证性能请开启TX-LCN重写的负载策略。
 
 * Dubbo 开启
 ```java
@@ -72,3 +72,73 @@ ribbon.MaxAutoRetriesNextServer=0
 如果业务上控制某个事务接口的幂等，则不用关闭重试。
 
 ----------------
+
+### 3、当通过AOP配置本地事务时需要调整优先级
+   
+可以采用两种方式
+
+1. 通过DTXInterceptor配置本地事务.
+
+```
+@Configuration
+@EnableTransactionManagement
+@EnableConfigurationProperties(TransactionProperties.class)
+public class TransactionConfiguration {
+
+    @Bean
+    public TransactionInterceptor transactionInterceptor(PlatformTransactionManager transactionManager, DTXLogicWeaver dtxLogicWeaver) {
+        Properties properties = new Properties();
+        properties.setProperty("*", "PROPAGATION_REQUIRED,-Throwable");
+
+        DTXInterceptor dtxInterceptor = new DTXInterceptor(dtxLogicWeaver);
+        dtxInterceptor.setTransactionManager(transactionManager);
+        dtxInterceptor.setTransactionAttributes(properties);
+        return dtxInterceptor;
+    }
+
+    @Bean
+    public BeanNameAutoProxyCreator beanNameAutoProxyCreator() {
+        BeanNameAutoProxyCreator beanNameAutoProxyCreator = new BeanNameAutoProxyCreator();
+        beanNameAutoProxyCreator.setInterceptorNames("transactionInterceptor");
+        beanNameAutoProxyCreator.setBeanNames("*Impl");
+        return beanNameAutoProxyCreator;
+    }
+}
+
+```
+2. 设置TXLCNInterceptor拦截器，然后设置优先与本地事务
+
+```java
+@Configuration
+@EnableTransactionManagement
+@EnableConfigurationProperties(TransactionProperties.class)
+public class TransactionConfiguration {
+
+
+    @Bean
+    public TXLCNInterceptor txlcnInterceptor(DTXLogicWeaver dtxLogicWeaver) {
+        TXLCNInterceptor dtxInterceptor = new TXLCNInterceptor(dtxLogicWeaver);
+        return dtxInterceptor;
+    }
+
+    @Bean
+    public TransactionInterceptor transactionInterceptor(PlatformTransactionManager transactionManager) {
+        Properties properties = new Properties();
+        properties.setProperty("*", "PROPAGATION_REQUIRED,-Throwable");
+
+        TransactionInterceptor dtxInterceptor = new TransactionInterceptor();
+        dtxInterceptor.setTransactionManager(transactionManager);
+        dtxInterceptor.setTransactionAttributes(properties);
+        return dtxInterceptor;
+    }
+
+    @Bean
+    public BeanNameAutoProxyCreator beanNameAutoProxyCreator() {
+        BeanNameAutoProxyCreator beanNameAutoProxyCreator = new BeanNameAutoProxyCreator();
+        beanNameAutoProxyCreator.setInterceptorNames("txlcnInterceptor","transactionInterceptor");
+        beanNameAutoProxyCreator.setBeanNames("*Impl");
+        return beanNameAutoProxyCreator;
+    }
+}
+
+```

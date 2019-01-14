@@ -23,7 +23,7 @@ dubbo pom
 ## 二、微服务示例代码
 
 ### （1）架构
-![arch](/img/quick_arch.png)  
+![arch](../../img/quick_arch.png)
 
 ### (2) 微服务A
 ```java

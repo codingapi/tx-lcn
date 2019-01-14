@@ -1,4 +1,4 @@
-# 初始化准备
+# 尝试下简单的分布式事务
 
 ## 一、导入数据 Mariadb (MySQL) 数据库
 
@@ -54,7 +54,7 @@ mybatis.configuration.use-generated-keys=true
 
 启动TxManager
 
-![tx-manager](img/tx_manager.png)
+![tx-manager](../../../img/docs/tx_manager.png)
 
 ## 三、准备注册中心
 
@@ -70,9 +70,9 @@ mybatis.configuration.use-generated-keys=true
 （1）正常提交事务
 
 访问 发起方提供的Rest接口 `/txlcn?value=the-value`。发现事务全部提交  
-![result](img/result.png)
+![result](../../../img/docs/result.png)
 
 （2）回滚事务
 
 修改微服务 发起方Client 业务，在返回结果前抛出异常，再请求Rest接口。发现发起方由于本地事务回滚，而参与方D、E，由于TX-LCN的协调，数据也回滚了。  
-![error_result](img/error-result.png)
+![error_result](../../../img/docs/error-result.png)

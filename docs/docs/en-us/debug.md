@@ -3,7 +3,7 @@
 ## 一、概述
 TxManager 和 TxClient 都支持日志记录到数据库（TXManager默认开启日志记录）。  
 日志记录格式：  
-![t_logger](/img/t_logger.png)
+![t_logger](../../img/t_logger.png)
 
 >group_id: 分布式事务组标示  
 >unit_id: 参与分布式事务的某个节点标示
@@ -19,7 +19,7 @@ TxManager 和 TxClient 都支持日志记录到数据库（TXManager默认开启
 select * from t_logger where t_logger.group_id = '99937859659434961'
 ```
 整个DTX下，TxClient某个事务组内容如下完整日志日路如下：  
-![tx_session](/img/tx_session.png)
+![tx_session](../../img/tx_session.png)
  
 * 某个微服务某次事务会话
 ```sql

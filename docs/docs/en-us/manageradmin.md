@@ -21,4 +21,13 @@
 `操作`：查看异常时信息  
 
 #### 系统日志
-// TODO
+ * 日志分类-TAG:  
+ transaction: TxClient下达命令记录
+ manager: TxManager执行协调记录
+  * 日志内容: 
+ create group: TxClient创建事务组命令到达TxManager
+ start join group: TxClient 开始加入事务组
+ over join group： TxClient 成功加事务组
+ notify group 1： TxManager通知TxClient提交本第事务（0回滚）
+ notify unit exception： TxManager通知事务单元失败（此处会记录异常信息）
+ notify group over：通知事务组结束（对于个别不能通知到的单元，会记下异常记录，不影响其它通知，异常的等待补偿）
