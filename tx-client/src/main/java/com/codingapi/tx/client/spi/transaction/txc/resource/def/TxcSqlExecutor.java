@@ -94,5 +94,5 @@ public interface TxcSqlExecutor {
     void clearUndoLog(String groupId, String unitId) throws SQLException;
 
 
-    void undoRollbackInfoSql(RollbackInfo rollbackInfo) throws SQLException;
+    void undoRollbackInfoSql(Connection connection, RollbackInfo rollbackInfo) throws SQLException;
 }

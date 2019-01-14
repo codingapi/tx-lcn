@@ -21,6 +21,7 @@ import org.apache.commons.dbutils.DbUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
         String groupId = DTXLocal.cur().getGroupId();
         String unitId = DTXLocal.cur().getUnitId();
         RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
+        Connection connection = (Connection) DTXLocal.cur().getResource();
 
 
         // Update相关数据准备
@@ -67,7 +69,7 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
         });
         for (Table table : update.getTables()) {
             tables.add(table.getName());
-            TableStruct tableStruct = tableStructAnalyser.analyse(table.getName());
+            TableStruct tableStruct = tableStructAnalyser.analyse(connection, table.getName());
             tableStruct.getPrimaryKeys().forEach(key -> primaryKeys.add(table.getName() + "." + key));
         }
 
@@ -94,14 +96,15 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
         RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
         String groupId = DTXLocal.cur().getGroupId();
         String unitId = DTXLocal.cur().getUnitId();
+        Connection connection = (Connection) DTXLocal.cur().getResource();
 
         // Delete Sql 数据
         List<String> tables = new ArrayList<>(delete.getTables().size());
         List<String> primaryKeys = new ArrayList<>(3);
         List<String> columns = new ArrayList<>();
 
-        delete.getTables().forEach(table -> {
-            TableStruct tableStruct = tableStructAnalyser.analyse(table.getName());
+        for (Table table : delete.getTables()) {
+            TableStruct tableStruct = tableStructAnalyser.analyse(connection, table.getName());
             tableStruct.getColumns().forEach((k, v) -> {
                 columns.add(tableStruct.getTableName() + SqlUtils.DOT + k);
             });
@@ -109,7 +112,7 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
                 primaryKeys.add(tableStruct.getTableName() + SqlUtils.DOT + primaryKey);
             });
             tables.add(tableStruct.getTableName());
-        });
+        }
 
         // 前置准备
         try {
@@ -133,8 +136,9 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
     @Override
     public void postInsert(StatementInformation statementInformation) throws SQLException {
+        Connection connection = (Connection) DTXLocal.cur().getResource();
         Insert insert = (Insert) statementInformation.getAttachment();
-        TableStruct tableStruct = tableStructAnalyser.analyse(insert.getTable().getName());
+        TableStruct tableStruct = tableStructAnalyser.analyse(connection, insert.getTable().getName());
 
         // 解决主键
         PrimaryKeyListVisitor primaryKeyListVisitor = new PrimaryKeyListVisitor(insert.getTable(),
@@ -201,8 +205,9 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
         List<String> primaryKeys = new ArrayList<>();
         Table leftTable = (Table) plainSelect.getFromItem();
         List<SelectItem> selectItems = new ArrayList<>();
+        Connection connection = (Connection) DTXLocal.cur().getResource();
 
-        TableStruct leftTableStruct = tableStructAnalyser.analyse(leftTable.getName());
+        TableStruct leftTableStruct = tableStructAnalyser.analyse(connection, leftTable.getName());
         leftTableStruct.getPrimaryKeys().forEach(primaryKey -> {
             Column column = new Column(leftTable, primaryKey);
             selectItems.add(new SelectExpressionItem(column));
@@ -212,7 +217,7 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
         if (plainSelect.getJoins() != null) {
             for (Join join : plainSelect.getJoins()) {
                 if (join.isSimple()) {
-                    TableStruct rightTableStruct = tableStructAnalyser.analyse(join.getRightItem().toString());
+                    TableStruct rightTableStruct = tableStructAnalyser.analyse(connection, join.getRightItem().toString());
                     rightTableStruct.getPrimaryKeys().forEach(primaryKey -> {
                         Column column = new Column((Table) join.getRightItem(), primaryKey);
                         selectItems.add(new SelectExpressionItem(column));

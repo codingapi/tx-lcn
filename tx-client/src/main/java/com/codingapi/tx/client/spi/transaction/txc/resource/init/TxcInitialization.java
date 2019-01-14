@@ -7,6 +7,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.sql.SQLException;
+
 /**
  * Description:
  * Date: 2018/12/24
@@ -23,31 +25,30 @@ public class TxcInitialization implements InitializingBean {
 
     private final TxcSqlExecutor txcSqlExecutor;
 
-    @Autowired
-    private TxcExceptionConnectionPool txcExceptionConnectionPool;
+    private final TxcExceptionConnectionPool txcExceptionConnectionPool;
 
     @Autowired
     public TxcInitialization(TxcSettingFactory txcSettingFactory,
                              TableStructAnalyser tableStructAnalyser,
-                             TxcSqlExecutor txcSqlExecutor) {
+                             TxcSqlExecutor txcSqlExecutor, TxcExceptionConnectionPool txcExceptionConnectionPool) {
         this.txcSettingFactory = txcSettingFactory;
         this.tableStructAnalyser = tableStructAnalyser;
         this.txcSqlExecutor = txcSqlExecutor;
+        this.txcExceptionConnectionPool = txcExceptionConnectionPool;
     }
 
     @Override
-    public void afterPropertiesSet() {
+    public void afterPropertiesSet() throws SQLException {
         if (txcSettingFactory.enable()) {
             log.info("enabled txc transaction.");
-            if (!tableStructAnalyser.existsTable(txcSettingFactory.lockTableName())) {
+            if (tableStructAnalyser.existsTable(txcSettingFactory.lockTableName())) {
                 log.info("create lock table.");
                 txcSqlExecutor.createLockTable();
             }
-            if (!tableStructAnalyser.existsTable(txcSettingFactory.undoLogTableName())) {
+            if (tableStructAnalyser.existsTable(txcSettingFactory.undoLogTableName())) {
                 log.info("create undo log table.");
                 txcSqlExecutor.createUndoLogTable();
             }
-
             txcExceptionConnectionPool.init();
         }
     }

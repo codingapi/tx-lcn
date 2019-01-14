@@ -23,12 +23,12 @@ public class TxcExceptionConnectionPool {
 
     private HikariDataSource hikariDataSource;
 
-    @Autowired
-    private DataSourceProperties dataSourceProperties;
+    private final DataSourceProperties dataSourceProperties;
 
     @Autowired
-    public TxcExceptionConnectionPool(TxcConfig txcConfig) {
+    public TxcExceptionConnectionPool(TxcConfig txcConfig, DataSourceProperties dataSourceProperties) {
         this.minIdle = txcConfig.getMinIdle();
+        this.dataSourceProperties = dataSourceProperties;
     }
 
     public void init(){

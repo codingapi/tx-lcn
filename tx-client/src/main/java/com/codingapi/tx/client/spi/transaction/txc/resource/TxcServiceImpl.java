@@ -1,12 +1,17 @@
 package com.codingapi.tx.client.spi.transaction.txc.resource;
 
+import ch.qos.logback.core.db.dialect.DBUtil;
 import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.TxcService;
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.TxcSqlExecutor;
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.*;
+import com.codingapi.tx.client.spi.transaction.txc.resource.init.TxcExceptionConnectionPool;
 import com.codingapi.tx.client.spi.transaction.txc.resource.util.SqlUtils;
 import com.codingapi.tx.commons.exception.TxcLogicException;
+import com.codingapi.tx.commons.util.Transactions;
+import com.codingapi.tx.logger.TxLogger;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.dbutils.DbUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -16,6 +21,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Description:
@@ -27,8 +33,18 @@ import java.util.Map;
 @Slf4j
 public class TxcServiceImpl implements TxcService {
 
+    private final TxcSqlExecutor txcSqlExecutor;
+
+    private final TxcExceptionConnectionPool txcExceptionConnectionPool;
+
+    private final TxLogger txLogger;
+
     @Autowired
-    private TxcSqlExecutor txcSqlExecutor;
+    public TxcServiceImpl(TxcSqlExecutor txcSqlExecutor, TxcExceptionConnectionPool txcExceptionConnectionPool, TxLogger txLogger) {
+        this.txcSqlExecutor = txcSqlExecutor;
+        this.txcExceptionConnectionPool = txcExceptionConnectionPool;
+        this.txLogger = txLogger;
+    }
 
     @Override
     public void lockResource(LockInfo lockInfo, RollbackInfo rollbackInfo) throws TxcLogicException {
@@ -220,18 +236,27 @@ public class TxcServiceImpl implements TxcService {
             DTXLocal.makeUnProxy();
             txcSqlExecutor.applyUndoLog(groupId, unitId);
         } catch (SQLException e) {
-            throw new TxcLogicException(e);
+            // 撤销失败 txcExceptionConnectionPool 作撤销
+            if (Objects.nonNull(DTXLocal.cur())) {
+                RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
+                if (Objects.nonNull(rollbackInfo)) {
+                    txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "rollback by txEx pool.");
+                    Connection connection = null;
+                    try {
+                        connection = txcExceptionConnectionPool.getConnection();
+                        txcSqlExecutor.undoRollbackInfoSql(connection, rollbackInfo);
+                    } catch (SQLException e1) {
+                        throw new TxcLogicException(e1);
+                    } finally {
+                        try {
+                            DbUtils.close(connection);
+                        } catch (SQLException ignored) {
+                        }
+                    }
+                }
+            }
         } finally {
             DTXLocal.undoProxyStatus();
-        }
-    }
-
-    @Override
-    public void undoByRollbackInfo(RollbackInfo rollbackInfo) throws TxcLogicException {
-        try {
-            txcSqlExecutor.undoRollbackInfoSql(rollbackInfo);
-        } catch (SQLException e) {
-            throw new TxcLogicException(e);
         }
     }
 }

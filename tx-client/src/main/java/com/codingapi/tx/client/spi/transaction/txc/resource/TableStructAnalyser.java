@@ -21,21 +21,18 @@ import java.sql.SQLException;
 @Component
 public class TableStructAnalyser {
 
-    @Autowired
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
-    public TableStructAnalyser() {
+    @Autowired
+    public TableStructAnalyser(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    public TableStruct analyse(String table) {
-        Connection connection = null;
+    public TableStruct analyse(Connection connection, String table) throws SQLException {
         ResultSet structRs = null;
         ResultSet columnSet = null;
         TableStruct tableStruct = new TableStruct(table);
         try {
-            DTXLocal.makeUnProxy();
-            connection = dataSource.getConnection();
-            connection.setAutoCommit(true);
             structRs = connection.getMetaData().getPrimaryKeys(connection.getCatalog(), null, table);
             columnSet = connection.getMetaData().getColumns(null, "%", table, "%");
             while (structRs.next()) {
@@ -45,17 +42,43 @@ public class TableStructAnalyser {
                 tableStruct.getColumns().put(columnSet.getString("COLUMN_NAME"), columnSet.getString("TYPE_NAME"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
             try {
                 DbUtils.close(structRs);
                 DbUtils.close(columnSet);
-                DbUtils.close(connection);
             } catch (SQLException ignored) {
             }
-            DTXLocal.undoProxyStatus();
+            throw e;
         }
         return tableStruct;
+    }
+
+    public TableStruct analyse(String table) throws SQLException {
+        Connection connection = null;
+        try {
+            DTXLocal.makeUnProxy();
+            connection = dataSource.getConnection();
+            connection.setAutoCommit(true);
+            return analyse(connection, table);
+        } finally {
+            DTXLocal.undoProxyStatus();
+            DbUtils.close(connection);
+        }
+    }
+
+
+    public boolean existsTable(Connection connection, String table) throws SQLException {
+        ResultSet resultSet = null;
+        try {
+            resultSet = connection.getMetaData().getTables(null, null, table, null);
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            DbUtils.close(resultSet);
+        }
+        return false;
     }
 
     /**
@@ -64,27 +87,16 @@ public class TableStructAnalyser {
      * @param tableName
      * @return
      */
-    public boolean existsTable(String tableName) {
+    public boolean existsTable(String tableName) throws SQLException {
         Connection connection = null;
-        ResultSet resultSet = null;
         try {
             DTXLocal.makeUnProxy();
             connection = dataSource.getConnection();
             connection.setAutoCommit(true);
-            resultSet = connection.getMetaData().getTables(null, null, tableName, null);
-            if (resultSet.next()) {
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return existsTable(connection, tableName);
         } finally {
-            try {
-                DbUtils.close(resultSet);
-                DbUtils.close(connection);
-            } catch (SQLException ignored) {
-            }
+            DbUtils.close(connection);
             DTXLocal.undoProxyStatus();
         }
-        return false;
     }
 }

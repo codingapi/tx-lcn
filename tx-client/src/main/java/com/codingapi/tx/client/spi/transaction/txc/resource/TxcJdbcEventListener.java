@@ -3,8 +3,6 @@ package com.codingapi.tx.client.spi.transaction.txc.resource;
 import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.SqlExecuteInterceptor;
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.LockableSelect;
-import com.codingapi.tx.client.spi.transaction.txc.resource.init.TxcSettingFactory;
-import com.codingapi.tx.client.spi.transaction.txc.resource.util.SqlUtils;
 import com.codingapi.tx.jdbcproxy.p6spy.common.PreparedStatementInformation;
 import com.codingapi.tx.jdbcproxy.p6spy.common.StatementInformation;
 import com.codingapi.tx.jdbcproxy.p6spy.event.SimpleJdbcEventListener;
@@ -33,12 +31,10 @@ public class TxcJdbcEventListener extends SimpleJdbcEventListener {
 
     private final SqlExecuteInterceptor sqlExecuteInterceptor;
 
-    private final TxcSettingFactory txcSettingFactory;
 
     @Autowired
-    public TxcJdbcEventListener(SqlExecuteInterceptor sqlExecuteInterceptor, TxcSettingFactory txcSettingFactory) {
+    public TxcJdbcEventListener(SqlExecuteInterceptor sqlExecuteInterceptor) {
         this.sqlExecuteInterceptor = sqlExecuteInterceptor;
-        this.txcSettingFactory = txcSettingFactory;
     }
 
     @Override
@@ -70,7 +66,7 @@ public class TxcJdbcEventListener extends SimpleJdbcEventListener {
             }
             log.debug("used time: {} ms", System.currentTimeMillis() - startTime);
         } catch (JSQLParserException e) {
-            e.printStackTrace();
+            throw new SQLException(e);
         }
     }
 

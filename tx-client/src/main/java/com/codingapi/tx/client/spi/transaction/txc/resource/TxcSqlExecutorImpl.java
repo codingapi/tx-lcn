@@ -37,14 +37,15 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
 
     private final TxLogger txLogger;
 
-    @Autowired
-    private TxcExceptionConnectionPool txcExceptionConnectionPool;
+    private final TxcExceptionConnectionPool txcExceptionConnectionPool;
 
     @Autowired
-    public TxcSqlExecutorImpl(QueryRunner queryRunner, TxcSettingFactory txcSettingFactory, TxLogger txLogger) {
+    public TxcSqlExecutorImpl(QueryRunner queryRunner, TxcSettingFactory txcSettingFactory,
+                              TxLogger txLogger, TxcExceptionConnectionPool txcExceptionConnectionPool) {
         this.queryRunner = queryRunner;
         this.txcSettingFactory = txcSettingFactory;
         this.txLogger = txLogger;
+        this.txcExceptionConnectionPool = txcExceptionConnectionPool;
     }
 
     @Override
@@ -162,18 +163,8 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
             RollbackInfo rollbackInfo = SqlUtils.blobToObject(undoLogDo.getRollbackInfo(), RollbackInfo.class);
             txLogger.trace(groupId, unitId, "txc", "rollbackInfo sql " + rollbackInfo.toString());
             connection = queryRunner.getDataSource().getConnection();
-            connection.setAutoCommit(false);
-            for (StatementInfo statementInfo : rollbackInfo.getRollbackSqlList()) {
-                log.debug("txc > Apply undo log. sql: {}, params: {}", statementInfo.getSql(), statementInfo.getParams());
-                queryRunner.update(connection, statementInfo.getSql(), statementInfo.getParams());
-            }
-            connection.commit();
+            undoRollbackInfoSql(connection, rollbackInfo);
         } catch (SQLException e) {
-            log.error("txc > apply undo log error", e);
-            try {
-                DbUtils.rollback(connection);
-            } catch (SQLException ignored) {
-            }
             throw e;
         } finally {
             try {
@@ -184,8 +175,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
     }
 
     @Override
-    public void undoRollbackInfoSql(RollbackInfo rollbackInfo) throws SQLException {
-        Connection connection = txcExceptionConnectionPool.getConnection();
+    public void undoRollbackInfoSql(Connection connection, RollbackInfo rollbackInfo) throws SQLException {
         try {
             connection.setAutoCommit(false);
             for (StatementInfo statementInfo : rollbackInfo.getRollbackSqlList()) {
@@ -193,12 +183,11 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
                 queryRunner.update(connection, statementInfo.getSql(), statementInfo.getParams());
             }
             connection.commit();
-
-        }finally {
-            try {
-                DbUtils.close(connection);
-            } catch (SQLException ignored) {
-            }
+        } catch (SQLException e) {
+            DbUtils.rollback(connection);
+            throw e;
+        } finally {
+            connection.setAutoCommit(true);
         }
     }
 
