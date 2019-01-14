@@ -28,7 +28,7 @@
 
 </code></pre>
 <ol start="2">
-<li>实现<code>com.codingapi.tx.client.support.resouce.TransactionResourceExecutor</code>接口，处理db资源。</li>
+<li>实现<code>TransactionResourceExecutor</code>接口，处理db资源。</li>
 </ol>
 <pre><code>public interface TransactionResourceExecutor {
 
@@ -48,7 +48,7 @@
 <ol start="3">
 <li>针对事务模型区分事务状态，事务状态有default 、starting、 running 三种状态。</li>
 </ol>
-<p>这三张状态是通过 <code>com.codingapi.tx.client.support.TXLCNTransactionSeparator</code> 识别的，用户可以自定义识别器例如LCN的识别器，bean name中的<code>transaction_state_resolver_</code>是识别器名称的前缀。</p>
+<p>这三张状态是通过 <code>TXLCNTransactionSeparator</code> 识别的，用户可以自定义识别器例如LCN的识别器，bean name中的<code>transaction_state_resolver_</code>是识别器名称的前缀。</p>
 <pre><code>@Slf4j
 @Component(&quot;transaction_state_resolver_lcn&quot;)
 public class LCNTypeTransactionSeparator extends CustomizableTransactionSeparator {
@@ -84,7 +84,7 @@ public class LCNTypeTransactionSeparator extends CustomizableTransactionSeparato
 
 </code></pre>
 <ol start="4">
-<li>实现不同状态下的事务控制 实现<code>com.codingapi.tx.client.support.TXLCNTransactionControl</code> 接口处理业务。</li>
+<li>实现不同状态下的事务控制 实现<code>TXLCNTransactionControl</code> 接口处理业务。</li>
 </ol>
 <pre><code>
 public interface TXLCNTransactionControl {

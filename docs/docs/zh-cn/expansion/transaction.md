@@ -20,7 +20,7 @@ TX-LCN不仅仅支持LCN TXC TCC模式，也可以由开发者自定义符合TX-
 ```
 
 
-2. 实现`com.codingapi.tx.client.support.resouce.TransactionResourceExecutor`接口，处理db资源。
+2. 实现`TransactionResourceExecutor`接口，处理db资源。
 
 ```
 public interface TransactionResourceExecutor {
@@ -42,7 +42,7 @@ public interface TransactionResourceExecutor {
 3. 针对事务模型区分事务状态，事务状态有default 、starting、 running 三种状态。
 
 
-这三张状态是通过 `com.codingapi.tx.client.support.TXLCNTransactionSeparator` 识别的，用户可以自定义识别器例如LCN的识别器，bean name中的`transaction_state_resolver_`是识别器名称的前缀。
+这三张状态是通过 `TXLCNTransactionSeparator` 识别的，用户可以自定义识别器例如LCN的识别器，bean name中的`transaction_state_resolver_`是识别器名称的前缀。
 
 
 ```
@@ -82,7 +82,7 @@ public class LCNTypeTransactionSeparator extends CustomizableTransactionSeparato
 ```
 
 
-4. 实现不同状态下的事务控制 实现`com.codingapi.tx.client.support.TXLCNTransactionControl` 接口处理业务。
+4. 实现不同状态下的事务控制 实现`TXLCNTransactionControl` 接口处理业务。
 
 ```
 
