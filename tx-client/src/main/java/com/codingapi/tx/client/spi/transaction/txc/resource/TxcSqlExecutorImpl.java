@@ -2,9 +2,10 @@ package com.codingapi.tx.client.spi.transaction.txc.resource;
 
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.TxcSqlExecutor;
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.*;
-import com.codingapi.tx.client.spi.transaction.txc.resource.rs.UpdateSqlPreDataHandler;
 import com.codingapi.tx.client.spi.transaction.txc.resource.init.TxcSettingFactory;
+import com.codingapi.tx.client.spi.transaction.txc.resource.rs.UpdateSqlPreDataHandler;
 import com.codingapi.tx.client.spi.transaction.txc.resource.util.SqlUtils;
+import com.codingapi.tx.jdbcproxy.p6spy.util.TxcUtils;
 import com.codingapi.tx.logger.TxLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.*;
@@ -61,7 +62,8 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
     }
 
     @Override
-    public List<ModifiedRecord> updateSqlPreviousData(UpdateImageParams updateImageParams) {
+    public List<ModifiedRecord> updateSqlPreviousData(Connection connection, UpdateImageParams updateImageParams)
+            throws SQLException {
         // 前置镜像sql
         String beforeSql = SqlUtils.SELECT
                 + String.join(SqlUtils.SQL_COMMA_SEPARATOR, updateImageParams.getColumns())
@@ -71,50 +73,38 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
                 + String.join(SqlUtils.SQL_COMMA_SEPARATOR, updateImageParams.getTables())
                 + SqlUtils.WHERE
                 + updateImageParams.getWhereSql();
-        try {
-            return queryRunner.query(beforeSql,
-                    new UpdateSqlPreDataHandler(updateImageParams.getPrimaryKeys(), updateImageParams.getColumns()));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return queryRunner.query(connection, TxcUtils.txcSQL(beforeSql),
+                new UpdateSqlPreDataHandler(updateImageParams.getPrimaryKeys(), updateImageParams.getColumns()));
     }
 
     @Override
-    public List<ModifiedRecord> deleteSqlPreviousData(DeleteImageParams deleteImageParams) {
-        StringBuilder beforeSql = new StringBuilder(SqlUtils.SELECT);
-        beforeSql.append(String.join(SqlUtils.SQL_COMMA_SEPARATOR, deleteImageParams.getColumns()))
-                .append(SqlUtils.FROM)
-                .append(String.join(SqlUtils.SQL_COMMA_SEPARATOR, deleteImageParams.getTables()))
-                .append(SqlUtils.WHERE)
-                .append(deleteImageParams.getSqlWhere());
-
-        try {
-            return queryRunner.query(beforeSql.toString(),
-                    new UpdateSqlPreDataHandler(
-                            deleteImageParams.getPrimaryKeys(),
-                            deleteImageParams.getColumns()));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public List<ModifiedRecord> deleteSqlPreviousData(Connection connection, DeleteImageParams deleteImageParams)
+            throws SQLException {
+        String beforeSql = SqlUtils.SELECT + String.join(SqlUtils.SQL_COMMA_SEPARATOR, deleteImageParams.getColumns()) +
+                SqlUtils.FROM +
+                String.join(SqlUtils.SQL_COMMA_SEPARATOR, deleteImageParams.getTables()) +
+                SqlUtils.WHERE +
+                deleteImageParams.getSqlWhere();
+        return queryRunner.query(connection, TxcUtils.txcSQL(beforeSql),
+                new UpdateSqlPreDataHandler(
+                        deleteImageParams.getPrimaryKeys(),
+                        deleteImageParams.getColumns()));
     }
 
     @Override
-    public List<ModifiedRecord> selectSqlPreviousPrimaryKeys(SelectImageParams selectImageParams) {
-        try {
-            return queryRunner.query(selectImageParams.getSql(),
-                    new UpdateSqlPreDataHandler(
-                            selectImageParams.getPrimaryKeys(),
-                            selectImageParams.getPrimaryKeys()));
-        } catch (SQLException e) {
-            log.error("txc > sql executor > query select sql image error.", e);
-            throw new RuntimeException(e);
-        }
+    public List<ModifiedRecord> selectSqlPreviousPrimaryKeys(Connection connection, SelectImageParams selectImageParams)
+            throws SQLException {
+        return queryRunner.query(connection, TxcUtils.txcSQL(selectImageParams.getSql()),
+                new UpdateSqlPreDataHandler(
+                        selectImageParams.getPrimaryKeys(),
+                        selectImageParams.getPrimaryKeys()));
     }
 
     @Override
-    public void tryLock(LockInfo lockInfo) throws SQLException {
-        String lockSql = "INSERT INTO `" + txcSettingFactory.lockTableName() + "` (table_name, key_value, group_id, unit_id, x_lock, s_lock) values(?, ?, ?, ?, ?, ?)";
-        queryRunner.insert(lockSql, new ScalarHandler<Integer>(),
+    public void tryLock(Connection connection, LockInfo lockInfo) throws SQLException {
+        String lockSql = "INSERT INTO `" + txcSettingFactory.lockTableName() +
+                "` (table_name, key_value, group_id, unit_id, x_lock, s_lock) values(?, ?, ?, ?, ?, ?)";
+        queryRunner.insert(connection, TxcUtils.txcSQL(lockSql), new ScalarHandler<Integer>(),
                 lockInfo.getTableName(),
                 lockInfo.getKeyValue(),
                 lockInfo.getGroupId(),
@@ -153,7 +143,8 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
     @Override
     public void applyUndoLog(String groupId, String unitId) throws SQLException {
         log.debug("txc > execute undo log. groupId: {}, unitId: {}", groupId, unitId);
-        String undoLogSql = "SELECT * FROM `" + txcSettingFactory.undoLogTableName() + "` WHERE `group_id`=? and `unit_id`=?";
+        String undoLogSql = "SELECT * FROM `" + txcSettingFactory.undoLogTableName() +
+                "` WHERE `group_id`=? and `unit_id`=?";
         Connection connection = null;
         try {
             BeanProcessor bean = new GenerousBeanProcessor();

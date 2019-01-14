@@ -1,11 +1,10 @@
 package com.codingapi.tx.client.spi.transaction.txc.control;
 
-import com.codingapi.tx.client.bean.TxTransactionInfo;
 import com.codingapi.tx.client.bean.DTXLocal;
-import com.codingapi.tx.client.spi.transaction.txc.resource.def.TxcService;
+import com.codingapi.tx.client.bean.TxTransactionInfo;
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.RollbackInfo;
-import com.codingapi.tx.client.support.separate.TXLCNTransactionControl;
 import com.codingapi.tx.client.support.common.template.TransactionControlTemplate;
+import com.codingapi.tx.client.support.separate.TXLCNTransactionControl;
 import com.codingapi.tx.commons.exception.BeforeBusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +22,10 @@ import java.util.Objects;
 @Slf4j
 public class TxcStartingTransaction implements TXLCNTransactionControl {
 
-    private final TxcService txcService;
-
     private final TransactionControlTemplate transactionControlTemplate;
 
     @Autowired
-    public TxcStartingTransaction(
-            TxcService txcService,
-            TransactionControlTemplate transactionControlTemplate) {
-        this.txcService = txcService;
+    public TxcStartingTransaction(TransactionControlTemplate transactionControlTemplate) {
         this.transactionControlTemplate = transactionControlTemplate;
     }
 
@@ -72,11 +66,6 @@ public class TxcStartingTransaction implements TXLCNTransactionControl {
         // 非成功状态。（事务导致）{#link TxcServiceImpl.lockResource}
         if (Objects.nonNull(rollbackInfo) && rollbackInfo.getStatus() < 0) {
             state = -1;
-        }
-
-        // 非提交状态，写Undo log
-        if (state != 1) {
-            txcService.writeUndoLog(info.getGroupId(), info.getUnitId(), rollbackInfo);
         }
 
         // 关闭事务组

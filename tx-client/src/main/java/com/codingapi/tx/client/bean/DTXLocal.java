@@ -31,6 +31,11 @@ public class DTXLocal {
      */
     private String unitId;
 
+    /**
+     * 业务相关资源
+     */
+    private Object resource;
+
 
     ////////////////////////// volatile ///////////////////////////////
 

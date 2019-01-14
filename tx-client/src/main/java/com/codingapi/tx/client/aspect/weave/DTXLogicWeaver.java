@@ -68,6 +68,9 @@ public class DTXLogicWeaver {
         try {
             return transactionServiceExecutor.transactionRunning(info);
         } finally {
+            synchronized (DTXLocal.cur()) {
+                DTXLocal.cur().notify();
+            }
             DTXLocal.makeNeverAppeared();
             log.info("tx-unit end------>");
         }

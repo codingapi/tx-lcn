@@ -9,6 +9,7 @@ import com.codingapi.tx.client.support.common.template.TransactionControlTemplat
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.RollbackInfo;
 import com.codingapi.tx.commons.exception.TransactionClearException;
 import com.codingapi.tx.commons.exception.TxClientException;
+import com.codingapi.tx.commons.exception.TxcLogicException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -51,10 +52,6 @@ public class TxcRunningTransaction implements TXLCNTransactionControl {
 
     @Override
     public void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) {
-        // 写Undo log 早于 clean
-        txcService.writeUndoLog(
-                info.getGroupId(), info.getUnitId(), (RollbackInfo) DTXLocal.cur().getAttachment());
-
         try {
             log.info("txc > running > clean transaction.");
             transactionCleanTemplate.clean(
@@ -70,8 +67,12 @@ public class TxcRunningTransaction implements TXLCNTransactionControl {
     @Override
     public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) throws TxClientException {
         // 写Undo log
-        txcService.writeUndoLog(
-                info.getGroupId(), info.getUnitId(), (RollbackInfo) DTXLocal.cur().getAttachment());
+        try {
+            txcService.writeUndoLog(
+                    info.getGroupId(), info.getUnitId(), (RollbackInfo) DTXLocal.cur().getAttachment());
+        } catch (TxcLogicException e) {
+            throw new TxClientException(e);
+        }
         // 加入事务组
         transactionControlTemplate.joinGroup(info.getGroupId(), info.getUnitId(), info.getTransactionType(),
                 info.getTransactionInfo());

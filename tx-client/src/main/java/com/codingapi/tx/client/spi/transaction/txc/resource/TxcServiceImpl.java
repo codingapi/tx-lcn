@@ -5,12 +5,14 @@ import com.codingapi.tx.client.spi.transaction.txc.resource.def.TxcService;
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.TxcSqlExecutor;
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.*;
 import com.codingapi.tx.client.spi.transaction.txc.resource.util.SqlUtils;
+import com.codingapi.tx.commons.exception.TxcLogicException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -29,53 +31,50 @@ public class TxcServiceImpl implements TxcService {
     private TxcSqlExecutor txcSqlExecutor;
 
     @Override
-    public void lockResource(LockInfo lockInfo, RollbackInfo rollbackInfo) throws SQLException {
+    public void lockResource(LockInfo lockInfo, RollbackInfo rollbackInfo) throws TxcLogicException {
         try {
-            DTXLocal.makeUnProxy();
+            Connection connection = (Connection) DTXLocal.cur().getResource();
             // key value MD5 HEX to store
             lockInfo.setKeyValue(DigestUtils.md5DigestAsHex(lockInfo.getKeyValue().getBytes(StandardCharsets.UTF_8)));
-            txcSqlExecutor.tryLock(lockInfo);
+            txcSqlExecutor.tryLock(connection, lockInfo);
         } catch (SQLException e) {
             rollbackInfo.setStatus(-1);
-            throw new SQLException("Resource is locked! Place try again later.");
-        } finally {
-            DTXLocal.undoProxyStatus();
+            throw new TxcLogicException("Resource is locked! Place try again later.");
         }
     }
 
     @Override
-    public void lockSelect(SelectImageParams selectImageParams, boolean isxLock) throws SQLException {
-        List<ModifiedRecord> modifiedRecords;
+    public void lockSelect(SelectImageParams selectImageParams, boolean isxLock) throws TxcLogicException {
+        Connection connection = (Connection) DTXLocal.cur().getResource();
         try {
-            DTXLocal.makeUnProxy();
-            modifiedRecords = txcSqlExecutor.selectSqlPreviousPrimaryKeys(selectImageParams);
-        } finally {
-            DTXLocal.undoProxyStatus();
-        }
-        for (ModifiedRecord modifiedRecord : modifiedRecords) {
-            for (Map.Entry<String, FieldCluster> entry : modifiedRecord.getFieldClusters().entrySet()) {
-                String k = entry.getKey();
-                FieldCluster v = entry.getValue();
-                lockResource(new LockInfo()
-                        .setGroupId(selectImageParams.getGroupId())
-                        .setUnitId(selectImageParams.getUnitId())
-                        .setxLock(isxLock)
-                        .setKeyValue(v.getPrimaryKeys().toString())
-                        .setTableName(k), selectImageParams.getRollbackInfo());
+            List<ModifiedRecord> modifiedRecords = txcSqlExecutor.selectSqlPreviousPrimaryKeys(connection, selectImageParams);
+            for (ModifiedRecord modifiedRecord : modifiedRecords) {
+                for (Map.Entry<String, FieldCluster> entry : modifiedRecord.getFieldClusters().entrySet()) {
+                    String k = entry.getKey();
+                    FieldCluster v = entry.getValue();
+                    lockResource(new LockInfo()
+                            .setGroupId(selectImageParams.getGroupId())
+                            .setUnitId(selectImageParams.getUnitId())
+                            .setxLock(isxLock)
+                            .setKeyValue(v.getPrimaryKeys().toString())
+                            .setTableName(k), selectImageParams.getRollbackInfo());
+                }
             }
+        } catch (SQLException e) {
+            throw new TxcLogicException(e);
         }
     }
 
     @Override
-    public void resolveUpdateImage(UpdateImageParams updateImageParams) throws SQLException {
+    public void resolveUpdateImage(UpdateImageParams updateImageParams) throws TxcLogicException {
 
         // 前置镜像数据集
         List<ModifiedRecord> modifiedRecords;
+        Connection connection = (Connection) DTXLocal.cur().getResource();
         try {
-            DTXLocal.makeUnProxy();
-            modifiedRecords = txcSqlExecutor.updateSqlPreviousData(updateImageParams);
-        } finally {
-            DTXLocal.undoProxyStatus();
+            modifiedRecords = txcSqlExecutor.updateSqlPreviousData(connection, updateImageParams);
+        } catch (SQLException e) {
+            throw new TxcLogicException(e);
         }
 
 
@@ -115,9 +114,9 @@ public class TxcServiceImpl implements TxcService {
                 // Lock Resource
                 this.lockResource(new LockInfo()
                         .setxLock(true)
+                        .setKeyValue(v.getPrimaryKeys().toString())
                         .setGroupId(updateImageParams.getGroupId())
                         .setUnitId(updateImageParams.getUnitId())
-                        .setKeyValue(v.getPrimaryKeys().toString())
                         .setTableName(k), updateImageParams.getRollbackInfo());
             }
         }
@@ -125,15 +124,15 @@ public class TxcServiceImpl implements TxcService {
     }
 
     @Override
-    public void resolveDeleteImage(DeleteImageParams deleteImageParams) throws SQLException {
+    public void resolveDeleteImage(DeleteImageParams deleteImageParams) throws TxcLogicException {
 
         // 前置数据
         List<ModifiedRecord> modifiedRecords;
+        Connection connection = (Connection) DTXLocal.cur().getResource();
         try {
-            DTXLocal.makeUnProxy();
-            modifiedRecords = txcSqlExecutor.deleteSqlPreviousData(deleteImageParams);
-        } finally {
-            DTXLocal.undoProxyStatus();
+            modifiedRecords = txcSqlExecutor.deleteSqlPreviousData(connection, deleteImageParams);
+        } catch (SQLException e) {
+            throw new TxcLogicException(e);
         }
 
         // rollback sql
@@ -168,7 +167,7 @@ public class TxcServiceImpl implements TxcService {
     }
 
     @Override
-    public void writeUndoLog(String groupId, String unitId, RollbackInfo rollbackInfo) {
+    public void writeUndoLog(String groupId, String unitId, RollbackInfo rollbackInfo) throws TxcLogicException {
         if (rollbackInfo.getRollbackSqlList().size() == 0) {
             return;
         }
@@ -182,21 +181,21 @@ public class TxcServiceImpl implements TxcService {
             DTXLocal.makeUnProxy();
             txcSqlExecutor.writeUndoLog(undoLogDO);
         } catch (SQLException e) {
-            log.error("error: {} code: {}", e.getMessage(), e.getErrorCode());
+            throw new TxcLogicException(e);
         } finally {
             DTXLocal.undoProxyStatus();
         }
     }
 
     @Override
-    public void cleanTxc(String groupId, String unitId) throws SQLException {
+    public void cleanTxc(String groupId, String unitId) throws TxcLogicException {
         // 清理事务单元相关锁
         try {
             DTXLocal.makeUnProxy();
             txcSqlExecutor.clearLock(groupId, unitId);
         } catch (SQLException e) {
             if (e.getErrorCode() != SqlUtils.MYSQL_TABLE_NOT_EXISTS_CODE) {
-                throw e;
+                throw new TxcLogicException(e);
             }
         } finally {
             DTXLocal.undoProxyStatus();
@@ -208,7 +207,7 @@ public class TxcServiceImpl implements TxcService {
             txcSqlExecutor.clearUndoLog(groupId, unitId);
         } catch (SQLException e) {
             if (e.getErrorCode() != SqlUtils.MYSQL_TABLE_NOT_EXISTS_CODE) {
-                throw e;
+                throw new TxcLogicException(e);
             }
         } finally {
             DTXLocal.undoProxyStatus();
@@ -216,10 +215,12 @@ public class TxcServiceImpl implements TxcService {
     }
 
     @Override
-    public void undo(String groupId, String unitId) throws SQLException {
+    public void undo(String groupId, String unitId) throws TxcLogicException {
         try {
             DTXLocal.makeUnProxy();
             txcSqlExecutor.applyUndoLog(groupId, unitId);
+        } catch (SQLException e) {
+            throw new TxcLogicException(e);
         } finally {
             DTXLocal.undoProxyStatus();
         }
