@@ -39,6 +39,7 @@ public class TxClientConfiguration {
         return new DefaultTxcSettingFactory();
     }
 
+
     @Bean
     public SmartInitializingSingleton dtxCheckingTransactionCleanTemplateAdapter(DTXChecking dtxChecking,
                                                                                  TransactionCleanTemplate transactionCleanTemplate) {

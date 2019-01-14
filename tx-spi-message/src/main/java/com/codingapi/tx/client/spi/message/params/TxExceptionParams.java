@@ -22,6 +22,7 @@ public class TxExceptionParams implements Serializable {
     public static final short ASK_ERROR = 1;
 
     public static final short NOTIFY_GROUP_ERROR = 2;
+    public static final Short TXC_ROLLBACK_ERROR = 3;
 
     private String groupId;
 

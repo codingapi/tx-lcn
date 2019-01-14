@@ -2,6 +2,7 @@ package com.codingapi.tx.client.spi.transaction.txc.resource;
 
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.TxcSqlExecutor;
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.*;
+import com.codingapi.tx.client.spi.transaction.txc.resource.init.TxcExceptionConnectionPool;
 import com.codingapi.tx.client.spi.transaction.txc.resource.init.TxcSettingFactory;
 import com.codingapi.tx.client.spi.transaction.txc.resource.rs.UpdateSqlPreDataHandler;
 import com.codingapi.tx.client.spi.transaction.txc.resource.util.SqlUtils;
@@ -35,6 +36,9 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
     private final TxcSettingFactory txcSettingFactory;
 
     private final TxLogger txLogger;
+
+    @Autowired
+    private TxcExceptionConnectionPool txcExceptionConnectionPool;
 
     @Autowired
     public TxcSqlExecutorImpl(QueryRunner queryRunner, TxcSettingFactory txcSettingFactory, TxLogger txLogger) {
@@ -172,6 +176,25 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
             }
             throw e;
         } finally {
+            try {
+                DbUtils.close(connection);
+            } catch (SQLException ignored) {
+            }
+        }
+    }
+
+    @Override
+    public void undoRollbackInfoSql(RollbackInfo rollbackInfo) throws SQLException {
+        Connection connection = txcExceptionConnectionPool.getConnection();
+        try {
+            connection.setAutoCommit(false);
+            for (StatementInfo statementInfo : rollbackInfo.getRollbackSqlList()) {
+                log.debug("txc > Apply undo log. sql: {}, params: {}", statementInfo.getSql(), statementInfo.getParams());
+                queryRunner.update(connection, statementInfo.getSql(), statementInfo.getParams());
+            }
+            connection.commit();
+
+        }finally {
             try {
                 DbUtils.close(connection);
             } catch (SQLException ignored) {

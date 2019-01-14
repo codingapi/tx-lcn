@@ -74,4 +74,12 @@ public interface TxcService {
      * @throws TxcLogicException
      */
     void undo(String groupId, String unitId) throws TxcLogicException;
+
+
+    /**
+     * 撤销某事务单元数据库操作
+     *
+     * @throws TxcLogicException
+     */
+    void undoRollbackInfo(RollbackInfo rollbackInfo) throws TxcLogicException;
 }

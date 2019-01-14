@@ -24,6 +24,9 @@ public class TxcInitialization implements InitializingBean {
     private final TxcSqlExecutor txcSqlExecutor;
 
     @Autowired
+    private TxcExceptionConnectionPool txcExceptionConnectionPool;
+
+    @Autowired
     public TxcInitialization(TxcSettingFactory txcSettingFactory,
                              TableStructAnalyser tableStructAnalyser,
                              TxcSqlExecutor txcSqlExecutor) {
@@ -44,6 +47,8 @@ public class TxcInitialization implements InitializingBean {
                 log.info("create undo log table.");
                 txcSqlExecutor.createUndoLogTable();
             }
+
+            txcExceptionConnectionPool.init();
         }
     }
 }

@@ -31,6 +31,7 @@ public class DemoServiceImpl implements DemoService {
 
     @Override
     @TxcTransaction(dtxp = DTXPropagation.SUPPORTS)
+    @Transactional
     public String rpc(String value) {
         Demo demo = new Demo();
         demo.setCreateTime(new Date());

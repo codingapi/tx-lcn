@@ -225,4 +225,13 @@ public class TxcServiceImpl implements TxcService {
             DTXLocal.undoProxyStatus();
         }
     }
+
+    @Override
+    public void undoRollbackInfo(RollbackInfo rollbackInfo) throws TxcLogicException {
+        try {
+            txcSqlExecutor.undoRollbackInfoSql(rollbackInfo);
+        } catch (SQLException e) {
+            throw new TxcLogicException(e);
+        }
+    }
 }

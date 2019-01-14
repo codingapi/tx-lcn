@@ -38,6 +38,25 @@ public class TxMangerReporter {
         txExceptionParams.setRegistrar(registrar);
         txExceptionParams.setTransactionState((short) state);
         txExceptionParams.setUnitId(unitId);
+        report(txExceptionParams);
+    }
+
+    /**
+     * Manager 记录TXC回滚失败
+     *
+     * @param groupId
+     * @param unitId
+     */
+    public void reportTxcRollbackException(String groupId, String unitId) {
+        TxExceptionParams txExceptionParams = new TxExceptionParams();
+        txExceptionParams.setGroupId(groupId);
+        txExceptionParams.setRegistrar(TxExceptionParams.TXC_ROLLBACK_ERROR);
+        txExceptionParams.setTransactionState((short) 0);
+        txExceptionParams.setUnitId(unitId);
+        report(txExceptionParams);
+    }
+
+    private void report(TxExceptionParams txExceptionParams) {
         while (true) {
             try {
                 rpcClient.send(rpcClient.loadRemoteKey(), MessageCreator.writeTxException(txExceptionParams));

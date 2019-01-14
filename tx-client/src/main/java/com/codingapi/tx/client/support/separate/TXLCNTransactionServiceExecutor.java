@@ -64,14 +64,14 @@ public class TXLCNTransactionServiceExecutor {
 
         try {
             // 5.2 业务执行前
-            txLogger.trace(info.getGroupId(), info.getUnitId(), "transaction", "pre business code");
+            txLogger.trace(info.getGroupId(), info.getUnitId(), "transaction", "pre service business code");
             lcnTransactionControl.preBusinessCode(info);
             // 5.3 执行业务
-            txLogger.trace(info.getGroupId(), info.getUnitId(), "transaction", "do business code");
+            txLogger.trace(info.getGroupId(), info.getUnitId(), "transaction", "do service business code");
             Object result = lcnTransactionControl.doBusinessCode(info);
 
             // 5.4 业务执行成功
-            txLogger.trace(info.getGroupId(), info.getUnitId(), "transaction", "business code success");
+            txLogger.trace(info.getGroupId(), info.getUnitId(), "transaction", "service business success");
             lcnTransactionControl.onBusinessCodeSuccess(info, result);
             return result;
         } catch (BeforeBusinessException e) {

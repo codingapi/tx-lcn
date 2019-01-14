@@ -16,5 +16,6 @@ public class SpringDApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SpringDApplication.class, args);
+
     }
 }

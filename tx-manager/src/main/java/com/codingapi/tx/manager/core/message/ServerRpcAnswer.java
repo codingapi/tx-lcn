@@ -4,6 +4,7 @@ import com.codingapi.tx.client.spi.message.RpcAnswer;
 import com.codingapi.tx.client.spi.message.RpcClient;
 import com.codingapi.tx.client.spi.message.dto.RpcCmd;
 import com.codingapi.tx.client.spi.message.exception.RpcException;
+import com.codingapi.tx.logger.TxLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,9 @@ public class ServerRpcAnswer implements RpcAnswer {
     private final RpcClient rpcClient;
 
     @Autowired
+    private TxLogger txLogger;
+
+    @Autowired
     public ServerRpcAnswer(HashGroupRpcCmdHandler hashGroupRpcCmdHandler, RpcClient rpcClient) {
         this.hashGroupRpcCmdHandler = hashGroupRpcCmdHandler;
         this.rpcClient = rpcClient;
@@ -30,6 +34,8 @@ public class ServerRpcAnswer implements RpcAnswer {
 
     @Override
     public void callback(RpcCmd rpcCmd) {
+
+        txLogger.trace(rpcCmd.getMsg().getGroupId(),"","rpccmd",rpcCmd.getMsg().getAction());
 
         try {
             hashGroupRpcCmdHandler.handleMessage(rpcCmd);
