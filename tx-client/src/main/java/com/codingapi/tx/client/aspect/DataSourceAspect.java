@@ -1,5 +1,6 @@
 package com.codingapi.tx.client.aspect;
 
+import com.codingapi.tx.client.aspect.weave.DTXResourceWeaver;
 import com.codingapi.tx.client.config.TxClientConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,23 +13,25 @@ import org.springframework.stereotype.Component;
 /**
  * create by lorne on 2018/1/5
  */
-
-
 @Aspect
 @Component
 @Slf4j
 public class DataSourceAspect implements Ordered {
 
-    @Autowired
-    private TxClientConfig txClientConfig;
+    private final TxClientConfig txClientConfig;
+
+    private final DTXResourceWeaver dtxResourceWeaver;
 
     @Autowired
-    private com.codingapi.tx.client.aspect.weave.DTXResourceWeaver DTXResourceWeaver;
+    public DataSourceAspect(TxClientConfig txClientConfig, DTXResourceWeaver dtxResourceWeaver) {
+        this.txClientConfig = txClientConfig;
+        this.dtxResourceWeaver = dtxResourceWeaver;
+    }
 
 
     @Around("execution(* javax.sql.DataSource.getConnection(..))")
     public Object around(ProceedingJoinPoint point) throws Throwable {
-        return DTXResourceWeaver.around(point);
+        return dtxResourceWeaver.around(point);
     }
 
 
