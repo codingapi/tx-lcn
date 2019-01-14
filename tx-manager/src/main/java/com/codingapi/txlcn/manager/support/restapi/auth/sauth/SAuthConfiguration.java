@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
  * Description:
  * Date: 2018/11/23
  *
- * @auther ujued
+ * @author ujued
  */
 @Configuration
 @ComponentScan

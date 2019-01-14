@@ -55,9 +55,9 @@ public class AdminController {
     /**
      * 获取补偿信息
      *
-     * @param page
-     * @param limit
-     * @return
+     * @param page  页码
+     * @param limit 记录数
+     * @return ExceptionList
      */
     @GetMapping({"/exceptions/{page}", "/exceptions", "/exceptions/{page}/{limit}"})
     public ExceptionList exceptionList(
@@ -69,9 +69,9 @@ public class AdminController {
     /**
      * 获取某个事务组某个节点具体补偿信息
      *
-     * @param groupId
-     * @param unitId
-     * @return
+     * @param groupId groupId
+     * @param unitId  unitId
+     * @return transaction info
      */
     @GetMapping("/log/transaction-info")
     public JSONObject transactionInfo(
@@ -87,9 +87,9 @@ public class AdminController {
     /**
      * 日志信息
      *
-     * @param page
-     * @param limit
-     * @return
+     * @param page  页码
+     * @param limit 记录数
+     * @return TxLogList
      */
     @GetMapping({"/logs/{page}", "/logs/{page}/{limit}", "/logs"})
     public TxLogList txLogList(
@@ -104,7 +104,7 @@ public class AdminController {
     /**
      * 获取TxManager信息
      *
-     * @return
+     * @return TxManagerInfo
      */
     @GetMapping("/tx-manager")
     public TxManagerInfo getTxManagerInfo() {
