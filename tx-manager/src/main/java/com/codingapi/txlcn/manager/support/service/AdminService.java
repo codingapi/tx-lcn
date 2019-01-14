@@ -31,34 +31,34 @@ public interface AdminService {
     /**
      * 登陆
      *
-     * @param password
-     * @return
+     * @param password password
+     * @return  token
      */
     String login(String password) throws TxManagerException;
 
     /**
      * 查询TX 日志
      *
-     * @param page
-     * @param limit
-     * @param groupId
-     * @param tag
+     * @param page page
+     * @param limit limit
+     * @param  groupId groupId
+     * @param tag tag
      * @param timeOrder 时间排序1 顺序 2 逆序
-     * @return
+     * @return TxLogList
      */
     TxLogList txLogList(Integer page, Integer limit, String groupId, String tag, Integer timeOrder);
 
     /**
      * 分布式事务统计信息
      *
-     * @return
+     * @return DTXInfo
      */
     DTXInfo dtxInfo();
 
     /**
      * 获取TxManager信息
      *
-     * @return
+     * @return TxManagerInfo
      */
     TxManagerInfo getTxManagerInfo();
 }

@@ -26,7 +26,7 @@ public interface DTXTransaction {
     /**
      * 事务组标识
      *
-     * @return
+     * @return groupId
      */
     String groupId();
 }

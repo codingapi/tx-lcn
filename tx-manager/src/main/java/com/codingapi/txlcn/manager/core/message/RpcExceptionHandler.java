@@ -26,16 +26,16 @@ public interface RpcExceptionHandler {
     /**
      * 通知事务单元业务异常
      *
-     * @param params
-     * @param e
+     * @param params params
+     * @param e e
      */
     void handleNotifyUnitBusinessException(Object params, Throwable e);
 
     /**
      * 通知事务单元通讯异常
      *
-     * @param params
-     * @param e
+     * @param params  params
+     * @param e e
      */
     void handleNotifyUnitMessageException(Object params, Throwable e);
 }

@@ -22,8 +22,6 @@ import lombok.Data;
 
 /**
  * @author lorne
- * @date 2018/12/2
- * @description
  */
 @Data
 public class TransactionCmd {

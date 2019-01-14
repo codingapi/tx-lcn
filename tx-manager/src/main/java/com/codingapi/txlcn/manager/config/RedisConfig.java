@@ -25,9 +25,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
  * @author 侯存路
- * @date 2018/12/4
- * @company codingApi
- * @description
  */
 @Configuration
 public class RedisConfig {
@@ -41,7 +38,7 @@ public class RedisConfig {
     /**
      * 实例化 RedisTemplate 对象
      *
-     * @return
+     * @return RedisTemplate
      */
     @Bean
     public RedisTemplate<String, Object> functionDomainRedisTemplate() {
@@ -53,8 +50,8 @@ public class RedisConfig {
     /**
      * 设置数据存入 redis 的序列化方式
      *
-     * @param redisTemplate
-     * @param factory
+     * @param redisTemplate redisTemplate
+     * @param factory factory
      */
     private void initDomainRedisTemplate(
         RedisTemplate<String, Object> redisTemplate, RedisConnectionFactory factory) {
