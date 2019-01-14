@@ -31,7 +31,7 @@ tx-spi-message-netty:netty消息实现
 tx-spi-sleuth:sleuth扩展接口
 
 
-## 使用说明见官网
+## 官网文档
 
 https://txlcn.org
 
