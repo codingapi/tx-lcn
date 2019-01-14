@@ -25,7 +25,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * Description:
  * Date: 2018/11/23
  *
- * @auther ujued
+ * @author  ujued
  */
 @Component
 public class InterceptorConfigurer implements WebMvcConfigurer {

@@ -28,7 +28,7 @@ public interface TxExceptionListener {
     /**
      * 实务异常时
      *
-     * @param txException
+     * @param txException txException
      */
     void onException(TxException txException);
 }

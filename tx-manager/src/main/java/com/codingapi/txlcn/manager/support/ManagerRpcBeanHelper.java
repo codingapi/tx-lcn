@@ -23,9 +23,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 /**
+ * BeanName 获取工具类
  * @author lorne
- * @date 2018/12/2
- * @description BeanName 获取工具类
  */
 @Component
 public class ManagerRpcBeanHelper {

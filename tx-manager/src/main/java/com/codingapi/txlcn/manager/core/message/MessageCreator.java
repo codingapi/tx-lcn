@@ -26,9 +26,8 @@ import com.codingapi.txlcn.spi.message.params.NotifyUnitParams;
 import java.util.Objects;
 
 /**
+ * 消息创建器
  * @author lorne
- * @date 2018/12/2
- * @description 消息创建器
  */
 public class MessageCreator {
 
@@ -45,8 +44,8 @@ public class MessageCreator {
     /**
      * 通知TxClient连接
      *
-     * @param notifyConnectParams
-     * @return
+     * @param notifyConnectParams notifyConnectParams
+     * @return MessageDto
      */
     public static MessageDto newTxManager(NotifyConnectParams notifyConnectParams) {
         MessageDto msg = new MessageDto();
@@ -58,8 +57,8 @@ public class MessageCreator {
     /**
      * 提交事务组
      *
-     * @param notifyUnitParams
-     * @return
+     * @param notifyUnitParams notifyUnitParams
+     * @return MessageDto
      */
     public static MessageDto notifyUnit(NotifyUnitParams notifyUnitParams) {
         MessageDto msg = new MessageDto();
@@ -71,8 +70,9 @@ public class MessageCreator {
 
     /**
      * 关闭事务组正常响应
-     *
-     * @return
+     * @param action action
+     * @param message  message
+     * @return MessageDto
      */
     public static MessageDto notifyGroupOkResponse(Object message,String action) {
         MessageDto messageDto = new MessageDto();
@@ -84,8 +84,9 @@ public class MessageCreator {
 
     /**
      * 关闭事务组失败响应
-     *
-     * @return
+     * @param action action
+     * @param message  message
+     * @return MessageDto
      */
     public static MessageDto notifyGroupFailResponse(Object message,String action) {
         MessageDto messageDto = new MessageDto();
@@ -97,8 +98,8 @@ public class MessageCreator {
 
     /**
      * 服务器错误
-     *
-     * @return
+     * @param action action
+     * @return MessageDto
      */
     public static MessageDto serverException(String action) {
         MessageDto messageDto = new MessageDto();

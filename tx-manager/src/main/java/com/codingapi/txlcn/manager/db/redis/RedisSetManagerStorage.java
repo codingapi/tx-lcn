@@ -32,7 +32,6 @@ import java.util.Objects;
  * Manager信息改用Set 暂未使用
  *
  * @author meetzy
- * @date 2019-01-14 11:09
  */
 @Slf4j
 public class RedisSetManagerStorage implements ManagerStorage {

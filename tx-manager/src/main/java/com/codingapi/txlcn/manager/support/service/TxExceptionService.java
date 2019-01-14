@@ -31,7 +31,7 @@ public interface TxExceptionService {
     /**
      * 写补偿记录
      *
-     * @param writeTxExceptionReq
+     * @param writeTxExceptionReq writeTxExceptionReq
      */
     void writeTxException(WriteTxExceptionDTO writeTxExceptionReq);
 
@@ -39,26 +39,30 @@ public interface TxExceptionService {
     /**
      * 获取事务状态
      *
-     * @param groupId
-     * @return
+     * @param  groupId groupId
+     * @return transactionState
      */
     int transactionState(String groupId);
 
     /**
      * 获取补偿列表
      *
-     * @param page
-     * @param limit
-     * @return
+     * @param page page
+     * @param limit limit
+     * @param keyword  keyword
+     * @param registrar  registrar
+     * @return ExceptionList
      */
     ExceptionList exceptionList(Integer page, Integer limit, String keyword, int registrar);
 
     /**
      * Client 切面信息
      *
-     * @param groupId
-     * @param unitId
-     * @return
+     * @param groupId groupId
+     * @param unitId unitId
+     * @return JSONObject
+     * @throws TxManagerException TxManagerException
+     * @throws TransactionStateException TransactionStateException
      */
     JSONObject getTransactionInfo(String groupId, String unitId) throws TxManagerException, TransactionStateException;
 }

@@ -72,6 +72,7 @@ public class AdminController {
      * @param groupId groupId
      * @param unitId  unitId
      * @return transaction info
+     * @throws  TxManagerException TxManagerException
      */
     @GetMapping("/log/transaction-info")
     public JSONObject transactionInfo(
@@ -89,6 +90,9 @@ public class AdminController {
      *
      * @param page  页码
      * @param limit 记录数
+     * @param groupId  groupId
+     * @param tag  tag
+     * @param timeOrder  timeOrder
      * @return TxLogList
      */
     @GetMapping({"/logs/{page}", "/logs/{page}/{limit}", "/logs"})
