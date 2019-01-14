@@ -30,16 +30,18 @@ public interface DTXExceptionHandler {
     /**
      * 处理创建事务组TxManager业务异常
      *
-     * @param params
-     * @param ex
+     * @param params params
+     * @param ex ex
+     * @throws BeforeBusinessException BeforeBusinessException
      */
     void handleCreateGroupBusinessException(Object params, Throwable ex) throws BeforeBusinessException;
 
     /**
      * 处理创建事务组TxManager通信异常
      *
-     * @param params
-     * @param ex
+     * @param params params
+     * @param ex ex
+     * @throws  BeforeBusinessException BeforeBusinessException
      */
     void handleCreateGroupMessageException(Object params, Throwable ex)throws BeforeBusinessException;
 
@@ -47,32 +49,34 @@ public interface DTXExceptionHandler {
     /**
      * 加入事务组TxManager业务异常
      *
-     * @param params
-     * @param ex
+     * @param params params
+     * @param  ex ex
+     * @throws  TxClientException TxClientException
      */
     void handleJoinGroupBusinessException(Object params, Throwable ex) throws TxClientException;
 
     /**
      * 加入事务组TxManager通讯异常
      *
-     * @param params
-     * @param ex
+     * @param params params
+     * @param ex ex
+     * @throws  TxClientException TxClientException
      */
     void handleJoinGroupMessageException(Object params, Throwable ex) throws TxClientException;
 
     /**
      * 通知事务组业务异常处理
      *
-     * @param params
-     * @param ex
+     * @param params params
+     * @param ex ex
      */
     void handleNotifyGroupBusinessException(Object params, Throwable ex);
 
     /**
      * 通知事务组消息异常处理
      *
-     * @param params
-     * @param ex
+     * @param params params
+     * @param ex ex
      */
     void handleNotifyGroupMessageException(Object params, Throwable ex);
 

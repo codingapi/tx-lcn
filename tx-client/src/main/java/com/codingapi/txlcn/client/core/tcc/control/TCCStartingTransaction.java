@@ -32,9 +32,6 @@ import java.lang.reflect.Method;
 
 /**
  * @author 侯存路
- * @date 2018/12/3
- * @company codingApi
- * @description
  */
 @Service(value = "control_tcc_starting")
 @Slf4j
@@ -105,7 +102,7 @@ public class TCCStartingTransaction implements TXLCNTransactionControl {
     /**
      * 事务发起方 自己执行  提交 / 取消 事件
      *
-     * @param info
+     * @param info info
      */
     @Override
     public void postBusinessCode(TxTransactionInfo info) {

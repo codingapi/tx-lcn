@@ -47,9 +47,9 @@ public class TXLCNTransactionServiceExecutor {
     /**
      * 事务业务执行
      *
-     * @param info
-     * @return
-     * @throws Throwable
+     * @param info info
+     * @return Object
+     * @throws Throwable Throwable
      */
     public Object transactionRunning(TxTransactionInfo info) throws Throwable {
 

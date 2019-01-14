@@ -42,34 +42,37 @@ public interface TxcSqlExecutor {
     /**
      * update sql 执行前受影响数据
      *
-     * @param updateImageParams
-     * @return
-     * @throws SQLException
+     * @param connection Connection
+     * @param updateImageParams updateImageParams
+     * @return list
+     * @throws SQLException SQLException
      */
     List<ModifiedRecord> updateSqlPreviousData(Connection connection, UpdateImageParams updateImageParams) throws SQLException;
 
     /**
      * {@code delete} sql受影响数据
-     *
-     * @param deleteImageParams
-     * @return
-     * @throws SQLException
+     * @param connection Connection
+     * @param deleteImageParams deleteImageParams
+     * @return list
+     * @throws SQLException SQLException
      */
     List<ModifiedRecord> deleteSqlPreviousData(Connection connection, DeleteImageParams deleteImageParams) throws SQLException;
 
     /**
      * {@code select} 语句受影响数据查询
      *
-     * @param selectImageParams
-     * @return
-     * @throws SQLException
+     * @param connection Connection
+     * @param selectImageParams selectImageParams
+     * @return list
+     * @throws SQLException SQLException
      */
     List<ModifiedRecord> selectSqlPreviousPrimaryKeys(Connection connection, SelectImageParams selectImageParams) throws SQLException;
 
     /**
      * 尝试写入锁信息到数据库
      *
-     * @param lockInfo
+     * @param connection Connection
+     * @param lockInfo lockInfo
      * @throws SQLException 获取锁失败时抛出
      */
     void tryLock(Connection connection, LockInfo lockInfo) throws SQLException;
@@ -77,34 +80,35 @@ public interface TxcSqlExecutor {
     /**
      * 清除锁信息
      *
-     * @param groupId
+     * @param groupId groupId
      * @param unitId  事务单元
-     * @throws SQLException
+     * @throws SQLException  SQLException
      */
     void clearLock(String groupId, String unitId) throws SQLException;
 
     /**
      * 写undo_log
      *
-     * @param undoLogDo
+     * @param undoLogDo undoLogDo
+     * @throws SQLException SQLException
      */
     void writeUndoLog(UndoLogDO undoLogDo) throws SQLException;
 
     /**
      * 回滚undo_log
      *
-     * @param groupId
+     * @param groupId groupId
      * @param unitId  事务单元
-     * @throws SQLException
+     * @throws SQLException SQLException
      */
     void applyUndoLog(String groupId, String unitId) throws SQLException;
 
     /**
      * 清除undo_log
      *
-     * @param groupId
+     * @param groupId groupId
      * @param unitId  事务单元
-     * @throws SQLException
+     * @throws SQLException SQLException
      */
     void clearUndoLog(String groupId, String unitId) throws SQLException;
 

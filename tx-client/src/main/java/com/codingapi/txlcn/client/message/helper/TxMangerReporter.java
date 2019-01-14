@@ -42,10 +42,10 @@ public class TxMangerReporter {
     /**
      * Manager 记录事务状态
      *
-     * @param groupId
-     * @param unitId
-     * @param registrar
-     * @param state
+     * @param groupId groupId
+     * @param unitId unitId
+     * @param registrar registrar
+     * @param state state
      */
     public void reportTransactionState(String groupId, String unitId, Short registrar, int state) {
         TxExceptionParams txExceptionParams = new TxExceptionParams();
@@ -59,8 +59,8 @@ public class TxMangerReporter {
     /**
      * Manager 记录TXC回滚失败
      *
-     * @param groupId
-     * @param unitId
+     * @param groupId groupId
+     * @param unitId unitId
      */
     public void reportTxcRollbackException(String groupId, String unitId) {
         TxExceptionParams txExceptionParams = new TxExceptionParams();

@@ -25,8 +25,6 @@ import java.util.Objects;
 
 /**
  * @author lorne
- * @date 2018/12/2
- * @description 消息创建器
  */
 public class MessageCreator {
 
@@ -42,8 +40,8 @@ public class MessageCreator {
     /**
      * 创建事务组
      *
-     * @param groupId
-     * @return
+     * @param groupId groupId
+     * @return MessageDto
      */
     public static MessageDto createGroup(String groupId) {
         MessageDto msg = new MessageDto();
@@ -55,8 +53,8 @@ public class MessageCreator {
     /**
      * 加入事务组
      *
-     * @param joinGroupParams
-     * @return
+     * @param joinGroupParams joinGroupParams
+     * @return MessageDto
      */
     public static MessageDto joinGroup(JoinGroupParams joinGroupParams) {
         MessageDto msg = new MessageDto();
@@ -69,8 +67,8 @@ public class MessageCreator {
     /**
      * 关闭事务组
      *
-     * @param notifyGroupParams
-     * @return
+     * @param notifyGroupParams notifyGroupParams
+     * @return MessageDto
      */
     public static MessageDto notifyGroup(NotifyGroupParams notifyGroupParams) {
         MessageDto msg = new MessageDto();
@@ -83,8 +81,9 @@ public class MessageCreator {
     /**
      * 通知事务单元成功
      *
-     * @param message
-     * @return
+     * @param message message
+     * @param action action
+     * @return MessageDto
      */
     public static MessageDto notifyUnitOkResponse(Object message,String action) {
         MessageDto messageDto = new MessageDto();
@@ -97,8 +96,9 @@ public class MessageCreator {
     /**
      * 通知事务单元失败
      *
-     * @param message
-     * @return
+     * @param message message
+     * @param action action
+     * @return MessageDto
      */
     public static MessageDto notifyUnitFailResponse(Object message,String action) {
         MessageDto messageDto = new MessageDto();
@@ -111,9 +111,9 @@ public class MessageCreator {
     /**
      * 询问事务状态指令
      *
-     * @param groupId
-     * @param unitId
-     * @return
+     * @param groupId groupId
+     * @param unitId unitId
+     * @return MessageDto
      */
     public static MessageDto askTransactionState(String groupId, String unitId) {
         MessageDto messageDto = new MessageDto();
@@ -126,8 +126,8 @@ public class MessageCreator {
     /**
      * 写异常信息指令
      *
-     * @param txExceptionParams
-     * @return
+     * @param txExceptionParams txExceptionParams
+     * @return MessageDto
      */
     public static MessageDto writeTxException(TxExceptionParams txExceptionParams) {
         MessageDto messageDto = new MessageDto();
@@ -139,7 +139,8 @@ public class MessageCreator {
 
     /**
      * 初始化客户端请求
-     * @return
+     * @param  appName appName
+     * @return MessageDto
      */
     public static MessageDto initClient(String appName) {
         InitClientParams initClientParams = new InitClientParams();

@@ -30,9 +30,6 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author 侯存路
- * @date 2018/12/3
- * @company codingApi
- * @description
  */
 @Service(value = "control_tcc_running")
 @Slf4j

@@ -69,8 +69,8 @@ public class SqlUtils {
     /**
      * 从完全标识字段名获取表名
      *
-     * @param fieldFullyQualifiedName
-     * @return
+     * @param fieldFullyQualifiedName fieldFullyQualifiedName
+     * @return tableName
      */
     public static String tableName(String fieldFullyQualifiedName) {
         if (fieldFullyQualifiedName.contains(".")) {
@@ -82,8 +82,8 @@ public class SqlUtils {
     /**
      * 从字符串构造器剪掉结束符
      *
-     * @param suffix
-     * @param stringBuilder
+     * @param suffix suffix
+     * @param stringBuilder stringBuilder
      */
     public static void cutSuffix(String suffix, StringBuilder stringBuilder) {
         if (stringBuilder.substring(stringBuilder.length() - suffix.length()).equals(suffix)) {
@@ -94,10 +94,10 @@ public class SqlUtils {
     /**
      * 获取修改记录
      *
-     * @param rs
-     * @param columns
-     * @return
-     * @throws SQLException
+     * @param rs rs
+     * @param columns columns
+     * @return ModifiedRecord
+     * @throws SQLException SQLException
      */
     public static ModifiedRecord recordByColumns(ResultSet rs, List<String> columns) throws SQLException {
         ModifiedRecord record = new ModifiedRecord();
@@ -121,8 +121,8 @@ public class SqlUtils {
     /**
      * java Object to bytes
      *
-     * @param o
-     * @return
+     * @param o o
+     * @return byte[]
      */
     public static byte[] objectToBlob(Object o) {
         try {
@@ -135,10 +135,10 @@ public class SqlUtils {
     /**
      * bytes to java object
      *
-     * @param blob
-     * @param type
-     * @param <T>
-     * @return
+     * @param blob blob
+     * @param type type
+     * @param <T> T
+     * @return T
      */
     public static <T> T blobToObject(byte[] blob, Class<T> type) {
         try {

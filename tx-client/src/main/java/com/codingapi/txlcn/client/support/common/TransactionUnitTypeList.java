@@ -28,8 +28,8 @@ public class TransactionUnitTypeList extends ArrayList<String> {
     /**
      * 添加一个元素并返回列表自身
      *
-     * @param transactionType
-     * @return
+     * @param  transactionType transactionType
+     * @return TransactionUnitTypeList
      */
     public TransactionUnitTypeList selfAdd(String transactionType) {
         this.add(transactionType);

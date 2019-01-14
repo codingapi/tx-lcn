@@ -57,11 +57,11 @@ public class TransactionCleanTemplate {
     /**
      * 清理事务
      *
-     * @param groupId
-     * @param unitId
-     * @param unitType
-     * @param state
-     * @throws TransactionClearException
+     * @param groupId groupId
+     * @param unitId unitId
+     * @param unitType unitType
+     * @param state state
+     * @throws TransactionClearException TransactionClearException
      */
     public void clean(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
         txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "clean transaction");
@@ -82,11 +82,11 @@ public class TransactionCleanTemplate {
     /**
      * 清理事务（不清理切面日志）
      *
-     * @param groupId
-     * @param unitId
-     * @param unitType
-     * @param state
-     * @throws TransactionClearException
+     * @param groupId groupId
+     * @param unitId unitId
+     * @param unitType unitType
+     * @param state state
+     * @throws TransactionClearException TransactionClearException
      */
     public void compensationClean(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
         txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "clean compensation transaction");

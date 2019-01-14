@@ -99,8 +99,9 @@ public class TableStructAnalyser {
     /**
      * 存在数据表判断
      *
-     * @param tableName
-     * @return
+     * @param tableName tableName
+     * @return exists
+     * @throws  SQLException SQLException
      */
     public boolean existsTable(String tableName) throws SQLException {
         Connection connection = null;

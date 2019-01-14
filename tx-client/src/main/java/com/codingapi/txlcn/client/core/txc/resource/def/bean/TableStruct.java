@@ -61,7 +61,7 @@ public class TableStruct {
     /**
      * 重写Getter
      *
-     * @return
+     * @return getFullyQualifiedPrimaryKeys
      */
     public List<String> getFullyQualifiedPrimaryKeys() {
         if (this.fullyQualifiedPrimaryKeys != null) {

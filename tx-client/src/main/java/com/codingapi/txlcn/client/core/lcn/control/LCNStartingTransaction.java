@@ -26,8 +26,6 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author lorne
- * @date 2018/12/2
- * @description
  */
 @Service(value = "control_lcn_starting")
 @Slf4j

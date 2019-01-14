@@ -24,9 +24,8 @@ import com.codingapi.txlcn.spi.message.params.NotifyUnitParams;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * 消息解析器
  * @author lorne
- * @date 2018/12/2
- * @description 消息解析器
  */
 
 @Slf4j

@@ -23,9 +23,6 @@ import java.util.function.Supplier;
 
 /**
  * @author 侯存路
- * @date 2018/12/3
- * @company codingApi
- * @description
  */
 @Service(value = "transaction_tcc")
 public class TCCTransactionResourceExecutor implements TransactionResourceExecutor {

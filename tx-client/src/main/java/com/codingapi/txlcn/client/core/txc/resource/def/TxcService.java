@@ -28,62 +28,62 @@ public interface TxcService {
     /**
      * 锁定资源。{@code update} {@code delete} 被调用
      *
-     * @param lockInfo
-     * @param rollbackInfo
-     * @throws TxcLogicException
+     * @param lockInfo lockInfo
+     * @param rollbackInfo rollbackInfo
+     * @throws TxcLogicException TxcLogicException
      */
     void lockResource(LockInfo lockInfo, RollbackInfo rollbackInfo) throws TxcLogicException;
 
     /**
      * 锁定资源。{@code select} 被调用
      *
-     * @param selectImageParams
-     * @param isxLock
-     * @throws TxcLogicException
+     * @param selectImageParams selectImageParams
+     * @param isxLock isxLock
+     * @throws TxcLogicException TxcLogicException
      */
     void lockSelect(SelectImageParams selectImageParams, boolean isxLock) throws TxcLogicException;
 
     /**
      * {@code update} 前置镜像
      *
-     * @param updateImageParams
-     * @throws TxcLogicException
+     * @param updateImageParams updateImageParams
+     * @throws TxcLogicException TxcLogicException
      */
     void resolveUpdateImage(UpdateImageParams updateImageParams) throws TxcLogicException;
 
     /**
      * {@code delete} 前置镜像
      *
-     * @param deleteImageParams
-     * @throws TxcLogicException
+     * @param deleteImageParams deleteImageParams
+     * @throws TxcLogicException TxcLogicException
      */
     void resolveDeleteImage(DeleteImageParams deleteImageParams) throws TxcLogicException;
 
     /**
      * 写undo_log
      *
-     * @param groupId
-     * @param unitId
-     * @param rollbackInfo
-     * @throws TxcLogicException
+     * @param groupId groupId
+     * @param unitId unitId
+     * @param rollbackInfo rollbackInfo
+     * @throws TxcLogicException TxcLogicException
      */
     void writeUndoLog(String groupId, String unitId, RollbackInfo rollbackInfo) throws TxcLogicException;
 
     /**
      * 清理TXC事务
      *
-     * @param groupId
-     * @param unitId
-     * @throws TxcLogicException
+     * @param groupId groupId
+     * @param unitId unitId
+     * @throws TxcLogicException TxcLogicException
      */
     void cleanTxc(String groupId, String unitId) throws TxcLogicException;
 
     /**
      * 撤销某事务单元数据库操作
      *
-     * @param groupId
-     * @param unitId
-     * @throws TxcLogicException
+     * @param groupId groupId
+     * @param unitId unitId
+     * @throws TxcLogicException TxcLogicException
      */
     void undo(String groupId, String unitId) throws TxcLogicException;
 }

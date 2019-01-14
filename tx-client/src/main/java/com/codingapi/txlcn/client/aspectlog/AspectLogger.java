@@ -28,8 +28,8 @@ public interface AspectLogger {
     /**
      * 记录切面日志
      *
-     * @param groupId
-     * @param unitId
+     * @param groupId groupId
+     * @param unitId unitId
      * @param transactionInfo 切面信息
      */
     void trace(String groupId, String unitId, TransactionInfo transactionInfo);
@@ -37,8 +37,8 @@ public interface AspectLogger {
     /**
      * 清理切面日志
      *
-     * @param groupId
-     * @param unitId
+     * @param groupId groupId
+     * @param unitId unitId
      */
     void clearLog(String groupId, String unitId);
 }

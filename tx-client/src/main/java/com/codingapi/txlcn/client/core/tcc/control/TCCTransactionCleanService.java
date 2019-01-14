@@ -36,7 +36,7 @@ import java.util.Optional;
  */
 @Component
 @Slf4j
-public class TccTransactionCleanService implements TransactionCleanService {
+public class TCCTransactionCleanService implements TransactionCleanService {
 
     @Autowired
     private TransactionAttachmentCache transactionAttachmentCache;

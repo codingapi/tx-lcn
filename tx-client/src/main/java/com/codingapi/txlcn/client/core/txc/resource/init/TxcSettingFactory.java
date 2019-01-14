@@ -28,7 +28,7 @@ public interface TxcSettingFactory {
     /**
      * 允许TXC事务模式
      *
-     * @return
+     * @return enable
      */
     default boolean enable() {
         return true;
@@ -37,7 +37,7 @@ public interface TxcSettingFactory {
     /**
      * 锁表名称
      *
-     * @return
+     * @return lockTableName
      */
     default String lockTableName() {
         return SqlUtils.LOCK_TABLE;
@@ -46,7 +46,7 @@ public interface TxcSettingFactory {
     /**
      * 撤销SQL信息表名
      *
-     * @return
+     * @return undoLogTableName
      */
     default String undoLogTableName() {
         return SqlUtils.UNDO_LOG_TABLE;
@@ -55,14 +55,14 @@ public interface TxcSettingFactory {
     /**
      * 事务锁表创建SQL
      *
-     * @return
+     * @return lockTableSql
      */
     String lockTableSql();
 
     /**
      * 撤销日志表创建SQL
      *
-     * @return
+     * @return undoLogTableSql
      */
     String undoLogTableSql();
 }

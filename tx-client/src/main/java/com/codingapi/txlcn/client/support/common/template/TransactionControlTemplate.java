@@ -85,10 +85,11 @@ public class TransactionControlTemplate {
     /**
      * Client创建事务组操作集合
      *
-     * @param groupId
-     * @param transactionInfo
-     * @param transactionType
-     * @throws TxClientException 创建group失败时抛出
+     * @param groupId groupId
+     * @param groupId unitId
+     * @param transactionInfo transactionInfo
+     * @param transactionType transactionType
+     * @throws BeforeBusinessException 创建group失败时抛出
      */
     public void createGroup(String groupId, String unitId, TransactionInfo transactionInfo, String transactionType)
             throws BeforeBusinessException {
@@ -127,9 +128,10 @@ public class TransactionControlTemplate {
     /**
      * Client加入事务组操作集合
      *
-     * @param groupId
-     * @param unitId
-     * @param transactionType
+     * @param groupId groupId
+     * @param unitId unitId
+     * @param transactionType transactionType
+     * @param transactionInfo transactionInfo
      * @throws TxClientException 加入事务组失败时抛出
      */
     public void joinGroup(String groupId, String unitId, String transactionType, TransactionInfo transactionInfo)
@@ -166,10 +168,10 @@ public class TransactionControlTemplate {
     /**
      * Client通知事务组操作集合
      *
-     * @param groupId
-     * @param unitId
-     * @param transactionType
-     * @param state
+     * @param groupId groupId
+     * @param unitId unitId
+     * @param transactionType transactionType
+     * @param state state
      */
     public void notifyGroup(String groupId, String unitId, String transactionType, int state) {
         txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "notify group " + state);

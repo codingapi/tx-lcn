@@ -32,9 +32,9 @@ public interface TransactionAttachmentCache {
      * 缓存组相关信息。需要注意的是，给定的 groupId 所关联的 attachment 类型不能相同
      * 相同类型的 attachment 只会保留最后那个
      *
-     * @param groupId
-     * @param unitId
-     * @param attachment
+     * @param groupId groupId
+     * @param unitId unitId
+     * @param attachment attachment
      */
     <T> void attach(String groupId, String unitId, T attachment);
 
@@ -42,18 +42,18 @@ public interface TransactionAttachmentCache {
     /**
      * 移除给定 groupId 所有相关的 attachments
      *
-     * @param groupId
-     * @param unitId
+     * @param groupId groupId
+     * @param unitId unitId
      */
     void removeAttachments(String groupId, String unitId);
 
     /**
      * 获取给定 groupId 相关联的、给定类型的 attachment
      *
-     * @param groupId
-     * @param type
-     * @param <T>
-     * @return
+     * @param groupId groupId
+     * @param type type
+     * @param <T> T
+     * @return  Optional
      */
     <T> Optional<T> attachment(String groupId, Class<T> type);
 
@@ -61,29 +61,29 @@ public interface TransactionAttachmentCache {
      * 获取给定 groupId 相关联的、给定类型的 attachment
      * 不存在时缓存给定的 def 默认值并返回
      *
-     * @param groupId
-     * @param unitId
-     * @param type
+     * @param groupId groupId
+     * @param  unitId unitId
+     * @param type type
      * @param def     不存在时的默认值
-     * @param <T>
-     * @return
+     * @param <T> T
+     * @return T
      */
     <T> T attachment(String groupId, String unitId, Class<T> type, Supplier<T> def);
 
     /**
      * 判断是否存在给定的 groupId 事务组
      *
-     * @param groupId
-     * @return
+     * @param groupId groupId
+     * @return  hasGroup
      */
     boolean hasGroup(String groupId);
 
     /**
      * 判断事务组 groupId 是否存在给定类型 type 的附加对象 attachment
      *
-     * @param groupId
-     * @param type
-     * @return
+     * @param groupId groupId
+     * @param type type
+     * @return hasAttachment
      */
     boolean hasAttachment(String groupId, Class<?> type);
 }

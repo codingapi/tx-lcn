@@ -93,7 +93,7 @@ public class DTXLocal {
     /**
      * 获取当前线程变量
      *
-     * @return
+     * @return 当前线程变量
      */
     public static DTXLocal cur() {
         return currentLocal.get();
@@ -102,7 +102,7 @@ public class DTXLocal {
     /**
      * 获取或新建一个线程变量
      *
-     * @return
+     * @return 当前线程变量
      */
     public static DTXLocal getOrNew() {
         if (currentLocal.get() == null) {

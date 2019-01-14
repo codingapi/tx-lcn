@@ -28,11 +28,11 @@ public interface TransactionCleanService {
     /**
      * 事务清理业务
      *
-     * @param groupId
+     * @param groupId groupId
      * @param state    事务状态 1 提交 0 回滚
-     * @param unitId
+     * @param unitId unitId
      * @param unitType 事务类型
-     * @throws TransactionClearException
+     * @throws TransactionClearException TransactionClearException
      */
     void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException;
 }

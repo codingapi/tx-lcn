@@ -26,8 +26,6 @@ import java.util.Objects;
 
 /**
  * @author lorne
- * @date 2018/12/20
- * @description
  */
 @Data
 @Component

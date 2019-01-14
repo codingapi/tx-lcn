@@ -20,16 +20,16 @@ import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
 
 /**
+ *  LCN分布式事务控制
  * @author lorne
- * @date 2018/12/2
- * @description LCN分布式事务控制
  */
 public interface TXLCNTransactionControl {
 
     /**
      * 业务代码执行前
      *
-     * @param info
+     * @param info info
+     * @throws  BeforeBusinessException BeforeBusinessException
      */
     default void preBusinessCode(TxTransactionInfo info) throws BeforeBusinessException {
 
@@ -38,8 +38,9 @@ public interface TXLCNTransactionControl {
     /**
      * 执行业务代码
      *
-     * @param info
-     * @throws Throwable
+     * @param info info
+     * @return  Object Object
+     * @throws Throwable Throwable
      */
     default Object doBusinessCode(TxTransactionInfo info) throws Throwable {
         return info.getBusinessCallback().call();
@@ -49,8 +50,8 @@ public interface TXLCNTransactionControl {
     /**
      * 业务代码执行失败
      *
-     * @param info
-     * @param throwable
+     * @param info info
+     * @param throwable throwable
      */
     default void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) {
 
@@ -59,7 +60,9 @@ public interface TXLCNTransactionControl {
     /**
      * 业务代码执行成功
      *
-     * @param info
+     * @param info info
+     * @param result result
+     * @throws TxClientException TxClientException
      */
     default void onBusinessCodeSuccess(TxTransactionInfo info, Object result) throws TxClientException {
 
@@ -68,7 +71,7 @@ public interface TXLCNTransactionControl {
     /**
      * 清场
      *
-     * @param info
+     * @param info info
      */
     default void postBusinessCode(TxTransactionInfo info) {
 

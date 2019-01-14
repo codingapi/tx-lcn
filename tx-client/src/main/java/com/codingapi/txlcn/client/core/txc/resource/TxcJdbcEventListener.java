@@ -37,8 +37,6 @@ import java.sql.SQLException;
 
 /**
  * @author lorne
- * @date 2018/12/3
- * @description
  */
 @Slf4j
 @Component

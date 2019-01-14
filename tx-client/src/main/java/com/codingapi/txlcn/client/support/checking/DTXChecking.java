@@ -26,17 +26,17 @@ public interface DTXChecking {
     /**
      * 开始事务检测。设置定时器，在超时时间后做最后事务状态的确认
      *
-     * @param groupId
-     * @param unitId
-     * @param transactionType
+     * @param groupId groupId
+     * @param unitId unitId
+     * @param transactionType transactionType
      */
     void startDelayCheckingAsync(String groupId, String unitId, String transactionType);
 
     /**
      * 手动停止事务检测。确定分布式事务结果正常时手动结束检测
      *
-     * @param groupId
-     * @param unitId
+     * @param groupId groupId
+     * @param unitId unitId
      */
     void stopDelayChecking(String groupId, String unitId);
 }

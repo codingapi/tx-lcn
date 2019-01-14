@@ -28,8 +28,8 @@ public interface TXLCNTransactionSeparator {
     /**
      * 判断事务状态
      *
-     * @param txTransactionInfo
-     * @return
+     * @param txTransactionInfo txTransactionInfo
+     * @return TXLCNTransactionState
      */
     TXLCNTransactionState loadTransactionState(TxTransactionInfo txTransactionInfo);
 }

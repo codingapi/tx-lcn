@@ -19,9 +19,6 @@ import lombok.Data;
 
 /**
  * @author 侯存路
- * @date 2018/12/3
- * @company codingApi
- * @description
  */
 @Data
 public class TCCTransactionInfo {
