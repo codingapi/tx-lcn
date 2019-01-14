@@ -3,6 +3,7 @@ package com.codingapi.tx.client.spi.message.txc;
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.TxcService;
 import com.codingapi.tx.commons.exception.TransactionClearException;
 import com.codingapi.tx.client.support.common.TransactionCleanService;
+import com.codingapi.tx.commons.exception.TxcLogicException;
 import com.codingapi.tx.logger.TxLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class TxcTransactionCleanService implements TransactionCleanService {
 
             // 清理TXC
             txcService.cleanTxc(groupId, unitId);
-        } catch (SQLException e) {
+        } catch (TxcLogicException e) {
             log.error("txc > clean transaction error. {}", e.getMessage());
             throw new TransactionClearException(e.getMessage());
         }

@@ -19,9 +19,9 @@ import java.util.Properties;
  *
  * @author ujued
  */
-@Configuration
-@EnableTransactionManagement
-@EnableConfigurationProperties(TransactionProperties.class)
+//@Configuration
+//@EnableTransactionManagement
+//@EnableConfigurationProperties(TransactionProperties.class)
 public class TransactionConfiguration {
 
     @Bean

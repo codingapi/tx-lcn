@@ -5,6 +5,7 @@ import com.codingapi.tx.client.spi.transaction.txc.resource.def.SqlExecuteInterc
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.TxcService;
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.*;
 import com.codingapi.tx.client.spi.transaction.txc.resource.util.SqlUtils;
+import com.codingapi.tx.commons.exception.TxcLogicException;
 import com.codingapi.tx.jdbcproxy.p6spy.common.StatementInformation;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.schema.Column;
@@ -71,14 +72,18 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
         }
 
         // 前置准备
-        txcService.resolveUpdateImage(new UpdateImageParams()
-                .setGroupId(groupId)
-                .setUnitId(unitId)
-                .setRollbackInfo(rollbackInfo)
-                .setColumns(columns)
-                .setPrimaryKeys(primaryKeys)
-                .setTables(tables)
-                .setWhereSql(update.getWhere() == null ? "1=1" : update.getWhere().toString()));
+        try {
+            txcService.resolveUpdateImage(new UpdateImageParams()
+                    .setGroupId(groupId)
+                    .setUnitId(unitId)
+                    .setRollbackInfo(rollbackInfo)
+                    .setColumns(columns)
+                    .setPrimaryKeys(primaryKeys)
+                    .setTables(tables)
+                    .setWhereSql(update.getWhere() == null ? "1=1" : update.getWhere().toString()));
+        } catch (TxcLogicException e) {
+            throw new SQLException(e.getMessage());
+        }
     }
 
     @Override
@@ -107,14 +112,18 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
         });
 
         // 前置准备
-        txcService.resolveDeleteImage(new DeleteImageParams()
-                .setGroupId(groupId)
-                .setUnitId(unitId)
-                .setRollbackInfo(rollbackInfo)
-                .setSqlWhere(delete.getWhere().toString())
-                .setColumns(columns)
-                .setPrimaryKeys(primaryKeys)
-                .setTables(tables));
+        try {
+            txcService.resolveDeleteImage(new DeleteImageParams()
+                    .setGroupId(groupId)
+                    .setUnitId(unitId)
+                    .setRollbackInfo(rollbackInfo)
+                    .setSqlWhere(delete.getWhere().toString())
+                    .setColumns(columns)
+                    .setPrimaryKeys(primaryKeys)
+                    .setTables(tables));
+        } catch (TxcLogicException e) {
+            throw new SQLException(e.getMessage());
+        }
 
     }
 
@@ -227,7 +236,11 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
         selectImageParams.setRollbackInfo(rollbackInfo);
         selectImageParams.setSql(plainSelect.toString());
 
-        txcService.lockSelect(selectImageParams, lockableSelect.isxLock());
+        try {
+            txcService.lockSelect(selectImageParams, lockableSelect.isxLock());
+        } catch (TxcLogicException e) {
+            throw new SQLException(e.getMessage());
+        }
     }
 
 }

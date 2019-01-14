@@ -1,11 +1,14 @@
 package com.codingapi.tx.client.spi.transaction.txc.resource;
 
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.SqlExecuteInterceptor;
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.LockableSelect;
 import com.codingapi.tx.client.spi.transaction.txc.resource.init.TxcSettingFactory;
+import com.codingapi.tx.client.spi.transaction.txc.resource.util.SqlUtils;
 import com.codingapi.tx.jdbcproxy.p6spy.common.PreparedStatementInformation;
 import com.codingapi.tx.jdbcproxy.p6spy.common.StatementInformation;
 import com.codingapi.tx.jdbcproxy.p6spy.event.SimpleJdbcEventListener;
+import com.codingapi.tx.jdbcproxy.p6spy.util.TxcUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -42,10 +45,13 @@ public class TxcJdbcEventListener extends SimpleJdbcEventListener {
     public void onBeforeAnyExecute(StatementInformation statementInformation) throws SQLException {
         String sql = statementInformation.getSqlWithValues();
 
-        // 忽略Txc数据表
-        if (sql.contains(txcSettingFactory.lockTableName()) || sql.contains(txcSettingFactory.undoLogTableName())) {
+        // 忽略TxcSQL
+        if (TxcUtils.isTxcSQL(sql)) {
             return;
         }
+
+        // 当前业务链接
+        DTXLocal.cur().setResource(statementInformation.getStatement().getConnection());
 
         // 拦截处理
         try {

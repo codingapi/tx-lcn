@@ -1,27 +1,26 @@
 package com.codingapi.tx.manager.core.context;
 
-import com.codingapi.tx.commons.context.MapBasedContext;
 import org.springframework.stereotype.Component;
 
 /**
- * Description:
+ * Description: Transaction只存有GroupId, 目前Redis事务组信息只存groupId
+ * 这里没有跟Redis交互, 考虑到后续功能增加, 上下文会由Redis缓存担任
  * Date: 1/11/19
  *
  * @author ujued
  */
 @Component
-public class DTXTransactionContext extends MapBasedContext {
+public class DTXTransactionContext {
 
     public DTXTransaction newContext(String groupId) {
-        this.hold(groupId, DTXTransaction.class.getName(), new SimpleDTXTransaction(groupId));
         return getTransaction(groupId);
     }
 
     public DTXTransaction getTransaction(String groupId) {
-        return this.valueOfContent(groupId, DTXTransaction.class.getName());
+        return new SimpleDTXTransaction(groupId);
     }
 
-    public void destroyTransaction(String groupId) {
-        this.discard(groupId);
+    void destroyTransaction(String groupId) {
+        // noting to do
     }
 }

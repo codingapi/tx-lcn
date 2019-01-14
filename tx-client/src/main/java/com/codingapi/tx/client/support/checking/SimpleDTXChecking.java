@@ -1,19 +1,19 @@
 package com.codingapi.tx.client.support.checking;
 
-import com.codingapi.tx.client.config.TxClientConfig;
-import com.codingapi.tx.client.support.LCNTransactionBeanHelper;
 import com.codingapi.tx.client.aspectlog.AspectLogger;
+import com.codingapi.tx.client.config.TxClientConfig;
+import com.codingapi.tx.client.spi.message.RpcClient;
+import com.codingapi.tx.client.spi.message.dto.MessageDto;
+import com.codingapi.tx.client.spi.message.exception.RpcException;
+import com.codingapi.tx.client.spi.message.params.TxExceptionParams;
+import com.codingapi.tx.client.support.common.template.TransactionCleanTemplate;
 import com.codingapi.tx.client.support.message.MessageCreator;
 import com.codingapi.tx.client.support.message.TxMangerReporter;
 import com.codingapi.tx.commons.exception.SerializerException;
 import com.codingapi.tx.commons.exception.TransactionClearException;
-import com.codingapi.tx.commons.util.serializer.SerializerContext;
-import com.codingapi.tx.client.spi.message.params.TxExceptionParams;
 import com.codingapi.tx.commons.util.Transactions;
+import com.codingapi.tx.commons.util.serializer.SerializerContext;
 import com.codingapi.tx.logger.TxLogger;
-import com.codingapi.tx.client.spi.message.RpcClient;
-import com.codingapi.tx.client.spi.message.dto.MessageDto;
-import com.codingapi.tx.client.spi.message.exception.RpcException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,27 +48,31 @@ public class SimpleDTXChecking implements DTXChecking {
         }));
     }
 
+    private TransactionCleanTemplate transactionCleanTemplate;
+
     private final RpcClient rpcClient;
 
     private final TxClientConfig clientConfig;
 
-    private final LCNTransactionBeanHelper transactionBeanHelper;
 
     private final TxLogger txLogger;
 
     private final AspectLogger aspectLogger;
 
-    @Autowired
-    private TxMangerReporter txMangerReporter;
+    private final TxMangerReporter txMangerReporter;
 
     @Autowired
-    public SimpleDTXChecking(RpcClient rpcClient, TxClientConfig clientConfig, LCNTransactionBeanHelper transactionBeanHelper,
-                             AspectLogger aspectLogger, TxLogger txLogger) {
+    public SimpleDTXChecking(RpcClient rpcClient, TxClientConfig clientConfig,
+                             AspectLogger aspectLogger, TxLogger txLogger, TxMangerReporter txMangerReporter) {
         this.rpcClient = rpcClient;
         this.clientConfig = clientConfig;
-        this.transactionBeanHelper = transactionBeanHelper;
         this.aspectLogger = aspectLogger;
         this.txLogger = txLogger;
+        this.txMangerReporter = txMangerReporter;
+    }
+
+    public void setTransactionCleanTemplate(TransactionCleanTemplate transactionCleanTemplate) {
+        this.transactionCleanTemplate = transactionCleanTemplate;
     }
 
     @Override
@@ -85,10 +89,7 @@ public class SimpleDTXChecking implements DTXChecking {
                     log.error("delay clean transaction error.");
                     onAskTransactionStateException(groupId, unitId, transactionType);
                 } else {
-                    /*
-                     @see {link #TransactionCleanTemplate}
-                     */
-                    transactionBeanHelper.loadTransactionCleanService(transactionType).clear(groupId, state, unitId, transactionType);
+                    transactionCleanTemplate.clean(groupId, unitId, transactionType, state);
                     aspectLogger.clearLog(groupId, unitId);
                 }
 
@@ -118,7 +119,7 @@ public class SimpleDTXChecking implements DTXChecking {
             log.warn("{} > has compensation info!", transactionType);
 
             // 事务回滚, 保留适当的补偿信息
-            transactionBeanHelper.loadTransactionCleanService(transactionType).clear(groupId, 0, unitId, transactionType);
+            transactionCleanTemplate.compensationClean(groupId, unitId, transactionType, 0);
         } catch (TransactionClearException e) {
             log.error("{} > clean transaction error.", transactionType);
         }

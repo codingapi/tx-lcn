@@ -1,6 +1,8 @@
 package com.codingapi.tx.client.spi.transaction.txc.resource.def;
 
 import com.codingapi.tx.client.spi.transaction.txc.resource.def.bean.*;
+import com.codingapi.tx.commons.exception.TxClientException;
+import com.codingapi.tx.commons.exception.TxcLogicException;
 
 import java.sql.SQLException;
 
@@ -16,34 +18,34 @@ public interface TxcService {
      *
      * @param lockInfo
      * @param rollbackInfo
-     * @throws SQLException
+     * @throws TxcLogicException
      */
-    void lockResource(LockInfo lockInfo, RollbackInfo rollbackInfo) throws SQLException;
+    void lockResource(LockInfo lockInfo, RollbackInfo rollbackInfo) throws TxcLogicException;
 
     /**
      * 锁定资源。{@code select} 被调用
      *
      * @param selectImageParams
      * @param isxLock
-     * @throws SQLException
+     * @throws TxcLogicException
      */
-    void lockSelect(SelectImageParams selectImageParams, boolean isxLock) throws SQLException;
+    void lockSelect(SelectImageParams selectImageParams, boolean isxLock) throws TxcLogicException;
 
     /**
      * {@code update} 前置镜像
      *
      * @param updateImageParams
-     * @throws SQLException
+     * @throws TxcLogicException
      */
-    void resolveUpdateImage(UpdateImageParams updateImageParams) throws SQLException;
+    void resolveUpdateImage(UpdateImageParams updateImageParams) throws TxcLogicException;
 
     /**
      * {@code delete} 前置镜像
      *
      * @param deleteImageParams
-     * @throws SQLException
+     * @throws TxcLogicException
      */
-    void resolveDeleteImage(DeleteImageParams deleteImageParams) throws SQLException;
+    void resolveDeleteImage(DeleteImageParams deleteImageParams) throws TxcLogicException;
 
     /**
      * 写undo_log
@@ -51,24 +53,25 @@ public interface TxcService {
      * @param groupId
      * @param unitId
      * @param rollbackInfo
+     * @throws TxcLogicException
      */
-    void writeUndoLog(String groupId, String unitId, RollbackInfo rollbackInfo);
+    void writeUndoLog(String groupId, String unitId, RollbackInfo rollbackInfo) throws TxcLogicException;
 
     /**
      * 清理TXC事务
      *
      * @param groupId
      * @param unitId
-     * @throws SQLException
+     * @throws TxcLogicException
      */
-    void cleanTxc(String groupId, String unitId) throws SQLException;
+    void cleanTxc(String groupId, String unitId) throws TxcLogicException;
 
     /**
      * 撤销某事务单元数据库操作
      *
      * @param groupId
      * @param unitId
-     * @throws SQLException
+     * @throws TxcLogicException
      */
-    void undo(String groupId, String unitId) throws SQLException;
+    void undo(String groupId, String unitId) throws TxcLogicException;
 }

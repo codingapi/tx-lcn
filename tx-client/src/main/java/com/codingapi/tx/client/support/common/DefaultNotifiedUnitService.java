@@ -1,5 +1,6 @@
 package com.codingapi.tx.client.support.common;
 
+import com.codingapi.tx.client.bean.DTXLocal;
 import com.codingapi.tx.client.support.common.template.TransactionCleanTemplate;
 import com.codingapi.tx.client.support.message.RpcExecuteService;
 import com.codingapi.tx.client.support.message.TransactionCmd;
@@ -26,14 +27,19 @@ public class DefaultNotifiedUnitService implements RpcExecuteService {
     @Override
     public Object execute(TransactionCmd transactionCmd) throws TxClientException {
         try {
-            NotifyUnitParams notifyUnitParams =transactionCmd.getMsg().loadData(NotifyUnitParams.class);
+            if (DTXLocal.cur() != null) {
+                synchronized (DTXLocal.cur()) {
+                    DTXLocal.cur().wait();
+                }
+            }
+            NotifyUnitParams notifyUnitParams = transactionCmd.getMsg().loadData(NotifyUnitParams.class);
             transactionCleanTemplate.clean(
                     notifyUnitParams.getGroupId(),
                     notifyUnitParams.getUnitId(),
                     notifyUnitParams.getUnitType(),
                     notifyUnitParams.getState());
             return null;
-        } catch (SerializerException | TransactionClearException e) {
+        } catch (SerializerException | TransactionClearException | InterruptedException e) {
             throw new TxClientException(e);
         }
     }
