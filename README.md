@@ -1,6 +1,7 @@
 # tx-lcn分布式事务框架 (5.0.0.RC1)
 
 [![Gitter](https://badges.gitter.im/codingapi/tx-lcn.svg)](https://gitter.im/codingapi/tx-lcn?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![BBS](https://bbs.txlcn.org/style/Archlinux/txlcn-bbs.svg)](https://bbs.txlcn.org)
 
 ## 项目介绍
 
