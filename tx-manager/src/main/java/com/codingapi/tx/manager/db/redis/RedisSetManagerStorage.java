@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,13 @@ public class RedisSetManagerStorage implements ManagerStorage {
     @Override
     public void remove(String address) {
         redisTemplate.opsForSet().remove(REDIS_PREFIX, address);
+    }
+    
+    @PostConstruct
+    public void init() {
+        String address = managerConfig.getHost() + ":" + port;
+        redisTemplate.opsForSet().add(REDIS_PREFIX, address);
+        log.info("manager add redis finish.");
     }
     
     @PreDestroy

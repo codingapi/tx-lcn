@@ -28,9 +28,6 @@ public class TxcTransactionCleanService implements TransactionCleanService {
         this.txcService = txcService;
     }
 
-    @Autowired
-    private TxLogger txLogger;
-
     @Override
     public void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException {
         try {
