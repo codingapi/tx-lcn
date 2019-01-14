@@ -83,8 +83,8 @@ public class RpcCmdContext {
     /**
      * 并发可能会出现脏读
      *
-     * @param key
-     * @return
+     * @param key key
+     * @return hasKey
      */
     public synchronized boolean hasKey(String key) {
         return map.containsKey(key);
@@ -93,8 +93,8 @@ public class RpcCmdContext {
     /**
      * 并发可能会出重复添加
      *
-     * @param key
-     * @return
+     * @param key key
+     * @return RpcContent
      */
     public synchronized RpcContent addKey(String key) {
         RpcContent rpcContent = createRpcContent();
@@ -106,7 +106,7 @@ public class RpcCmdContext {
     /**
      * 空闲队列处理
      *
-     * @return
+     * @return RpcContent
      */
     private RpcContent findRpcContent() {
         synchronized (freeList) {

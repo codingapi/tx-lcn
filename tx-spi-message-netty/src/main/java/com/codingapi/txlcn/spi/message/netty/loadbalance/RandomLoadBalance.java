@@ -24,8 +24,6 @@ import java.util.Random;
 
 /**
  * @author lorne
- * @date 2019/1/5
- * @description
  */
 public class RandomLoadBalance implements RpcLoadBalance {
 
