@@ -26,17 +26,6 @@
         <module>tx-client-dubbo</module>
         <module>tx-manager</module>
         <module>tx-logger</module>
-
-
-        <module>example/demo-common</module>
-        <module>example/dubbo-demo-client</module>
-        <module>example/dubbo-demo-d</module>
-        <module>example/dubbo-demo-e</module>
-
-
-        <module>example/spring-demo-client</module>
-        <module>example/spring-demo-d</module>
-        <module>example/spring-demo-e</module>
     </modules>
 
     <properties>
