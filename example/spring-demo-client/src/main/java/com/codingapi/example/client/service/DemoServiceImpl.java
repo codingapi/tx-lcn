@@ -5,6 +5,7 @@ import com.codingapi.example.common.db.domain.Demo;
 import com.codingapi.example.common.spring.DDemoClient;
 import com.codingapi.example.common.spring.EDemoClient;
 import com.codingapi.tx.client.bean.DTXLocal;
+import com.codingapi.tx.commons.annotation.LcnTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
@@ -35,6 +36,7 @@ public class DemoServiceImpl implements DemoService {
     private String appName;
 
     @Override
+    @LcnTransaction
     public String execute(String value) {
         String dResp = dDemoClient.rpc(value);
         String eResp = eDemoClient.rpc(value);

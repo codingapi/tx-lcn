@@ -26,7 +26,7 @@ public class CustomizableTransactionSeparator implements TXLCNTransactionSeparat
         // 发起分布式事务条件
         if (txTransactionInfo.isTransactionStart()) {
             // 发起方时，对于只加入DTX的事务单元走默认处理
-            if (txTransactionInfo.getPropagation().equals(DTXPropagation.SUPPORTS)) {
+            if (DTXPropagation.SUPPORTS.equals(txTransactionInfo.getPropagation())) {
                 return TXLCNTransactionState.NON;
             }
             return TXLCNTransactionState.STARTING;
