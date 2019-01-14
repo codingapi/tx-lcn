@@ -1,0 +1,1 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.codingapi.txlcn.client.dubbo.spi.sleuth.TxDubboConfiguration

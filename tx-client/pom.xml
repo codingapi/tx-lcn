@@ -3,124 +3,95 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.codingapi</groupId>
-        <artifactId>tx-lcn</artifactId>
-        <version>4.2.0-SNAPSHOT</version>
-    </parent>
-
-    <groupId>com.codingapi</groupId>
     <artifactId>tx-client</artifactId>
-    <version>${lcn.last.version}</version>
-
     <name>tx-client</name>
-    <url>https://github.com/codingapi/tx-lcn</url>
+    <description>LCN project for Spring Boot</description>
 
-    <description>tx-client project for Spring Boot</description>
-
-
-    <properties>
-        <org.springframework-version>4.3.7.RELEASE</org.springframework-version>
-        <guava.version>19.0</guava.version>
-        <hessian.version>4.0.38</hessian.version>
-        <protostuff.version>1.1.3</protostuff.version>
-        <kryo.version>4.0.0</kryo.version>
-        <org.slf4j-version>1.7.7</org.slf4j-version>
-    </properties>
+    <parent>
+        <groupId>com.codingapi.txlcn</groupId>
+        <artifactId>tx-lcn</artifactId>
+        <version>5.0.0.RC1</version>
+    </parent>
 
 
     <dependencies>
 
         <dependency>
-            <groupId>com.github.1991wangliang</groupId>
-            <artifactId>lorne_core</artifactId>
-            <version>1.0.0</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.1.12.Final</version>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
         </dependency>
-
 
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>1.8.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>1.8.4</version>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
         </dependency>
 
-
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${org.slf4j-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${org.slf4j-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${org.slf4j-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>${org.slf4j-version}</version>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>tx-commons</artifactId>
         </dependency>
 
-
-
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>tx-logger</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>tx-spi-message</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>tx-jdbcproxy-p6spy</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>tx-spi-sleuth</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${org.springframework-version}</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.caucho</groupId>
-            <artifactId>hessian</artifactId>
-            <version>${hessian.version}</version>
+            <artifactId>spring-tx</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.dyuproject.protostuff</groupId>
-            <artifactId>protostuff-core</artifactId>
-            <version>${protostuff.version}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.dyuproject.protostuff</groupId>
-            <artifactId>protostuff-runtime</artifactId>
-            <version>${protostuff.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>kryo-shaded</artifactId>
-            <version>${kryo.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-
 
     </dependencies>
 
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${maven.compile.source}</source>
+                    <target>${maven.compile.target}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

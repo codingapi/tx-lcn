@@ -1,0 +1,1 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.codingapi.txlcn.client.springcloud.spi.sleuth.TxSpringCloudConfiguration
