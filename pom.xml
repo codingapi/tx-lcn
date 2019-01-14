@@ -299,9 +299,6 @@
                 <version>${txlcn-guava.version}</version>
             </dependency>
 
-
-
-
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
