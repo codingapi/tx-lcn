@@ -171,5 +171,5 @@ tx-plugins-db 是LCN 对关系型数据库的插件支持
 
 技术交流群：554855843(已满) 970071379(未满)
 
-image::https://badges.gitter.im/codingapi/tx-lcn.svg[Gitter, link="https://gitter.im/codingapi/tx-lcn?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]
-
+[![Gitter](https://badges.gitter.im/codingapi/tx-lcn.svg)](https://gitter.im/codingapi/tx-lcn?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![BBS](https://bbs.txlcn.org/style/Archlinux/txlcn-bbs.svg)](https://bbs.txlcn.org)
