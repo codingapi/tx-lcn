@@ -40,6 +40,14 @@ public class TXLCNZoneAvoidanceRule extends ZoneAvoidanceRule {
 
     private final Registration registration;
 
+    /**
+     * 无参构造器提供给Ribbon调用
+     */
+    public TXLCNZoneAvoidanceRule() {
+        this.sleuthParamListener = null;
+        this.registration = null;
+    }
+
     public TXLCNZoneAvoidanceRule(SleuthParamListener sleuthParamListener,
                                   Registration registration) {
         this.sleuthParamListener = sleuthParamListener;
