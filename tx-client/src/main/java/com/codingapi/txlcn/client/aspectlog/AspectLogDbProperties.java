@@ -35,9 +35,10 @@ public class AspectLogDbProperties {
 
     public AspectLogDbProperties(@Value("${spring.application.name}") String applicationName, @Value("${server.port}") Integer port) {
         if (Objects.isNull(applicationName)) {
-            applicationName = "localhost-" + port;
+            applicationName = "localhost";
         }
-        this.filePath = System.getProperty("user.dir") + File.separator + ".txlcn" + File.separator + applicationName;
+
+        this.filePath = System.getProperty("user.dir") + File.separator + ".txlcn" + File.separator + applicationName + "-" + port;
     }
 
     private String filePath;
