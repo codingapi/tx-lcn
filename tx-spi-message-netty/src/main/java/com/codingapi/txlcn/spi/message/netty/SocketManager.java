@@ -86,7 +86,7 @@ public class SocketManager {
         channels.remove(channel);
         try {
             executorService.schedule(() -> {
-                String key = channel.toString();
+                String key = channel.remoteAddress().toString();
                 appNames.remove(key);
             }, attrDelayTime, TimeUnit.SECONDS);
         } catch (RejectedExecutionException ignored) {
