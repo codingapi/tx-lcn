@@ -20,16 +20,15 @@ import com.codingapi.txlcn.commons.util.RandomUtils;
 import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.db.TxLoggerHelper;
 import com.codingapi.txlcn.manager.config.TxManagerConfig;
-import com.codingapi.txlcn.manager.support.service.AdminService;
 import com.codingapi.txlcn.manager.support.restapi.auth.DefaultTokenStorage;
 import com.codingapi.txlcn.manager.support.restapi.model.DTXInfo;
-import com.codingapi.txlcn.manager.support.restapi.model.TxManagerLog;
 import com.codingapi.txlcn.manager.support.restapi.model.TxLogList;
 import com.codingapi.txlcn.manager.support.restapi.model.TxManagerInfo;
+import com.codingapi.txlcn.manager.support.restapi.model.TxManagerLog;
+import com.codingapi.txlcn.manager.support.service.AdminService;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -54,19 +53,15 @@ public class AdminServiceImpl implements AdminService {
 
     private final RpcClient rpcClient;
 
-    private final RedisTemplate<String, String> redisTemplate;
-
     @Autowired
     public AdminServiceImpl(TxManagerConfig managerConfig,
                             DefaultTokenStorage defaultTokenStorage,
                             TxLoggerHelper txLoggerHelper,
-                            RpcClient rpcClient,
-                            RedisTemplate<String, String> redisTemplate) {
+                            RpcClient rpcClient) {
         this.managerConfig = managerConfig;
         this.defaultTokenStorage = defaultTokenStorage;
         this.txLoggerHelper = txLoggerHelper;
         this.rpcClient = rpcClient;
-        this.redisTemplate = redisTemplate;
     }
 
     @Override
