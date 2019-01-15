@@ -59,13 +59,11 @@ public class TransactionControlTemplate {
 
     private final DTXChecking dtxChecking;
 
-
     private final DTXExceptionHandler dtxExceptionHandler;
 
     private final TransactionCleanTemplate transactionCleanTemplate;
 
-    @Autowired
-    private TxLogger txLogger;
+    private final TxLogger txLogger;
 
     @Autowired
     public TransactionControlTemplate(RpcClient rpcClient,
@@ -73,20 +71,21 @@ public class TransactionControlTemplate {
                                       AspectLogger aspectLogger,
                                       DTXChecking dtxChecking,
                                       DTXExceptionHandler dtxExceptionHandler,
-                                      TransactionCleanTemplate transactionCleanTemplate) {
+                                      TransactionCleanTemplate transactionCleanTemplate, TxLogger txLogger) {
         this.rpcClient = rpcClient;
         this.tracerHelper = tracerHelper;
         this.aspectLogger = aspectLogger;
         this.dtxChecking = dtxChecking;
         this.dtxExceptionHandler = dtxExceptionHandler;
         this.transactionCleanTemplate = transactionCleanTemplate;
+        this.txLogger = txLogger;
     }
 
     /**
      * Client创建事务组操作集合
      *
-     * @param groupId groupId
-     * @param groupId unitId
+     * @param groupId         groupId
+     * @param unitId          unitId
      * @param transactionInfo transactionInfo
      * @param transactionType transactionType
      * @throws BeforeBusinessException 创建group失败时抛出
@@ -128,8 +127,8 @@ public class TransactionControlTemplate {
     /**
      * Client加入事务组操作集合
      *
-     * @param groupId groupId
-     * @param unitId unitId
+     * @param groupId         groupId
+     * @param unitId          unitId
      * @param transactionType transactionType
      * @param transactionInfo transactionInfo
      * @throws TxClientException 加入事务组失败时抛出
@@ -168,10 +167,10 @@ public class TransactionControlTemplate {
     /**
      * Client通知事务组操作集合
      *
-     * @param groupId groupId
-     * @param unitId unitId
+     * @param groupId         groupId
+     * @param unitId          unitId
      * @param transactionType transactionType
-     * @param state state
+     * @param state           state
      */
     public void notifyGroup(String groupId, String unitId, String transactionType, int state) {
         txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "notify group " + state);

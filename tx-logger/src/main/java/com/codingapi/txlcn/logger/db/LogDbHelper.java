@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.logger.db;
 
+import com.codingapi.txlcn.logger.ex.TxLoggerException;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.QueryRunner;
@@ -44,8 +45,11 @@ public class LogDbHelper implements DisposableBean {
     private LogDbProperties logDbProperties;
 
     @PostConstruct
-    public void init() {
+    public void init() throws TxLoggerException {
         log.info("logDbProperties->{}", logDbProperties);
+        if (logDbProperties.getDriverClassName() == null) {
+            throw new TxLoggerException("init TxLogger error. see config [com.codingapi.txlcn.logger.db.LogDbProperties]");
+        }
         hikariDataSource = new HikariDataSource(logDbProperties);
         queryRunner = new QueryRunner(hikariDataSource);
         log.info("init db finish.");
@@ -56,26 +60,26 @@ public class LogDbHelper implements DisposableBean {
         try {
             return queryRunner.update(sql, params);
         } catch (SQLException e) {
-            log.error("update error",e);
+            log.error("update error", e);
             return 0;
         }
     }
 
 
-    public <T> T query(String sql, ResultSetHandler<T> rsh,Object ... params){
+    public <T> T query(String sql, ResultSetHandler<T> rsh, Object... params) {
         try {
-            return queryRunner.query(sql, rsh,params);
+            return queryRunner.query(sql, rsh, params);
         } catch (SQLException e) {
-            log.error("query error",e);
+            log.error("query error", e);
             return null;
         }
     }
 
-    public <T> T query(String sql,ScalarHandler<T> scalarHandler,Object ... params){
+    public <T> T query(String sql, ScalarHandler<T> scalarHandler, Object... params) {
         try {
-            return queryRunner.query(sql,scalarHandler,params);
+            return queryRunner.query(sql, scalarHandler, params);
         } catch (SQLException e) {
-            log.error("query error",e);
+            log.error("query error", e);
             return null;
         }
     }
