@@ -33,6 +33,7 @@ public interface AdminService {
      *
      * @param password password
      * @return  token
+     * @throws TxManagerException TxManagerException
      */
     String login(String password) throws TxManagerException;
 

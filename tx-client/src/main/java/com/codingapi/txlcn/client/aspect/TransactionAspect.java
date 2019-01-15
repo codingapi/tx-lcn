@@ -132,6 +132,7 @@ public class TransactionAspect implements Ordered {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public int getOrder() {
         return Objects.isNull(txClientConfig.getDtxAspectOrder()) ?
                 txClientConfig.getControlOrder() : txClientConfig.getDtxAspectOrder();

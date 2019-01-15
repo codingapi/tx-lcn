@@ -27,6 +27,7 @@ public interface RpcExecuteService {
      * 执行业务
      * @param transactionCmd  transactionCmd
      * @return  Object
+     * @throws TxManagerException TxManagerException
      */
     Object execute(TransactionCmd transactionCmd) throws TxManagerException;
 

@@ -24,6 +24,7 @@ import com.codingapi.txlcn.spi.message.netty.em.NettyType;
  *
  * @author codingapi
  */
+@SuppressWarnings("unchecked")
 public class NettyContext {
 
     protected static NettyType type;
