@@ -68,7 +68,7 @@ public class DTXLocal {
     /**
      * 系统分布式事务状态
      */
-    private int sysTransactionState;
+    private int sysTransactionState = 1;
 
     /**
      * 用户分布式事务状态

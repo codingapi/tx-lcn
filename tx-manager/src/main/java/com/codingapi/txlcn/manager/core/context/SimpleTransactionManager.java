@@ -89,7 +89,7 @@ public class SimpleTransactionManager implements TransactionManager {
         log.info("unit:{} joined group:{}", transactionUnit.unitId(), dtxTransaction.groupId());
         try {
             //手动回滚时设置状态为回滚状态 0
-            if(transactionUnit.getTranscationState()==0){
+            if(transactionUnit.getTransactionState()==0){
                 groupRelationship.setTransactionState(dtxTransaction.groupId(),0);
             }
             groupRelationship.joinGroup(dtxTransaction.groupId(), transUnit);
