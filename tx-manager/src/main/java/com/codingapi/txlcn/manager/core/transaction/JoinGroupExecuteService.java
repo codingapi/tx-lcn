@@ -65,7 +65,7 @@ public class JoinGroupExecuteService implements RpcExecuteService {
             txLogger.trace(
                     transactionCmd.getGroupId(), joinGroupParams.getUnitId(), Transactions.TAG_TRANSACTION, "start join group");
             TransactionUnit transactionUnit =
-                    new TransactionUnit(joinGroupParams.getUnitId(), joinGroupParams.getUnitType(), transactionCmd.getRemoteKey());
+                    new TransactionUnit(joinGroupParams.getUnitId(), joinGroupParams.getUnitType(),joinGroupParams.getTransactionState(), transactionCmd.getRemoteKey());
             transactionManager.join(dtxTransaction, transactionUnit);
 
             txLogger.trace(

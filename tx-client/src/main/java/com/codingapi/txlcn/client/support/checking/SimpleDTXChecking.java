@@ -106,8 +106,8 @@ public class SimpleDTXChecking implements DTXChecking {
                 String channel = rpcClient.loadRemoteKey();
                 MessageDto messageDto = rpcClient.request(channel, MessageCreator.askTransactionState(groupId, unitId));
                 int state = SerializerContext.getInstance().deSerialize(messageDto.getBytes(), Short.class);
-                log.info("support > ask transaction state:{}", state);
-                txLogger.trace(groupId, unitId, Transactions.TAG_TASK, "ask transaction state " + state);
+                log.info("support > ask transaction transactionState:{}", state);
+                txLogger.trace(groupId, unitId, Transactions.TAG_TASK, "ask transaction transactionState " + state);
                 if (state == -1) {
                     log.error("delay clean transaction error.");
                     onAskTransactionStateException(groupId, unitId, transactionType);
@@ -119,7 +119,7 @@ public class SimpleDTXChecking implements DTXChecking {
             } catch (RpcException e) {
                 onAskTransactionStateException(groupId, unitId, transactionType);
             } catch (TransactionClearException | SerializerException | InterruptedException e) {
-                log.error("{} > [transaction state message] error or [clean transaction] error.", transactionType);
+                log.error("{} > [transaction transactionState message] error or [clean transaction] error.", transactionType);
             }
         }, clientConfig.getDtxTime(), TimeUnit.MILLISECONDS);
         delayTasks.put(groupId + unitId, scheduledFuture);

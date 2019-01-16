@@ -170,7 +170,7 @@ public class TransactionControlTemplate {
      * @param groupId         groupId
      * @param unitId          unitId
      * @param transactionType transactionType
-     * @param state           state
+     * @param state           transactionState
      */
     public void notifyGroup(String groupId, String unitId, String transactionType, int state) {
         txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "notify group " + state);

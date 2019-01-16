@@ -29,14 +29,14 @@ import org.springframework.stereotype.Component;
  * @author lorne
  */
 @Component
-public class TxLcnClientMessageServer{
+public class TXLCNClientMessageServer {
 
     private final RpcClientInitializer rpcClientInitializer;
 
     private final TxClientConfig txClientConfig;
 
     @Autowired
-    public TxLcnClientMessageServer(RpcClientInitializer rpcClientInitializer, TxClientConfig txClientConfig) {
+    public TXLCNClientMessageServer(RpcClientInitializer rpcClientInitializer, TxClientConfig txClientConfig) {
         this.rpcClientInitializer = rpcClientInitializer;
         this.txClientConfig = txClientConfig;
     }

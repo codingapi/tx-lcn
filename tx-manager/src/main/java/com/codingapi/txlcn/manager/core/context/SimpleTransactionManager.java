@@ -88,6 +88,10 @@ public class SimpleTransactionManager implements TransactionManager {
         transUnit.setUnitId(transactionUnit.unitId());
         log.info("unit:{} joined group:{}", transactionUnit.unitId(), dtxTransaction.groupId());
         try {
+            //手动回滚时设置状态为回滚状态 0
+            if(transactionUnit.getTranscationState()==0){
+                groupRelationship.setTransactionState(dtxTransaction.groupId(),0);
+            }
             groupRelationship.joinGroup(dtxTransaction.groupId(), transUnit);
         } catch (JoinGroupException e) {
             throw new TransactionException(e);
@@ -113,6 +117,7 @@ public class SimpleTransactionManager implements TransactionManager {
     @Override
     public int transactionState(DTXTransaction groupTransaction) {
         int state = exceptionService.transactionState(groupTransaction.groupId());
+        //存在数据时返回数据状态
         if (state != -1) {
             return state;
         }

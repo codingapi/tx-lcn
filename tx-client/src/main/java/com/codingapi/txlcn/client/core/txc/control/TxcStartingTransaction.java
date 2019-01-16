@@ -69,7 +69,7 @@ public class TxcStartingTransaction implements TXLCNTransactionControl {
 
     @Override
     public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) {
-        // set state equ 1
+        // set transactionState equ 1
         DTXLocal.cur().setState(1);
     }
 

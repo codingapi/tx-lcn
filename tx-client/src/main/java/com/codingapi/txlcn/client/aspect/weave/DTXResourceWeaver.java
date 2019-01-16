@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.client.aspect.weave;
 
 import com.codingapi.txlcn.client.bean.DTXLocal;
-import com.codingapi.txlcn.client.support.LCNTransactionBeanHelper;
+import com.codingapi.txlcn.client.support.TXLCNTransactionBeanHelper;
 import com.codingapi.txlcn.client.support.resouce.TransactionResourceExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -37,10 +37,10 @@ import java.util.Objects;
 @Slf4j
 public class DTXResourceWeaver {
 
-    private final LCNTransactionBeanHelper transactionBeanHelper;
+    private final TXLCNTransactionBeanHelper transactionBeanHelper;
 
     @Autowired
-    public DTXResourceWeaver(LCNTransactionBeanHelper transactionBeanHelper) {
+    public DTXResourceWeaver(TXLCNTransactionBeanHelper transactionBeanHelper) {
         this.transactionBeanHelper = transactionBeanHelper;
     }
 

@@ -47,4 +47,10 @@ public class JoinGroupParams implements Serializable {
      * 通讯标识
      */
     private String remoteKey;
+
+    /**
+     * 事务状态
+     * 0 回滚 1提交
+     */
+    private int transactionState = 1;
 }

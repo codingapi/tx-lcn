@@ -38,7 +38,7 @@ public class LcnConnectionProxy implements Connection {
     /**
      * 通知事务
      *
-     * @param state state
+     * @param state transactionState
      * @return RpcResponseState RpcResponseState
      */
     public RpcResponseState notify(int state) {

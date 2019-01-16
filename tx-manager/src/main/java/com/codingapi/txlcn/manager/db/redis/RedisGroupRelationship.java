@@ -44,7 +44,7 @@ public class RedisGroupRelationship implements GroupRelationship {
 
     private static final String REDIS_PREFIX = "tx.manager:group:";
 
-    private static final String REDIS_GROUP_STATE = REDIS_PREFIX + ":state";
+    private static final String REDIS_GROUP_STATE = REDIS_PREFIX + ":transactionState";
 
     private final RedisTemplate<String, String> redisTemplate;
 
@@ -104,7 +104,7 @@ public class RedisGroupRelationship implements GroupRelationship {
     public Short transactionState(String groupId) {
         String state = redisTemplate.opsForValue().get(REDIS_GROUP_STATE + groupId);
         if (Objects.isNull(state)) {
-            return 0;
+            return -1;
         }
         try {
             return Short.valueOf(state);

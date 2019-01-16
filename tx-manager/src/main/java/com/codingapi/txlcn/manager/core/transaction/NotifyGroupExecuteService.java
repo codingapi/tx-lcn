@@ -61,19 +61,26 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
             NotifyGroupParams notifyGroupParams = transactionCmd.getMsg().loadData(NotifyGroupParams.class);
             log.debug("notify group params: {}", JSON.toJSONString(notifyGroupParams));
 
+            int commitState = notifyGroupParams.getState();
+            //获取事务状态（当手动回滚时会先设置状态）
+            int transactionState = transactionManager.transactionState(dtxTransaction);
+            if (transactionState == 0) {
+                commitState = 0;
+            }
+
             // 系统日志
             txLogger.trace(
                     transactionCmd.getGroupId(), "",
                     Transactions.TAG_TRANSACTION, "notify group " + notifyGroupParams.getState());
 
-            if (notifyGroupParams.getState() == 1) {
+            if (commitState == 1) {
                 transactionManager.commit(dtxTransaction);
                 return null;
-            } else if (notifyGroupParams.getState() == 0) {
+            } else if (commitState == 0) {
                 transactionManager.rollback(dtxTransaction);
                 return null;
             }
-            log.error("ignored transaction state:{}", notifyGroupParams.getState());
+            log.error("ignored transaction transactionState:{}", notifyGroupParams.getState());
         } catch (SerializerException e) {
             throw new TxManagerException(e.getMessage());
         } finally {

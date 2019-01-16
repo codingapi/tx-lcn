@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.client.initializer;
 
 import com.codingapi.txlcn.client.aspectlog.AspectLogHelper;
-import com.codingapi.txlcn.client.message.TxLcnClientMessageServer;
+import com.codingapi.txlcn.client.message.TXLCNClientMessageServer;
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,7 +35,7 @@ public class TxClientInitializer implements TxLcnInitializer {
     private AspectLogHelper aspectLogHelper;
 
     @Autowired
-    private TxLcnClientMessageServer txLcnClientMessageServer;
+    private TXLCNClientMessageServer txLcnClientMessageServer;
 
     @Override
     public void init() throws Exception {
