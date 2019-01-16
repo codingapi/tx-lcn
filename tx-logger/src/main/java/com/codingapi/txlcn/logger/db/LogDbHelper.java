@@ -15,13 +15,13 @@
  */
 package com.codingapi.txlcn.logger.db;
 
-import com.codingapi.txlcn.commons.runner.TxLcnRunner;
 import com.codingapi.txlcn.logger.ex.TxLoggerException;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
@@ -34,7 +34,7 @@ import java.sql.SQLException;
  * @author codingapi
  */
 @Slf4j
-public class LogDbHelper implements TxLcnRunner {
+public class LogDbHelper implements DisposableBean {
 
     private HikariDataSource hikariDataSource;
 

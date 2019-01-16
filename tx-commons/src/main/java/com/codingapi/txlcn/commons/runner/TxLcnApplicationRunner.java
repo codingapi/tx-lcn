@@ -35,7 +35,7 @@ import java.util.Map;
 public class TxLcnApplicationRunner implements ApplicationRunner , DisposableBean  {
     
     private final ApplicationContext applicationContext;
-    private List<TxLcnRunner> runners;
+    private List<TxLcnInitializer> runners;
 
     @Autowired
     public TxLcnApplicationRunner(ApplicationContext applicationContext) {
@@ -44,17 +44,17 @@ public class TxLcnApplicationRunner implements ApplicationRunner , DisposableBea
 
     @Override
     public void run(ApplicationArguments args) throws Exception{
-        Map<String,TxLcnRunner> runnerMap = applicationContext.getBeansOfType(TxLcnRunner.class);
+        Map<String, TxLcnInitializer> runnerMap = applicationContext.getBeansOfType(TxLcnInitializer.class);
         runners = new ArrayList<>(runnerMap.values());
-        for(TxLcnRunner txLcnRunner:runners){
-            txLcnRunner.init();
+        for(TxLcnInitializer txLcnInitializer :runners){
+            txLcnInitializer.init();
         }
     }
 
     @Override
     public void destroy() throws Exception {
-        for(TxLcnRunner txLcnRunner:runners){
-            txLcnRunner.destroy();
+        for(TxLcnInitializer txLcnInitializer :runners){
+            txLcnInitializer.destroy();
         }
     }
 }

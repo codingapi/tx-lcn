@@ -22,7 +22,7 @@ package com.codingapi.txlcn.commons.runner;
  *
  * @author codingapi meetzy
  */
-public interface TxLcnRunner {
+public interface TxLcnInitializer {
 
     /**
      * 初始化执行方法

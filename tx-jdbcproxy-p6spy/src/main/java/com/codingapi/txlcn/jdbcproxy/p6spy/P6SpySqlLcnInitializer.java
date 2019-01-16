@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.spi.message.netty.bean;
+package com.codingapi.txlcn.jdbcproxy.p6spy;
 
-import com.codingapi.txlcn.commons.runner.TxLcnRunner;
-import com.codingapi.txlcn.spi.message.RpcConfig;
+import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
+import com.codingapi.txlcn.jdbcproxy.p6spy.event.SimpleJdbcEventListener;
+import com.codingapi.txlcn.jdbcproxy.p6spy.spring.CompoundJdbcEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 /**
  * Description:
@@ -28,14 +32,17 @@ import org.springframework.stereotype.Component;
  * @author codingapi
  */
 @Component
-public class RpcNettyInitializer implements TxLcnRunner {
+public class P6SpySqlLcnInitializer implements TxLcnInitializer {
 
     @Autowired
-    private RpcConfig rpcConfig;
+    private ApplicationContext spring;
+
+    @Autowired
+    private CompoundJdbcEventListener compoundJdbcEventListener;
 
     @Override
     public void init() throws Exception {
-        RpcCmdContext.getInstance().setRpcConfig(rpcConfig);
-        SocketManager.getInstance().setRpcConfig(rpcConfig);
+        Map<String, SimpleJdbcEventListener> listeners = spring.getBeansOfType(SimpleJdbcEventListener.class);
+        listeners.forEach((k, v) -> compoundJdbcEventListener.addListener(v));
     }
 }

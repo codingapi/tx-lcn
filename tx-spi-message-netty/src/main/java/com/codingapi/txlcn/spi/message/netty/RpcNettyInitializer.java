@@ -13,37 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client;
+package com.codingapi.txlcn.spi.message.netty;
 
-import com.codingapi.txlcn.client.config.TxClientConfig;
-import com.codingapi.txlcn.commons.runner.TxLcnRunner;
-import com.codingapi.txlcn.spi.message.RpcClientInitializer;
-import com.codingapi.txlcn.spi.message.dto.TxManagerHost;
+import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
+import com.codingapi.txlcn.spi.message.RpcConfig;
+import com.codingapi.txlcn.spi.message.netty.bean.RpcCmdContext;
+import com.codingapi.txlcn.spi.message.netty.bean.SocketManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
  * Description:
  * Company: CodingApi
- * Date: 2018/12/10
+ * Date: 2019/1/16
  *
- * @author lorne
+ * @author codingapi
  */
 @Component
-public class TxClientInitialization implements TxLcnRunner {
-
-    private final RpcClientInitializer rpcClientInitializer;
-
-    private final TxClientConfig txClientConfig;
+public class RpcNettyInitializer implements TxLcnInitializer {
 
     @Autowired
-    public TxClientInitialization(RpcClientInitializer rpcClientInitializer, TxClientConfig txClientConfig) {
-        this.rpcClientInitializer = rpcClientInitializer;
-        this.txClientConfig = txClientConfig;
-    }
+    private RpcConfig rpcConfig;
 
     @Override
     public void init() throws Exception {
-        rpcClientInitializer.init(TxManagerHost.parserList(txClientConfig.getManagerAddress()));
+        RpcCmdContext.getInstance().setRpcConfig(rpcConfig);
+        SocketManager.getInstance().setRpcConfig(rpcConfig);
     }
 }

@@ -15,13 +15,13 @@
  */
 package com.codingapi.txlcn.client.aspectlog;
 
-import com.codingapi.txlcn.commons.runner.TxLcnRunner;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
@@ -34,7 +34,7 @@ import java.sql.SQLException;
  * @author codingapi
  */
 @Slf4j
-public class AspectLogDbHelper implements TxLcnRunner {
+public class AspectLogDbHelper implements DisposableBean {
 
     private HikariDataSource hikariDataSource;
 

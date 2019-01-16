@@ -15,7 +15,6 @@
  */
 package com.codingapi.txlcn.logger.db;
 
-import com.codingapi.txlcn.commons.runner.TxLcnRunner;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.GenerousBeanProcessor;
 import org.apache.commons.dbutils.RowProcessor;
@@ -34,14 +33,14 @@ import java.util.List;
  * @author codingapi
  */
 @Component
-public class TxLoggerHelper implements TxLcnRunner {
+public class TxLcnLoggerHelper  {
 
     @Autowired
     private LogDbHelper dbHelper;
 
     private RowProcessor processor = new BasicRowProcessor(new GenerousBeanProcessor());
 
-    @Override
+
     public void init() throws Exception{
         String sql = "CREATE TABLE IF NOT EXISTS `t_logger`  (\n" +
                 "  `id` bigint(20) NOT NULL AUTO_INCREMENT,\n" +

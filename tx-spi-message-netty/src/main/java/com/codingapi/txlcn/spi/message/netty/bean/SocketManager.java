@@ -166,7 +166,7 @@ public class SocketManager {
         appNames.put(remoteKey, moduleName);
     }
 
-    protected void setRpcConfig(RpcConfig rpcConfig) {
+    public void setRpcConfig(RpcConfig rpcConfig) {
         this.rpcConfig = rpcConfig;
     }
 

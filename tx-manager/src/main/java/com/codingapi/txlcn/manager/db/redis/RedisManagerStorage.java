@@ -15,10 +15,10 @@
  */
 package com.codingapi.txlcn.manager.db.redis;
 
-import com.codingapi.txlcn.commons.runner.TxLcnRunner;
 import com.codingapi.txlcn.manager.config.TxManagerConfig;
 import com.codingapi.txlcn.manager.db.ManagerStorage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -36,7 +36,7 @@ import java.util.List;
  */
 @Component
 @Slf4j
-public class RedisManagerStorage implements ManagerStorage, TxLcnRunner {
+public class RedisManagerStorage implements ManagerStorage, DisposableBean {
 
     private static final String REDIS_PREFIX = "tx.manager.list";
 
@@ -107,7 +107,6 @@ public class RedisManagerStorage implements ManagerStorage, TxLcnRunner {
     }
 
 
-    @Override
     public void init() throws Exception{
         String address = managerConfig.getHost()+":"+port;
         add(address);

@@ -15,7 +15,6 @@
  */
 package com.codingapi.txlcn.client.aspectlog;
 
-import com.codingapi.txlcn.commons.runner.TxLcnRunner;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
@@ -36,7 +35,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class AspectLogHelper implements TxLcnRunner {
+public class AspectLogHelper {
 
     private final AspectLogDbHelper aspectLogDbHelper;
 
@@ -46,8 +45,7 @@ public class AspectLogHelper implements TxLcnRunner {
     }
 
 
-    @Override
-    public void init() throws Exception {
+    public void init() {
         aspectLogDbHelper.update("CREATE TABLE IF NOT EXISTS TXLCN_LOG " +
                 "(" +
                 "ID BIGINT NOT NULL AUTO_INCREMENT, " +

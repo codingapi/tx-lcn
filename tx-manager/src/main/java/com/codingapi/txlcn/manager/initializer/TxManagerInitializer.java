@@ -13,36 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.jdbcproxy.p6spy;
+package com.codingapi.txlcn.manager.initializer;
 
-import com.codingapi.txlcn.commons.runner.TxLcnRunner;
-import com.codingapi.txlcn.jdbcproxy.p6spy.event.SimpleJdbcEventListener;
-import com.codingapi.txlcn.jdbcproxy.p6spy.spring.CompoundJdbcEventListener;
+import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
+import com.codingapi.txlcn.manager.db.redis.RedisManagerStorage;
+import com.codingapi.txlcn.manager.support.TxManagerAutoCluster;
+import com.codingapi.txlcn.manager.support.message.TxLcnManagerServer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-
 /**
- * Description:
+ * Description: TxManger检查
  * Company: CodingApi
- * Date: 2019/1/16
+ * Date: 2018/12/29
  *
  * @author codingapi
  */
 @Component
-public class P6spySqlInitializer implements TxLcnRunner {
+@Slf4j
+public class TxManagerInitializer implements TxLcnInitializer {
+
 
     @Autowired
-    private ApplicationContext spring;
+    private TxManagerAutoCluster managerAutoCluster;
 
     @Autowired
-    private CompoundJdbcEventListener compoundJdbcEventListener;
+    private RedisManagerStorage redisManagerStorage;
+
+    @Autowired
+    private TxLcnManagerServer txLcnManagerServer;
 
     @Override
     public void init() throws Exception {
-        Map<String, SimpleJdbcEventListener> listeners = spring.getBeansOfType(SimpleJdbcEventListener.class);
-        listeners.forEach((k, v) -> compoundJdbcEventListener.addListener(v));
+        redisManagerStorage.init();
+
+        txLcnManagerServer.init();
+
+        managerAutoCluster.refresh();
     }
+
+
 }
