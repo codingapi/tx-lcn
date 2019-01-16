@@ -46,9 +46,7 @@ public class TxClientConfig {
     private Integer dtxAspectOrder;
 
     /**
-     * control order
-     *
-     * @getConnection() aop service
+     *  aspect connection order
      */
     private int resourceOrder;
 

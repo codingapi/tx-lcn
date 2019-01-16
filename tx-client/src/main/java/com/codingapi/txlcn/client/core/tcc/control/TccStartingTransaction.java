@@ -52,7 +52,7 @@ public class TccStartingTransaction implements TXLCNTransactionControl {
         Method method = info.getPointMethod();
         TccTransaction tccTransaction = method.getAnnotation(TccTransaction.class);
         if (tccTransaction == null) {
-            throw new BeforeBusinessException("TCC模式下需添加 @TccTransaction 注解在 " + method.getName() + " 上 ");
+            throw new BeforeBusinessException("TCC type need @TccTransaction in " + method.getName());
         }
         String cancelMethod = tccTransaction.cancelMethod();
         String confirmMethod = tccTransaction.confirmMethod();

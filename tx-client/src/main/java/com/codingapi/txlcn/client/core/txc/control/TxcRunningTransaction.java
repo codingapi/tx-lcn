@@ -18,15 +18,13 @@ package com.codingapi.txlcn.client.core.txc.control;
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
 import com.codingapi.txlcn.client.core.txc.resource.def.TxcService;
-import com.codingapi.txlcn.client.message.helper.TxMangerReporter;
+import com.codingapi.txlcn.client.core.txc.resource.def.bean.RollbackInfo;
 import com.codingapi.txlcn.client.support.TXLCNTransactionControl;
 import com.codingapi.txlcn.client.support.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.client.support.template.TransactionControlTemplate;
-import com.codingapi.txlcn.client.core.txc.resource.def.bean.RollbackInfo;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
 import com.codingapi.txlcn.commons.exception.TxcLogicException;
-import com.codingapi.txlcn.logger.TxLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,12 +44,6 @@ public class TxcRunningTransaction implements TXLCNTransactionControl {
     private final TransactionCleanTemplate transactionCleanTemplate;
 
     private final TransactionControlTemplate transactionControlTemplate;
-
-    @Autowired
-    private TxMangerReporter txMangerReporter;
-
-    @Autowired
-    private TxLogger txLogger;
 
     @Autowired
     public TxcRunningTransaction(TxcService txcService,

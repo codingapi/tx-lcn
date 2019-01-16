@@ -43,5 +43,5 @@ public @interface TxTransaction {
      * @return 传播行为
      * @see DTXPropagation
      */
-    DTXPropagation dtxp() default DTXPropagation.REQUIRED;
+    DTXPropagation propagation() default DTXPropagation.REQUIRED;
 }

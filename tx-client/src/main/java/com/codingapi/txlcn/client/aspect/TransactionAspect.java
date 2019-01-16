@@ -83,7 +83,7 @@ public class TransactionAspect implements Ordered {
         DTXInfo dtxInfo = DTXInfoPool.get(point);
         TxTransaction txTransaction = dtxInfo.getBusinessMethod().getAnnotation(TxTransaction.class);
         dtxInfo.setTransactionType(txTransaction.type());
-        dtxInfo.setTransactionPropagation(txTransaction.dtxp());
+        dtxInfo.setTransactionPropagation(txTransaction.propagation());
         return dtxLogicWeaver.runTransaction(dtxInfo, point::proceed);
     }
 
@@ -93,7 +93,7 @@ public class TransactionAspect implements Ordered {
         DTXInfo dtxInfo = DTXInfoPool.get(point);
         LcnTransaction lcnTransaction = dtxInfo.getBusinessMethod().getAnnotation(LcnTransaction.class);
         dtxInfo.setTransactionType(Transactions.LCN);
-        dtxInfo.setTransactionPropagation(lcnTransaction.dtxp());
+        dtxInfo.setTransactionPropagation(lcnTransaction.propagation());
         return dtxLogicWeaver.runTransaction(dtxInfo, point::proceed);
     }
 
@@ -103,7 +103,7 @@ public class TransactionAspect implements Ordered {
         DTXInfo dtxInfo = DTXInfoPool.get(point);
         TxcTransaction txcTransaction = dtxInfo.getBusinessMethod().getAnnotation(TxcTransaction.class);
         dtxInfo.setTransactionType(Transactions.TXC);
-        dtxInfo.setTransactionPropagation(txcTransaction.dtxp());
+        dtxInfo.setTransactionPropagation(txcTransaction.propagation());
         return dtxLogicWeaver.runTransaction(dtxInfo, point::proceed);
     }
 
@@ -113,7 +113,7 @@ public class TransactionAspect implements Ordered {
         DTXInfo dtxInfo = DTXInfoPool.get(point);
         TccTransaction tccTransaction = dtxInfo.getBusinessMethod().getAnnotation(TccTransaction.class);
         dtxInfo.setTransactionType(Transactions.TCC);
-        dtxInfo.setTransactionPropagation(tccTransaction.dtxp());
+        dtxInfo.setTransactionPropagation(tccTransaction.propagation());
         return dtxLogicWeaver.runTransaction(dtxInfo, point::proceed);
     }
 
