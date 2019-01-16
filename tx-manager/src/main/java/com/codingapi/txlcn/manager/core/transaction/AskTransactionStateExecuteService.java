@@ -45,6 +45,7 @@ public class AskTransactionStateExecuteService implements RpcExecuteService {
 
     @Override
     public Object execute(TransactionCmd transactionCmd) {
-        return transactionManager.transactionState(transactionContext.getTransaction(transactionCmd.getGroupId()));
+        int state = transactionManager.transactionState(transactionContext.getTransaction(transactionCmd.getGroupId()));
+        return state == -1 ? 0 : state;
     }
 }

@@ -13,13 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.initializer;
+package com.codingapi.txlcn.commons.exception;
 
-import com.codingapi.txlcn.client.aspectlog.AspectLogHelper;
-import com.codingapi.txlcn.client.message.TXLCNClientMessageServer;
-import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import java.io.Serializable;
 
 /**
  * Description:
@@ -28,18 +24,16 @@ import org.springframework.stereotype.Component;
  *
  * @author codingapi
  */
-@Component
-public class TxClientInitializer implements TxLcnInitializer {
+public class UserRollbackException extends TxManagerException implements Serializable {
 
-    @Autowired
-    private AspectLogHelper aspectLogHelper;
+    public UserRollbackException() {
+    }
 
-    @Autowired
-    private TXLCNClientMessageServer txLcnClientMessageServer;
+    public UserRollbackException(String message) {
+        super(message);
+    }
 
-    @Override
-    public void init() throws Exception {
-        aspectLogHelper.init();
-        txLcnClientMessageServer.init();
+    public UserRollbackException(Throwable cause) {
+        super(cause);
     }
 }

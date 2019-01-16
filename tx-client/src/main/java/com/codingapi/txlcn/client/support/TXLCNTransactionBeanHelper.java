@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class LCNTransactionBeanHelper {
+public class TXLCNTransactionBeanHelper {
 
 
     /**
@@ -60,11 +60,11 @@ public class LCNTransactionBeanHelper {
     private static final String TRANSACTION_BEAN_NAME_FORMAT = "transaction_%s";
 
     /**
-     * transaction state resolver
+     * transaction transactionState resolver
      * transaction_state_resolver_%s
      * %s:transaction type. lcn, tcc, txc so on.
      */
-    private static final String TRANSACTION_STATE_RESOLVER_BEAN_NAME_FARMOT = "transaction_state_resolver_%s";
+    private static final String TRANSACTION_STATE_RESOLVER_BEAN_NAME_FORMAT = "transaction_state_resolver_%s";
 
     /**
      * Transaction Clean Service
@@ -76,7 +76,7 @@ public class LCNTransactionBeanHelper {
     private final ApplicationContext spring;
 
     @Autowired
-    public LCNTransactionBeanHelper(ApplicationContext spring) {
+    public TXLCNTransactionBeanHelper(ApplicationContext spring) {
         this.spring = spring;
     }
 
@@ -131,10 +131,10 @@ public class LCNTransactionBeanHelper {
      */
     public TXLCNTransactionSeparator loadLCNTransactionStateResolver(String transactionType) {
         try {
-            String name = String.format(TRANSACTION_STATE_RESOLVER_BEAN_NAME_FARMOT, transactionType);
+            String name = String.format(TRANSACTION_STATE_RESOLVER_BEAN_NAME_FORMAT, transactionType);
             return spring.getBean(name, TXLCNTransactionSeparator.class);
         } catch (Exception e) {
-            return spring.getBean(String.format(TRANSACTION_STATE_RESOLVER_BEAN_NAME_FARMOT, "default"), TXLCNTransactionSeparator.class);
+            return spring.getBean(String.format(TRANSACTION_STATE_RESOLVER_BEAN_NAME_FORMAT, "default"), TXLCNTransactionSeparator.class);
         }
     }
 

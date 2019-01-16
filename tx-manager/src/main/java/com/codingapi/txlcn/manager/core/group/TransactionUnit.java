@@ -29,10 +29,13 @@ public class TransactionUnit {
 
     private String messageContextId;
 
-    public TransactionUnit(String unitId, String unitType, String messageContextId) {
+    private int transactionState;
+
+    public TransactionUnit(String unitId, String unitType, int transactionState, String messageContextId) {
         this.unitId = unitId;
         this.unitType = unitType;
         this.messageContextId = messageContextId;
+        this.transactionState = transactionState;
     }
 
     public String unitId() {
@@ -45,5 +48,9 @@ public class TransactionUnit {
 
     public String unitType() {
         return unitType;
+    }
+
+    public int getTransactionState() {
+        return transactionState;
     }
 }

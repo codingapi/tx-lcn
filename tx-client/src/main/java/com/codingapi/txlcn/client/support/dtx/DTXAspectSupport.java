@@ -13,44 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.spi.message.params;
+package com.codingapi.txlcn.client.support.dtx;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
+import com.codingapi.txlcn.client.bean.DTXLocal;
 
 /**
  * Description:
- * Date: 2018/12/5
+ * Date: 19-1-16 下午4:21
  *
  * @author ujued
  */
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-public class JoinGroupParams implements Serializable {
-    private String groupId;
+
+public class DTXAspectSupport  {
 
     /**
-     * 事务单元标识
+     * 回滚分布式事务
      */
-    private String unitId;
-
-    /**
-     * 事务单元类型
-     */
-    private String unitType;
-
-    /**
-     * 通讯标识
-     */
-    private String remoteKey;
-
-    /**
-     * 事务状态
-     * 0 回滚 1提交
-     */
-    private int transactionState = 1;
+    public static void setRollbackOnly() {
+        DTXLocal.cur().setUserTransactionState(0);
+    }
 }

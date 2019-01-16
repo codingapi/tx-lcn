@@ -39,8 +39,8 @@ public interface TxExceptionMapper {
     @Select("select * from t_tx_exception")
     List<TxException> findAll();
 
-    @Update("update t_tx_exception set ex_state=#{state} where id=#{id}")
-    void changeExState(@Param("id") Long id, @Param("state") short state);
+    @Update("update t_tx_exception set ex_state=#{transactionState} where id=#{id}")
+    void changeExState(@Param("id") Long id, @Param("transactionState") short state);
 
     @Select("select * from t_tx_exception where group_id=#{groupId}")
     TxException getByGroupId(String groupId);

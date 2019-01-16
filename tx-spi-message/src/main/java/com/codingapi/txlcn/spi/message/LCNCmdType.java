@@ -53,7 +53,7 @@ public enum LCNCmdType {
      * 响应事务状态
      * 间写 ats
      */
-    askTransactionState("ask-transaction-state", MessageConstants.ACTION_ASK_TRANSACTION_STATE),
+    askTransactionState("ask-transaction-transactionState", MessageConstants.ACTION_ASK_TRANSACTION_STATE),
 
     /**
      * 记录补偿

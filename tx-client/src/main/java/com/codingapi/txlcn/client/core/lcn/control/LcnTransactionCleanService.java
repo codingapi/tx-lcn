@@ -56,7 +56,7 @@ public class LcnTransactionCleanService implements TransactionCleanService {
             log.error("本地事务通知失败");
             throw new TransactionClearException("通知资源时出错");
         }
-        log.error("local non transaction, but notified. probably net message timeout . groupId: {}, state: {}", groupId, state);
+        log.error("local non transaction, but notified. probably net message timeout . groupId: {}, transactionState: {}", groupId, state);
         throw new TransactionClearException("local non transaction, but notified. probably net message timeout .");
     }
 }

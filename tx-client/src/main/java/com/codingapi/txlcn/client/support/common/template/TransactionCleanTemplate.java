@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.client.support.common.template;
 
 import com.codingapi.txlcn.client.aspectlog.AspectLogger;
-import com.codingapi.txlcn.client.support.LCNTransactionBeanHelper;
+import com.codingapi.txlcn.client.support.TXLCNTransactionBeanHelper;
 import com.codingapi.txlcn.client.support.checking.DTXChecking;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.util.Transactions;
@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TransactionCleanTemplate {
 
-    private final LCNTransactionBeanHelper transactionBeanHelper;
+    private final TXLCNTransactionBeanHelper transactionBeanHelper;
 
     private final DTXChecking dtxChecking;
 
@@ -44,7 +44,7 @@ public class TransactionCleanTemplate {
     private final TxLogger txLogger;
 
     @Autowired
-    public TransactionCleanTemplate(LCNTransactionBeanHelper transactionBeanHelper,
+    public TransactionCleanTemplate(TXLCNTransactionBeanHelper transactionBeanHelper,
                                     DTXChecking dtxChecking,
                                     AspectLogger aspectLogger,
                                     TxLogger txLogger) {
@@ -60,7 +60,7 @@ public class TransactionCleanTemplate {
      * @param groupId groupId
      * @param unitId unitId
      * @param unitType unitType
-     * @param state state
+     * @param state transactionState
      * @throws TransactionClearException TransactionClearException
      */
     public void clean(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
@@ -85,7 +85,7 @@ public class TransactionCleanTemplate {
      * @param groupId groupId
      * @param unitId unitId
      * @param unitType unitType
-     * @param state state
+     * @param state transactionState
      * @throws TransactionClearException TransactionClearException
      */
     public void compensationClean(String groupId, String unitId, String unitType, int state) throws TransactionClearException {

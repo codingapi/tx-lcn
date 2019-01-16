@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.manager.core.message;
 
+import com.codingapi.txlcn.commons.exception.UserRollbackException;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.manager.support.ManagerRpcBeanHelper;
 import com.codingapi.txlcn.spi.message.RpcClient;
@@ -59,7 +60,11 @@ public class RpcCmdTask implements Runnable {
         try {
             Object message = rpcExecuteService.execute(transactionCmd);
             messageDto = MessageCreator.notifyGroupOkResponse(message,action);
-        } catch (Throwable e) {
+        }catch (UserRollbackException e){
+            log.error(e.getMessage(), e);
+            messageDto = MessageCreator.notifyGroupFailResponse(e,action);
+            txLogger.trace(transactionCmd.getGroupId(),"","rpccmd","error->"+messageDto.getAction());
+        } catch(Throwable e) {
             log.error(e.getMessage(), e);
             messageDto = MessageCreator.notifyGroupFailResponse(e,action);
             txLogger.trace(transactionCmd.getGroupId(),"","rpccmd","error->"+messageDto.getAction());

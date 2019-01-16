@@ -45,7 +45,7 @@ public class TxMangerReporter {
      * @param groupId   groupId
      * @param unitId    unitId
      * @param registrar registrar
-     * @param state     state
+     * @param state     transactionState
      */
     public void reportTransactionState(String groupId, String unitId, Short registrar, int state) {
         TxExceptionParams txExceptionParams = new TxExceptionParams();
@@ -78,7 +78,7 @@ public class TxMangerReporter {
                 break;
             } catch (RpcException e) {
                 if (e.getCode() == RpcException.NON_TX_MANAGER) {
-                    log.error("report transaction state error. non tx-manager is alive.");
+                    log.error("report transaction transactionState error. non tx-manager is alive.");
                     break;
                 }
             }
