@@ -15,7 +15,6 @@
  */
 package com.codingapi.txlcn.spi.message.netty.impl;
 
-import com.codingapi.txlcn.commons.exception.TxClientException;
 import com.codingapi.txlcn.spi.message.RpcClientInitializer;
 import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.spi.message.dto.TxManagerHost;
