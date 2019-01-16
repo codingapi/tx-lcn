@@ -13,25 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.logger.db;
+package com.codingapi.txlcn.spi.message.netty.bean;
 
-import com.codingapi.txlcn.logger.ex.TxLoggerException;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import com.codingapi.txlcn.commons.runner.TxLcnRunner;
+import com.codingapi.txlcn.spi.message.RpcConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Description:
  * Company: CodingApi
- * Date: 2018/12/20
+ * Date: 2019/1/16
  *
  * @author codingapi
  */
-@Configuration
-public class LogDBConfiguration {
+@Component
+public class RpcNettyInitializer implements TxLcnRunner {
 
-    @Bean
-    public LogDbHelper logDbHelper(LogDbProperties logDbProperties) throws TxLoggerException {
-        return new LogDbHelper(logDbProperties);
+    @Autowired
+    private RpcConfig rpcConfig;
+
+    @Override
+    public void init() throws Exception {
+        RpcCmdContext.getInstance().setRpcConfig(rpcConfig);
+        SocketManager.getInstance().setRpcConfig(rpcConfig);
     }
-
 }

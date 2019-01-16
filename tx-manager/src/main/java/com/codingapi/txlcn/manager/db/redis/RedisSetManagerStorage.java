@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.manager.db.redis;
 
+import com.codingapi.txlcn.commons.runner.TxLcnRunner;
 import com.codingapi.txlcn.manager.config.TxManagerConfig;
 import com.codingapi.txlcn.manager.db.ManagerStorage;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -34,7 +33,7 @@ import java.util.Objects;
  * @author meetzy
  */
 @Slf4j
-public class RedisSetManagerStorage implements ManagerStorage {
+public class RedisSetManagerStorage implements ManagerStorage, TxLcnRunner {
     
     private static final String REDIS_PREFIX = "tx.manager.list";
     
@@ -56,16 +55,16 @@ public class RedisSetManagerStorage implements ManagerStorage {
     public void remove(String address) {
         redisTemplate.opsForSet().remove(REDIS_PREFIX, address);
     }
-    
-    @PostConstruct
-    public void init() {
+
+    @Override
+    public void init() throws Exception{
         String address = managerConfig.getHost() + ":" + port;
         redisTemplate.opsForSet().add(REDIS_PREFIX, address);
         log.info("manager add redis finish.");
     }
     
-    @PreDestroy
-    public void destroy() {
+    @Override
+    public void destroy() throws Exception {
         String address = managerConfig.getHost() + ":" + port;
         remove(address);
         log.info("manager remove redis.");

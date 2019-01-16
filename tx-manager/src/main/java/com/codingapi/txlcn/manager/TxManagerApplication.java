@@ -15,17 +15,16 @@
  */
 package com.codingapi.txlcn.manager;
 
-import com.codingapi.txlcn.manager.support.TxManagerManagerRefreshing;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.codingapi.txlcn.commons.runner.TxLcnApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import javax.annotation.PostConstruct;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -67,13 +66,12 @@ public class TxManagerApplication {
         return new RestTemplate();
     }
 
-    @Autowired
-    private TxManagerManagerRefreshing txManagerManagerRefreshing;
 
-    @PostConstruct
-    public void init() {
-        txManagerManagerRefreshing.refresh();
+    @Bean
+    public TxLcnApplicationRunner txLcnApplicationRunner(ApplicationContext applicationContext){
+        return new TxLcnApplicationRunner(applicationContext);
     }
+
 
     @Bean
     public CorsFilter corsFilter() {
@@ -86,4 +84,5 @@ public class TxManagerApplication {
         source.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsFilter(source);
     }
+
 }

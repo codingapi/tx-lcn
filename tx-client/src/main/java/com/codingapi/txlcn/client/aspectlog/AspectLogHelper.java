@@ -15,13 +15,13 @@
  */
 package com.codingapi.txlcn.client.aspectlog;
 
+import com.codingapi.txlcn.commons.runner.TxLcnRunner;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.dbutils.*;
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class AspectLogHelper {
+public class AspectLogHelper implements TxLcnRunner {
 
     private final AspectLogDbHelper aspectLogDbHelper;
 
@@ -46,8 +46,8 @@ public class AspectLogHelper {
     }
 
 
-    @PostConstruct
-    public void init() {
+    @Override
+    public void init() throws Exception {
         aspectLogDbHelper.update("CREATE TABLE IF NOT EXISTS TXLCN_LOG " +
                 "(" +
                 "ID BIGINT NOT NULL AUTO_INCREMENT, " +

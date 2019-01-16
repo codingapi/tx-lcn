@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.spi.message.netty;
+package com.codingapi.txlcn.spi.message.netty.bean;
 
 
 import com.codingapi.txlcn.spi.message.RpcConfig;
-import com.codingapi.txlcn.spi.message.netty.bean.NettyRpcCmd;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.dto.RpcCmd;
 import com.codingapi.txlcn.spi.message.dto.RpcResponseState;
@@ -167,7 +166,7 @@ public class SocketManager {
         appNames.put(remoteKey, moduleName);
     }
 
-    public void setRpcConfig(RpcConfig rpcConfig) {
+    protected void setRpcConfig(RpcConfig rpcConfig) {
         this.rpcConfig = rpcConfig;
     }
 

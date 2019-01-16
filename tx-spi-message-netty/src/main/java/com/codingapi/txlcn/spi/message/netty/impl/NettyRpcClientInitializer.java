@@ -18,7 +18,7 @@ package com.codingapi.txlcn.spi.message.netty.impl;
 import com.codingapi.txlcn.spi.message.RpcClientInitializer;
 import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.spi.message.dto.TxManagerHost;
-import com.codingapi.txlcn.spi.message.netty.SocketManager;
+import com.codingapi.txlcn.spi.message.netty.bean.SocketManager;
 import com.codingapi.txlcn.spi.message.netty.em.NettyType;
 import com.codingapi.txlcn.spi.message.netty.handler.NettyRpcClientHandlerInitHandler;
 import io.netty.bootstrap.Bootstrap;

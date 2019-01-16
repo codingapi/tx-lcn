@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.manager.support;
 
+import com.codingapi.txlcn.commons.runner.TxLcnRunner;
 import com.codingapi.txlcn.spi.message.params.NotifyConnectParams;
 import com.codingapi.txlcn.manager.config.TxManagerConfig;
 import com.codingapi.txlcn.manager.db.ManagerStorage;
@@ -38,7 +39,7 @@ import java.util.List;
  */
 @Component
 @Slf4j
-public class TxManagerManagerRefreshing {
+public class TxManagerManagerRefreshing implements TxLcnRunner {
 
     private final ManagerStorage managerStorage;
 
@@ -56,6 +57,10 @@ public class TxManagerManagerRefreshing {
         this.txManagerConfig = txManagerConfig;
     }
 
+    @Override
+    public void init() throws Exception {
+        refresh();
+    }
 
     public void refresh() {
         NotifyConnectParams notifyConnectParams = new NotifyConnectParams();

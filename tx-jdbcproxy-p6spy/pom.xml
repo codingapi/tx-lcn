@@ -12,4 +12,11 @@
     <artifactId>tx-jdbcproxy-p6spy</artifactId>
 
 
+    <dependencies>
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>tx-commons</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

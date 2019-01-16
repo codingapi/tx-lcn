@@ -17,7 +17,7 @@ package com.codingapi.txlcn.spi.message.netty.loadbalance;
 
 import com.codingapi.txlcn.spi.message.exception.RpcException;
 import com.codingapi.txlcn.spi.message.loadbalance.RpcLoadBalance;
-import com.codingapi.txlcn.spi.message.netty.SocketManager;
+import com.codingapi.txlcn.spi.message.netty.bean.SocketManager;
 import io.netty.channel.Channel;
 
 import java.util.Random;

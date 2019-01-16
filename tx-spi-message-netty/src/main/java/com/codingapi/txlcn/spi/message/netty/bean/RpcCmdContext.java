@@ -135,7 +135,7 @@ public class RpcCmdContext {
     }
 
 
-    public void setRpcConfig(RpcConfig rpcConfig) {
+    protected void setRpcConfig(RpcConfig rpcConfig) {
         this.rpcConfig = rpcConfig;
     }
 

@@ -15,16 +15,15 @@
  */
 package com.codingapi.txlcn.client.aspectlog;
 
+import com.codingapi.txlcn.commons.runner.TxLcnRunner;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.PostConstruct;
 import java.sql.SQLException;
 
 /**
@@ -35,17 +34,14 @@ import java.sql.SQLException;
  * @author codingapi
  */
 @Slf4j
-public class AspectLogDbHelper implements DisposableBean {
+public class AspectLogDbHelper implements TxLcnRunner {
 
     private HikariDataSource hikariDataSource;
 
     private QueryRunner queryRunner;
 
     @Autowired
-    private AspectLogDbProperties aspectLogDbProperties;
-
-    @PostConstruct
-    public void init() {
+    public AspectLogDbHelper(AspectLogDbProperties aspectLogDbProperties) {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setDriverClassName(org.h2.Driver.class.getName());
         log.info("init db at {}", aspectLogDbProperties.getFilePath());
@@ -54,7 +50,6 @@ public class AspectLogDbHelper implements DisposableBean {
         queryRunner = new QueryRunner(hikariDataSource);
         log.info("init db finish.");
     }
-
 
     public int update(String sql, Object... params) {
         try {

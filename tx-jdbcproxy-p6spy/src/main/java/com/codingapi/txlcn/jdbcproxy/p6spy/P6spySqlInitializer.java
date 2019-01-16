@@ -13,37 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client;
+package com.codingapi.txlcn.jdbcproxy.p6spy;
 
-import com.codingapi.txlcn.client.config.TxClientConfig;
 import com.codingapi.txlcn.commons.runner.TxLcnRunner;
-import com.codingapi.txlcn.spi.message.RpcClientInitializer;
-import com.codingapi.txlcn.spi.message.dto.TxManagerHost;
+import com.codingapi.txlcn.jdbcproxy.p6spy.event.SimpleJdbcEventListener;
+import com.codingapi.txlcn.jdbcproxy.p6spy.spring.CompoundJdbcEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 /**
  * Description:
  * Company: CodingApi
- * Date: 2018/12/10
+ * Date: 2019/1/16
  *
- * @author lorne
+ * @author codingapi
  */
 @Component
-public class TxClientInitialization implements TxLcnRunner {
-
-    private final RpcClientInitializer rpcClientInitializer;
-
-    private final TxClientConfig txClientConfig;
+public class P6spySqlInitializer implements TxLcnRunner {
 
     @Autowired
-    public TxClientInitialization(RpcClientInitializer rpcClientInitializer, TxClientConfig txClientConfig) {
-        this.rpcClientInitializer = rpcClientInitializer;
-        this.txClientConfig = txClientConfig;
-    }
+    private ApplicationContext spring;
+
+    @Autowired
+    private CompoundJdbcEventListener compoundJdbcEventListener;
 
     @Override
     public void init() throws Exception {
-        rpcClientInitializer.init(TxManagerHost.parserList(txClientConfig.getManagerAddress()));
+        Map<String, SimpleJdbcEventListener> listeners = spring.getBeansOfType(SimpleJdbcEventListener.class);
+        listeners.forEach((k, v) -> compoundJdbcEventListener.addListener(v));
     }
 }

@@ -13,25 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.logger.db;
-
-import com.codingapi.txlcn.logger.ex.TxLoggerException;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+package com.codingapi.txlcn.commons.runner;
 
 /**
- * Description:
+ * Description: 初始化Runner
  * Company: CodingApi
- * Date: 2018/12/20
+ * Date: 2019/1/16
  *
  * @author codingapi
  */
-@Configuration
-public class LogDBConfiguration {
+public interface TxLcnRunner {
 
-    @Bean
-    public LogDbHelper logDbHelper(LogDbProperties logDbProperties) throws TxLoggerException {
-        return new LogDbHelper(logDbProperties);
-    }
+    /**
+     * 初始化执行方法
+     * @throws Exception Throwable
+     */
+    default void init() throws Exception{}
 
+    /**
+     * 销毁对象
+     * @throws Exception Throwable
+     */
+    default void destroy() throws Exception{}
 }
