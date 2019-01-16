@@ -16,7 +16,6 @@
 package com.codingapi.txlcn.client.bean;
 
 
-import com.codingapi.txlcn.client.support.dtx.DistributedTransaction;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,9 +65,14 @@ public class DTXLocal {
     private Object attachment;
 
     /**
-     * 当前分布式事务
+     * 系统分布式事务状态
      */
-    private DistributedTransaction dtx;
+    private int sysTransactionState;
+
+    /**
+     * 用户分布式事务状态
+     */
+    private int userTransactionState = -1;
 
     /**
      * 是否代理资源
@@ -153,8 +157,13 @@ public class DTXLocal {
         }
     }
 
-    public static DistributedTransaction currentDTX() {
-        Objects.requireNonNull(currentLocal.get(), "non DTX in current context.");
-        return currentLocal.get().getDtx();
+    /**
+     * 事务状态
+     *
+     * @return 1 commit 0 rollback
+     */
+    public static int transactionState() {
+        DTXLocal dtxLocal = Objects.requireNonNull(currentLocal.get(), "DTX can't be null.");
+        return dtxLocal.userTransactionState == -1 ? dtxLocal.sysTransactionState : dtxLocal.userTransactionState;
     }
 }

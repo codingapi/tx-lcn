@@ -15,10 +15,12 @@
  */
 package com.codingapi.txlcn.client.support.common.template;
 
+import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.support.checking.DTXChecking;
 import com.codingapi.txlcn.client.support.checking.DTXExceptionHandler;
 import com.codingapi.txlcn.client.aspectlog.AspectLogger;
 import com.codingapi.txlcn.client.message.helper.MessageCreator;
+import com.codingapi.txlcn.client.support.dtx.DTXAspectSupport;
 import com.codingapi.txlcn.commons.bean.TransactionInfo;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import com.codingapi.txlcn.commons.exception.SerializerException;
@@ -141,6 +143,7 @@ public class TransactionControlTemplate {
         joinGroupParams.setGroupId(groupId);
         joinGroupParams.setUnitId(unitId);
         joinGroupParams.setUnitType(transactionType);
+        joinGroupParams.setTransactionState(DTXLocal.transactionState());
         // 日志
         log.debug("transaction type[{}] > join group > groupId: {}, unitId: {}, remoteKey: {}",
                 transactionType, groupId, unitId, managerKey);
