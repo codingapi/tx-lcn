@@ -33,9 +33,9 @@ import org.springframework.stereotype.Component;
 public class TxManagerConfig {
 
     public TxManagerConfig(@Value("${server.port}") Integer port) {
-        this.port = port + 1;
+        this.port = port+100;
         this.host = "127.0.0.1";
-        this.heartTime = 5;
+        this.heartTime = 5*60;
         this.concurrentLevel = 0;
         this.dtxTime = 36000;
         this.adminKey = "codingapi";
