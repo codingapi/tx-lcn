@@ -32,8 +32,11 @@ import org.springframework.stereotype.Component;
 @Data
 public class TxManagerConfig {
 
+
+    public static final int PORT_CHANGE_VALUE = 100;
+
     public TxManagerConfig(@Value("${server.port}") Integer port) {
-        this.port = port+100;
+        this.port = port+PORT_CHANGE_VALUE;
         this.host = "127.0.0.1";
         this.heartTime = 5*60;
         this.concurrentLevel = 0;
