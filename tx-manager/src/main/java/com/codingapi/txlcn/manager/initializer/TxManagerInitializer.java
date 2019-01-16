@@ -46,10 +46,14 @@ public class TxManagerInitializer implements TxLcnInitializer {
 
     @Override
     public void init() throws Exception {
+        
+        txLcnManagerServer.init();
+        
         redisManagerStorage.init();
 
-        txLcnManagerServer.init();
-
+        
+        
+        // 新增节点 读取redis个节点信息后 通知客户端连接
         managerAutoCluster.refresh();
     }
 
