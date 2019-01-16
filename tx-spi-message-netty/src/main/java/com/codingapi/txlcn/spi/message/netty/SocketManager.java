@@ -16,6 +16,7 @@
 package com.codingapi.txlcn.spi.message.netty;
 
 
+import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.spi.message.netty.bean.NettyRpcCmd;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.dto.RpcCmd;
@@ -48,8 +49,7 @@ public class SocketManager {
 
     private static SocketManager manager = null;
 
-    private int attrDelayTime;
-
+    private RpcConfig rpcConfig;
 
     private SocketManager() {
         channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
@@ -88,9 +88,9 @@ public class SocketManager {
             executorService.schedule(() -> {
                 String key = channel.remoteAddress().toString();
                 appNames.remove(key);
-            }, attrDelayTime, TimeUnit.SECONDS);
+            }, rpcConfig.getAttrDelayTime(), TimeUnit.SECONDS);
         } catch (RejectedExecutionException ignored) {
-            // down server.
+            // caused down server.
         }
     }
 
@@ -134,10 +134,6 @@ public class SocketManager {
         return allKeys;
     }
 
-    public void setAttrDelayTime(int attrDelayTime) {
-        this.attrDelayTime = attrDelayTime;
-    }
-
     public ChannelGroup getChannels() {
         return channels;
     }
@@ -169,6 +165,10 @@ public class SocketManager {
 
     public void bindModuleName(String remoteKey, String moduleName) {
         appNames.put(remoteKey, moduleName);
+    }
+
+    public void setRpcConfig(RpcConfig rpcConfig) {
+        this.rpcConfig = rpcConfig;
     }
 
     public String getModuleName(Channel channel) {

@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.spi.message.netty.bean;
 
+import com.codingapi.txlcn.spi.message.RpcConfig;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.LinkedList;
@@ -33,16 +34,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Slf4j
 public class RpcCmdContext {
 
-
-    /**
-     * 最大等待时间 单位:(s)
-     */
-    private int waitTime = 5;
-
-    /**
-     * 最大缓存锁的数量
-     */
-    private int cacheSize = 1024;
+    private RpcConfig rpcConfig;
 
     private static RpcCmdContext context = null;
 
@@ -51,14 +43,6 @@ public class RpcCmdContext {
     private List<RpcContent> cacheList;
 
     private final LinkedList<RpcContent> freeList;
-
-    public void setWaitTime(int waitTime) {
-        this.waitTime = waitTime;
-    }
-
-    public void setCacheSize(int cacheSize) {
-        this.cacheSize = cacheSize;
-    }
 
     public static RpcCmdContext getInstance() {
         if (context == null) {
@@ -124,7 +108,7 @@ public class RpcCmdContext {
     }
 
     private RpcContent createRpcContent() {
-        if (cacheList.size() < cacheSize) {
+        if (cacheList.size() < rpcConfig.getCacheSize()) {
             RpcContent rpcContent = new RpcContent(getWaitTime());
             rpcContent.init();
             cacheList.add(rpcContent);
@@ -151,7 +135,11 @@ public class RpcCmdContext {
     }
 
 
+    public void setRpcConfig(RpcConfig rpcConfig) {
+        this.rpcConfig = rpcConfig;
+    }
+
     public int getWaitTime() {
-        return waitTime;
+        return rpcConfig.getWaitTime();
     }
 }

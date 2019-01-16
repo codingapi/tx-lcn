@@ -73,8 +73,7 @@ public class RpcNettyConfiguration {
 
     @PostConstruct
     public void init() {
-        RpcCmdContext.getInstance().setWaitTime(rpcConfig().getWaitTime());
-        RpcCmdContext.getInstance().setCacheSize(rpcConfig().getCacheSize());
-        SocketManager.getInstance().setAttrDelayTime(rpcConfig().getAttrDelayTime());
+        RpcCmdContext.getInstance().setRpcConfig(rpcConfig());
+        SocketManager.getInstance().setRpcConfig(rpcConfig());
     }
 }

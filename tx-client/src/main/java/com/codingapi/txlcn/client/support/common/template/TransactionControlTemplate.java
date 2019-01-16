@@ -177,7 +177,8 @@ public class TransactionControlTemplate {
         NotifyGroupParams notifyGroupParams = new NotifyGroupParams();
         notifyGroupParams.setGroupId(groupId);
         notifyGroupParams.setState(state);
-        String managerKey = Optional.ofNullable(tracerHelper.getTxManagerKey()).orElseThrow(() -> new RuntimeException("sleuth pass error."));
+        String managerKey = Optional.ofNullable(tracerHelper.getTxManagerKey()).orElseThrow(
+                () -> new IllegalStateException("DTX Error(check TM cluster.) or Sleuth not configured."));
         // 日志
         log.debug("transaction type[{}] > close group > groupId: {}, unitId: {}, remoteKey: {}",
                 transactionType, groupId, unitId, managerKey);
