@@ -29,13 +29,13 @@ import org.springframework.stereotype.Service;
  */
 @Service(value = "control_lcn_starting")
 @Slf4j
-public class LCNStartingTransaction implements TXLCNTransactionControl {
+public class LcnStartingTransaction implements TXLCNTransactionControl {
 
     private final TransactionControlTemplate transactionControlTemplate;
 
 
     @Autowired
-    public LCNStartingTransaction(TransactionControlTemplate transactionControlTemplate) {
+    public LcnStartingTransaction(TransactionControlTemplate transactionControlTemplate) {
         this.transactionControlTemplate = transactionControlTemplate;
     }
 

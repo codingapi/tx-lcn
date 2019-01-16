@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.client.core.tcc.control;
 
 import com.codingapi.txlcn.client.bean.DTXLocal;
-import com.codingapi.txlcn.client.core.tcc.TransactionInfoCache;
+import com.codingapi.txlcn.client.core.tcc.TccTransactionInfoCache;
 import com.codingapi.txlcn.client.message.helper.TxMangerReporter;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.client.bean.TCCTransactionInfo;
@@ -43,24 +43,24 @@ public class TccTransactionCleanService implements TransactionCleanService {
 
     private final ApplicationContext applicationContext;
 
-    private final TransactionInfoCache transactionInfoCache;
+    private final TccTransactionInfoCache tccTransactionInfoCache;
 
     private final TxMangerReporter txMangerReporter;
 
     @Autowired
     public TccTransactionCleanService(TransactionAttachmentCache transactionAttachmentCache,
                                       ApplicationContext applicationContext,
-                                      TransactionInfoCache transactionInfoCache,
+                                      TccTransactionInfoCache tccTransactionInfoCache,
                                       TxMangerReporter txMangerReporter) {
         this.transactionAttachmentCache = transactionAttachmentCache;
         this.applicationContext = applicationContext;
-        this.transactionInfoCache = transactionInfoCache;
+        this.tccTransactionInfoCache = tccTransactionInfoCache;
         this.txMangerReporter = txMangerReporter;
     }
 
     @Override
     public void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException {
-        TCCTransactionInfo tccInfo = transactionInfoCache.get(unitId);
+        TCCTransactionInfo tccInfo = tccTransactionInfoCache.get(unitId);
 
         Object object = applicationContext.getBean(tccInfo.getExecuteClass());
         Method exeMethod = null;

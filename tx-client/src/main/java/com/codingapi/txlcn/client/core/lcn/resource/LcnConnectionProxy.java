@@ -27,11 +27,11 @@ import java.util.concurrent.Executor;
  * @author lorne
  */
 @Slf4j
-public class LCNConnectionProxy implements Connection {
+public class LcnConnectionProxy implements Connection {
 
     private Connection connection;
 
-    public LCNConnectionProxy(Connection connection) {
+    public LcnConnectionProxy(Connection connection) {
         this.connection = connection;
     }
 

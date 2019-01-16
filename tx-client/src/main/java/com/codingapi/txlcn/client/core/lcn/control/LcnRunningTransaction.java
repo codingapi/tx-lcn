@@ -39,7 +39,7 @@ import java.util.Optional;
  */
 @Component("control_lcn_running")
 @Slf4j
-public class LCNRunningTransaction implements TXLCNTransactionControl {
+public class LcnRunningTransaction implements TXLCNTransactionControl {
 
     private final TracerHelper tracerHelper;
 
@@ -50,7 +50,7 @@ public class LCNRunningTransaction implements TXLCNTransactionControl {
     private final TransactionControlTemplate transactionControlTemplate;
 
     @Autowired
-    public LCNRunningTransaction(TransactionAttachmentCache transactionAttachmentCache,
+    public LcnRunningTransaction(TransactionAttachmentCache transactionAttachmentCache,
                                  TracerHelper tracerHelper,
                                  TransactionCleanTemplate transactionCleanTemplate,
                                  TransactionControlTemplate transactionControlTemplate) {

@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.core.tcc.control;
+package com.codingapi.txlcn.client.core.tcc.resource;
 
-import com.codingapi.txlcn.client.bean.TCCTransactionInfo;
+import com.codingapi.txlcn.client.support.resouce.TransactionResourceExecutor;
+import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.sql.Connection;
+import java.util.function.Supplier;
 
 /**
  * @author 侯存路
  */
-public class UnitTCCInfoMap extends HashMap<String, TCCTransactionInfo> {
+@Service(value = "transaction_tcc")
+public class TccTransactionResourceExecutor implements TransactionResourceExecutor {
+
+    @Override
+    public Connection proxyConnection(Supplier<Connection> connectionSupplier) {
+        return connectionSupplier.get();
+    }
 }

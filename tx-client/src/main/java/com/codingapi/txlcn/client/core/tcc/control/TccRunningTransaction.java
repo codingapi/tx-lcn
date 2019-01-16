@@ -17,7 +17,7 @@ package com.codingapi.txlcn.client.core.tcc.control;
 
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
-import com.codingapi.txlcn.client.core.tcc.TransactionInfoCache;
+import com.codingapi.txlcn.client.core.tcc.TccTransactionInfoCache;
 import com.codingapi.txlcn.client.support.TXLCNTransactionControl;
 import com.codingapi.txlcn.client.support.common.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.client.support.common.template.TransactionControlTemplate;
@@ -33,32 +33,32 @@ import org.springframework.stereotype.Service;
  */
 @Service(value = "control_tcc_running")
 @Slf4j
-public class TCCRunningTransaction implements TXLCNTransactionControl {
+public class TccRunningTransaction implements TXLCNTransactionControl {
 
-    private final TransactionInfoCache transactionInfoCache;
+    private final TccTransactionInfoCache tccTransactionInfoCache;
 
     private final TransactionCleanTemplate transactionCleanTemplate;
 
     private final TransactionControlTemplate transactionControlTemplate;
 
     @Autowired
-    public TCCRunningTransaction(TransactionCleanTemplate transactionCleanTemplate,
+    public TccRunningTransaction(TransactionCleanTemplate transactionCleanTemplate,
                                  TransactionControlTemplate transactionControlTemplate,
-                                 TransactionInfoCache transactionInfoCache) {
+                                 TccTransactionInfoCache tccTransactionInfoCache) {
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.transactionControlTemplate = transactionControlTemplate;
-        this.transactionInfoCache = transactionInfoCache;
+        this.tccTransactionInfoCache = tccTransactionInfoCache;
     }
 
     @Override
     public void preBusinessCode(TxTransactionInfo info) throws BeforeBusinessException {
 
         // 缓存TCC事务信息，如果有必要
-        if (transactionInfoCache.get(info.getUnitId()) == null) {
-            transactionInfoCache.putIfAbsent(info.getUnitId(), TCCStartingTransaction.prepareTccInfo(info));
+        if (tccTransactionInfoCache.get(info.getUnitId()) == null) {
+            tccTransactionInfoCache.putIfAbsent(info.getUnitId(), TccStartingTransaction.prepareTccInfo(info));
         }
 
-        transactionInfoCache.get(info.getUnitId()).setMethodParameter(info.getTransactionInfo().getArgumentValues());
+        tccTransactionInfoCache.get(info.getUnitId()).setMethodParameter(info.getTransactionInfo().getArgumentValues());
     }
 
     @Override

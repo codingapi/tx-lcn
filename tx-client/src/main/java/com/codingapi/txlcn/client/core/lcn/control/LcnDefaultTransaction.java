@@ -13,14 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.core.tcc.control;
+package com.codingapi.txlcn.client.core.lcn.control;
 
+import com.codingapi.txlcn.client.bean.TxTransactionInfo;
+import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.support.TXLCNTransactionControl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
- * @author 侯存路
+ * Description:
+ * Date: 2018/12/3
+ *
+ * @author ujued
  */
-@Component("control_tcc_default")
-public class TCCDefaultTransaction implements TXLCNTransactionControl {
+@Component("control_lcn_default")
+@Slf4j
+public class LcnDefaultTransaction implements TXLCNTransactionControl {
+    @Override
+    public void preBusinessCode(TxTransactionInfo info) {
+        // LCN 需要代理资源
+        DTXLocal.makeProxy();
+    }
 }

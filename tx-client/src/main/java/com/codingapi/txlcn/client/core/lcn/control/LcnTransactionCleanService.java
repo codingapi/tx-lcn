@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.client.core.lcn.control;
 
-import com.codingapi.txlcn.client.core.lcn.resource.LCNConnectionProxy;
+import com.codingapi.txlcn.client.core.lcn.resource.LcnConnectionProxy;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.client.support.common.cache.TransactionAttachmentCache;
 import com.codingapi.txlcn.client.support.common.TransactionCleanService;
@@ -46,7 +46,7 @@ public class LcnTransactionCleanService implements TransactionCleanService {
 
     @Override
     public void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException {
-        Optional<LCNConnectionProxy> lcnConnectionProxy = transactionAttachmentCache.attachment(groupId, LCNConnectionProxy.class);
+        Optional<LcnConnectionProxy> lcnConnectionProxy = transactionAttachmentCache.attachment(groupId, LcnConnectionProxy.class);
         if (lcnConnectionProxy.isPresent()) {
             if (lcnConnectionProxy.get().notify(state).equals(RpcResponseState.success)) {
                 // 移除本地LCN事务相关对象

@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.core.tcc.resource;
+package com.codingapi.txlcn.client.core.tcc.control;
 
-import com.codingapi.txlcn.client.support.resouce.TransactionResourceExecutor;
-import org.springframework.stereotype.Service;
-
-import java.sql.Connection;
-import java.util.function.Supplier;
+import com.codingapi.txlcn.client.support.TXLCNTransactionControl;
+import org.springframework.stereotype.Component;
 
 /**
  * @author 侯存路
  */
-@Service(value = "transaction_tcc")
-public class TCCTransactionResourceExecutor implements TransactionResourceExecutor {
-
-    @Override
-    public Connection proxyConnection(Supplier<Connection> connectionSupplier) {
-        return connectionSupplier.get();
-    }
+@Component("control_tcc_default")
+public class TccDefaultTransaction implements TXLCNTransactionControl {
 }

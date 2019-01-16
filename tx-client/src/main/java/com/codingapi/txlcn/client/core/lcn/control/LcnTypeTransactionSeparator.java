@@ -37,14 +37,14 @@ import java.util.Optional;
  */
 @Slf4j
 @Component("transaction_state_resolver_lcn")
-public class LCNTypeTransactionSeparator extends CustomizableTransactionSeparator {
+public class LcnTypeTransactionSeparator extends CustomizableTransactionSeparator {
 
     private final TransactionAttachmentCache transactionAttachmentCache;
 
     private final TracerHelper tracerHelper;
 
     @Autowired
-    public LCNTypeTransactionSeparator(TransactionAttachmentCache transactionAttachmentCache, TracerHelper tracerHelper) {
+    public LcnTypeTransactionSeparator(TransactionAttachmentCache transactionAttachmentCache, TracerHelper tracerHelper) {
         this.transactionAttachmentCache = transactionAttachmentCache;
         this.tracerHelper = tracerHelper;
     }

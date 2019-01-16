@@ -12,6 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author ujued
  */
 @Component
-public class TransactionInfoCache extends ConcurrentHashMap<String, TCCTransactionInfo> {
+public class TccTransactionInfoCache extends ConcurrentHashMap<String, TCCTransactionInfo> {
 
 }
