@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.support.common.cache;
+package com.codingapi.txlcn.client.support.cache;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,7 @@ import java.util.function.Supplier;
 @Slf4j
 public class MapBasedTransactionAttachmentCache implements TransactionAttachmentCache {
 
-    class GroupCache {
+    public class GroupCache {
         private Map<String, Object> cache = new HashMap<>();
         private Set<String> units = new HashSet<>();
 
@@ -57,7 +57,8 @@ public class MapBasedTransactionAttachmentCache implements TransactionAttachment
     /**
      * 线程安全的Cache
      */
-    private Map<String, GroupCache> transactionInfoMap = new ConcurrentHashMap<>(16);
+    private Map<String, GroupCache> transactionInfoMap = new ConcurrentHashMap<>(64);
+    private Map<String, Object> context = new ConcurrentHashMap<>(64);
 
 
     @Override
@@ -123,5 +124,26 @@ public class MapBasedTransactionAttachmentCache implements TransactionAttachment
     @Override
     public boolean hasAttachment(String groupId, Class<?> type) {
         return hasGroup(groupId) && transactionInfoMap.get(groupId).getCache().containsKey(type.getName());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T context(String groupId) {
+        return (T) this.context.get(groupId);
+    }
+
+    @Override
+    public void setContext(String groupId, Object context) {
+        this.context.put(groupId, context);
+    }
+
+    @Override
+    public void destroyContext(String groupId) {
+        this.context.remove(groupId);
+    }
+
+    @Override
+    public boolean hasContext(String groupId) {
+        return this.context.containsKey(groupId);
     }
 }

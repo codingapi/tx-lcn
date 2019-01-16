@@ -17,8 +17,7 @@ package com.codingapi.txlcn.client.support;
 
 
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
-import com.codingapi.txlcn.client.support.common.TransactionUnitTypeList;
-import com.codingapi.txlcn.client.support.common.cache.TransactionAttachmentCache;
+import com.codingapi.txlcn.client.support.cache.TransactionAttachmentCache;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
@@ -34,15 +33,19 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TXLCNTransactionServiceExecutor {
 
+    private final TXLCNTransactionBeanHelper TXLCNTransactionBeanHelper;
+
+    private final TransactionAttachmentCache transactionAttachmentCache;
+
+    private final TxLogger txLogger;
 
     @Autowired
-    private TXLCNTransactionBeanHelper TXLCNTransactionBeanHelper;
-
-    @Autowired
-    private TransactionAttachmentCache transactionAttachmentCache;
-
-    @Autowired
-    private TxLogger txLogger;
+    public TXLCNTransactionServiceExecutor(TXLCNTransactionBeanHelper TXLCNTransactionBeanHelper,
+                                           TransactionAttachmentCache transactionAttachmentCache, TxLogger txLogger) {
+        this.TXLCNTransactionBeanHelper = TXLCNTransactionBeanHelper;
+        this.transactionAttachmentCache = transactionAttachmentCache;
+        this.txLogger = txLogger;
+    }
 
     /**
      * 事务业务执行
@@ -76,7 +79,6 @@ public class TXLCNTransactionServiceExecutor {
         // 5.1 记录事务类型到事务上下文
         transactionAttachmentCache.attach(
                 info.getGroupId(), info.getUnitId(), new TransactionUnitTypeList().selfAdd(transactionType));
-
         try {
             // 5.2 业务执行前
             txLogger.trace(info.getGroupId(), info.getUnitId(), Transactions.TAG_TRANSACTION, "pre service business code");

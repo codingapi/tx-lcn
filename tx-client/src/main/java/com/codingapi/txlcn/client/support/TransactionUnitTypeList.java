@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.support.dtx;
+package com.codingapi.txlcn.client.support;
 
-import com.codingapi.txlcn.client.bean.DTXLocal;
+import java.util.ArrayList;
 
 /**
  * Description:
- * Date: 19-1-16 下午4:21
+ * Date: 2018/12/5
  *
  * @author ujued
  */
-
-public class DTXAspectSupport  {
+public class TransactionUnitTypeList extends ArrayList<String> {
 
     /**
-     * 回滚分布式事务
+     * 添加一个元素并返回列表自身
+     *
+     * @param  transactionType transactionType
+     * @return TransactionUnitTypeList
      */
-    public static void setRollbackOnly() {
-        DTXLocal.cur().setUserTransactionState(0);
+    public TransactionUnitTypeList selfAdd(String transactionType) {
+        this.add(transactionType);
+        return this;
     }
 }

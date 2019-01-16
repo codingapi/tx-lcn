@@ -16,13 +16,14 @@
 package com.codingapi.txlcn.client.support.checking;
 
 import com.codingapi.txlcn.client.aspectlog.AspectLogger;
-import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.config.TxClientConfig;
+import com.codingapi.txlcn.client.support.cache.DTXGroupContext;
+import com.codingapi.txlcn.client.support.cache.TransactionAttachmentCache;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
 import com.codingapi.txlcn.spi.message.params.TxExceptionParams;
-import com.codingapi.txlcn.client.support.common.template.TransactionCleanTemplate;
+import com.codingapi.txlcn.client.support.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.client.message.helper.MessageCreator;
 import com.codingapi.txlcn.client.message.helper.TxMangerReporter;
 import com.codingapi.txlcn.commons.exception.SerializerException;
@@ -70,21 +71,24 @@ public class SimpleDTXChecking implements DTXChecking {
 
     private final TxClientConfig clientConfig;
 
-
     private final TxLogger txLogger;
 
     private final AspectLogger aspectLogger;
 
     private final TxMangerReporter txMangerReporter;
 
+    private final TransactionAttachmentCache transactionAttachmentCache;
+
     @Autowired
     public SimpleDTXChecking(RpcClient rpcClient, TxClientConfig clientConfig,
-                             AspectLogger aspectLogger, TxLogger txLogger, TxMangerReporter txMangerReporter) {
+                             AspectLogger aspectLogger, TxLogger txLogger, TxMangerReporter txMangerReporter,
+                             TransactionAttachmentCache transactionAttachmentCache) {
         this.rpcClient = rpcClient;
         this.clientConfig = clientConfig;
         this.aspectLogger = aspectLogger;
         this.txLogger = txLogger;
         this.txMangerReporter = txMangerReporter;
+        this.transactionAttachmentCache = transactionAttachmentCache;
     }
 
     public void setTransactionCleanTemplate(TransactionCleanTemplate transactionCleanTemplate) {
@@ -96,11 +100,12 @@ public class SimpleDTXChecking implements DTXChecking {
         txLogger.trace(groupId, unitId, Transactions.TAG_TASK, "start delay checking task");
         ScheduledFuture scheduledFuture = scheduledExecutorService.schedule(() -> {
             try {
-                if (Objects.nonNull(DTXLocal.cur())) {
-                    synchronized (DTXLocal.cur()) {
+                if (transactionAttachmentCache.hasContext(groupId)) {
+                    DTXGroupContext context = transactionAttachmentCache.context(groupId);
+                    synchronized (context.getLock()) {
                         txLogger.trace(groupId, unitId, Transactions.TAG_TASK,
                                 "checking waiting for business code finish.");
-                        DTXLocal.cur().wait();
+                        context.getLock().wait();
                     }
                 }
                 String channel = rpcClient.loadRemoteKey();

@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.client.support.checking;
 
 import com.codingapi.txlcn.client.message.helper.TxMangerReporter;
-import com.codingapi.txlcn.client.support.common.template.TransactionCleanTemplate;
+import com.codingapi.txlcn.client.support.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.exception.TxClientException;

@@ -18,7 +18,7 @@ package com.codingapi.txlcn.client.core.txc.control;
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
 import com.codingapi.txlcn.client.core.txc.resource.def.bean.RollbackInfo;
-import com.codingapi.txlcn.client.support.common.template.TransactionControlTemplate;
+import com.codingapi.txlcn.client.support.template.TransactionControlTemplate;
 import com.codingapi.txlcn.client.support.TXLCNTransactionControl;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import lombok.extern.slf4j.Slf4j;

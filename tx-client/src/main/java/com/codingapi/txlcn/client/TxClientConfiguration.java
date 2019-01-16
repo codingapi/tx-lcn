@@ -19,7 +19,7 @@ import com.codingapi.txlcn.client.core.txc.resource.init.DefaultTxcSettingFactor
 import com.codingapi.txlcn.client.core.txc.resource.init.TxcSettingFactory;
 import com.codingapi.txlcn.client.support.checking.DTXChecking;
 import com.codingapi.txlcn.client.support.checking.SimpleDTXChecking;
-import com.codingapi.txlcn.client.support.common.template.TransactionCleanTemplate;
+import com.codingapi.txlcn.client.support.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.commons.runner.TxLcnApplicationRunner;
 import org.apache.commons.dbutils.QueryRunner;
 import org.springframework.beans.factory.SmartInitializingSingleton;

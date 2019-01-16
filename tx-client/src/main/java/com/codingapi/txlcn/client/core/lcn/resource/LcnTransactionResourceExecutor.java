@@ -17,7 +17,7 @@ package com.codingapi.txlcn.client.core.lcn.resource;
 
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.support.resouce.TransactionResourceExecutor;
-import com.codingapi.txlcn.client.support.common.cache.TransactionAttachmentCache;
+import com.codingapi.txlcn.client.support.cache.TransactionAttachmentCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

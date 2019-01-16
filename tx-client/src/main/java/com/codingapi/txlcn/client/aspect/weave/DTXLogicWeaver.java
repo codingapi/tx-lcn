@@ -19,6 +19,8 @@ import com.codingapi.txlcn.client.aspect.BusinessCallback;
 import com.codingapi.txlcn.client.bean.DTXInfo;
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
+import com.codingapi.txlcn.client.support.cache.DTXGroupContext;
+import com.codingapi.txlcn.client.support.cache.TransactionAttachmentCache;
 import com.codingapi.txlcn.spi.sleuth.TracerHelper;
 import com.codingapi.txlcn.client.support.TXLCNTransactionServiceExecutor;
 import com.codingapi.txlcn.commons.util.RandomUtils;
@@ -43,11 +45,15 @@ public class DTXLogicWeaver {
 
     private final TXLCNTransactionServiceExecutor transactionServiceExecutor;
 
+    private final TransactionAttachmentCache transactionAttachmentCache;
+
     @Autowired
     public DTXLogicWeaver(TracerHelper tracerHelper,
-                          TXLCNTransactionServiceExecutor transactionServiceExecutor) {
+                          TXLCNTransactionServiceExecutor transactionServiceExecutor,
+                          TransactionAttachmentCache transactionAttachmentCache) {
         this.tracerHelper = tracerHelper;
         this.transactionServiceExecutor = transactionServiceExecutor;
+        this.transactionAttachmentCache = transactionAttachmentCache;
     }
 
     public Object runTransaction(DTXInfo dtxInfo, BusinessCallback business) throws Throwable {
@@ -81,11 +87,14 @@ public class DTXLogicWeaver {
 
         //LCN事务处理器
         try {
+            transactionAttachmentCache.setContext(info.getGroupId(), new DTXGroupContext());
             return transactionServiceExecutor.transactionRunning(info);
         } finally {
-            synchronized (DTXLocal.cur()) {
-                DTXLocal.cur().notifyAll();
+            DTXGroupContext context = transactionAttachmentCache.context(info.getGroupId());
+            synchronized (context.getLock()) {
+                context.getLock().notifyAll();
             }
+            transactionAttachmentCache.destroyContext(info.getGroupId());
             DTXLocal.makeNeverAppeared();
             log.info("tx-unit end------>");
         }

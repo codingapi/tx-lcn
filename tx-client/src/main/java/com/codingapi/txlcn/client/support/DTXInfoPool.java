@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.support.common;
+package com.codingapi.txlcn.client.support;
 
 import com.codingapi.txlcn.client.bean.DTXInfo;
 import com.codingapi.txlcn.commons.util.Transactions;

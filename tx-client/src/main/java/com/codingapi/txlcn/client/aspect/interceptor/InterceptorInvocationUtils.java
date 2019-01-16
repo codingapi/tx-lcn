@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.client.aspect.interceptor;
 
 import com.codingapi.txlcn.client.bean.DTXInfo;
-import com.codingapi.txlcn.client.support.common.DTXInfoPool;
+import com.codingapi.txlcn.client.support.DTXInfoPool;
 import com.codingapi.txlcn.commons.annotation.*;
 import com.codingapi.txlcn.commons.util.Transactions;
 import org.aopalliance.intercept.MethodInvocation;

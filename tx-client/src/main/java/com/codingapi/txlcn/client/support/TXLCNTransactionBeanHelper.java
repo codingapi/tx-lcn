@@ -17,7 +17,6 @@ package com.codingapi.txlcn.client.support;
 
 import com.codingapi.txlcn.client.support.resouce.TransactionResourceExecutor;
 import com.codingapi.txlcn.client.message.helper.RpcExecuteService;
-import com.codingapi.txlcn.client.support.common.TransactionCleanService;
 import com.codingapi.txlcn.spi.message.LCNCmdType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
