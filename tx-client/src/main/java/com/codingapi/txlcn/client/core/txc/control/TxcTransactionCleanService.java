@@ -19,7 +19,6 @@ import com.codingapi.txlcn.client.core.txc.resource.def.TxcService;
 import com.codingapi.txlcn.client.support.common.TransactionCleanService;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.exception.TxcLogicException;
-import com.codingapi.txlcn.logger.TxLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,13 +34,10 @@ import org.springframework.stereotype.Component;
 public class TxcTransactionCleanService implements TransactionCleanService {
 
     private final TxcService txcService;
-
-    private final TxLogger txLogger;
-
+    
     @Autowired
-    public TxcTransactionCleanService(TxcService txcService, TxLogger txLogger) {
+    public TxcTransactionCleanService(TxcService txcService) {
         this.txcService = txcService;
-        this.txLogger = txLogger;
     }
 
     @Override

@@ -36,7 +36,7 @@ public class TXLCNTransactionServiceExecutor {
 
 
     @Autowired
-    private TXLCNTransactionBeanHelper TXLCNTransactionBeanHelper;
+    private TXLCNTransactionBeanHelper txlcnTransactionBeanHelper;
 
     @Autowired
     private TransactionAttachmentCache transactionAttachmentCache;
@@ -58,7 +58,7 @@ public class TXLCNTransactionServiceExecutor {
 
         // 2. 事务状态抉择器
         TXLCNTransactionSeparator lcnTransactionSeparator =
-                TXLCNTransactionBeanHelper.loadLCNTransactionStateResolver(transactionType);
+                txlcnTransactionBeanHelper.loadLCNTransactionStateResolver(transactionType);
 
         // 3. 获取事务状态
         TXLCNTransactionState lcnTransactionState = lcnTransactionSeparator.loadTransactionState(info);
@@ -69,7 +69,7 @@ public class TXLCNTransactionServiceExecutor {
 
         // 4. 获取bean
         TXLCNTransactionControl lcnTransactionControl =
-                TXLCNTransactionBeanHelper.loadLCNTransactionControl(transactionType, lcnTransactionState);
+                txlcnTransactionBeanHelper.loadLCNTransactionControl(transactionType, lcnTransactionState);
 
         // 5. 织入事务操作
 

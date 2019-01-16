@@ -16,15 +16,14 @@
 package com.codingapi.txlcn.client.core.lcn.control;
 
 import com.codingapi.txlcn.client.bean.DTXLocal;
-import com.codingapi.txlcn.commons.exception.TransactionClearException;
-import com.codingapi.txlcn.spi.sleuth.TracerHelper;
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
 import com.codingapi.txlcn.client.support.TXLCNTransactionControl;
-import com.codingapi.txlcn.client.support.common.cache.TransactionAttachmentCache;
 import com.codingapi.txlcn.client.support.common.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.client.support.common.template.TransactionControlTemplate;
-import com.codingapi.txlcn.commons.util.Transactions;
+import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
+import com.codingapi.txlcn.commons.util.Transactions;
+import com.codingapi.txlcn.spi.sleuth.TracerHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,19 +41,15 @@ import java.util.Optional;
 public class LcnRunningTransaction implements TXLCNTransactionControl {
 
     private final TracerHelper tracerHelper;
-
-    private final TransactionAttachmentCache transactionAttachmentCache;
-
+    
     private final TransactionCleanTemplate transactionCleanTemplate;
 
     private final TransactionControlTemplate transactionControlTemplate;
 
     @Autowired
-    public LcnRunningTransaction(TransactionAttachmentCache transactionAttachmentCache,
-                                 TracerHelper tracerHelper,
+    public LcnRunningTransaction(TracerHelper tracerHelper,
                                  TransactionCleanTemplate transactionCleanTemplate,
                                  TransactionControlTemplate transactionControlTemplate) {
-        this.transactionAttachmentCache = transactionAttachmentCache;
         this.tracerHelper = tracerHelper;
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.transactionControlTemplate = transactionControlTemplate;
