@@ -28,6 +28,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * Description:
@@ -67,8 +68,11 @@ public class TccTransactionCleanService implements TransactionCleanService {
 
         try {
             // 用户的 confirm or cancel method 可以用到这个
+            if (Objects.isNull(DTXLocal.cur())) {
+                DTXLocal.getOrNew().setJustNow(true);
+            }
             DTXLocal.getOrNew().setGroupId(groupId);
-            DTXLocal.getOrNew().setUnitId(unitId);
+            DTXLocal.cur().setUnitId(unitId);
             exeMethod = tccInfo.getExecuteClass().getMethod(
                     state == 1 ? tccInfo.getConfirmMethod() : tccInfo.getCancelMethod(),
                     tccInfo.getMethodTypeParameter());
@@ -84,7 +88,9 @@ public class TccTransactionCleanService implements TransactionCleanService {
             log.error(" rpc_tcc_" + exeMethod + e.getMessage());
             throw new TransactionClearException(e.getMessage());
         } finally {
-            DTXLocal.makeNeverAppeared();
+            if (DTXLocal.cur().isJustNow()) {
+                DTXLocal.makeNeverAppeared();
+            }
         }
     }
 }

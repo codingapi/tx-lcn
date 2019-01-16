@@ -16,6 +16,7 @@
 package com.codingapi.txlcn.client.bean;
 
 
+import com.codingapi.txlcn.client.core.tcc.control.TccTransactionCleanService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -79,6 +80,12 @@ public class DTXLocal {
      */
     private boolean proxy;
 
+    /**
+     * 是否是刚刚创建的DTXLocal. 不是特别了解这个意思时，不要轻易操作这个值。
+     *
+     * @see TccTransactionCleanService#clear(java.lang.String, int, java.lang.String, java.lang.String)
+     */
+    private boolean justNow;
 
     //////// private     ///////////////////////
     /**
@@ -107,7 +114,7 @@ public class DTXLocal {
     }
 
     /**
-     * 获取或新建一个线程变量
+     * 获取或新建一个线程变量。第一次被调用且被创建会置justNow标志为true
      *
      * @return 当前线程变量
      */
