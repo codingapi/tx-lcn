@@ -15,12 +15,12 @@
  */
 package com.codingapi.txlcn.spi.message.netty;
 
-import com.codingapi.txlcn.spi.message.netty.bean.RpcCmdContext;
 import com.codingapi.txlcn.spi.message.ClientInitCallBack;
 import com.codingapi.txlcn.spi.message.RpcAnswer;
-import com.codingapi.txlcn.spi.message.loadbalance.RpcLoadBalance;
-import com.codingapi.txlcn.spi.message.netty.loadbalance.RandomLoadBalance;
 import com.codingapi.txlcn.spi.message.RpcConfig;
+import com.codingapi.txlcn.spi.message.loadbalance.RpcLoadBalance;
+import com.codingapi.txlcn.spi.message.netty.bean.RpcCmdContext;
+import com.codingapi.txlcn.spi.message.netty.loadbalance.RandomLoadBalance;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -43,34 +43,42 @@ import javax.annotation.PostConstruct;
 @Slf4j
 @Data
 public class RpcNettyConfiguration {
-
-
+    
+    
     @Bean
     @ConditionalOnMissingBean
     @ConfigurationProperties("tx-lcn.message.netty")
     public RpcConfig rpcConfig() {
         return new RpcConfig();
     }
-
+    
     @Bean
     @ConditionalOnMissingBean
     public RpcAnswer rpcClientAnswer() {
         return rpcCmd -> log.info("cmd->{}", rpcCmd);
     }
-
+    
     @Bean
     @ConditionalOnMissingBean
     public RpcLoadBalance rpcLoadBalance() {
         return new RandomLoadBalance();
     }
-
-
+    
+    
     @Bean
     @ConditionalOnMissingBean
     public ClientInitCallBack clientInitCallBack() {
         return remoteKey -> log.info("connected->{}", remoteKey);
     }
-
+    
+    
+//    @Bean
+//    @ConditionalOnClass(name = "com.codingapi.txlcn.client.TxClientConfiguration")
+//    public NettyRpcClientInitializer nettyRpcClientInitializer() {
+//        return new NettyRpcClientInitializer();
+//    }
+    
+    
     @PostConstruct
     public void init() {
         RpcCmdContext.getInstance().setRpcConfig(rpcConfig());
