@@ -75,7 +75,7 @@ public class TxManagerAutoCluster{
                     managerStorage.remove(address);
                 }
             }catch (Exception e){
-                log.error("manager auto refresh error ",e);
+                log.error("manager auto refresh error ");
                 //check exception then remove.
                 if( e instanceof ResourceAccessException){
                     ResourceAccessException resourceAccessException = (ResourceAccessException)e;
