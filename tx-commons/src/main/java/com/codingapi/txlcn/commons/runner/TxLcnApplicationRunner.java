@@ -21,39 +21,37 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
- * Description:
+ * Description: LCN统一初始化入口
  * Company: CodingApi
  * Date: 2019/1/16
  *
  * @author codingapi
  */
-public class TxLcnApplicationRunner implements ApplicationRunner , DisposableBean  {
+public class TxLcnApplicationRunner implements ApplicationRunner, DisposableBean {
     
     private final ApplicationContext applicationContext;
-    private List<TxLcnInitializer> runners;
-
+    
     @Autowired
     public TxLcnApplicationRunner(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
-
+    
     @Override
-    public void run(ApplicationArguments args) throws Exception{
+    public void run(ApplicationArguments args) throws Exception {
+        // 取消缓存Runner对象 使用时获取即可
         Map<String, TxLcnInitializer> runnerMap = applicationContext.getBeansOfType(TxLcnInitializer.class);
-        runners = new ArrayList<>(runnerMap.values());
-        for(TxLcnInitializer txLcnInitializer :runners){
+        for (TxLcnInitializer txLcnInitializer : runnerMap.values()) {
             txLcnInitializer.init();
         }
     }
-
+    
     @Override
     public void destroy() throws Exception {
-        for(TxLcnInitializer txLcnInitializer :runners){
+        Map<String, TxLcnInitializer> runnerMap = applicationContext.getBeansOfType(TxLcnInitializer.class);
+        for (TxLcnInitializer txLcnInitializer : runnerMap.values()) {
             txLcnInitializer.destroy();
         }
     }
