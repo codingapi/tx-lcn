@@ -23,7 +23,6 @@ import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
@@ -34,15 +33,15 @@ import java.util.List;
  * @author codingapi
  */
 @Component
-public class TxLoggerHelper {
+public class TxLcnLoggerHelper  {
 
     @Autowired
     private LogDbHelper dbHelper;
 
     private RowProcessor processor = new BasicRowProcessor(new GenerousBeanProcessor());
 
-    @PostConstruct
-    public void init() {
+
+    public void init() throws Exception{
         String sql = "CREATE TABLE IF NOT EXISTS `t_logger`  (\n" +
                 "  `id` bigint(20) NOT NULL AUTO_INCREMENT,\n" +
                 "  `group_id` varchar(50)  NOT NULL ,\n" +

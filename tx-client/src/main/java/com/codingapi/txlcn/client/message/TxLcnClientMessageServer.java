@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client;
+package com.codingapi.txlcn.client.message;
 
 import com.codingapi.txlcn.client.config.TxClientConfig;
 import com.codingapi.txlcn.spi.message.RpcClientInitializer;
 import com.codingapi.txlcn.spi.message.dto.TxManagerHost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Description:
@@ -31,20 +29,19 @@ import javax.annotation.PostConstruct;
  * @author lorne
  */
 @Component
-public class TxClientInitialization {
+public class TxLcnClientMessageServer{
 
     private final RpcClientInitializer rpcClientInitializer;
 
     private final TxClientConfig txClientConfig;
 
     @Autowired
-    public TxClientInitialization(RpcClientInitializer rpcClientInitializer, TxClientConfig txClientConfig) {
+    public TxLcnClientMessageServer(RpcClientInitializer rpcClientInitializer, TxClientConfig txClientConfig) {
         this.rpcClientInitializer = rpcClientInitializer;
         this.txClientConfig = txClientConfig;
     }
 
-    @PostConstruct
-    public void start(){
+    public void init() throws Exception {
         rpcClientInitializer.init(TxManagerHost.parserList(txClientConfig.getManagerAddress()));
     }
 }

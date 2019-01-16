@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -108,8 +107,7 @@ public class RedisManagerStorage implements ManagerStorage, DisposableBean {
     }
 
 
-    @PostConstruct
-    public void init(){
+    public void init() throws Exception{
         String address = managerConfig.getHost()+":"+port;
         add(address);
         log.info("manager add redis finish.");

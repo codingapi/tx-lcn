@@ -15,14 +15,13 @@
  */
 package com.codingapi.txlcn.client.dubbo.spi.sleuth;
 
-import com.codingapi.txlcn.spi.sleuth.listener.SleuthParamListener;
 import com.codingapi.txlcn.client.dubbo.spi.sleuth.loadbalance.TXLCNLoadBalance;
+import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
+import com.codingapi.txlcn.spi.sleuth.listener.SleuthParamListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Description:
@@ -34,7 +33,7 @@ import javax.annotation.PostConstruct;
 @Configuration
 @ComponentScan
 @Slf4j
-public class TxDubboConfiguration {
+public class TxLcnDubboInitializer implements TxLcnInitializer {
 
     static {
         System.setProperty("dubbo.provider.filter","tracing");
@@ -44,8 +43,9 @@ public class TxDubboConfiguration {
     @Autowired
     private SleuthParamListener sleuthParamListener;
 
-    @PostConstruct
-    public void init(){
+
+    @Override
+    public void init() throws Exception{
         TXLCNLoadBalance.sleuthParamListener = sleuthParamListener;
         log.info("init sleuthParamListener->{}",sleuthParamListener);
     }

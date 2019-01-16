@@ -15,12 +15,11 @@
  */
 package com.codingapi.txlcn.spi.message.netty;
 
-import com.codingapi.txlcn.spi.message.netty.bean.RpcCmdContext;
 import com.codingapi.txlcn.spi.message.ClientInitCallBack;
 import com.codingapi.txlcn.spi.message.RpcAnswer;
+import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.spi.message.loadbalance.RpcLoadBalance;
 import com.codingapi.txlcn.spi.message.netty.loadbalance.RandomLoadBalance;
-import com.codingapi.txlcn.spi.message.RpcConfig;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -28,8 +27,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Description:
@@ -71,9 +68,6 @@ public class RpcNettyConfiguration {
         return remoteKey -> log.info("connected->{}", remoteKey);
     }
 
-    @PostConstruct
-    public void init() {
-        RpcCmdContext.getInstance().setRpcConfig(rpcConfig());
-        SocketManager.getInstance().setRpcConfig(rpcConfig());
-    }
+
+
 }

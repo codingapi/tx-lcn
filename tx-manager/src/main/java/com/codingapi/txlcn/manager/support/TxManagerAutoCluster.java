@@ -15,9 +15,9 @@
  */
 package com.codingapi.txlcn.manager.support;
 
-import com.codingapi.txlcn.spi.message.params.NotifyConnectParams;
 import com.codingapi.txlcn.manager.config.TxManagerConfig;
 import com.codingapi.txlcn.manager.db.ManagerStorage;
+import com.codingapi.txlcn.spi.message.params.NotifyConnectParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +30,7 @@ import java.net.ConnectException;
 import java.util.List;
 
 /**
- * Description:
+ * Description: TxManger检查
  * Company: CodingApi
  * Date: 2018/12/29
  *
@@ -38,7 +38,7 @@ import java.util.List;
  */
 @Component
 @Slf4j
-public class TxManagerManagerRefreshing {
+public class TxManagerAutoCluster{
 
     private final ManagerStorage managerStorage;
 
@@ -49,12 +49,13 @@ public class TxManagerManagerRefreshing {
     private static final String MANAGER_REFRESH_URL = "http://%s/manager/refresh";
 
     @Autowired
-    public TxManagerManagerRefreshing(ManagerStorage managerStorage,
-                                      RestTemplate restTemplate, TxManagerConfig txManagerConfig) {
+    public TxManagerAutoCluster(ManagerStorage managerStorage,
+                                RestTemplate restTemplate, TxManagerConfig txManagerConfig) {
         this.managerStorage = managerStorage;
         this.restTemplate = restTemplate;
         this.txManagerConfig = txManagerConfig;
     }
+
 
 
     public void refresh() {

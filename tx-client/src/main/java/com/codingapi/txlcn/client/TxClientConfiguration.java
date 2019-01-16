@@ -20,10 +20,12 @@ import com.codingapi.txlcn.client.core.txc.resource.init.TxcSettingFactory;
 import com.codingapi.txlcn.client.support.checking.DTXChecking;
 import com.codingapi.txlcn.client.support.checking.SimpleDTXChecking;
 import com.codingapi.txlcn.client.support.common.template.TransactionCleanTemplate;
+import com.codingapi.txlcn.commons.runner.TxLcnApplicationRunner;
 import org.apache.commons.dbutils.QueryRunner;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -54,6 +56,11 @@ public class TxClientConfiguration {
         return new DefaultTxcSettingFactory();
     }
 
+
+    @Bean
+    public TxLcnApplicationRunner txLcnApplicationRunner(ApplicationContext applicationContext){
+        return new TxLcnApplicationRunner(applicationContext);
+    }
 
     @Bean
     public SmartInitializingSingleton dtxCheckingTransactionCleanTemplateAdapter(DTXChecking dtxChecking,

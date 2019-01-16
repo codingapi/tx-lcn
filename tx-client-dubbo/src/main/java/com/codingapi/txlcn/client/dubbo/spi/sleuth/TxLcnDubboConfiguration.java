@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.logger.db;
+package com.codingapi.txlcn.client.dubbo.spi.sleuth;
 
-import com.codingapi.txlcn.logger.ex.TxLoggerException;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * Description:
  * Company: CodingApi
- * Date: 2018/12/20
+ * Date: 2018/12/14
  *
- * @author codingapi
+ * @author ujued
  */
 @Configuration
-public class LogDBConfiguration {
+@ComponentScan
+public class TxLcnDubboConfiguration {
 
-    @Bean
-    public LogDbHelper logDbHelper(LogDbProperties logDbProperties) throws TxLoggerException {
-        return new LogDbHelper(logDbProperties);
-    }
 
 }

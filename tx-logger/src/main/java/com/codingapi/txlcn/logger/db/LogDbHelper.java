@@ -24,7 +24,6 @@ import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.PostConstruct;
 import java.sql.SQLException;
 
 /**
@@ -41,11 +40,9 @@ public class LogDbHelper implements DisposableBean {
 
     private QueryRunner queryRunner;
 
-    @Autowired
-    private LogDbProperties logDbProperties;
 
-    @PostConstruct
-    public void init() throws TxLoggerException {
+    @Autowired
+    public LogDbHelper(LogDbProperties logDbProperties) throws TxLoggerException{
         log.info("logDbProperties->{}", logDbProperties);
         if (logDbProperties.getDriverClassName() == null) {
             throw new TxLoggerException("init TxLogger error. see config [com.codingapi.txlcn.logger.db.LogDbProperties]");
@@ -54,7 +51,6 @@ public class LogDbHelper implements DisposableBean {
         queryRunner = new QueryRunner(hikariDataSource);
         log.info("init db finish.");
     }
-
 
     public int update(String sql, Object... params) {
         try {

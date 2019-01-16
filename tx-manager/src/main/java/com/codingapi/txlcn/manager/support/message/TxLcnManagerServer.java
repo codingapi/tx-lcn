@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.manager;
+package com.codingapi.txlcn.manager.support.message;
 
 import com.codingapi.txlcn.manager.config.TxManagerConfig;
 import com.codingapi.txlcn.spi.message.RpcServerInitializer;
 import com.codingapi.txlcn.spi.message.dto.ManagerProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Description:
@@ -31,20 +29,20 @@ import javax.annotation.PostConstruct;
  * @author lorne
  */
 @Component
-public class TxManagerInitialization {
+public class TxLcnManagerServer {
 
     private final TxManagerConfig txManagerConfig;
 
     private final RpcServerInitializer rpcServerInitializer;
 
     @Autowired
-    public TxManagerInitialization(TxManagerConfig txManagerConfig, RpcServerInitializer rpcServerInitializer) {
+    public TxLcnManagerServer(TxManagerConfig txManagerConfig, RpcServerInitializer rpcServerInitializer) {
         this.txManagerConfig = txManagerConfig;
         this.rpcServerInitializer = rpcServerInitializer;
     }
 
-    @PostConstruct
-    public void start(){
+
+    public void init() {
         ManagerProperties managerProperties = new ManagerProperties();
         managerProperties.setCheckTime(txManagerConfig.getHeartTime());
         managerProperties.setRpcPort(txManagerConfig.getPort());
