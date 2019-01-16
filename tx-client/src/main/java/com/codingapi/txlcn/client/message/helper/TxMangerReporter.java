@@ -42,31 +42,31 @@ public class TxMangerReporter {
     /**
      * Manager 记录事务状态
      *
-     * @param groupId groupId
-     * @param unitId unitId
+     * @param groupId   groupId
+     * @param unitId    unitId
      * @param registrar registrar
-     * @param state state
+     * @param state     state
      */
     public void reportTransactionState(String groupId, String unitId, Short registrar, int state) {
         TxExceptionParams txExceptionParams = new TxExceptionParams();
         txExceptionParams.setGroupId(groupId);
         txExceptionParams.setRegistrar(registrar);
-        txExceptionParams.setTransactionState((short) state);
+        txExceptionParams.setTransactionState(state);
         txExceptionParams.setUnitId(unitId);
         report(txExceptionParams);
     }
 
     /**
-     * Manager 记录TXC回滚失败
+     * Manager 记录TCC清理事务失败
      *
      * @param groupId groupId
-     * @param unitId unitId
+     * @param unitId  unitId
      */
-    public void reportTxcRollbackException(String groupId, String unitId) {
+    public void reportTccCleanException(String groupId, String unitId, int state) {
         TxExceptionParams txExceptionParams = new TxExceptionParams();
         txExceptionParams.setGroupId(groupId);
-        txExceptionParams.setRegistrar(TxExceptionParams.TXC_ROLLBACK_ERROR);
-        txExceptionParams.setTransactionState((short) 0);
+        txExceptionParams.setRegistrar(TxExceptionParams.TCC_CLEAN_ERROR);
+        txExceptionParams.setTransactionState(state);
         txExceptionParams.setUnitId(unitId);
         report(txExceptionParams);
     }

@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.core.lcn.control;
+package com.codingapi.txlcn.client.core.tcc.control;
 
-import com.codingapi.txlcn.commons.exception.TransactionException;
-import com.codingapi.txlcn.commons.util.Transactions;
-import com.codingapi.txlcn.spi.sleuth.TracerHelper;
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
 import com.codingapi.txlcn.client.support.CustomizableTransactionSeparator;
 import com.codingapi.txlcn.client.support.TXLCNTransactionState;
 import com.codingapi.txlcn.client.support.common.TransactionUnitTypeList;
 import com.codingapi.txlcn.client.support.common.cache.TransactionAttachmentCache;
+import com.codingapi.txlcn.commons.exception.TransactionException;
+import com.codingapi.txlcn.commons.util.Transactions;
+import com.codingapi.txlcn.spi.sleuth.TracerHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,33 +36,31 @@ import java.util.Optional;
  * @author ujued
  */
 @Slf4j
-@Component("transaction_state_resolver_lcn")
-public class LCNTypeTransactionSeparator extends CustomizableTransactionSeparator {
+@Component("transaction_state_resolver_tcc")
+public class TccTypeTransactionSeparator extends CustomizableTransactionSeparator {
 
     private final TransactionAttachmentCache transactionAttachmentCache;
 
     private final TracerHelper tracerHelper;
 
     @Autowired
-    public LCNTypeTransactionSeparator(TransactionAttachmentCache transactionAttachmentCache, TracerHelper tracerHelper) {
+    public TccTypeTransactionSeparator(TransactionAttachmentCache transactionAttachmentCache, TracerHelper tracerHelper) {
         this.transactionAttachmentCache = transactionAttachmentCache;
         this.tracerHelper = tracerHelper;
     }
 
     @Override
     public TXLCNTransactionState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException {
-
         // 不存在GroupId时不自定义
         if (tracerHelper.getGroupId() == null) {
             return super.loadTransactionState(txTransactionInfo);
         }
 
-        // 一个模块存在多个LCN类型的事务单元在一个事务内走DEFAULT
+        // 一个模块存在多个TCC类型的事务单元在一个事务内时不支持
         Optional<TransactionUnitTypeList> sameTransUnitTypeList =
                 transactionAttachmentCache.attachment(tracerHelper.getGroupId(), TransactionUnitTypeList.class);
         if (sameTransUnitTypeList.isPresent() && sameTransUnitTypeList.get().contains(Transactions.LCN)) {
-            log.info("Default by LCN assert !");
-            return TXLCNTransactionState.DEFAULT;
+            throw new TransactionException("unsupported operate : TCC unit call TCC unit.");
         }
         return super.loadTransactionState(txTransactionInfo);
     }

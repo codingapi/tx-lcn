@@ -32,10 +32,10 @@ public class WriteTxExceptionDTO {
     private String groupId;
     private String unitId;
     private String modId;
-    private Short transactionState;
+    private Integer transactionState;
     private Short registrar;
 
-    public WriteTxExceptionDTO(String groupId, String unitId, String modId, Short transactionState) {
+    public WriteTxExceptionDTO(String groupId, String unitId, String modId, Integer transactionState) {
         this.groupId = groupId;
         this.unitId = unitId;
         this.transactionState = transactionState;

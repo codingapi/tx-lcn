@@ -16,12 +16,12 @@
 package com.codingapi.txlcn.client.core.tcc.control;
 
 import com.codingapi.txlcn.client.bean.DTXLocal;
-import com.codingapi.txlcn.commons.annotation.TccTransaction;
 import com.codingapi.txlcn.client.bean.TCCTransactionInfo;
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
+import com.codingapi.txlcn.client.core.tcc.TransactionInfoCache;
 import com.codingapi.txlcn.client.support.TXLCNTransactionControl;
 import com.codingapi.txlcn.client.support.common.template.TransactionControlTemplate;
-import com.codingapi.txlcn.client.support.common.cache.TransactionAttachmentCache;
+import com.codingapi.txlcn.commons.annotation.TccTransaction;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,15 +37,15 @@ import java.lang.reflect.Method;
 @Slf4j
 public class TCCStartingTransaction implements TXLCNTransactionControl {
 
-    private final TransactionAttachmentCache transactionAttachmentCache;
-
     private final TransactionControlTemplate transactionControlTemplate;
 
+    private final TransactionInfoCache transactionInfoCache;
+
     @Autowired
-    public TCCStartingTransaction(TransactionAttachmentCache transactionAttachmentCache,
-                                  TransactionControlTemplate transactionControlTemplate) {
-        this.transactionAttachmentCache = transactionAttachmentCache;
+    public TCCStartingTransaction(TransactionControlTemplate transactionControlTemplate,
+                                  TransactionInfoCache transactionInfoCache) {
         this.transactionControlTemplate = transactionControlTemplate;
+        this.transactionInfoCache = transactionInfoCache;
     }
 
     static TCCTransactionInfo prepareTccInfo(TxTransactionInfo info) throws BeforeBusinessException {
@@ -79,10 +79,12 @@ public class TCCStartingTransaction implements TXLCNTransactionControl {
 
     @Override
     public void preBusinessCode(TxTransactionInfo info) throws BeforeBusinessException {
-        log.info(" TCC  > transaction >  starting ");
-        UnitTCCInfoMap unitTCCInfoMap = new UnitTCCInfoMap();
-        unitTCCInfoMap.put(info.getUnitId(), prepareTccInfo(info));
-        transactionAttachmentCache.attach(info.getGroupId(), info.getUnitId(), unitTCCInfoMap);
+        // 缓存TCC事务信息，如果有必要
+        if (transactionInfoCache.get(info.getUnitId()) == null) {
+            transactionInfoCache.putIfAbsent(info.getUnitId(), prepareTccInfo(info));
+        }
+
+        transactionInfoCache.get(info.getUnitId()).setMethodParameter(info.getTransactionInfo().getArgumentValues());
 
         // 创建事务组
         transactionControlTemplate.createGroup(

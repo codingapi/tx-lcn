@@ -37,20 +37,20 @@ public class TxExceptionParams implements Serializable {
     public static final short ASK_ERROR = 1;
 
     public static final short NOTIFY_GROUP_ERROR = 2;
-    public static final Short TXC_ROLLBACK_ERROR = 3;
+
+    public static final short TCC_CLEAN_ERROR = 3;
 
     private String groupId;
 
     private String unitId;
 
-
     /**
-     * 异常情况。-1 【未知】 0 【TxManager通知事务】， 1 【TxClient查询事务状态】 2 【事务发起方通知事务组】
+     * 异常情况。-1 【未知】 0 【TxManager通知事务】， 1 【TxClient查询事务状态】 2 【事务发起方通知事务组】3【TCC模式事务清理失败】
      */
     private Short registrar;
 
     /**
      * 事务状态 0 回滚 1提交
      */
-    private Short transactionState;
+    private Integer transactionState;
 }

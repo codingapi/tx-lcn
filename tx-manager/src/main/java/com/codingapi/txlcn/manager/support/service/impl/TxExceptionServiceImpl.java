@@ -57,17 +57,14 @@ public class TxExceptionServiceImpl implements TxExceptionService {
 
     private final RpcClient rpcClient;
 
-    private final TxLogger txLogger;
 
     private final TxExceptionListener txExceptionListener;
 
     @Autowired
-    public TxExceptionServiceImpl(TxExceptionMapper txExceptionMapper,
-                                  RpcClient rpcClient, TxLogger txLogger,
+    public TxExceptionServiceImpl(TxExceptionMapper txExceptionMapper, RpcClient rpcClient,
                                   TxExceptionListener txExceptionListener) {
         this.txExceptionMapper = txExceptionMapper;
         this.rpcClient = rpcClient;
-        this.txLogger = txLogger;
         this.txExceptionListener = txExceptionListener;
     }
 

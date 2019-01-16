@@ -16,6 +16,8 @@
 package com.codingapi.txlcn.client.core.tcc.control;
 
 import com.codingapi.txlcn.client.bean.DTXLocal;
+import com.codingapi.txlcn.client.core.tcc.TransactionInfoCache;
+import com.codingapi.txlcn.client.message.helper.TxMangerReporter;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.client.bean.TCCTransactionInfo;
 import com.codingapi.txlcn.client.support.common.cache.TransactionAttachmentCache;
@@ -26,7 +28,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.util.Optional;
 
 /**
  * Description:
@@ -38,28 +39,46 @@ import java.util.Optional;
 @Slf4j
 public class TccTransactionCleanService implements TransactionCleanService {
 
-    @Autowired
-    private TransactionAttachmentCache transactionAttachmentCache;
+    private final TransactionAttachmentCache transactionAttachmentCache;
+
+    private final ApplicationContext applicationContext;
+
+    private final TransactionInfoCache transactionInfoCache;
+
+    private final TxMangerReporter txMangerReporter;
 
     @Autowired
-    private ApplicationContext applicationContext;
+    public TccTransactionCleanService(TransactionAttachmentCache transactionAttachmentCache,
+                                      ApplicationContext applicationContext,
+                                      TransactionInfoCache transactionInfoCache,
+                                      TxMangerReporter txMangerReporter) {
+        this.transactionAttachmentCache = transactionAttachmentCache;
+        this.applicationContext = applicationContext;
+        this.transactionInfoCache = transactionInfoCache;
+        this.txMangerReporter = txMangerReporter;
+    }
 
     @Override
     public void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException {
-        Optional<UnitTCCInfoMap> optional = transactionAttachmentCache.attachment(groupId, UnitTCCInfoMap.class);
-        UnitTCCInfoMap unitTCCInfoMap = optional.get();
-        TCCTransactionInfo tccInfo = unitTCCInfoMap.get(unitId);
+        TCCTransactionInfo tccInfo = transactionInfoCache.get(unitId);
 
         Object object = applicationContext.getBean(tccInfo.getExecuteClass());
         Method exeMethod = null;
+
         try {
+            // 用户的 confirm or cancel method 可以用到这个
             DTXLocal.getOrNew().setGroupId(groupId);
             DTXLocal.getOrNew().setUnitId(unitId);
             exeMethod = tccInfo.getExecuteClass().getMethod(
                     state == 1 ? tccInfo.getConfirmMethod() : tccInfo.getCancelMethod(),
                     tccInfo.getMethodTypeParameter());
-            exeMethod.invoke(object, tccInfo.getMethodParameter());
-            // 清理与事务组生命周期一样的资源
+            try {
+                exeMethod.invoke(object, tccInfo.getMethodParameter());
+            } catch (Throwable e) {
+                log.error("tcc clean error.", e);
+                txMangerReporter.reportTccCleanException(groupId, unitId, state);
+            }
+            // 清理与事务组生命周期一样的资源 see: com.codingapi.txlcn.client.support.TXLCNTransactionServiceExecutor.transactionRunning
             transactionAttachmentCache.removeAttachments(groupId, unitId);
         } catch (Exception e) {
             log.error(" rpc_tcc_" + exeMethod + e.getMessage());
