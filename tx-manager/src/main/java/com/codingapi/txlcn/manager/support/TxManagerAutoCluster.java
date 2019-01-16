@@ -64,20 +64,18 @@ public class TxManagerAutoCluster{
         notifyConnectParams.setPort(txManagerConfig.getPort());
 
         List<String> addressList =  managerStorage.addressList();
-        log.info("addressList->{}",addressList);
+        log.info("Manager AddressList->{}",addressList);
         for(String address:addressList){
             String url = String.format(MANAGER_REFRESH_URL,address);
-            log.info("url->{}",url);
             try {
-                ResponseEntity<Boolean> res =  restTemplate.postForEntity(String.format(MANAGER_REFRESH_URL,address), notifyConnectParams,Boolean.class);
+                ResponseEntity<Boolean> res =  restTemplate.postForEntity(url, notifyConnectParams,Boolean.class);
                 if(res.getStatusCode().equals(HttpStatus.OK)||res.getStatusCode().is5xxServerError()) {
-                    log.info("manager refresh res->{}", res);
+                    log.info("manager auto refresh res->{}", res);
                 }else{
                     managerStorage.remove(address);
                 }
             }catch (Exception e){
-                log.error("manager refresh error ",e);
-
+                log.error("manager auto refresh error ",e);
                 //check exception then remove.
                 if( e instanceof ResourceAccessException){
                     ResourceAccessException resourceAccessException = (ResourceAccessException)e;

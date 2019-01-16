@@ -16,6 +16,7 @@
 package com.codingapi.txlcn.manager;
 
 import com.codingapi.txlcn.commons.runner.TxLcnApplicationRunner;
+import com.codingapi.txlcn.manager.banner.TxLcnManagerBanner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -37,7 +38,9 @@ import java.util.concurrent.TimeUnit;
 public class TxManagerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TxManagerApplication.class, args);
+        SpringApplication springApplication = new SpringApplication(TxManagerApplication.class);
+        springApplication.setBanner(new TxLcnManagerBanner());
+        springApplication.run(args);
     }
 
     @Bean

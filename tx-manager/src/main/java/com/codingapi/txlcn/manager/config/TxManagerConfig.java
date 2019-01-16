@@ -35,9 +35,12 @@ import java.util.Objects;
 @Data
 public class TxManagerConfig {
 
+    public static final int PORT_CHANGE_VALUE = 100;
+
     @Autowired
     public TxManagerConfig(ServerProperties serverProperties) {
-        this.port = Objects.requireNonNull(serverProperties.getPort(), "TM http port not configured?") + 100;
+        this.port = Objects.requireNonNull(serverProperties.getPort(), "TM http port not configured?") +
+                PORT_CHANGE_VALUE;
         this.host = "127.0.0.1";
         this.heartTime = 5 * 60 * 1000;
         this.concurrentLevel = 0;
