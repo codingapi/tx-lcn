@@ -88,6 +88,7 @@ public class TxLoggerHelper {
      *
      * @param left  分页开始
      * @param right 分页结束
+     * @param timeOrder  时间排序SQL
      * @return  结果集
      */
     public List<TxLog> findByLimit(int left, int right, int timeOrder) {
@@ -122,6 +123,7 @@ public class TxLoggerHelper {
      * @param right 分页右侧
      * @param groupId   groupId
      * @param tag   标签
+     * @param timeOrder  timeOrder
      * @return  数据集
      */
     public List<TxLog> findByGroupAndTag(int left, int right, String groupId, String tag, int timeOrder) {
@@ -146,6 +148,7 @@ public class TxLoggerHelper {
      * @param left  分页左侧
      * @param right 分页右侧
      * @param tag   标签
+     * @param timeOrder timeOrder
      * @return  数据集
      */
     public List<TxLog> findByTag(int left, int right, String tag, int timeOrder) {
@@ -169,6 +172,7 @@ public class TxLoggerHelper {
      * @param left 分页左侧
      * @param right 分页右侧
      * @param groupId 标签
+     * @param timeOrder timeOrder
      * @return 数据集
      */
     public List<TxLog> findByGroupId(int left, int right, String groupId, int timeOrder) {

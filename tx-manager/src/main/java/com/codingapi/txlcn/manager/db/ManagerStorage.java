@@ -25,13 +25,18 @@ import java.util.List;
  * @author codingapi
  */
 public interface ManagerStorage {
-
-
+    
     /**
      * 获取Manager地址列表
-     * @return  addressList
+     *
+     * @return addressList
      */
     List<String> addressList();
-
+    
+    /**
+     * 移除Manager服务
+     *
+     * @param address manager address
+     */
     void remove(String address);
 }
