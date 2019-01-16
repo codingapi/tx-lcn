@@ -167,7 +167,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
             UndoLogDO undoLogDo = queryRunner.query(undoLogSql, new BeanHandler<>(UndoLogDO.class, processor), groupId, unitId);
             txLogger.trace(groupId, unitId, "txc", "undoLogDo sql " + undoLogDo);
             if (Objects.isNull(undoLogDo)) {
-                log.warn("txc . undo log not found! if in 'the ex caused mod' can be ignored.");
+                log.warn("txc . undo log not found! if in 'the ex caused mod (should enabled local transaction)' can be ignored.");
                 return;
             }
             RollbackInfo rollbackInfo = SqlUtils.blobToObject(undoLogDo.getRollbackInfo(), RollbackInfo.class);
