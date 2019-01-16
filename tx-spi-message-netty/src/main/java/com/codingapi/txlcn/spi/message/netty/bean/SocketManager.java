@@ -87,7 +87,7 @@ public class SocketManager {
             executorService.schedule(() -> {
                 String key = channel.remoteAddress().toString();
                 appNames.remove(key);
-            }, rpcConfig.getAttrDelayTime(), TimeUnit.SECONDS);
+            }, rpcConfig.getAttrDelayTime(), TimeUnit.MILLISECONDS);
         } catch (RejectedExecutionException ignored) {
             // caused down server.
         }

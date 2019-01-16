@@ -20,13 +20,14 @@ import com.codingapi.txlcn.manager.db.ManagerStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Description:
@@ -42,25 +43,24 @@ public class RedisManagerStorage implements ManagerStorage, DisposableBean {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    @Autowired
-    private TxManagerConfig managerConfig;
+    private final TxManagerConfig managerConfig;
 
-    @Value("${server.port}")
     private int port;
 
-
     @Autowired
-    public RedisManagerStorage(RedisTemplate<String, String> redisTemplate) {
+    public RedisManagerStorage(RedisTemplate<String, String> redisTemplate, TxManagerConfig managerConfig,
+                               ServerProperties serverProperties) {
         this.redisTemplate = redisTemplate;
+        this.managerConfig = managerConfig;
+        this.port = Objects.requireNonNull(serverProperties.getPort(), "TM http port not configured ?");
     }
 
     private boolean add(String address) {
-        log.info(address);
         List<String> list = list();
-        if(list==null){
+        if (list == null) {
             list = new ArrayList<>();
         }
-        if(list.contains(address)){
+        if (list.contains(address)) {
             return false;
         }
         list.add(address);
@@ -68,16 +68,16 @@ public class RedisManagerStorage implements ManagerStorage, DisposableBean {
         return true;
     }
 
-    private void save(List<String> list){
-        String[] array=list.toArray(new String[list.size()]);
-        String addressList = String.join(",",array);
-        redisTemplate.opsForValue().set(REDIS_PREFIX,addressList);
+    private void save(List<String> list) {
+        String[] array = list.toArray(new String[list.size()]);
+        String addressList = String.join(",", array);
+        redisTemplate.opsForValue().set(REDIS_PREFIX, addressList);
     }
 
 
     private List<String> list() {
         String addressList = redisTemplate.opsForValue().get(REDIS_PREFIX);
-        if(addressList==null){
+        if (addressList == null) {
             return null;
         }
         return new ArrayList<>(Arrays.asList(addressList.split(",")));
@@ -86,10 +86,10 @@ public class RedisManagerStorage implements ManagerStorage, DisposableBean {
     @Override
     public List<String> addressList() {
         List<String> list = list();
-        if(list==null){
+        if (list == null) {
             return null;
         }
-        String address = managerConfig.getHost()+":"+port;
+        String address = managerConfig.getHost() + ":" + port;
         list.remove(address);
         return list;
     }
@@ -99,23 +99,23 @@ public class RedisManagerStorage implements ManagerStorage, DisposableBean {
     public void remove(String address) {
         List<String> list = list();
         list.remove(address);
-        if(list.size()==0){
+        if (list.size() == 0) {
             redisTemplate.delete(REDIS_PREFIX);
-        }else{
+        } else {
             save(list);
         }
     }
 
 
-    public void init() throws Exception{
-        String address = managerConfig.getHost()+":"+port;
+    public void init() throws Exception {
+        String address = managerConfig.getHost() + ":" + port;
         add(address);
         log.info("manager add redis finish.");
     }
 
     @Override
     public void destroy() throws Exception {
-        String address = managerConfig.getHost()+":"+port;
+        String address = managerConfig.getHost() + ":" + port;
         remove(address);
         log.info("manager remove redis.");
     }

@@ -140,6 +140,6 @@ public class RpcCmdContext {
     }
 
     public int getWaitTime() {
-        return rpcConfig.getWaitTime();
+        return (int) (rpcConfig.getWaitTime() / 1000);
     }
 }

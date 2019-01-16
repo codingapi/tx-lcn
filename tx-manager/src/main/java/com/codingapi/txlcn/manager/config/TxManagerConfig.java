@@ -16,9 +16,12 @@
 package com.codingapi.txlcn.manager.config;
 
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 /**
  * Description:
@@ -32,12 +35,13 @@ import org.springframework.stereotype.Component;
 @Data
 public class TxManagerConfig {
 
-    public TxManagerConfig(@Value("${server.port}") Integer port) {
-        this.port = port+100;
+    @Autowired
+    public TxManagerConfig(ServerProperties serverProperties) {
+        this.port = Objects.requireNonNull(serverProperties.getPort(), "TM http port not configured?") + 100;
         this.host = "127.0.0.1";
-        this.heartTime = 5*60;
+        this.heartTime = 5 * 60 * 1000;
         this.concurrentLevel = 0;
-        this.dtxTime = 36000;
+        this.dtxTime = 36 * 1000;
         this.adminKey = "codingapi";
         this.exUrl = "/provider/email-to/ujued@qq.com";
     }
@@ -53,9 +57,9 @@ public class TxManagerConfig {
     private int port;
 
     /**
-     * netty heart check time (s)
+     * netty heart check time (ms)
      */
-    private int heartTime;
+    private long heartTime;
 
     /**
      * 事务处理并发等级
@@ -63,9 +67,9 @@ public class TxManagerConfig {
     private int concurrentLevel;
 
     /**
-     * 分布式事务超时时间
+     * 分布式事务超时时间(ms)
      */
-    private int dtxTime;
+    private long dtxTime;
 
     /**
      * 后台密码

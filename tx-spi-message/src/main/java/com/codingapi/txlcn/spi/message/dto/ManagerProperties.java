@@ -33,9 +33,9 @@ public class ManagerProperties  {
     private int rpcPort;
 
     /**
-     * 心态检测时间
+     * 心态检测时间(ms)
      */
-    private int checkTime;
+    private long checkTime;
 
 
     /**

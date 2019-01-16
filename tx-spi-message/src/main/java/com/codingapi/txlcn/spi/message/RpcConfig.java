@@ -28,9 +28,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class RpcConfig {
     /**
-     * 最大等待时间 单位:(s)
+     * 最大等待时间 单位:(ms)
      */
-    private int waitTime = 5;
+    private long waitTime = 5000;
 
     /**
      * 最大缓存锁的数量
@@ -40,7 +40,7 @@ public class RpcConfig {
     /**
      * appName 参数延迟删除时间 单位：(s)
      */
-    private int attrDelayTime = 10;
+    private long attrDelayTime = 10000;
 
     /**
      * 断线重连次数
@@ -50,6 +50,6 @@ public class RpcConfig {
     /**
      * 重连延迟时间 （s）
      */
-    private int reconnectDelay = 10;
+    private long reconnectDelay = 10000;
 
 }

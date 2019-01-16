@@ -41,6 +41,6 @@ public class MyRpcConfig implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        rpcConfig.setAttrDelayTime(managerConfig.getDtxTime() / 1000);
+        rpcConfig.setAttrDelayTime(managerConfig.getDtxTime());
     }
 }

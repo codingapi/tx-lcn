@@ -36,10 +36,9 @@ public class TxClientConfig {
 
     public TxClientConfig() {
         this.dtxAspectOrder = 0;
-        this.dtxTime = 30000;
-        this.managerAddress = Collections.singletonList("127.0.0.1:8180");
+        this.dtxTime = 30 * 1000;
+        this.managerAddress = Collections.singletonList("127.0.0.1:8070");
     }
-
 
     /**
      * 分布式事务切面顺序

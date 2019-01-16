@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component;
 @EnableConfigurationProperties
 @ConfigurationProperties(value = "tx-lcn.logger")
 public class LogDbProperties extends HikariConfig {
+
     private boolean enabled = false;
 
     @Autowired

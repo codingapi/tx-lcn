@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.spi.message.netty.impl;
 
+import com.codingapi.txlcn.commons.exception.TxClientException;
 import com.codingapi.txlcn.spi.message.RpcClientInitializer;
 import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.spi.message.dto.TxManagerHost;
@@ -91,7 +92,7 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
                 } catch (Exception e) {
                     log.warn("reconnect fail. will latter try again.");
                     try {
-                        Thread.sleep(1000 * rpcConfig.getReconnectDelay());
+                        Thread.sleep(rpcConfig.getReconnectDelay());
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }
@@ -100,6 +101,9 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
         }
         if (!connected) {
             log.warn("finally, netty connection fail , address is {}", socketAddress);
+            if (SocketManager.getInstance().currentSize() == 0) {
+                throw new IllegalStateException("Can not connect any TM, DTX disabled.");
+            }
         }
     }
 

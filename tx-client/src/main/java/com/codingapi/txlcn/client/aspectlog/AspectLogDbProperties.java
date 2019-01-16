@@ -17,12 +17,13 @@ package com.codingapi.txlcn.client.aspectlog;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
-import java.util.Objects;
 
 /**
  * @author lorne
@@ -33,12 +34,15 @@ import java.util.Objects;
 @ConfigurationProperties(value = "tx-lcn.aspect.log")
 public class AspectLogDbProperties {
 
-    public AspectLogDbProperties(@Value("${spring.application.name}") String applicationName, @Value("${server.port}") Integer port) {
-        if (Objects.isNull(applicationName)) {
-            applicationName = "localhost";
-        }
-
-        this.filePath = System.getProperty("user.dir") + File.separator + ".txlcn" + File.separator + applicationName + "-" + port;
+    public AspectLogDbProperties(@Value("${spring.application.name}") String applicationName,
+                                 ServerProperties serverProperties) {
+        this.filePath = System.getProperty("user.dir") +
+                File.separator +
+                ".txlcn" +
+                File.separator +
+                (StringUtils.hasText(applicationName) ? applicationName : "application") +
+                "-" +
+                serverProperties.getPort();
     }
 
     private String filePath;

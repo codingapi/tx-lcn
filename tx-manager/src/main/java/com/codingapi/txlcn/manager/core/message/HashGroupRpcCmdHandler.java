@@ -46,7 +46,7 @@ public class HashGroupRpcCmdHandler {
     public HashGroupRpcCmdHandler(ManagerRpcBeanHelper beanHelper, TxManagerConfig managerConfig) {
         this.concurrentLevel = Math.max(
                 (int) (Runtime.getRuntime().availableProcessors() / (1 - 0.8)), managerConfig.getConcurrentLevel());
-        log.info("concurrent level is {}", this.concurrentLevel);
+        log.info("Transaction concurrent level is {}", this.concurrentLevel);
         this.beanHelper = beanHelper;
         this.executors = new ArrayList<>(this.concurrentLevel);
         for (int i = 0; i < this.concurrentLevel; i++) {

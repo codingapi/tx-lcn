@@ -53,7 +53,8 @@ public class NettyRpcServerHandlerInitHandler extends ChannelInitializer<Channel
         ch.pipeline().addLast(new LengthFieldPrepender(4, false));
         ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
 
-        ch.pipeline().addLast(new IdleStateHandler(managerProperties.getCheckTime(), managerProperties.getCheckTime(), managerProperties.getCheckTime(), TimeUnit.SECONDS));
+        ch.pipeline().addLast(new IdleStateHandler(managerProperties.getCheckTime(),
+                managerProperties.getCheckTime(), managerProperties.getCheckTime(), TimeUnit.MILLISECONDS));
 
         ch.pipeline().addLast(new ObjectDecoder(ClassResolvers.weakCachingConcurrentResolver(this.getClass().getClassLoader())));
         ch.pipeline().addLast(new ObjectEncoder());
