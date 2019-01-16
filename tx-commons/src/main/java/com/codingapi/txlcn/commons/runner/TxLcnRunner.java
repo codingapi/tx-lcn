@@ -20,7 +20,7 @@ package com.codingapi.txlcn.commons.runner;
  * Company: CodingApi
  * Date: 2019/1/16
  *
- * @author codingapi
+ * @author codingapi meetzy
  */
 public interface TxLcnRunner {
 
