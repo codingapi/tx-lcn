@@ -51,18 +51,18 @@ public class LcnStartingTransaction implements TXLCNTransactionControl {
 
     @Override
     public void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) {
-        DTXLocal.cur().setState(0);
+        DTXLocal.currentDTX().setTransactionState(0);
     }
 
     @Override
     public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) {
-        DTXLocal.cur().setState(1);
+        DTXLocal.currentDTX().setTransactionState(1);
     }
 
     @Override
     public void postBusinessCode(TxTransactionInfo info) {
         // RPC 关闭事务组
         transactionControlTemplate.notifyGroup(
-                info.getGroupId(), info.getUnitId(), info.getTransactionType(), DTXLocal.cur().getState());
+                info.getGroupId(), info.getUnitId(), info.getTransactionType(), DTXLocal.currentDTX().transactionState());
     }
 }
