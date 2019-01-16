@@ -63,20 +63,20 @@ public class TxcStartingTransaction implements TXLCNTransactionControl {
 
     @Override
     public void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) {
-        DTXLocal.cur().setState(0);
+        DTXLocal.currentDTX().setTransactionState(0);
 
     }
 
     @Override
     public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) {
         // set state equ 1
-        DTXLocal.cur().setState(1);
+        DTXLocal.currentDTX().setTransactionState(1);
     }
 
     @Override
     public void postBusinessCode(TxTransactionInfo info) {
         RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
-        int state = DTXLocal.cur().getState();
+        int state = DTXLocal.currentDTX().transactionState();
 
         // 非成功状态。（事务导致）{#link TxcServiceImpl.lockResource}
         if (Objects.nonNull(rollbackInfo) && rollbackInfo.getStatus() < 0) {
