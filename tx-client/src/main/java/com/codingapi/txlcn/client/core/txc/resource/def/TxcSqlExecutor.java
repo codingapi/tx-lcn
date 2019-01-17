@@ -29,6 +29,7 @@ import java.util.List;
  */
 public interface TxcSqlExecutor {
 
+
     /**
      * 创建锁表
      */

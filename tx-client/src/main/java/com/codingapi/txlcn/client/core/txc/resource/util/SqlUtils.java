@@ -55,10 +55,6 @@ public class SqlUtils {
 
     public static final String SET = " SET ";
 
-    public static final String LOCK_TABLE = "txc_lock";
-
-    public static final String UNDO_LOG_TABLE = "txc_undo_log";
-
     public static final int MYSQL_TABLE_NOT_EXISTS_CODE = 1146;
 
     public static final String FOR_UPDATE = "FOR UPDATE";
