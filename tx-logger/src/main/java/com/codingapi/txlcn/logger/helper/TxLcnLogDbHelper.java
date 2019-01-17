@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @author codingapi
  */
-public interface TxlcnLogDbHelper {
+public interface TxLcnLogDbHelper {
 
     /**
      * 数据库初始化操作.

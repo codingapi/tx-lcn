@@ -35,7 +35,7 @@ import java.util.List;
  *
  * @author codingapi
  */
-public class MysqlLoggerHelper implements TxlcnLogDbHelper {
+public class MysqlLoggerHelper implements TxLcnLogDbHelper {
 
     /**
      * 当 开启enable时才能获取到.
@@ -48,7 +48,7 @@ public class MysqlLoggerHelper implements TxlcnLogDbHelper {
     
     private RowProcessor processor = new BasicRowProcessor(new GenerousBeanProcessor());
     
-    
+    @Override
     public void init() throws Exception {
         if(logDbProperties.isEnabled()) {
             String sql = "CREATE TABLE IF NOT EXISTS `t_logger`  (\n" +
@@ -66,6 +66,7 @@ public class MysqlLoggerHelper implements TxlcnLogDbHelper {
         
     }
     
+    @Override
     public int insert(TxLog txLoggerInfo) {
         if(logDbProperties.isEnabled()) {
             String sql = "insert into t_logger(group_id,unit_id,tag,content,create_time,app_name) values(?,?,?,?,?,?)";
@@ -83,6 +84,7 @@ public class MysqlLoggerHelper implements TxlcnLogDbHelper {
      * @param timeOrder 时间排序SQL
      * @return 结果集
      */
+    @Override
     public List<TxLog> findByLimit(int left, int right, int timeOrder) {
         if(logDbProperties.isEnabled()) {
             String sql = "select * from t_logger " + timeOrderSql(timeOrder) + " limit " + left + ", " + right;
@@ -92,7 +94,6 @@ public class MysqlLoggerHelper implements TxlcnLogDbHelper {
         }
     }
     
-
     /**
      * GroupID 和 Tag 查询
      *
@@ -103,6 +104,7 @@ public class MysqlLoggerHelper implements TxlcnLogDbHelper {
      * @param timeOrder timeOrder
      * @return 数据集
      */
+    @Override
     public List<TxLog> findByGroupAndTag(int left, int right, String groupId, String tag, int timeOrder) {
         if(logDbProperties.isEnabled()) {
             String sql = "select * from t_logger where group_id=? and tag=? " + timeOrderSql(timeOrder) + " limit "
@@ -113,8 +115,6 @@ public class MysqlLoggerHelper implements TxlcnLogDbHelper {
         }
     }
     
-
-    
     /**
      * ag 查询
      *
@@ -124,6 +124,7 @@ public class MysqlLoggerHelper implements TxlcnLogDbHelper {
      * @param timeOrder timeOrder
      * @return 数据集
      */
+    @Override
     public List<TxLog> findByTag(int left, int right, String tag, int timeOrder) {
         if(logDbProperties.isEnabled()) {
             String sql = "select * from t_logger where tag =? " + timeOrderSql(timeOrder) + " limit " + left + ", " + right;
@@ -132,8 +133,6 @@ public class MysqlLoggerHelper implements TxlcnLogDbHelper {
             throw new NotEnableLogException("not enable logger");
         }
     }
-    
-
     
     /**
      * GroupId 查询
@@ -144,6 +143,7 @@ public class MysqlLoggerHelper implements TxlcnLogDbHelper {
      * @param timeOrder timeOrder
      * @return 数据集
      */
+    @Override
     public List<TxLog> findByGroupId(int left, int right, String groupId, int timeOrder) {
         if(logDbProperties.isEnabled()) {
             String sql = "select * from t_logger where group_id=? " + timeOrderSql(timeOrder) + " limit " + left + ", " + right;
@@ -152,10 +152,6 @@ public class MysqlLoggerHelper implements TxlcnLogDbHelper {
             throw new NotEnableLogException("not enable logger");
         }
     }
-
-
-
-
 
     /**
      * 按筛选条件获取记录数
@@ -187,6 +183,7 @@ public class MysqlLoggerHelper implements TxlcnLogDbHelper {
      *
      * @return 总数
      */
+    @Override
     public long findByLimitTotal() {
         return total("1=1");
     }
@@ -198,10 +195,10 @@ public class MysqlLoggerHelper implements TxlcnLogDbHelper {
      * @param tag     标示
      * @return 数量
      */
+    @Override
     public long findByGroupAndTagTotal(String groupId, String tag) {
         return total("group_id=? and tag=?", groupId, tag);
     }
-
 
     /**
      * Tag 查询记录数
@@ -209,6 +206,7 @@ public class MysqlLoggerHelper implements TxlcnLogDbHelper {
      * @param tag 标示
      * @return 数量
      */
+    @Override
     public long findByTagTotal(String tag) {
         return total("tag=?", tag);
     }
@@ -219,6 +217,7 @@ public class MysqlLoggerHelper implements TxlcnLogDbHelper {
      * @param groupId GroupId
      * @return 总数
      */
+    @Override
     public long findByGroupIdTotal(String groupId) {
         return total("group_id=?", groupId);
     }

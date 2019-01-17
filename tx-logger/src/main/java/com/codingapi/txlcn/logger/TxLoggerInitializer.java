@@ -1,7 +1,7 @@
 package com.codingapi.txlcn.logger;
 
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
-import com.codingapi.txlcn.logger.helper.TxlcnLogDbHelper;
+import com.codingapi.txlcn.logger.helper.TxLcnLogDbHelper;
 
 /**
  * Description:
@@ -12,9 +12,9 @@ import com.codingapi.txlcn.logger.helper.TxlcnLogDbHelper;
  */
 public class TxLoggerInitializer implements TxLcnInitializer {
     
-    private TxlcnLogDbHelper mysqlLoggerHelper;
+    private TxLcnLogDbHelper mysqlLoggerHelper;
     
-    public TxLoggerInitializer(TxlcnLogDbHelper mysqlLoggerHelper) {
+    public TxLoggerInitializer(TxLcnLogDbHelper mysqlLoggerHelper) {
         this.mysqlLoggerHelper = mysqlLoggerHelper;
     }
     
