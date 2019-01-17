@@ -15,8 +15,15 @@
  */
 package com.codingapi.txlcn.logger;
 
+import com.codingapi.txlcn.logger.db.DefaultTxLogger;
+import com.codingapi.txlcn.logger.db.LogDbHelper;
+import com.codingapi.txlcn.logger.db.LogDbProperties;
 import com.codingapi.txlcn.logger.db.TxLcnLoggerHelper;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import com.codingapi.txlcn.logger.ex.TxLoggerException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -31,11 +38,46 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan
 @Configuration
 public class TxLoggerConfiguration {
-    
+
+
+
     @Bean
-    @ConditionalOnBean(TxLcnLoggerHelper.class)
+    @ConfigurationProperties(prefix = "tx-lcn.logger")
+    public LogDbProperties logDbProperties(DataSourceProperties dataSourceProperties) {
+        return new LogDbProperties(dataSourceProperties);
+    }
+
+    @Configuration
+    @ConditionalOnProperty(name = "tx-lcn.logger.enabled", havingValue = "true")
+    class LoggerEnabledTrueConfig{
+
+        @Bean
+        public TxLogger txLogger(LogDbProperties logDbProperties, TxLcnLoggerHelper txLcnLoggerHelper) {
+            return new DefaultTxLogger(logDbProperties, txLcnLoggerHelper);
+        }
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public TxLogger txLogger() {
+        return new NoTxLogger();
+    }
+
+    @Bean
     public TxLoggerInitializer txLoggerInitializer(TxLcnLoggerHelper txLcnLoggerHelper) {
         return new TxLoggerInitializer(txLcnLoggerHelper);
     }
-    
+
+
+    @Bean
+    public TxLcnLoggerHelper txLcnLoggerHelper(LogDbHelper logDbHelper) {
+        return new TxLcnLoggerHelper(logDbHelper);
+    }
+
+    @Bean
+    public LogDbHelper logDbHelper(LogDbProperties logDbProperties) throws TxLoggerException {
+        return new LogDbHelper(logDbProperties);
+    }
+
+
 }
