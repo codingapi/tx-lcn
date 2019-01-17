@@ -49,27 +49,14 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
 
     private final TxLogger txLogger;
 
-    private final TableStructAnalyser tableStructAnalyser;
 
     @Autowired
-    public TxcSqlExecutorImpl(TableStructAnalyser tableStructAnalyser, QueryRunner queryRunner, TxcLockSql txcLockSql, TxLogger txLogger) throws Exception{
+    public TxcSqlExecutorImpl( QueryRunner queryRunner, TxcLockSql txcLockSql, TxLogger txLogger){
         this.queryRunner = queryRunner;
         this.txcLockSql = txcLockSql;
         this.txLogger = txLogger;
-        this.tableStructAnalyser = tableStructAnalyser;
-
-        init();
     }
 
-    @Override
-    public void init() throws Exception {
-        if (!tableStructAnalyser.existsTable(txcLockSql.lockTableName())) {
-            createLockTable();
-        }
-        if (!tableStructAnalyser.existsTable(txcLockSql.undoLogTableName())) {
-            createUndoLogTable();
-        }
-    }
 
     @Override
     public void createLockTable() {

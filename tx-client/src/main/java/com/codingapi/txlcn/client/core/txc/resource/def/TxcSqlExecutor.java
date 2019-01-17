@@ -31,12 +31,6 @@ public interface TxcSqlExecutor {
 
 
     /**
-     * 初始化创建表
-     * @throws  Exception Exception
-     */
-    void init() throws Exception;
-
-    /**
      * 创建锁表
      */
     void createLockTable();
