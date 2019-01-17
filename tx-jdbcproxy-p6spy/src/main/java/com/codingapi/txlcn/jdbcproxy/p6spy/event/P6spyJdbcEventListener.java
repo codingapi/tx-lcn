@@ -29,15 +29,18 @@ import java.sql.SQLException;
  * This event listener offers more coarse grained event listener methods as it aggregates events for the execute* and
  * addBatch methods.
  */
-public abstract class SimpleJdbcEventListener extends JdbcEventListener {
+
+public class P6spyJdbcEventListener extends JdbcEventListener {
 
   /**
    * This callback method is executed before any {@link java.sql.Statement}.execute* method is invoked
    *
    * @param statementInformation The meta information about the {@link java.sql.Statement} being invoked
+   * @return sql
    * @throws SQLException SQLException
    */
-  public void onBeforeAnyExecute(StatementInformation statementInformation) throws SQLException {
+  public String onBeforeAnyExecute(StatementInformation statementInformation) throws SQLException {
+     return statementInformation.getSql();
   }
 
   /**
@@ -55,8 +58,10 @@ public abstract class SimpleJdbcEventListener extends JdbcEventListener {
    * This callback method is executed before any {@link java.sql.Statement}.addBatch* method is invoked
    *
    * @param statementInformation The meta information about the {@link java.sql.Statement} being invoked
+   * @return sql
    */
-  public void onBeforeAnyAddBatch(StatementInformation statementInformation) {
+  public String onBeforeAnyAddBatch(StatementInformation statementInformation) {
+     return statementInformation.getSql();
   }
 
   /**
@@ -72,37 +77,37 @@ public abstract class SimpleJdbcEventListener extends JdbcEventListener {
 
   @Override
   public void onBeforeExecute(PreparedStatementInformation statementInformation)  throws SQLException {
-    onBeforeAnyExecute(statementInformation);
+      onBeforeAnyExecute(statementInformation);
   }
 
   @Override
-  public void onBeforeExecute(StatementInformation statementInformation, String sql)  throws SQLException{
-    onBeforeAnyExecute(statementInformation);
+  public String onBeforeExecute(StatementInformation statementInformation, String sql)  throws SQLException{
+    return onBeforeAnyExecute(statementInformation);
   }
 
   @Override
   public void onBeforeExecuteBatch(StatementInformation statementInformation) throws SQLException {
-    onBeforeAnyExecute(statementInformation);
+      onBeforeAnyExecute(statementInformation);
   }
 
   @Override
   public void onBeforeExecuteUpdate(PreparedStatementInformation statementInformation)  throws SQLException{
-    onBeforeAnyExecute(statementInformation);
+     onBeforeAnyExecute(statementInformation);
   }
 
   @Override
-  public void onBeforeExecuteUpdate(StatementInformation statementInformation, String sql) throws SQLException {
-    onBeforeAnyExecute(statementInformation);
+  public String onBeforeExecuteUpdate(StatementInformation statementInformation, String sql) throws SQLException {
+    return onBeforeAnyExecute(statementInformation);
   }
 
   @Override
   public void onBeforeExecuteQuery(PreparedStatementInformation statementInformation) throws SQLException {
-    onBeforeAnyExecute(statementInformation);
+      onBeforeAnyExecute(statementInformation);
   }
 
   @Override
-  public void onBeforeExecuteQuery(StatementInformation statementInformation, String sql) throws SQLException {
-    onBeforeAnyExecute(statementInformation);
+  public String onBeforeExecuteQuery(StatementInformation statementInformation, String sql) throws SQLException {
+    return onBeforeAnyExecute(statementInformation);
   }
 
   @Override
@@ -146,8 +151,8 @@ public abstract class SimpleJdbcEventListener extends JdbcEventListener {
   }
 
   @Override
-  public void onBeforeAddBatch(StatementInformation statementInformation, String sql) {
-    onBeforeAnyAddBatch(statementInformation);
+  public String onBeforeAddBatch(StatementInformation statementInformation, String sql) {
+    return onBeforeAnyAddBatch(statementInformation);
   }
 
   @Override
