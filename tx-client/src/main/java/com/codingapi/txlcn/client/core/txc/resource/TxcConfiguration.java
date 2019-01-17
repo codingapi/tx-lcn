@@ -40,8 +40,6 @@ import javax.sql.DataSource;
 @Configuration
 public class TxcConfiguration {
 
-
-
     @Bean
     public QueryRunner queryRunner(DataSource dataSource) {
         return new QueryRunner(dataSource);
@@ -65,8 +63,8 @@ public class TxcConfiguration {
     }
 
     @Bean
-    public TxcSqlExecutor txcSqlExecutor(TableStructAnalyser tableStructAnalyser,QueryRunner queryRunner, TxcLockSql txcLockSql, TxLogger txLogger)throws Exception{
-        return new TxcSqlExecutorImpl(tableStructAnalyser,queryRunner, txcLockSql, txLogger);
+    public TxcSqlExecutor txcSqlExecutor(QueryRunner queryRunner, TxcLockSql txcLockSql, TxLogger txLogger){
+        return new TxcSqlExecutorImpl(queryRunner, txcLockSql, txLogger);
     }
 
     @Bean
@@ -82,6 +80,11 @@ public class TxcConfiguration {
     @Bean
     public TxcJdbcEventListener txcJdbcEventListener(SqlExecuteInterceptor sqlExecuteInterceptor){
         return new TxcJdbcEventListener(sqlExecuteInterceptor);
+    }
+
+    @Bean
+    public TxcInitializer txcInitializer(){
+        return new TxcInitializer();
     }
 
 }
