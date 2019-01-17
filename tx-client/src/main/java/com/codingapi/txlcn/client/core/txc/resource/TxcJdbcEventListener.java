@@ -31,7 +31,6 @@ import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 
@@ -39,7 +38,6 @@ import java.sql.SQLException;
  * @author lorne
  */
 @Slf4j
-@Component
 public class TxcJdbcEventListener extends SimpleJdbcEventListener {
 
     private final SqlExecuteInterceptor sqlExecuteInterceptor;

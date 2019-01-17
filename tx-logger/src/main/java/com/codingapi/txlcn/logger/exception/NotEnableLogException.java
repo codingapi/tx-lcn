@@ -13,24 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.core.txc.resource.def.config;
-
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+package com.codingapi.txlcn.logger.exception;
 
 /**
  * Description:
  * Company: CodingApi
- * Date: 2019/1/14
+ * Date: 2019/1/17
  *
  * @author codingapi
  */
-@Data
-@ConfigurationProperties(prefix = "tx-lcn.client.txc")
-@Component
-public class TxcConfig {
+public class NotEnableLogException extends RuntimeException {
 
-    private int minIdle = 10;
+    public NotEnableLogException() {
+    }
 
+    public NotEnableLogException(String message) {
+        super(message);
+    }
+
+    public NotEnableLogException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public NotEnableLogException(Throwable cause) {
+        super(cause);
+    }
+
+    public NotEnableLogException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }

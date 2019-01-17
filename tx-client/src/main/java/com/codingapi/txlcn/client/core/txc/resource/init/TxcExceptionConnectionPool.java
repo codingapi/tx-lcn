@@ -19,7 +19,6 @@ import com.codingapi.txlcn.client.core.txc.resource.def.config.TxcConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -31,7 +30,6 @@ import java.sql.SQLException;
  *
  * @author codingapi
  */
-@Component
 public class TxcExceptionConnectionPool {
 
     private int minIdle;
@@ -42,8 +40,9 @@ public class TxcExceptionConnectionPool {
 
     @Autowired
     public TxcExceptionConnectionPool(TxcConfig txcConfig, DataSourceProperties dataSourceProperties) {
-        this.minIdle = txcConfig.getMinIdle();
         this.dataSourceProperties = dataSourceProperties;
+        minIdle = txcConfig.getMinIdle();
+        init();
     }
 
     public void init(){
