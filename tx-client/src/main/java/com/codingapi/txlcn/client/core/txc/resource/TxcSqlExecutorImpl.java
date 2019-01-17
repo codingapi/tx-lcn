@@ -20,7 +20,6 @@ import com.codingapi.txlcn.client.core.txc.resource.def.bean.*;
 import com.codingapi.txlcn.client.core.txc.resource.init.TxcLockSql;
 import com.codingapi.txlcn.client.core.txc.resource.rs.UpdateSqlPreDataHandler;
 import com.codingapi.txlcn.client.core.txc.resource.util.SqlUtils;
-import com.codingapi.txlcn.jdbcproxy.p6spy.util.TxcUtils;
 import com.codingapi.txlcn.logger.TxLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.*;
@@ -88,7 +87,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
                 + String.join(SqlUtils.SQL_COMMA_SEPARATOR, updateImageParams.getTables())
                 + SqlUtils.WHERE
                 + updateImageParams.getWhereSql();
-        return queryRunner.query(connection, TxcUtils.txcSQL(beforeSql),
+        return queryRunner.query(connection, beforeSql,
                 new UpdateSqlPreDataHandler(updateImageParams.getPrimaryKeys(), updateImageParams.getColumns()));
     }
 
@@ -100,7 +99,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
                 String.join(SqlUtils.SQL_COMMA_SEPARATOR, deleteImageParams.getTables()) +
                 SqlUtils.WHERE +
                 deleteImageParams.getSqlWhere();
-        return queryRunner.query(connection, TxcUtils.txcSQL(beforeSql),
+        return queryRunner.query(connection, beforeSql,
                 new UpdateSqlPreDataHandler(
                         deleteImageParams.getPrimaryKeys(),
                         deleteImageParams.getColumns()));
@@ -109,7 +108,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
     @Override
     public List<ModifiedRecord> selectSqlPreviousPrimaryKeys(Connection connection, SelectImageParams selectImageParams)
             throws SQLException {
-        return queryRunner.query(connection, TxcUtils.txcSQL(selectImageParams.getSql()),
+        return queryRunner.query(connection, selectImageParams.getSql(),
                 new UpdateSqlPreDataHandler(
                         selectImageParams.getPrimaryKeys(),
                         selectImageParams.getPrimaryKeys()));
@@ -119,7 +118,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
     public void tryLock(Connection connection, LockInfo lockInfo) throws SQLException {
         String lockSql = "INSERT INTO `" + txcLockSql.lockTableName() +
                 "` (table_name, key_value, group_id, unit_id, x_lock, s_lock) values(?, ?, ?, ?, ?, ?)";
-        queryRunner.insert(connection, TxcUtils.txcSQL(lockSql), new ScalarHandler<Integer>(),
+        queryRunner.insert(connection, lockSql, new ScalarHandler<Integer>(),
                 lockInfo.getTableName(),
                 lockInfo.getKeyValue(),
                 lockInfo.getGroupId(),
