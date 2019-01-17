@@ -18,8 +18,9 @@ package com.codingapi.txlcn.logger;
 import com.codingapi.txlcn.logger.db.DefaultTxLogger;
 import com.codingapi.txlcn.logger.db.LogDbHelper;
 import com.codingapi.txlcn.logger.db.LogDbProperties;
-import com.codingapi.txlcn.logger.db.TxLcnLoggerHelper;
-import com.codingapi.txlcn.logger.ex.TxLoggerException;
+import com.codingapi.txlcn.logger.helper.MysqlLoggerHelper;
+import com.codingapi.txlcn.logger.exception.TxLoggerException;
+import com.codingapi.txlcn.logger.helper.TxlcnLogDbHelper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -39,8 +40,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TxLoggerConfiguration {
 
-
-
     @Bean
     @ConfigurationProperties(prefix = "tx-lcn.logger")
     public LogDbProperties logDbProperties(DataSourceProperties dataSourceProperties) {
@@ -52,8 +51,13 @@ public class TxLoggerConfiguration {
     class LoggerEnabledTrueConfig{
 
         @Bean
-        public TxLogger txLogger(LogDbProperties logDbProperties, TxLcnLoggerHelper txLcnLoggerHelper) {
-            return new DefaultTxLogger(logDbProperties, txLcnLoggerHelper);
+        public TxLogger txLogger(LogDbProperties logDbProperties, TxlcnLogDbHelper txlcnLogDbHelper) {
+            return new DefaultTxLogger(logDbProperties, txlcnLogDbHelper);
+        }
+
+        @Bean
+        public LogDbHelper logDbHelper(LogDbProperties logDbProperties) throws TxLoggerException {
+            return new LogDbHelper(logDbProperties);
         }
     }
 
@@ -64,20 +68,16 @@ public class TxLoggerConfiguration {
     }
 
     @Bean
-    public TxLoggerInitializer txLoggerInitializer(TxLcnLoggerHelper txLcnLoggerHelper) {
-        return new TxLoggerInitializer(txLcnLoggerHelper);
-    }
-
-
-    @Bean
-    public TxLcnLoggerHelper txLcnLoggerHelper(LogDbHelper logDbHelper) {
-        return new TxLcnLoggerHelper(logDbHelper);
+    public TxLoggerInitializer txLoggerInitializer(TxlcnLogDbHelper txlcnLogDbHelper) {
+        return new TxLoggerInitializer(txlcnLogDbHelper);
     }
 
     @Bean
-    public LogDbHelper logDbHelper(LogDbProperties logDbProperties) throws TxLoggerException {
-        return new LogDbHelper(logDbProperties);
+    @ConditionalOnMissingBean
+    public TxlcnLogDbHelper txLcnLoggerHelper() {
+        return new MysqlLoggerHelper();
     }
+
 
 
 }

@@ -16,6 +16,7 @@
 package com.codingapi.txlcn.logger.db;
 
 import com.codingapi.txlcn.logger.TxLogger;
+import com.codingapi.txlcn.logger.helper.TxlcnLogDbHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,14 +42,14 @@ public class DefaultTxLogger implements TxLogger {
     @Value("${spring.application.name}")
     private String appName;
 
-    private final TxLcnLoggerHelper txLoggerHelper;
+    private final TxlcnLogDbHelper txLoggerHelper;
 
     private final LogDbProperties dbProperties;
 
     private final ExecutorService executor;
 
     @Autowired
-    public DefaultTxLogger(LogDbProperties dbProperties, TxLcnLoggerHelper txLoggerHelper) {
+    public DefaultTxLogger(LogDbProperties dbProperties, TxlcnLogDbHelper txLoggerHelper) {
         this.dbProperties = dbProperties;
         this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         this.txLoggerHelper = txLoggerHelper;
