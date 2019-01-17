@@ -13,25 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.logger.db;
-
-import com.codingapi.txlcn.logger.ex.TxLoggerException;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+package com.codingapi.txlcn.logger;
 
 /**
- * Description:
- * Company: CodingApi
- * Date: 2018/12/20
+ * 不开启日志输出的时候 空操作
  *
- * @author codingapi
+ * @author meetzy
  */
-@Configuration
-public class LogDBConfiguration {
-
-    @Bean
-    public LogDbHelper logDbHelper(LogDbProperties logDbProperties) throws TxLoggerException {
-        return new LogDbHelper(logDbProperties);
+public class NoTxLogger implements TxLogger {
+    @Override
+    public void trace(String groupId, String unitId, String tag, String content) {
+    
     }
-
 }

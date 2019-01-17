@@ -85,9 +85,7 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
         String unitId = (String) paramList.get(1);
         String transactionType = (String) paramList.get(2);
 
-        /**
-         * 用户强制回滚.
-         */
+        //用户强制回滚.
         if (ex instanceof UserRollbackException) {
             notifyGroupParams.setState(0);
         }

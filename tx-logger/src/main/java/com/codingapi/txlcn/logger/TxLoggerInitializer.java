@@ -2,8 +2,6 @@ package com.codingapi.txlcn.logger;
 
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
 import com.codingapi.txlcn.logger.db.TxLcnLoggerHelper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * Description:
@@ -12,12 +10,16 @@ import org.springframework.stereotype.Component;
  *
  * @author codingapi
  */
-@Component
+//@Component
 public class TxLoggerInitializer implements TxLcnInitializer {
-
-    @Autowired
+    
     private TxLcnLoggerHelper txLcnLoggerHelper;
-
+    
+    public TxLoggerInitializer(TxLcnLoggerHelper txLcnLoggerHelper) {
+        this.txLcnLoggerHelper = txLcnLoggerHelper;
+    }
+    
+    
     @Override
     public void init() throws Exception {
         txLcnLoggerHelper.init();
