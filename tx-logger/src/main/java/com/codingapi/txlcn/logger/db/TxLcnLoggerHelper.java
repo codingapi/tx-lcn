@@ -21,7 +21,6 @@ import org.apache.commons.dbutils.RowProcessor;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ import java.util.List;
  *
  * @author codingapi
  */
-@Component
+//@Component
 public class TxLcnLoggerHelper {
     
     @Autowired
