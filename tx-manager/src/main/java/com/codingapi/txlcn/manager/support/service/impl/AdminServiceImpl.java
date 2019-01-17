@@ -151,8 +151,9 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void deleteLogs(String groupId, String tag, String ld, String rd) throws TxManagerException {
-        List<Field> list = Stream.of(new GroupId(groupId), new Tag(tag), new StartTime(ld), new StopTime(rd))
+    public void deleteLogs(DeleteLogsReq deleteLogsReq) throws TxManagerException {
+        List<Field> list = Stream.of(new GroupId(deleteLogsReq.getGroupId()), new Tag(deleteLogsReq.getTag()),
+                new StartTime(deleteLogsReq.getLTime()), new StopTime(deleteLogsReq.getRTime()))
                 .filter(Field::ok).collect(Collectors.toList());
         txLoggerHelper.deleteByFields(list);
     }

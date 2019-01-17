@@ -50,7 +50,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
 
 
     @Autowired
-    public TxcSqlExecutorImpl( QueryRunner queryRunner, TxcLockSql txcLockSql, TxLogger txLogger){
+    public TxcSqlExecutorImpl(QueryRunner queryRunner, TxcLockSql txcLockSql, TxLogger txLogger) {
         this.queryRunner = queryRunner;
         this.txcLockSql = txcLockSql;
         this.txLogger = txLogger;
@@ -139,7 +139,9 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
     public void writeUndoLog(UndoLogDO undoLogDo) throws SQLException {
         log.debug("txc > write undo log. params: {}", undoLogDo);
         // 后置镜像查询 暂不记录
-
+        txLogger.trace(undoLogDo.getGroupId(), undoLogDo.getUnitId(), "txc",
+                "write undo log before. groupId: " + undoLogDo.getGroupId() +
+                        ", unitId: " + undoLogDo.getUnitId());
         // 写
         String undoLogSql = "INSERT INTO `"
                 + txcLockSql.undoLogTableName()
@@ -151,7 +153,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
                 undoLogDo.getGroupId(),
                 undoLogDo.getUnitId(),
                 undoLogDo.getRollbackInfo());
-        txLogger.trace(undoLogDo.getGroupId(), undoLogDo.getUnitId(), "txc", "write undo log " + count);
+        txLogger.trace(undoLogDo.getGroupId(), undoLogDo.getUnitId(), "txc", "write undo log. log id: " + count);
     }
 
     @Override

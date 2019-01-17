@@ -46,7 +46,7 @@ public interface TxExceptionMapper {
     Integer getTransactionStateByGroupId(String groupId);
 
     @Select("select * from t_tx_exception where ex_state=#{exState} and registrar=#{registrar}")
-    List<TxException> findByExStateAndRegistrar(@Param("exState") Integer exState, @Param("exState") Integer registrar);
+    List<TxException> findByExStateAndRegistrar(@Param("exState") Integer exState, @Param("registrar") Integer registrar);
 
     @Select("select * from t_tx_exception where ex_state=#{exState}")
     List<TxException> findByExState(Integer exState);

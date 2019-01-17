@@ -16,10 +16,7 @@
 package com.codingapi.txlcn.manager.support.service;
 
 import com.codingapi.txlcn.commons.exception.TxManagerException;
-import com.codingapi.txlcn.manager.support.restapi.model.DTXInfo;
-import com.codingapi.txlcn.manager.support.restapi.model.ListAppMods;
-import com.codingapi.txlcn.manager.support.restapi.model.TxLogList;
-import com.codingapi.txlcn.manager.support.restapi.model.TxManagerInfo;
+import com.codingapi.txlcn.manager.support.restapi.model.*;
 
 import java.util.Date;
 import java.util.List;
@@ -76,7 +73,7 @@ public interface AdminService {
      * @param rd
      * @throws TxManagerException
      */
-    void deleteLogs(String groupId, String tag, String ld, String rd) throws TxManagerException;
+    void deleteLogs(DeleteLogsReq deleteLogsReq) throws TxManagerException;
 
     /**
      * AppMods

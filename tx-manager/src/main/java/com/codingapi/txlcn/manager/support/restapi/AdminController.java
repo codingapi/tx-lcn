@@ -63,7 +63,7 @@ public class AdminController {
     public ExceptionList exceptionList(
             @RequestParam(value = "page", required = false) @PathVariable(value = "page", required = false) Integer page,
             @RequestParam(value = "limit", required = false) @PathVariable(value = "limit", required = false) Integer limit,
-            @RequestParam(value = "exState", required = false) Integer extState,
+            @RequestParam(value = "extState", required = false) Integer extState,
             @RequestParam(value = "registrar", required = false) Integer registrar) {
         return txExceptionService.exceptionList(page, limit, extState, null, registrar);
     }
@@ -139,12 +139,8 @@ public class AdminController {
      * @return
      */
     @DeleteMapping("/logs")
-    public boolean deleteLogs(
-            @RequestParam(value = "groupId", required = false) String groupId,
-            @RequestParam(value = "tag", required = false) String tag,
-            @RequestParam(value = "ld", required = false) String lTime,
-            @RequestParam(value = "rd", required = false) String rTime) throws TxManagerException {
-        adminService.deleteLogs(groupId, tag, lTime, rTime);
+    public boolean deleteLogs(@RequestBody DeleteLogsReq deleteLogsReq) throws TxManagerException {
+        adminService.deleteLogs(deleteLogsReq);
         return true;
     }
 
