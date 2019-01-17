@@ -18,7 +18,7 @@ package com.codingapi.txlcn.manager.support.service.impl;
 import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.commons.util.RandomUtils;
 import com.codingapi.txlcn.logger.db.TxLog;
-import com.codingapi.txlcn.logger.db.TxLcnLoggerHelper;
+import com.codingapi.txlcn.logger.helper.TxlcnLogDbHelper;
 import com.codingapi.txlcn.manager.config.TxManagerConfig;
 import com.codingapi.txlcn.manager.support.restapi.auth.DefaultTokenStorage;
 import com.codingapi.txlcn.manager.support.restapi.model.*;
@@ -46,14 +46,14 @@ public class AdminServiceImpl implements AdminService {
 
     private final DefaultTokenStorage defaultTokenStorage;
 
-    private final TxLcnLoggerHelper txLoggerHelper;
+    private final TxlcnLogDbHelper txLoggerHelper;
 
     private final RpcClient rpcClient;
 
     @Autowired
     public AdminServiceImpl(TxManagerConfig managerConfig,
                             DefaultTokenStorage defaultTokenStorage,
-                            TxLcnLoggerHelper txLoggerHelper,
+                            TxlcnLogDbHelper txLoggerHelper,
                             RpcClient rpcClient) {
         this.managerConfig = managerConfig;
         this.defaultTokenStorage = defaultTokenStorage;

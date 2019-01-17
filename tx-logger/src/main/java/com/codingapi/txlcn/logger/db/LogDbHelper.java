@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.logger.db;
 
 import com.alibaba.fastjson.JSON;
-import com.codingapi.txlcn.logger.ex.TxLoggerException;
+import com.codingapi.txlcn.logger.exception.TxLoggerException;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.QueryRunner;
@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.sql.SQLException;
 
 /**
- * Description: h2数据库操作类
+ * Description: log-db数据库操作类
  * Company: CodingApi
  * Date: 2018/12/20
  *
@@ -44,13 +44,13 @@ public class LogDbHelper implements DisposableBean {
 
     @Autowired
     public LogDbHelper(LogDbProperties logDbProperties) throws TxLoggerException {
-        log.info("H2DB Properties: {}", JSON.toJSONString(logDbProperties));
+        log.info("log-db Properties: {}", JSON.toJSONString(logDbProperties));
         if (logDbProperties.getDriverClassName() == null) {
             throw new TxLoggerException("init TxLogger error. see config [com.codingapi.txlcn.logger.db.LogDbProperties]");
         }
         hikariDataSource = new HikariDataSource(logDbProperties);
         queryRunner = new QueryRunner(hikariDataSource);
-        log.info("H2DB prepared.");
+        log.info("log-db prepared.");
     }
 
     public int update(String sql, Object... params) {

@@ -12,12 +12,9 @@ import java.util.stream.Collectors;
  */
 public class TxExceptionMapperProvider {
 
-
+    @SuppressWarnings("unchecked")
     public String deleteByIdList(Map<String, Object> params) {
-        @SuppressWarnings("unchecked")
-        List<String> strIds = ((List<Long>) params.get("list")).stream().map(Object::toString).collect(Collectors.toList());
-        String stringBuilder = "delete from t_tx_exception where id in (" +
-                String.join(", ", strIds) + ')';
-        return stringBuilder;
+        return "delete from t_tx_exception where id in (" +
+                ((List<Long>) params.get("list")).stream().map(Object::toString).collect(Collectors.joining(", ")) + ')';
     }
 }
