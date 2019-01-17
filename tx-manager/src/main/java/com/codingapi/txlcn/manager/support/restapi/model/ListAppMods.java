@@ -17,7 +17,7 @@ public class ListAppMods {
     private List<AppMod> appMods;
 
     @Data
-    public class AppMod {
+    public static class AppMod {
         private String modId;
         private Date registerTime;
     }

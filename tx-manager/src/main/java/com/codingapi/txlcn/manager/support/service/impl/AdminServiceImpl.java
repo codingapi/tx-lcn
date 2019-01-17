@@ -24,8 +24,10 @@ import com.codingapi.txlcn.manager.support.restapi.auth.DefaultTokenStorage;
 import com.codingapi.txlcn.manager.support.restapi.model.*;
 import com.codingapi.txlcn.manager.support.service.AdminService;
 import com.codingapi.txlcn.spi.message.RpcClient;
+import com.codingapi.txlcn.spi.message.dto.AppInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -152,8 +154,31 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ListAppMods listAppMods(Integer page, Integer limit) {
+        if (Objects.isNull(limit) || limit < 1) {
+            limit = 10;
+        }
+        if (Objects.isNull(page) || page < 1) {
+            page = 1;
+        }
+        List<ListAppMods.AppMod> appMods = new ArrayList<>(limit);
+        int firIdx = (page - 1) * limit;
+        List<AppInfo> apps = rpcClient.apps();
+        for (int i = 0; i < apps.size(); i++) {
+            if (firIdx > apps.size() - 1) {
+                break;
+            }
+            if (i < firIdx) {
+                continue;
+            }
+            AppInfo appInfo = apps.get(i);
+            ListAppMods.AppMod appMod = new ListAppMods.AppMod();
+            PropertyMapper.get().from(appInfo::getName).to(appMod::setModId);
+            PropertyMapper.get().from(appInfo::getCreateTime).to(appMod::setRegisterTime);
+            appMods.add(appMod);
+        }
         ListAppMods listAppMods = new ListAppMods();
-
+        listAppMods.setTotal(apps.size());
+        listAppMods.setAppMods(appMods);
         return listAppMods;
     }
 }

@@ -57,7 +57,6 @@ public class TxExceptionServiceImpl implements TxExceptionService {
 
     private final RpcClient rpcClient;
 
-
     private final TxExceptionListener txExceptionListener;
 
     @Autowired
@@ -144,13 +143,13 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         if (Objects.isNull(exception)) {
             throw new TransactionStateException("non exists aspect log", TransactionStateException.NON_ASPECT);
         }
-        List<String> modList = rpcClient.moduleList(exception.getModId());
-        if (modList.isEmpty()) {
+        List<String> remoteKeys = rpcClient.remoteKeys(exception.getModId());
+        if (remoteKeys.isEmpty()) {
             throw new TransactionStateException("non mod found", TransactionStateException.NON_MOD);
         }
         try {
-            for (String mod : modList) {
-                MessageDto messageDto = rpcClient.request(mod, MessageCreator.getAspectLog(groupId, unitId));
+            for (String remoteKey : remoteKeys) {
+                MessageDto messageDto = rpcClient.request(remoteKey, MessageCreator.getAspectLog(groupId, unitId));
                 if (MessageUtils.statusOk(messageDto)) {
                     return messageDto.loadData(JSONObject.class);
                 }

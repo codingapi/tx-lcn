@@ -190,8 +190,7 @@ public class TxLcnLoggerHelper {
      * @param ids 日志
      */
     public void deleteLogs(List<Long> ids) {
-        List<String> strIds = ids.stream().map(Object::toString).collect(Collectors.toList());
-        String sql = "delete from t_logger where id in (" + String.join(", ", strIds) + ")";
-        dbHelper.update(sql, new ScalarHandler<Integer>());
+        dbHelper.update("delete from t_logger where id in (" +
+                ids.stream().map(Object::toString).collect(Collectors.joining(", ")) + ")");
     }
 }

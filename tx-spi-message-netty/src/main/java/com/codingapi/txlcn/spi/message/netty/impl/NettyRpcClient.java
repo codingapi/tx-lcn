@@ -16,6 +16,7 @@
 package com.codingapi.txlcn.spi.message.netty.impl;
 
 import com.codingapi.txlcn.spi.message.RpcClient;
+import com.codingapi.txlcn.spi.message.dto.AppInfo;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.dto.RpcCmd;
 import com.codingapi.txlcn.spi.message.dto.RpcResponseState;
@@ -82,8 +83,8 @@ public class NettyRpcClient extends RpcClient {
 
 
     @Override
-    public List<String> moduleList(String moduleName) {
-        return SocketManager.getInstance().moduleList(moduleName);
+    public List<String> remoteKeys(String moduleName) {
+        return SocketManager.getInstance().removeKeys(moduleName);
     }
 
 
@@ -95,5 +96,10 @@ public class NettyRpcClient extends RpcClient {
     @Override
     public String getAppName(String remoteKey)  {
         return  SocketManager.getInstance().getModuleName(remoteKey);
+    }
+
+    @Override
+    public List<AppInfo> apps() {
+        return SocketManager.getInstance().appInfos();
     }
 }

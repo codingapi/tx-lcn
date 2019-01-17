@@ -144,7 +144,7 @@ public class TransactionControlTemplate {
         joinGroupParams.setUnitType(transactionType);
         joinGroupParams.setTransactionState(DTXLocal.transactionState());
         // 日志
-        log.debug("transaction type[{}] > join group > groupId: {}, unitId: {}, remoteKey: {}",
+        log.debug("transaction type[{}] > join group > groupId: {}, unitId: {}, remoteKeys: {}",
                 transactionType, groupId, unitId, managerKey);
         try {
             MessageDto messageDto = rpcClient.request(managerKey, MessageCreator.joinGroup(joinGroupParams));
@@ -182,7 +182,7 @@ public class TransactionControlTemplate {
         String managerKey = Optional.ofNullable(tracerHelper.getTxManagerKey()).orElseThrow(
                 () -> new IllegalStateException("DTX Error(check TM cluster.) or Sleuth not configured."));
         // 日志
-        log.debug("transaction type[{}] > close group > groupId: {}, unitId: {}, remoteKey: {}",
+        log.debug("transaction type[{}] > close group > groupId: {}, unitId: {}, remoteKeys: {}",
                 transactionType, groupId, unitId, managerKey);
         try {
             MessageDto messageDto =
