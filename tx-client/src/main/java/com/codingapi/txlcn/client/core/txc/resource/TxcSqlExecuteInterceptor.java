@@ -33,12 +33,14 @@ import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SelectItem;
 import net.sf.jsqlparser.statement.update.Update;
 import org.apache.commons.dbutils.DbUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Description: 拦截必要的SQL, 植入TXC逻辑
@@ -54,7 +56,6 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
     private final TxcService txcService;
 
-    @Autowired
     public TxcSqlExecuteInterceptor(TableStructAnalyser tableStructAnalyser, TxcService txcService) {
         this.tableStructAnalyser = tableStructAnalyser;
         this.txcService = txcService;
