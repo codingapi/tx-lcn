@@ -21,6 +21,7 @@ import com.codingapi.txlcn.manager.support.restapi.model.ListAppMods;
 import com.codingapi.txlcn.manager.support.restapi.model.TxLogList;
 import com.codingapi.txlcn.manager.support.restapi.model.TxManagerInfo;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -69,10 +70,13 @@ public interface AdminService {
     /**
      * 删除日志
      *
-     * @param ids 异常标识
-     * @throws TxManagerException ex
+     * @param groupId
+     * @param tag
+     * @param ld
+     * @param rd
+     * @throws TxManagerException
      */
-    void deleteLogs(List<Long> ids) throws TxManagerException;
+    void deleteLogs(String groupId, String tag, String ld, String rd) throws TxManagerException;
 
     /**
      * AppMods

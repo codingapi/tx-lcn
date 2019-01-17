@@ -15,6 +15,10 @@ public class TxExceptionMapperProvider {
     @SuppressWarnings("unchecked")
     public String deleteByIdList(Map<String, Object> params) {
         return "delete from t_tx_exception where id in (" +
-                ((List<Long>) params.get("list")).stream().map(Object::toString).collect(Collectors.joining(", ")) + ')';
+                ((List<Long>) params.get("list"))
+                        .stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(", ")) +
+                ')';
     }
 }

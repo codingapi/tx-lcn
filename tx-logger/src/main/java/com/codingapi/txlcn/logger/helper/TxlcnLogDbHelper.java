@@ -16,7 +16,9 @@
 package com.codingapi.txlcn.logger.helper;
 
 import com.codingapi.txlcn.logger.db.TxLog;
+import com.codingapi.txlcn.logger.model.Field;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -125,9 +127,9 @@ public interface TxlcnLogDbHelper {
     long findByGroupIdTotal(String groupId);
 
     /**
-     * 删除日志
+     * 按字段删除日志
      *
-     * @param ids
+     * @param fields
      */
-    void deleteLogs(List<Long> ids);
+    void deleteByFields(List<Field> fields);
 }

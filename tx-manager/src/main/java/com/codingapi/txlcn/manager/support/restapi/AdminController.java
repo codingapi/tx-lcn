@@ -24,6 +24,7 @@ import com.codingapi.txlcn.manager.support.service.TxExceptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -115,6 +116,8 @@ public class AdminController {
             @RequestParam(value = "limit", required = false) @PathVariable(value = "limit", required = false) Integer limit,
             @RequestParam(value = "groupId", required = false) String groupId,
             @RequestParam(value = "tag", required = false) String tag,
+            @RequestParam(value = "ld", required = false) Date lTime,
+            @RequestParam(value = "rd", required = false) Date rTime,
             @RequestParam(value = "timeOrder", required = false) Integer timeOrder) {
         return adminService.txLogList(page, limit, groupId, tag, timeOrder);
     }
@@ -129,13 +132,19 @@ public class AdminController {
     /**
      * 删除日志
      *
-     * @param ids 标识列表
-     * @return result
-     * @throws TxManagerException ex
+     * @param page
+     * @param limit
+     * @param groupId
+     * @param tag
+     * @return
      */
     @DeleteMapping("/logs")
-    public boolean deleteLogs(@RequestBody List<Long> ids) throws TxManagerException {
-        adminService.deleteLogs(ids);
+    public boolean deleteLogs(
+            @RequestParam(value = "groupId", required = false) String groupId,
+            @RequestParam(value = "tag", required = false) String tag,
+            @RequestParam(value = "ld", required = false) String lTime,
+            @RequestParam(value = "rd", required = false) String rTime) throws TxManagerException {
+        adminService.deleteLogs(groupId, tag, lTime, rTime);
         return true;
     }
 

@@ -19,6 +19,7 @@ import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.commons.util.RandomUtils;
 import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.helper.TxlcnLogDbHelper;
+import com.codingapi.txlcn.logger.model.*;
 import com.codingapi.txlcn.manager.config.TxManagerConfig;
 import com.codingapi.txlcn.manager.support.restapi.auth.DefaultTokenStorage;
 import com.codingapi.txlcn.manager.support.restapi.model.*;
@@ -32,6 +33,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Description:
@@ -148,8 +151,10 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void deleteLogs(List<Long> ids) throws TxManagerException {
-        txLoggerHelper.deleteLogs(ids);
+    public void deleteLogs(String groupId, String tag, String ld, String rd) throws TxManagerException {
+        List<Field> list = Stream.of(new GroupId(groupId), new Tag(tag), new StartTime(ld), new StopTime(rd))
+                .filter(Field::ok).collect(Collectors.toList());
+        txLoggerHelper.deleteByFields(list);
     }
 
     @Override

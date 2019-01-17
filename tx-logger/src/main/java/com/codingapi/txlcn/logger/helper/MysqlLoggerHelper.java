@@ -19,6 +19,7 @@ import com.codingapi.txlcn.logger.db.LogDbHelper;
 import com.codingapi.txlcn.logger.db.LogDbProperties;
 import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.exception.NotEnableLogException;
+import com.codingapi.txlcn.logger.model.*;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.GenerousBeanProcessor;
 import org.apache.commons.dbutils.RowProcessor;
@@ -26,6 +27,8 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -221,9 +224,26 @@ public class MysqlLoggerHelper implements TxlcnLogDbHelper {
     }
 
     @Override
-    public void deleteLogs(List<Long> ids) {
-        dbHelper.update("delete from t_logger where id in (" +
-                ids.stream().map(Objects::toString).collect(Collectors.joining(", ")));
+    public void deleteByFields(List<Field> fields) {
+        StringBuilder sql = new StringBuilder("delete from t_logger where 1=1 and ");
+        List<String> values = new ArrayList<>(fields.size());
+        fields.forEach(field -> {
+            if (field instanceof GroupId) {
+                sql.append("group_id=? and ");
+                values.add(((GroupId) field).getGroupId());
+            } else if (field instanceof Tag) {
+                sql.append("tag=? and ");
+                values.add(((Tag) field).getTag());
+            } else if (field instanceof StartTime) {
+                sql.append("create_time > ? and ");
+                values.add(((StartTime) field).getStartTime());
+            } else if (field instanceof StopTime) {
+                sql.append("create_time < ? and ");
+                values.add(((StopTime) field).getStopTime());
+            }
+        });
+        sql.delete(sql.length() - 4, sql.length());
+        dbHelper.update(sql.toString(), values.toArray(new Object[0]));
     }
 
 }
