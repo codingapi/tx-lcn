@@ -22,7 +22,9 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -33,17 +35,17 @@ import java.util.List;
  */
 //@Component
 public class TxLcnLoggerHelper {
-    
+
     @Autowired
     private LogDbHelper dbHelper;
-    
+
     public TxLcnLoggerHelper(LogDbHelper dbHelper) {
         this.dbHelper = dbHelper;
     }
-    
+
     private RowProcessor processor = new BasicRowProcessor(new GenerousBeanProcessor());
-    
-    
+
+
     public void init() throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS `t_logger`  (\n" +
                 "  `id` bigint(20) NOT NULL AUTO_INCREMENT,\n" +
@@ -56,14 +58,14 @@ public class TxLcnLoggerHelper {
                 "  PRIMARY KEY (`id`) USING BTREE\n" +
                 ") ";
         dbHelper.update(sql);
-        
+
     }
-    
+
     public int insert(TxLog txLoggerInfo) {
         String sql = "insert into t_logger(group_id,unit_id,tag,content,create_time,app_name) values(?,?,?,?,?,?)";
         return dbHelper.update(sql, txLoggerInfo.getGroupId(), txLoggerInfo.getUnitId(), txLoggerInfo.getTag(), txLoggerInfo.getContent(), txLoggerInfo.getCreateTime(), txLoggerInfo.getAppName());
     }
-    
+
     /**
      * 按筛选条件获取记录数
      *
@@ -74,7 +76,7 @@ public class TxLcnLoggerHelper {
     private long total(String where, Object... params) {
         return dbHelper.query("select count(*) from t_logger where " + where, new ScalarHandler<>(), params);
     }
-    
+
     /**
      * 时间排序SQL
      *
@@ -84,7 +86,7 @@ public class TxLcnLoggerHelper {
     private String timeOrderSql(int timeOrder) {
         return "order by create_time " + (timeOrder == 1 ? "asc" : "desc");
     }
-    
+
     /**
      * 分页获取记录
      *
@@ -97,7 +99,7 @@ public class TxLcnLoggerHelper {
         String sql = "select * from t_logger " + timeOrderSql(timeOrder) + " limit " + left + ", " + right;
         return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor));
     }
-    
+
     /**
      * 分页获取记录所有记录数
      *
@@ -106,7 +108,7 @@ public class TxLcnLoggerHelper {
     public long findByLimitTotal() {
         return total("1=1");
     }
-    
+
     /**
      * GroupId 和 Tag 查询记录数
      *
@@ -117,7 +119,7 @@ public class TxLcnLoggerHelper {
     public long findByGroupAndTagTotal(String groupId, String tag) {
         return total("group_id=? and tag=?", groupId, tag);
     }
-    
+
     /**
      * GroupID 和 Tag 查询
      *
@@ -133,7 +135,7 @@ public class TxLcnLoggerHelper {
                 + left + ", " + right;
         return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor), groupId, tag);
     }
-    
+
     /**
      * Tag 查询记录数
      *
@@ -143,7 +145,7 @@ public class TxLcnLoggerHelper {
     public long findByTagTotal(String tag) {
         return total("tag=?", tag);
     }
-    
+
     /**
      * ag 查询
      *
@@ -157,7 +159,7 @@ public class TxLcnLoggerHelper {
         String sql = "select * from t_logger where tag =? " + timeOrderSql(timeOrder) + " limit " + left + ", " + right;
         return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor), tag);
     }
-    
+
     /**
      * GroupId 查询记录数
      *
@@ -167,7 +169,7 @@ public class TxLcnLoggerHelper {
     public long findByGroupIdTotal(String groupId) {
         return total("group_id=?", groupId);
     }
-    
+
     /**
      * GroupId 查询
      *
@@ -180,5 +182,16 @@ public class TxLcnLoggerHelper {
     public List<TxLog> findByGroupId(int left, int right, String groupId, int timeOrder) {
         String sql = "select * from t_logger where group_id=? " + timeOrderSql(timeOrder) + " limit " + left + ", " + right;
         return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor), groupId);
+    }
+
+    /**
+     * 删除日志
+     *
+     * @param ids 日志
+     */
+    public void deleteLogs(List<Long> ids) {
+        List<String> strIds = ids.stream().map(Object::toString).collect(Collectors.toList());
+        String sql = "delete from t_logger where id in (" + String.join(", ", strIds) + ")";
+        dbHelper.update(sql, new ScalarHandler<Integer>());
     }
 }

@@ -21,10 +21,7 @@ import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.db.TxLcnLoggerHelper;
 import com.codingapi.txlcn.manager.config.TxManagerConfig;
 import com.codingapi.txlcn.manager.support.restapi.auth.DefaultTokenStorage;
-import com.codingapi.txlcn.manager.support.restapi.model.DTXInfo;
-import com.codingapi.txlcn.manager.support.restapi.model.TxLogList;
-import com.codingapi.txlcn.manager.support.restapi.model.TxManagerInfo;
-import com.codingapi.txlcn.manager.support.restapi.model.TxManagerLog;
+import com.codingapi.txlcn.manager.support.restapi.model.*;
 import com.codingapi.txlcn.manager.support.service.AdminService;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import org.springframework.beans.BeanUtils;
@@ -32,9 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Description:
@@ -148,5 +143,17 @@ public class AdminServiceImpl implements AdminService {
         txManagerInfo.setSocketPort(managerConfig.getPort());
         txManagerInfo.setExUrl(managerConfig.isExUrlEnabled() ? managerConfig.getExUrl() : "disabled");
         return txManagerInfo;
+    }
+
+    @Override
+    public void deleteLogs(List<Long> ids) throws TxManagerException {
+        txLoggerHelper.deleteLogs(ids);
+    }
+
+    @Override
+    public ListAppMods listAppMods(Integer page, Integer limit) {
+        ListAppMods listAppMods = new ListAppMods();
+
+        return listAppMods;
     }
 }

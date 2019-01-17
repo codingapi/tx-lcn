@@ -16,16 +16,16 @@
 package com.codingapi.txlcn.manager.support.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
 import com.codingapi.txlcn.spi.message.util.MessageUtils;
 import com.codingapi.txlcn.commons.exception.SerializerException;
 import com.codingapi.txlcn.commons.exception.TransactionStateException;
-import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.manager.core.message.MessageCreator;
 import com.codingapi.txlcn.manager.db.domain.TxException;
-import com.codingapi.txlcn.manager.db.mapper.TxExceptionMapper;
+import com.codingapi.txlcn.manager.db.mybatis.TxExceptionMapper;
 import com.codingapi.txlcn.manager.support.restapi.model.ExceptionInfo;
 import com.codingapi.txlcn.manager.support.restapi.model.ExceptionList;
 import com.codingapi.txlcn.manager.support.service.TxExceptionService;
@@ -103,11 +103,11 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         }
         Page pageInfo = PageHelper.startPage(page, limit, true);
         List<TxException> txExceptions;
-        if (Objects.nonNull(exState) && Objects.nonNull(registrar)) {
+        if ((Objects.nonNull(exState) && exState != -2) && (Objects.nonNull(registrar) && registrar != -2)) {
             txExceptions = txExceptionMapper.findByExStateAndRegistrar(exState, registrar);
-        } else if (Objects.nonNull(exState)) {
+        } else if (Objects.nonNull(exState) && exState != -2) {
             txExceptions = txExceptionMapper.findByExState(exState);
-        } else if (Objects.nonNull(registrar)) {
+        } else if (Objects.nonNull(registrar) && registrar != -2) {
             txExceptions = txExceptionMapper.findByRegistrar(registrar);
         } else {
             txExceptions = txExceptionMapper.findAll();
@@ -159,5 +159,10 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         } catch (RpcException | SerializerException e) {
             throw new TransactionStateException(e, TransactionStateException.RPC_ERR);
         }
+    }
+
+    @Override
+    public void deleteExceptions(List<Long> ids) throws TxManagerException {
+        txExceptionMapper.deleteByIdList(ids);
     }
 }

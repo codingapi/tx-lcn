@@ -18,10 +18,7 @@ package com.codingapi.txlcn.manager.support.restapi;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.txlcn.commons.exception.TransactionStateException;
 import com.codingapi.txlcn.commons.exception.TxManagerException;
-import com.codingapi.txlcn.manager.support.restapi.model.ExceptionList;
-import com.codingapi.txlcn.manager.support.restapi.model.Token;
-import com.codingapi.txlcn.manager.support.restapi.model.TxLogList;
-import com.codingapi.txlcn.manager.support.restapi.model.TxManagerInfo;
+import com.codingapi.txlcn.manager.support.restapi.model.*;
 import com.codingapi.txlcn.manager.support.service.AdminService;
 import com.codingapi.txlcn.manager.support.service.TxExceptionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,10 +67,16 @@ public class AdminController {
         return txExceptionService.exceptionList(page, limit, extState, null, registrar);
     }
 
-
+    /**
+     * 删除异常信息
+     *
+     * @param ids 异常信息标示
+     * @return 操作结果
+     * @throws TxManagerException TxManagerException
+     */
     @DeleteMapping("/exceptions")
-    public boolean deleteByIdList(@RequestBody List<Long> ids) {
-        txExceptionService.deleteByIdList(ids);
+    public boolean deleteExceptions(@RequestBody List<Long> ids) throws TxManagerException {
+        txExceptionService.deleteExceptions(ids);
         return true;
     }
 
@@ -114,6 +117,26 @@ public class AdminController {
             @RequestParam(value = "tag", required = false) String tag,
             @RequestParam(value = "timeOrder", required = false) Integer timeOrder) {
         return adminService.txLogList(page, limit, groupId, tag, timeOrder);
+    }
+
+    @GetMapping({"/app-mods/{page}", "/app-mods/{page}/{limit}", "/app-mods"})
+    public ListAppMods listAppMods(
+            @PathVariable(value = "page", required = false) @RequestParam(value = "page", required = false) Integer page,
+            @PathVariable(value = "limit", required = false) @RequestParam(value = "limit", required = false) Integer limit) {
+        return adminService.listAppMods(page, limit);
+    }
+
+    /**
+     * 删除日志
+     *
+     * @param ids 标识列表
+     * @return result
+     * @throws TxManagerException ex
+     */
+    @DeleteMapping("/logs")
+    public boolean deleteLogs(@RequestBody List<Long> ids) throws TxManagerException {
+        adminService.deleteLogs(ids);
+        return true;
     }
 
     /**
