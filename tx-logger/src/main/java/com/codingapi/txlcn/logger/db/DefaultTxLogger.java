@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.logger;
+package com.codingapi.txlcn.logger.db;
 
-import com.codingapi.txlcn.logger.db.LogDbProperties;
-import com.codingapi.txlcn.logger.db.TxLcnLoggerHelper;
-import com.codingapi.txlcn.logger.db.TxLog;
+import com.codingapi.txlcn.logger.TxLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author codingapi
  */
-@Component
+//@Component
 @Slf4j
 public class DefaultTxLogger implements TxLogger {
 

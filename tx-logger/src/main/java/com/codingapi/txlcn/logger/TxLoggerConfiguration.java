@@ -15,6 +15,9 @@
  */
 package com.codingapi.txlcn.logger;
 
+import com.codingapi.txlcn.logger.db.TxLcnLoggerHelper;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,5 +31,11 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan
 @Configuration
 public class TxLoggerConfiguration {
-
+    
+    @Bean
+    @ConditionalOnBean(TxLcnLoggerHelper.class)
+    public TxLoggerInitializer txLoggerInitializer(TxLcnLoggerHelper txLcnLoggerHelper) {
+        return new TxLoggerInitializer(txLcnLoggerHelper);
+    }
+    
 }

@@ -20,18 +20,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * @author lorne
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Component
-@EnableConfigurationProperties
-@ConfigurationProperties(value = "tx-lcn.logger")
+//@Component
+//@EnableConfigurationProperties
 public class LogDbProperties extends HikariConfig {
 
     private boolean enabled = false;
