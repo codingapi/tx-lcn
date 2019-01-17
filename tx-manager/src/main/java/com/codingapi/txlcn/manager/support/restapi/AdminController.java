@@ -72,7 +72,7 @@ public class AdminController {
 
 
     @DeleteMapping("/exceptions")
-    public boolean deleteByIdList(@RequestBody List<Long> ids) {
+    public boolean deleteByIdList(@RequestBody List<Long> ids)throws TxManagerException {
         txExceptionService.deleteByIdList(ids);
         return true;
     }

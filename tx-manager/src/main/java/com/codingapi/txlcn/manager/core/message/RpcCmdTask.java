@@ -60,10 +60,6 @@ public class RpcCmdTask implements Runnable {
         try {
             Object message = rpcExecuteService.execute(transactionCmd);
             messageDto = MessageCreator.notifyGroupOkResponse(message,action);
-        }catch (UserRollbackException e){
-            log.error(e.getMessage(), e);
-            messageDto = MessageCreator.notifyGroupFailResponse(e,action);
-            txLogger.trace(transactionCmd.getGroupId(),"","rpccmd","error->"+messageDto.getAction());
         } catch(Throwable e) {
             log.error(e.getMessage(), e);
             messageDto = MessageCreator.notifyGroupFailResponse(e,action);

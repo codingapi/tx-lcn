@@ -16,13 +16,13 @@
 package com.codingapi.txlcn.manager.support.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
 import com.codingapi.txlcn.spi.message.util.MessageUtils;
 import com.codingapi.txlcn.commons.exception.SerializerException;
 import com.codingapi.txlcn.commons.exception.TransactionStateException;
-import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.manager.core.message.MessageCreator;
 import com.codingapi.txlcn.manager.db.domain.TxException;
 import com.codingapi.txlcn.manager.db.mapper.TxExceptionMapper;
@@ -59,6 +59,11 @@ public class TxExceptionServiceImpl implements TxExceptionService {
 
 
     private final TxExceptionListener txExceptionListener;
+
+    @Override
+    public void deleteByIdList(List<Long> ids) throws TxManagerException {
+
+    }
 
     @Autowired
     public TxExceptionServiceImpl(TxExceptionMapper txExceptionMapper, RpcClient rpcClient,
@@ -144,13 +149,13 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         if (Objects.isNull(exception)) {
             throw new TransactionStateException("non exists aspect log", TransactionStateException.NON_ASPECT);
         }
-        List<String> modList = rpcClient.moduleList(exception.getModId());
-        if (modList.isEmpty()) {
+        List<String> remoteKeys = rpcClient.remoteKeys(exception.getModId());
+        if (remoteKeys.isEmpty()) {
             throw new TransactionStateException("non mod found", TransactionStateException.NON_MOD);
         }
         try {
-            for (String mod : modList) {
-                MessageDto messageDto = rpcClient.request(mod, MessageCreator.getAspectLog(groupId, unitId));
+            for (String remoteKey : remoteKeys) {
+                MessageDto messageDto = rpcClient.request(remoteKey, MessageCreator.getAspectLog(groupId, unitId));
                 if (MessageUtils.statusOk(messageDto)) {
                     return messageDto.loadData(JSONObject.class);
                 }
