@@ -16,7 +16,9 @@
 package com.codingapi.txlcn.logger.helper;
 
 import com.codingapi.txlcn.logger.db.TxLog;
+import com.codingapi.txlcn.logger.model.Field;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,16 +32,18 @@ public interface TxLcnLogDbHelper {
 
     /**
      * 数据库初始化操作.
+     *
      * @throws Exception
      */
     void init() throws Exception;
 
     /**
      * 插入数据
+     *
      * @param txLoggerInfo logbean
      * @return rs
      */
-     int insert(TxLog txLoggerInfo);
+    int insert(TxLog txLoggerInfo);
 
     /**
      * 分页获取记录
@@ -49,7 +53,7 @@ public interface TxLcnLogDbHelper {
      * @param timeOrder 时间排序SQL
      * @return 结果集
      */
-     List<TxLog> findByLimit(int left, int right, int timeOrder) ;
+    List<TxLog> findByLimit(int left, int right, int timeOrder);
 
 
     /**
@@ -62,8 +66,7 @@ public interface TxLcnLogDbHelper {
      * @param timeOrder timeOrder
      * @return 数据集
      */
-     List<TxLog> findByGroupAndTag(int left, int right, String groupId, String tag, int timeOrder) ;
-
+    List<TxLog> findByGroupAndTag(int left, int right, String groupId, String tag, int timeOrder);
 
 
     /**
@@ -75,8 +78,7 @@ public interface TxLcnLogDbHelper {
      * @param timeOrder timeOrder
      * @return 数据集
      */
-     List<TxLog> findByTag(int left, int right, String tag, int timeOrder) ;
-
+    List<TxLog> findByTag(int left, int right, String tag, int timeOrder);
 
 
     /**
@@ -88,9 +90,7 @@ public interface TxLcnLogDbHelper {
      * @param timeOrder timeOrder
      * @return 数据集
      */
-     List<TxLog> findByGroupId(int left, int right, String groupId, int timeOrder);
-
-
+    List<TxLog> findByGroupId(int left, int right, String groupId, int timeOrder);
 
 
     /**
@@ -98,7 +98,7 @@ public interface TxLcnLogDbHelper {
      *
      * @return 总数
      */
-     long findByLimitTotal() ;
+    long findByLimitTotal();
 
     /**
      * GroupId 和 Tag 查询记录数
@@ -107,7 +107,7 @@ public interface TxLcnLogDbHelper {
      * @param tag     标示
      * @return 数量
      */
-     long findByGroupAndTagTotal(String groupId, String tag) ;
+    long findByGroupAndTagTotal(String groupId, String tag);
 
 
     /**
@@ -116,7 +116,7 @@ public interface TxLcnLogDbHelper {
      * @param tag 标示
      * @return 数量
      */
-     long findByTagTotal(String tag) ;
+    long findByTagTotal(String tag);
 
     /**
      * GroupId 查询记录数
@@ -124,6 +124,12 @@ public interface TxLcnLogDbHelper {
      * @param groupId GroupId
      * @return 总数
      */
-     long findByGroupIdTotal(String groupId);
+    long findByGroupIdTotal(String groupId);
 
+    /**
+     * 按字段删除日志
+     *
+     * @param fields
+     */
+    void deleteByFields(List<Field> fields);
 }

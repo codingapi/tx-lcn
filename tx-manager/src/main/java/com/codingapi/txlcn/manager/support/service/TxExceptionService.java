@@ -70,10 +70,10 @@ public interface TxExceptionService {
     JSONObject getTransactionInfo(String groupId, String unitId) throws TxManagerException, TransactionStateException;
 
     /**
+     * 删除异常
      *
-     *
-     * @param ids
-     * @throws TxManagerException
+     * @param ids 异常标识
+     * @throws TxManagerException ex
      */
-    void deleteByIdList(List<Long> ids) throws TxManagerException;
+    void deleteExceptions(List<Long> ids) throws TxManagerException;
 }

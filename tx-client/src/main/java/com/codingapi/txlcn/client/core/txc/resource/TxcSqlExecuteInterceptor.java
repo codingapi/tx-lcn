@@ -33,12 +33,12 @@ import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SelectItem;
 import net.sf.jsqlparser.statement.update.Update;
 import org.apache.commons.dbutils.DbUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +56,6 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
     private final TxcService txcService;
 
-    @Autowired
     public TxcSqlExecuteInterceptor(TableStructAnalyser tableStructAnalyser, TxcService txcService) {
         this.tableStructAnalyser = tableStructAnalyser;
         this.txcService = txcService;
@@ -64,7 +63,6 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
     @Override
     public void preUpdate(Update update) throws SQLException {
-
         // 获取线程传递参数
         String groupId = DTXLocal.cur().getGroupId();
         String unitId = DTXLocal.cur().getUnitId();
@@ -103,13 +101,18 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
     @Override
     public void preDelete(Delete delete) throws SQLException {
-        log.info("do pre delete");
+        log.debug("do pre delete: {}", delete);
 
         // 获取线程传递参数
         RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
         String groupId = DTXLocal.cur().getGroupId();
         String unitId = DTXLocal.cur().getUnitId();
         Connection connection = (Connection) DTXLocal.cur().getResource();
+
+        // 获取Sql Table
+        if (delete.getTables().size() == 0) {
+            delete.setTables(Collections.singletonList(delete.getTable()));
+        }
 
         // Delete Sql 数据
         List<String> tables = new ArrayList<>(delete.getTables().size());

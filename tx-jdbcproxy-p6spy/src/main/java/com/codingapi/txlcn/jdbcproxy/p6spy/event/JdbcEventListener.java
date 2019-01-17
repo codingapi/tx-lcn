@@ -101,8 +101,10 @@ public abstract class JdbcEventListener {
    *
    * @param statementInformation The meta information about the {@link Statement} being invoked
    * @param sql                  The SQL string provided to the execute method
+   * @return sql
    */
-  public void onBeforeAddBatch(StatementInformation statementInformation, String sql) {
+  public String onBeforeAddBatch(StatementInformation statementInformation, String sql) {
+    return sql;
   }
 
   /**
@@ -144,9 +146,11 @@ public abstract class JdbcEventListener {
    *
    * @param statementInformation The meta information about the {@link Statement} being invoked
    * @param sql                  The SQL string provided to the execute method
+   * @return sql
    * @throws SQLException SQLException
    */
-  public void onBeforeExecute(StatementInformation statementInformation, String sql) throws SQLException {
+  public String onBeforeExecute(StatementInformation statementInformation, String sql) throws SQLException {
+     return sql;
   }
 
   /**
@@ -210,10 +214,12 @@ public abstract class JdbcEventListener {
    * This callback method is executed before any of the {@link Statement#executeUpdate(String)} methods are invoked.
    *
    * @param statementInformation The meta information about the {@link Statement} being invoked
-   * @param sql                  The SQL string provided to the execute method
+   * @param  sql                  The SQL string provided to the execute method
+   * @return sql
    * @throws SQLException SQLException
    */
-  public void onBeforeExecuteUpdate(StatementInformation statementInformation, String sql)  throws SQLException{
+  public String onBeforeExecuteUpdate(StatementInformation statementInformation, String sql)  throws SQLException{
+    return sql;
   }
 
   /**
@@ -256,9 +262,11 @@ public abstract class JdbcEventListener {
    *
    * @param statementInformation The meta information about the {@link Statement} being invoked
    * @param sql                  The SQL string provided to the execute method
+   * @return sql
    * @throws SQLException SQLException
    */
-  public void onBeforeExecuteQuery(StatementInformation statementInformation, String sql) throws SQLException {
+  public String onBeforeExecuteQuery(StatementInformation statementInformation, String sql) throws SQLException {
+    return sql;
   }
 
   /**

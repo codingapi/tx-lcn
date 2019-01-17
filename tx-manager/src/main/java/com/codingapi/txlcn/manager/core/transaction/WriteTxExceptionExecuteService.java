@@ -50,11 +50,12 @@ public class WriteTxExceptionExecuteService implements RpcExecuteService {
     private final DTXTransactionContext transactionContext;
 
     @Autowired
-    public WriteTxExceptionExecuteService(TxExceptionService compensationService, RpcClient rpcClient,TransactionManager transactionManager, DTXTransactionContext transactionContext) {
+    public WriteTxExceptionExecuteService(TxExceptionService compensationService, RpcClient rpcClient,
+                                          TransactionManager transactionManager, DTXTransactionContext transactionContext) {
         this.compensationService = compensationService;
         this.rpcClient = rpcClient;
         this.transactionManager = transactionManager;
-        this.transactionContext =transactionContext;
+        this.transactionContext = transactionContext;
     }
 
     @Override
@@ -65,9 +66,9 @@ public class WriteTxExceptionExecuteService implements RpcExecuteService {
             writeTxExceptionReq.setModId(rpcClient.getAppName(transactionCmd.getRemoteKey()));
 
             //获取事务状态（可能存在设置了手动回滚）
-            int transactionState =  transactionManager.transactionState(transactionContext.getTransaction(txExceptionParams.getGroupId()));
+            int transactionState = transactionManager.transactionState(transactionContext.getTransaction(txExceptionParams.getGroupId()));
 
-            writeTxExceptionReq.setTransactionState(transactionState==-1?txExceptionParams.getTransactionState():transactionState);
+            writeTxExceptionReq.setTransactionState(transactionState == -1 ? txExceptionParams.getTransactionState() : transactionState);
             writeTxExceptionReq.setGroupId(txExceptionParams.getGroupId());
             writeTxExceptionReq.setUnitId(txExceptionParams.getUnitId());
             writeTxExceptionReq.setRegistrar(Objects.isNull(txExceptionParams.getRegistrar()) ? -1 : txExceptionParams.getRegistrar());

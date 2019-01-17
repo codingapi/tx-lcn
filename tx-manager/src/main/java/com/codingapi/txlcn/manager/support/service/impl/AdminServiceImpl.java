@@ -19,22 +19,22 @@ import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.commons.util.RandomUtils;
 import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.helper.TxLcnLogDbHelper;
+import com.codingapi.txlcn.logger.model.*;
 import com.codingapi.txlcn.manager.config.TxManagerConfig;
 import com.codingapi.txlcn.manager.support.restapi.auth.DefaultTokenStorage;
-import com.codingapi.txlcn.manager.support.restapi.model.DTXInfo;
-import com.codingapi.txlcn.manager.support.restapi.model.TxLogList;
-import com.codingapi.txlcn.manager.support.restapi.model.TxManagerInfo;
-import com.codingapi.txlcn.manager.support.restapi.model.TxManagerLog;
+import com.codingapi.txlcn.manager.support.restapi.model.*;
 import com.codingapi.txlcn.manager.support.service.AdminService;
 import com.codingapi.txlcn.spi.message.RpcClient;
+import com.codingapi.txlcn.spi.message.dto.AppInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Description:
@@ -148,5 +148,43 @@ public class AdminServiceImpl implements AdminService {
         txManagerInfo.setSocketPort(managerConfig.getPort());
         txManagerInfo.setExUrl(managerConfig.isExUrlEnabled() ? managerConfig.getExUrl() : "disabled");
         return txManagerInfo;
+    }
+
+    @Override
+    public void deleteLogs(DeleteLogsReq deleteLogsReq) throws TxManagerException {
+        List<Field> list = Stream.of(new GroupId(deleteLogsReq.getGroupId()), new Tag(deleteLogsReq.getTag()),
+                new StartTime(deleteLogsReq.getLTime()), new StopTime(deleteLogsReq.getRTime()))
+                .filter(Field::ok).collect(Collectors.toList());
+        txLoggerHelper.deleteByFields(list);
+    }
+
+    @Override
+    public ListAppMods listAppMods(Integer page, Integer limit) {
+        if (Objects.isNull(limit) || limit < 1) {
+            limit = 10;
+        }
+        if (Objects.isNull(page) || page < 1) {
+            page = 1;
+        }
+        List<ListAppMods.AppMod> appMods = new ArrayList<>(limit);
+        int firIdx = (page - 1) * limit;
+        List<AppInfo> apps = rpcClient.apps();
+        for (int i = 0; i < apps.size(); i++) {
+            if (firIdx > apps.size() - 1) {
+                break;
+            }
+            if (i < firIdx) {
+                continue;
+            }
+            AppInfo appInfo = apps.get(i);
+            ListAppMods.AppMod appMod = new ListAppMods.AppMod();
+            PropertyMapper.get().from(appInfo::getName).to(appMod::setModId);
+            PropertyMapper.get().from(appInfo::getCreateTime).to(appMod::setRegisterTime);
+            appMods.add(appMod);
+        }
+        ListAppMods listAppMods = new ListAppMods();
+        listAppMods.setTotal(apps.size());
+        listAppMods.setAppMods(appMods);
+        return listAppMods;
     }
 }

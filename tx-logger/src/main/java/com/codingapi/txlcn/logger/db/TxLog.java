@@ -33,6 +33,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TxLog {
 
+    private long id;
+
     /**
      * TAG
      */

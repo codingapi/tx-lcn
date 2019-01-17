@@ -18,286 +18,230 @@
 package com.codingapi.txlcn.jdbcproxy.p6spy.spring;
 
 
-
+import com.codingapi.txlcn.jdbcproxy.p6spy.common.*;
 import com.codingapi.txlcn.jdbcproxy.p6spy.event.DefaultEventListener;
 import com.codingapi.txlcn.jdbcproxy.p6spy.event.JdbcEventListener;
-import com.codingapi.txlcn.jdbcproxy.p6spy.common.*;
+import com.codingapi.txlcn.jdbcproxy.p6spy.event.P6spyJdbcEventListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Component
 public class CompoundJdbcEventListener extends JdbcEventListener {
-  private final List<JdbcEventListener> eventListeners;
 
-  public CompoundJdbcEventListener() {
-    eventListeners = new ArrayList<JdbcEventListener>();
-    eventListeners.add(DefaultEventListener.INSTANCE);
-  }
+  @Autowired
+  private P6spyJdbcEventListener p6spyEventListener;
 
-  public CompoundJdbcEventListener(List<JdbcEventListener> eventListeners) {
-    this.eventListeners = eventListeners;
-  }
-
-  public void addListener(JdbcEventListener listener) {
-    eventListeners.add(listener);
-  }
-
-  /**
-   * Returns a read only view of the registered {@link JdbcEventListener}s
-   *
-   * @return a read only view of the registered {@link JdbcEventListener}s
-   */
-  public List<JdbcEventListener> getEventListeners() {
-    return Collections.unmodifiableList(eventListeners);
-  }
 
   @Override
   public void onBeforeGetConnection(ConnectionInformation connectionInformation) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onBeforeGetConnection(connectionInformation);
-    }
+      DefaultEventListener.INSTANCE.onBeforeGetConnection(connectionInformation);
+      p6spyEventListener.onBeforeGetConnection(connectionInformation);
   }
 
   @Override
   public void onAfterGetConnection(ConnectionInformation connectionInformation, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterGetConnection(connectionInformation, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterGetConnection(connectionInformation,e);
+      p6spyEventListener.onAfterGetConnection(connectionInformation, e);
   }
 
   @Override
   @Deprecated
   public void onConnectionWrapped(ConnectionInformation connectionInformation) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onConnectionWrapped(connectionInformation);
-    }
+      DefaultEventListener.INSTANCE.onConnectionWrapped(connectionInformation);
+      p6spyEventListener.onConnectionWrapped(connectionInformation);
   }
 
   @Override
   public void onBeforeAddBatch(PreparedStatementInformation statementInformation) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onBeforeAddBatch(statementInformation);
-    }
+      DefaultEventListener.INSTANCE.onBeforeAddBatch(statementInformation);
+      p6spyEventListener.onBeforeAddBatch(statementInformation);
   }
 
   @Override
   public void onAfterAddBatch(PreparedStatementInformation statementInformation, long timeElapsedNanos, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterAddBatch(statementInformation, timeElapsedNanos, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterAddBatch(statementInformation,timeElapsedNanos,e);
+      p6spyEventListener.onAfterAddBatch(statementInformation, timeElapsedNanos, e);
   }
 
   @Override
-  public void onBeforeAddBatch(StatementInformation statementInformation, String sql) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onBeforeAddBatch(statementInformation, sql);
-    }
+  public String onBeforeAddBatch(StatementInformation statementInformation, String sql) {
+      DefaultEventListener.INSTANCE.onBeforeAddBatch(statementInformation,sql);
+     return p6spyEventListener.onBeforeAddBatch(statementInformation, sql);
   }
 
   @Override
   public void onAfterAddBatch(StatementInformation statementInformation, long timeElapsedNanos, String sql, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterAddBatch(statementInformation, timeElapsedNanos, sql, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterAddBatch(statementInformation,timeElapsedNanos,sql,e);
+      p6spyEventListener.onAfterAddBatch(statementInformation, timeElapsedNanos, sql, e);
   }
 
   @Override
   public void onBeforeExecute(PreparedStatementInformation statementInformation)  throws SQLException{
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onBeforeExecute(statementInformation);
-    }
+      DefaultEventListener.INSTANCE.onBeforeExecute(statementInformation);
+    p6spyEventListener.onBeforeExecute(statementInformation);
   }
 
   @Override
   public void onAfterExecute(PreparedStatementInformation statementInformation, long timeElapsedNanos, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterExecute(statementInformation, timeElapsedNanos, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterExecute(statementInformation,timeElapsedNanos,e);
+      p6spyEventListener.onAfterExecute(statementInformation, timeElapsedNanos, e);
   }
 
   @Override
-  public void onBeforeExecute(StatementInformation statementInformation, String sql)  throws SQLException{
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onBeforeExecute(statementInformation, sql);
-    }
+  public String onBeforeExecute(StatementInformation statementInformation, String sql)  throws SQLException{
+      DefaultEventListener.INSTANCE.onBeforeExecute(statementInformation,sql);
+      return p6spyEventListener.onBeforeExecute(statementInformation, sql);
   }
 
   @Override
   public void onAfterExecute(StatementInformation statementInformation, long timeElapsedNanos, String sql, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterExecute(statementInformation, timeElapsedNanos, sql, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterExecute(statementInformation,timeElapsedNanos,sql,e);
+      p6spyEventListener.onAfterExecute(statementInformation, timeElapsedNanos, sql, e);
   }
 
   @Override
   public void onBeforeExecuteBatch(StatementInformation statementInformation)  throws SQLException{
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onBeforeExecuteBatch(statementInformation);
-    }
+      DefaultEventListener.INSTANCE.onBeforeExecuteBatch(statementInformation);
+      p6spyEventListener.onBeforeExecuteBatch(statementInformation);
   }
 
   @Override
   public void onAfterExecuteBatch(StatementInformation statementInformation, long timeElapsedNanos, int[] updateCounts, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterExecuteBatch(statementInformation, timeElapsedNanos, updateCounts, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterExecuteBatch(statementInformation,timeElapsedNanos,updateCounts,e);
+      p6spyEventListener.onAfterExecuteBatch(statementInformation, timeElapsedNanos, updateCounts, e);
   }
 
   @Override
   public void onBeforeExecuteUpdate(PreparedStatementInformation statementInformation) throws SQLException {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onBeforeExecuteUpdate(statementInformation);
-    }
+      DefaultEventListener.INSTANCE.onBeforeExecuteUpdate(statementInformation);
+      p6spyEventListener.onBeforeExecuteUpdate(statementInformation);
   }
 
   @Override
   public void onAfterExecuteUpdate(PreparedStatementInformation statementInformation, long timeElapsedNanos, int rowCount, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterExecuteUpdate(statementInformation, timeElapsedNanos, rowCount, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterExecuteUpdate(statementInformation,timeElapsedNanos,rowCount,e);
+      p6spyEventListener.onAfterExecuteUpdate(statementInformation, timeElapsedNanos, rowCount, e);
   }
 
   @Override
-  public void onBeforeExecuteUpdate(StatementInformation statementInformation, String sql)  throws SQLException{
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onBeforeExecuteUpdate(statementInformation, sql);
-    }
+  public String onBeforeExecuteUpdate(StatementInformation statementInformation, String sql)  throws SQLException{
+      DefaultEventListener.INSTANCE.onBeforeExecuteUpdate(statementInformation,sql);
+      return p6spyEventListener.onBeforeExecuteUpdate(statementInformation, sql);
   }
 
   @Override
   public void onAfterExecuteUpdate(StatementInformation statementInformation, long timeElapsedNanos, String sql, int rowCount, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterExecuteUpdate(statementInformation, timeElapsedNanos, sql, rowCount, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterExecuteUpdate(statementInformation,timeElapsedNanos,sql,rowCount,e);
+      p6spyEventListener.onAfterExecuteUpdate(statementInformation, timeElapsedNanos, sql, rowCount, e);
   }
 
   @Override
   public void onBeforeExecuteQuery(PreparedStatementInformation statementInformation)  throws SQLException{
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onBeforeExecuteQuery(statementInformation);
-    }
+      DefaultEventListener.INSTANCE.onBeforeExecuteQuery(statementInformation);
+      p6spyEventListener.onBeforeExecuteQuery(statementInformation);
   }
 
   @Override
   public void onAfterExecuteQuery(PreparedStatementInformation statementInformation, long timeElapsedNanos, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterExecuteQuery(statementInformation, timeElapsedNanos, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterExecuteQuery(statementInformation,timeElapsedNanos,e);
+    p6spyEventListener.onAfterExecuteQuery(statementInformation, timeElapsedNanos, e);
   }
 
   @Override
-  public void onBeforeExecuteQuery(StatementInformation statementInformation, String sql)  throws SQLException{
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onBeforeExecuteQuery(statementInformation, sql);
-    }
+  public String onBeforeExecuteQuery(StatementInformation statementInformation, String sql)  throws SQLException{
+      DefaultEventListener.INSTANCE.onBeforeExecuteQuery(statementInformation,sql);
+      return p6spyEventListener.onBeforeExecuteQuery(statementInformation, sql);
   }
 
   @Override
   public void onAfterExecuteQuery(StatementInformation statementInformation, long timeElapsedNanos, String sql, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterExecuteQuery(statementInformation, timeElapsedNanos, sql, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterExecuteQuery(statementInformation,timeElapsedNanos,sql,e);
+      p6spyEventListener.onAfterExecuteQuery(statementInformation, timeElapsedNanos, sql, e);
   }
 
   @Override
   public void onAfterPreparedStatementSet(PreparedStatementInformation statementInformation, int parameterIndex, Object value, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterPreparedStatementSet(statementInformation, parameterIndex, value, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterPreparedStatementSet(statementInformation,parameterIndex,value,e);
+      p6spyEventListener.onAfterPreparedStatementSet(statementInformation, parameterIndex, value, e);
   }
 
   @Override
   public void onAfterCallableStatementSet(CallableStatementInformation statementInformation, String parameterName, Object value, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterCallableStatementSet(statementInformation, parameterName, value, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterCallableStatementSet(statementInformation,parameterName,value,e);
+      p6spyEventListener.onAfterCallableStatementSet(statementInformation, parameterName, value, e);
   }
 
   @Override
   public void onAfterGetResultSet(StatementInformation statementInformation, long timeElapsedNanos, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterGetResultSet(statementInformation, timeElapsedNanos, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterGetResultSet(statementInformation,timeElapsedNanos,e);
+      p6spyEventListener.onAfterGetResultSet(statementInformation, timeElapsedNanos, e);
   }
 
   @Override
   public void onBeforeResultSetNext(ResultSetInformation resultSetInformation) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onBeforeResultSetNext(resultSetInformation);
-    }
+      DefaultEventListener.INSTANCE.onBeforeResultSetNext(resultSetInformation);
+      p6spyEventListener.onBeforeResultSetNext(resultSetInformation);
   }
 
   @Override
   public void onAfterResultSetNext(ResultSetInformation resultSetInformation, long timeElapsedNanos, boolean hasNext, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterResultSetNext(resultSetInformation, timeElapsedNanos, hasNext, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterResultSetNext(resultSetInformation,timeElapsedNanos,hasNext,e);
+      p6spyEventListener.onAfterResultSetNext(resultSetInformation, timeElapsedNanos, hasNext, e);
   }
 
   @Override
   public void onAfterResultSetClose(ResultSetInformation resultSetInformation, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterResultSetClose(resultSetInformation, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterResultSetClose(resultSetInformation,e);
+      p6spyEventListener.onAfterResultSetClose(resultSetInformation, e);
   }
 
   @Override
   public void onAfterResultSetGet(ResultSetInformation resultSetInformation, String columnLabel, Object value, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterResultSetGet(resultSetInformation, columnLabel, value, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterResultSetGet(resultSetInformation,columnLabel,value,e);
+      p6spyEventListener.onAfterResultSetGet(resultSetInformation, columnLabel, value, e);
   }
 
   @Override
   public void onAfterResultSetGet(ResultSetInformation resultSetInformation, int columnIndex, Object value, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterResultSetGet(resultSetInformation, columnIndex, value, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterResultSetGet(resultSetInformation,columnIndex,value,e);
+      p6spyEventListener.onAfterResultSetGet(resultSetInformation, columnIndex, value, e);
   }
 
   @Override
   public void onBeforeCommit(ConnectionInformation connectionInformation) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onBeforeCommit(connectionInformation);
-    }
+      DefaultEventListener.INSTANCE.onBeforeCommit(connectionInformation);
+      p6spyEventListener.onBeforeCommit(connectionInformation);
   }
 
   @Override
   public void onAfterCommit(ConnectionInformation connectionInformation, long timeElapsedNanos, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterCommit(connectionInformation, timeElapsedNanos, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterCommit(connectionInformation,timeElapsedNanos,e);
+      p6spyEventListener.onAfterCommit(connectionInformation, timeElapsedNanos, e);
   }
 
   @Override
   public void onAfterConnectionClose(ConnectionInformation connectionInformation, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterConnectionClose(connectionInformation, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterConnectionClose(connectionInformation,e);
+      p6spyEventListener.onAfterConnectionClose(connectionInformation, e);
   }
 
   @Override
   public void onBeforeRollback(ConnectionInformation connectionInformation) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onBeforeRollback(connectionInformation);
-    }
+      DefaultEventListener.INSTANCE.onBeforeRollback(connectionInformation);
+      p6spyEventListener.onBeforeRollback(connectionInformation);
   }
 
   @Override
   public void onAfterRollback(ConnectionInformation connectionInformation, long timeElapsedNanos, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterRollback(connectionInformation, timeElapsedNanos, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterRollback(connectionInformation,timeElapsedNanos,e);
+      p6spyEventListener.onAfterRollback(connectionInformation, timeElapsedNanos, e);
   }
 
   @Override
   public void onAfterStatementClose(StatementInformation statementInformation, SQLException e) {
-    for (JdbcEventListener eventListener : eventListeners) {
-      eventListener.onAfterStatementClose(statementInformation, e);
-    }
+      DefaultEventListener.INSTANCE.onAfterStatementClose(statementInformation,e);
+      p6spyEventListener.onAfterStatementClose(statementInformation, e);
   }
 }

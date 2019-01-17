@@ -19,6 +19,7 @@ import com.codingapi.txlcn.logger.db.LogDbHelper;
 import com.codingapi.txlcn.logger.db.LogDbProperties;
 import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.exception.NotEnableLogException;
+import com.codingapi.txlcn.logger.model.*;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.GenerousBeanProcessor;
 import org.apache.commons.dbutils.RowProcessor;
@@ -26,7 +27,11 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -45,12 +50,14 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
 
     @Autowired
     private LogDbProperties logDbProperties;
-    
+
     private RowProcessor processor = new BasicRowProcessor(new GenerousBeanProcessor());
-    
+
+
+
     @Override
     public void init() throws Exception {
-        if(logDbProperties.isEnabled()) {
+        if (logDbProperties.isEnabled()) {
             String sql = "CREATE TABLE IF NOT EXISTS `t_logger`  (\n" +
                     "  `id` bigint(20) NOT NULL AUTO_INCREMENT,\n" +
                     "  `group_id` varchar(50)  NOT NULL ,\n" +
@@ -63,15 +70,16 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
                     ") ";
             dbHelper.update(sql);
         }
-        
+
     }
-    
+
+
     @Override
     public int insert(TxLog txLoggerInfo) {
-        if(logDbProperties.isEnabled()) {
+        if (logDbProperties.isEnabled()) {
             String sql = "insert into t_logger(group_id,unit_id,tag,content,create_time,app_name) values(?,?,?,?,?,?)";
             return dbHelper.update(sql, txLoggerInfo.getGroupId(), txLoggerInfo.getUnitId(), txLoggerInfo.getTag(), txLoggerInfo.getContent(), txLoggerInfo.getCreateTime(), txLoggerInfo.getAppName());
-        }else{
+        } else {
             throw new NotEnableLogException("not enable logger");
         }
     }
@@ -86,14 +94,16 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
      */
     @Override
     public List<TxLog> findByLimit(int left, int right, int timeOrder) {
-        if(logDbProperties.isEnabled()) {
+        if (logDbProperties.isEnabled()) {
             String sql = "select * from t_logger " + timeOrderSql(timeOrder) + " limit " + left + ", " + right;
             return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor));
-        }else {
+        } else {
             throw new NotEnableLogException("not enable logger");
         }
     }
-    
+
+
+
     /**
      * GroupID 和 Tag 查询
      *
@@ -106,15 +116,17 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
      */
     @Override
     public List<TxLog> findByGroupAndTag(int left, int right, String groupId, String tag, int timeOrder) {
-        if(logDbProperties.isEnabled()) {
+        if (logDbProperties.isEnabled()) {
             String sql = "select * from t_logger where group_id=? and tag=? " + timeOrderSql(timeOrder) + " limit "
                     + left + ", " + right;
             return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor), groupId, tag);
-        }else{
+        } else {
             throw new NotEnableLogException("not enable logger");
         }
     }
-    
+
+
+
     /**
      * ag 查询
      *
@@ -126,14 +138,16 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
      */
     @Override
     public List<TxLog> findByTag(int left, int right, String tag, int timeOrder) {
-        if(logDbProperties.isEnabled()) {
+        if (logDbProperties.isEnabled()) {
             String sql = "select * from t_logger where tag =? " + timeOrderSql(timeOrder) + " limit " + left + ", " + right;
             return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor), tag);
-        }else{
+        } else {
             throw new NotEnableLogException("not enable logger");
         }
     }
-    
+
+
+
     /**
      * GroupId 查询
      *
@@ -145,13 +159,14 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
      */
     @Override
     public List<TxLog> findByGroupId(int left, int right, String groupId, int timeOrder) {
-        if(logDbProperties.isEnabled()) {
+        if (logDbProperties.isEnabled()) {
             String sql = "select * from t_logger where group_id=? " + timeOrderSql(timeOrder) + " limit " + left + ", " + right;
             return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor), groupId);
-        }else{
+        } else {
             throw new NotEnableLogException("not enable logger");
         }
     }
+
 
     /**
      * 按筛选条件获取记录数
@@ -161,9 +176,9 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
      * @return 总共记录数
      */
     private long total(String where, Object... params) {
-        if(logDbProperties.isEnabled()) {
+        if (logDbProperties.isEnabled()) {
             return dbHelper.query("select count(*) from t_logger where " + where, new ScalarHandler<>(), params);
-        }else{
+        } else {
             throw new NotEnableLogException("not enable logger");
         }
     }
@@ -220,6 +235,29 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
     @Override
     public long findByGroupIdTotal(String groupId) {
         return total("group_id=?", groupId);
+    }
+
+    @Override
+    public void deleteByFields(List<Field> fields) {
+        StringBuilder sql = new StringBuilder("delete from t_logger where 1=1 and ");
+        List<String> values = new ArrayList<>(fields.size());
+        fields.forEach(field -> {
+            if (field instanceof GroupId) {
+                sql.append("group_id=? and ");
+                values.add(((GroupId) field).getGroupId());
+            } else if (field instanceof Tag) {
+                sql.append("tag=? and ");
+                values.add(((Tag) field).getTag());
+            } else if (field instanceof StartTime) {
+                sql.append("create_time > ? and ");
+                values.add(((StartTime) field).getStartTime());
+            } else if (field instanceof StopTime) {
+                sql.append("create_time < ? and ");
+                values.add(((StopTime) field).getStopTime());
+            }
+        });
+        sql.delete(sql.length() - 4, sql.length());
+        dbHelper.update(sql.toString(), values.toArray(new Object[0]));
     }
 
 }

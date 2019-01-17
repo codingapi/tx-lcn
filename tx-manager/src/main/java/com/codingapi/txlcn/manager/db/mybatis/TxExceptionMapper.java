@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.manager.db.mapper;
+package com.codingapi.txlcn.manager.db.mybatis;
 
 import com.codingapi.txlcn.manager.db.domain.TxException;
 import org.apache.ibatis.annotations.*;
@@ -46,11 +46,14 @@ public interface TxExceptionMapper {
     Integer getTransactionStateByGroupId(String groupId);
 
     @Select("select * from t_tx_exception where ex_state=#{exState} and registrar=#{registrar}")
-    List<TxException> findByExStateAndRegistrar(@Param("exState") Integer exState, @Param("exState") Integer registrar);
+    List<TxException> findByExStateAndRegistrar(@Param("exState") Integer exState, @Param("registrar") Integer registrar);
 
     @Select("select * from t_tx_exception where ex_state=#{exState}")
     List<TxException> findByExState(Integer exState);
 
     @Select("select * from t_tx_exception")
     List<TxException> findByRegistrar(Integer registrar);
+
+    @DeleteProvider(type = TxExceptionMapperProvider.class, method = "deleteByIdList")
+    void deleteByIdList(List<Long> ids);
 }
