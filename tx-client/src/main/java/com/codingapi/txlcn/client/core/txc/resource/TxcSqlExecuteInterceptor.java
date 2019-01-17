@@ -18,10 +18,10 @@ package com.codingapi.txlcn.client.core.txc.resource;
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.core.txc.resource.def.SqlExecuteInterceptor;
 import com.codingapi.txlcn.client.core.txc.resource.def.TxcService;
+import com.codingapi.txlcn.client.core.txc.resource.def.bean.*;
 import com.codingapi.txlcn.client.core.txc.resource.util.SqlUtils;
 import com.codingapi.txlcn.commons.exception.TxcLogicException;
 import com.codingapi.txlcn.jdbcproxy.p6spy.common.StatementInformation;
-import com.codingapi.txlcn.client.core.txc.resource.def.bean.*;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
@@ -34,7 +34,6 @@ import net.sf.jsqlparser.statement.select.SelectItem;
 import net.sf.jsqlparser.statement.update.Update;
 import org.apache.commons.dbutils.DbUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -50,7 +49,6 @@ import java.util.Map;
  *
  * @author ujued
  */
-@Component
 @Slf4j
 public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 

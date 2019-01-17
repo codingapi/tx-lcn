@@ -18,16 +18,15 @@ package com.codingapi.txlcn.client.core.txc.resource;
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.core.txc.resource.def.TxcService;
 import com.codingapi.txlcn.client.core.txc.resource.def.TxcSqlExecutor;
+import com.codingapi.txlcn.client.core.txc.resource.def.bean.*;
 import com.codingapi.txlcn.client.core.txc.resource.init.TxcExceptionConnectionPool;
 import com.codingapi.txlcn.client.core.txc.resource.util.SqlUtils;
 import com.codingapi.txlcn.commons.exception.TxcLogicException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
-import com.codingapi.txlcn.client.core.txc.resource.def.bean.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.DbUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -43,7 +42,7 @@ import java.util.Objects;
  *
  * @author ujued
  */
-@Service
+
 @Slf4j
 public class TxcServiceImpl implements TxcService {
 
