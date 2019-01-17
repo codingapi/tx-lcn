@@ -10,7 +10,6 @@ import com.codingapi.txlcn.logger.db.TxLcnLoggerHelper;
  *
  * @author codingapi
  */
-//@Component
 public class TxLoggerInitializer implements TxLcnInitializer {
     
     private TxLcnLoggerHelper txLcnLoggerHelper;

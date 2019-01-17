@@ -31,7 +31,6 @@ import java.util.List;
  *
  * @author codingapi
  */
-//@Component
 public class TxLcnLoggerHelper {
     
     @Autowired

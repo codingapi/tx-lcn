@@ -26,8 +26,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-//@Component
-//@EnableConfigurationProperties
 public class LogDbProperties extends HikariConfig {
 
     private boolean enabled = false;

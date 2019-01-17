@@ -34,7 +34,6 @@ import java.util.concurrent.TimeUnit;
  *
  * @author codingapi
  */
-//@Component
 @Slf4j
 public class DefaultTxLogger implements TxLogger {
 
