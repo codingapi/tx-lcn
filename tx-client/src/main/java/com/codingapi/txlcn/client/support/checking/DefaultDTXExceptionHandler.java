@@ -43,12 +43,12 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
 
     private final TransactionCleanTemplate transactionCleanTemplate;
 
-    @Autowired
-    private TxMangerReporter txMangerReporter;
+    private final TxMangerReporter txMangerReporter;
 
     @Autowired
-    public DefaultDTXExceptionHandler(TransactionCleanTemplate transactionCleanTemplate) {
+    public DefaultDTXExceptionHandler(TransactionCleanTemplate transactionCleanTemplate, TxMangerReporter txMangerReporter) {
         this.transactionCleanTemplate = transactionCleanTemplate;
+        this.txMangerReporter = txMangerReporter;
     }
 
     @Override

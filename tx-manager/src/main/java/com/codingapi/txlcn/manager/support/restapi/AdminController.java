@@ -27,6 +27,8 @@ import com.codingapi.txlcn.manager.support.service.TxExceptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Description:
  * Date: 2018/12/28
@@ -62,8 +64,17 @@ public class AdminController {
     @GetMapping({"/exceptions/{page}", "/exceptions", "/exceptions/{page}/{limit}"})
     public ExceptionList exceptionList(
             @RequestParam(value = "page", required = false) @PathVariable(value = "page", required = false) Integer page,
-            @RequestParam(value = "limit", required = false) @PathVariable(value = "limit", required = false) Integer limit) {
-        return txExceptionService.exceptionList(page, limit, null, 1);
+            @RequestParam(value = "limit", required = false) @PathVariable(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "exState", required = false) Integer extState,
+            @RequestParam(value = "registrar", required = false) Integer registrar) {
+        return txExceptionService.exceptionList(page, limit, extState, null, registrar);
+    }
+
+
+    @DeleteMapping("/exceptions")
+    public boolean deleteByIdList(@RequestBody List<Long> ids) {
+        txExceptionService.deleteByIdList(ids);
+        return true;
     }
 
     /**
@@ -72,7 +83,7 @@ public class AdminController {
      * @param groupId groupId
      * @param unitId  unitId
      * @return transaction info
-     * @throws  TxManagerException TxManagerException
+     * @throws TxManagerException TxManagerException
      */
     @GetMapping("/log/transaction-info")
     public JSONObject transactionInfo(
@@ -88,11 +99,11 @@ public class AdminController {
     /**
      * 日志信息
      *
-     * @param page  页码
-     * @param limit 记录数
-     * @param groupId  groupId
-     * @param tag  tag
-     * @param timeOrder  timeOrder
+     * @param page      页码
+     * @param limit     记录数
+     * @param groupId   groupId
+     * @param tag       tag
+     * @param timeOrder timeOrder
      * @return TxLogList
      */
     @GetMapping({"/logs/{page}", "/logs/{page}/{limit}", "/logs"})

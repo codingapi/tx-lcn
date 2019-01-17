@@ -94,7 +94,7 @@ public class TxExceptionServiceImpl implements TxExceptionService {
     }
 
     @Override
-    public ExceptionList exceptionList(Integer page, Integer limit, String keyword, int registrar) {
+    public ExceptionList exceptionList(Integer page, Integer limit, Integer exState, String keyword, Integer registrar) {
         if (Objects.isNull(page) || page <= 0) {
             page = 1;
         }
@@ -102,7 +102,16 @@ public class TxExceptionServiceImpl implements TxExceptionService {
             limit = 10;
         }
         Page pageInfo = PageHelper.startPage(page, limit, true);
-        List<TxException> txExceptions = txExceptionMapper.findAll();
+        List<TxException> txExceptions;
+        if (Objects.nonNull(exState) && Objects.nonNull(registrar)) {
+            txExceptions = txExceptionMapper.findByExStateAndRegistrar(exState, registrar);
+        } else if (Objects.nonNull(exState)) {
+            txExceptions = txExceptionMapper.findByExState(exState);
+        } else if (Objects.nonNull(registrar)) {
+            txExceptions = txExceptionMapper.findByRegistrar(registrar);
+        } else {
+            txExceptions = txExceptionMapper.findAll();
+        }
         List<ExceptionInfo> exceptionInfoList = new ArrayList<>(txExceptions.size());
         for (TxException txException : txExceptions) {
             ExceptionInfo exceptionInfo = new ExceptionInfo();

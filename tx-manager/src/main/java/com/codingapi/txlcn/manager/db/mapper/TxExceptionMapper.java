@@ -42,9 +42,15 @@ public interface TxExceptionMapper {
     @Update("update t_tx_exception set ex_state=#{transactionState} where id=#{id}")
     void changeExState(@Param("id") Long id, @Param("transactionState") short state);
 
-    @Select("select * from t_tx_exception where group_id=#{groupId}")
-    TxException getByGroupId(String groupId);
-
     @Select("select transaction_state from t_tx_exception where group_id=#{groupId} limit 1")
     Integer getTransactionStateByGroupId(String groupId);
+
+    @Select("select * from t_tx_exception where ex_state=#{exState} and registrar=#{registrar}")
+    List<TxException> findByExStateAndRegistrar(@Param("exState") Integer exState, @Param("exState") Integer registrar);
+
+    @Select("select * from t_tx_exception where ex_state=#{exState}")
+    List<TxException> findByExState(Integer exState);
+
+    @Select("select * from t_tx_exception")
+    List<TxException> findByRegistrar(Integer registrar);
 }
