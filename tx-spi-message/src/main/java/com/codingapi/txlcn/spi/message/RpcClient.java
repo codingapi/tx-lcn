@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.spi.message;
 
+import com.codingapi.txlcn.spi.message.dto.AppInfo;
 import com.codingapi.txlcn.spi.message.dto.RpcResponseState;
 import com.codingapi.txlcn.spi.message.loadbalance.RpcLoadBalance;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
@@ -96,7 +97,7 @@ public abstract class RpcClient {
      * @param moduleName 模块名称
      * @return 远程标识
      */
-    public abstract List<String> moduleList(String moduleName);
+    public abstract List<String> remoteKeys(String moduleName);
 
 
     /**
@@ -114,5 +115,13 @@ public abstract class RpcClient {
      * @return   应用名称
      */
     public abstract  String getAppName(String remoteKey) ;
+
+
+
+    /**
+     * 获取所有的模块信息
+     * @return  应用名称
+     */
+    public abstract  List<AppInfo> apps() ;
 
 }
