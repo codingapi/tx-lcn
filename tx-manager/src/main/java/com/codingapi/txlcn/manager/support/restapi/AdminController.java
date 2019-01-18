@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Description:
@@ -71,7 +70,7 @@ public class AdminController {
     /**
      * 删除异常信息
      *
-     * @param ids 异常信息标示
+     * @param deleteExceptions 异常信息标示
      * @return 操作结果
      * @throws TxManagerException TxManagerException
      */
@@ -132,11 +131,8 @@ public class AdminController {
     /**
      * 删除日志
      *
-     * @param page
-     * @param limit
-     * @param groupId
-     * @param tag
-     * @return
+     * @param deleteLogsReq
+     * @return bool
      */
     @DeleteMapping("/logs")
     public boolean deleteLogs(@RequestBody DeleteLogsReq deleteLogsReq) throws TxManagerException {

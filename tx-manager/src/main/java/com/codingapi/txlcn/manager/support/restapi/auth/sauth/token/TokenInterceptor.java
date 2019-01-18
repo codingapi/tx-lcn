@@ -43,18 +43,18 @@ public class TokenInterceptor implements HandlerInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(TokenInterceptor.class);
 
-    private final SAuthLogic SAuthLogic;
+    private final SAuthLogic sAuthLogic;
 
     @Autowired
-    public TokenInterceptor(SAuthLogic SAuthLogic) {
-        this.SAuthLogic = SAuthLogic;
+    public TokenInterceptor(SAuthLogic sAuthLogic) {
+        this.sAuthLogic = sAuthLogic;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
         // 提供认证逻辑忽略地址
-        for (String url : SAuthLogic.ignoreUrls()) {
+        for (String url : sAuthLogic.ignoreUrls()) {
             int ind = url.indexOf("*");
             if (ind != -1 && request.getRequestURI().startsWith(url.substring(0, ind))) {
                 return true;
@@ -64,7 +64,7 @@ public class TokenInterceptor implements HandlerInterceptor {
             }
         }
         try {
-            if (SAuthLogic.isIgnored(request)) {
+            if (sAuthLogic.isIgnored(request)) {
                 LOG.info("Ignored caused logic.");
                 return true;
             }
@@ -83,7 +83,7 @@ public class TokenInterceptor implements HandlerInterceptor {
             return false;
         }
         LOG.info("Token is: {}", token);
-        if (!SAuthLogic.verify(token)) {
+        if (!sAuthLogic.verify(token)) {
             LOG.warn("Unauthorized, token is invalid.");
             responseError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized, token is invalid.", response);
             return false;
