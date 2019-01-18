@@ -54,7 +54,7 @@ public class DefaultTxLogger implements TxLogger {
         this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         this.txLoggerHelper = txLoggerHelper;
         String name = environment.getProperty("spring.application.name");
-        this.appId = (StringUtils.hasText(name) ? name : "application") + Optional.ofNullable(serverProperties.getPort()).orElse(0);
+        this.appId = (StringUtils.hasText(name) ? name : "application") + ":" + Optional.ofNullable(serverProperties.getPort()).orElse(0);
 
         // 等待线程池任务完成
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
