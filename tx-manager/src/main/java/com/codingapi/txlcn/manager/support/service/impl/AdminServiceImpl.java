@@ -17,6 +17,7 @@ package com.codingapi.txlcn.manager.support.service.impl;
 
 import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.commons.util.RandomUtils;
+import com.codingapi.txlcn.logger.db.LogDbProperties;
 import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.helper.TxLcnLogDbHelper;
 import com.codingapi.txlcn.logger.model.*;
@@ -32,6 +33,7 @@ import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -47,6 +49,8 @@ public class AdminServiceImpl implements AdminService {
 
     private final TxManagerConfig managerConfig;
 
+    private final LogDbProperties logDbProperties;
+
     private final DefaultTokenStorage defaultTokenStorage;
 
     private final TxLcnLogDbHelper txLoggerHelper;
@@ -57,11 +61,12 @@ public class AdminServiceImpl implements AdminService {
     public AdminServiceImpl(TxManagerConfig managerConfig,
                             DefaultTokenStorage defaultTokenStorage,
                             TxLcnLogDbHelper txLoggerHelper,
-                            RpcClient rpcClient) {
+                            RpcClient rpcClient, LogDbProperties logDbProperties) {
         this.managerConfig = managerConfig;
         this.defaultTokenStorage = defaultTokenStorage;
         this.txLoggerHelper = txLoggerHelper;
         this.rpcClient = rpcClient;
+        this.logDbProperties = logDbProperties;
     }
 
     @Override
@@ -147,6 +152,7 @@ public class AdminServiceImpl implements AdminService {
         txManagerInfo.setSocketHost(managerConfig.getHost());
         txManagerInfo.setSocketPort(managerConfig.getPort());
         txManagerInfo.setExUrl(managerConfig.isExUrlEnabled() ? managerConfig.getExUrl() : "disabled");
+        txManagerInfo.setEnableTxLogger(logDbProperties.isEnabled());
         return txManagerInfo;
     }
 
@@ -169,6 +175,7 @@ public class AdminServiceImpl implements AdminService {
         List<ListAppMods.AppMod> appMods = new ArrayList<>(limit);
         int firIdx = (page - 1) * limit;
         List<AppInfo> apps = rpcClient.apps();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (int i = 0; i < apps.size(); i++) {
             if (firIdx > apps.size() - 1) {
                 break;
@@ -179,7 +186,7 @@ public class AdminServiceImpl implements AdminService {
             AppInfo appInfo = apps.get(i);
             ListAppMods.AppMod appMod = new ListAppMods.AppMod();
             PropertyMapper.get().from(appInfo::getName).to(appMod::setModId);
-            PropertyMapper.get().from(appInfo::getCreateTime).to(appMod::setRegisterTime);
+            PropertyMapper.get().from(appInfo::getCreateTime).to(t -> appMod.setRegisterTime(dateFormat.format(t)));
             appMods.add(appMod);
         }
         ListAppMods listAppMods = new ListAppMods();

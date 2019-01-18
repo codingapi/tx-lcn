@@ -64,4 +64,9 @@ public class TxManagerInfo {
      * 异常通知
      */
     private String exUrl;
+
+    /**
+     * 允许系统日志
+     */
+    private boolean enableTxLogger;
 }

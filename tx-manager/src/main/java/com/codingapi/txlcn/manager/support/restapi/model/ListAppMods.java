@@ -19,6 +19,6 @@ public class ListAppMods {
     @Data
     public static class AppMod {
         private String modId;
-        private Date registerTime;
+        private String registerTime;
     }
 }
