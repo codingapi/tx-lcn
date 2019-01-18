@@ -152,7 +152,7 @@ public class AdminServiceImpl implements AdminService {
         txManagerInfo.setSocketHost(managerConfig.getHost());
         txManagerInfo.setSocketPort(managerConfig.getPort());
         txManagerInfo.setExUrl(managerConfig.isExUrlEnabled() ? managerConfig.getExUrl() : "disabled");
-        txManagerInfo.setEnableTxLogger(logDbProperties.isEnabled());
+        txManagerInfo.setEnableTxLogger(String.valueOf(logDbProperties.isEnabled()));
         return txManagerInfo;
     }
 
