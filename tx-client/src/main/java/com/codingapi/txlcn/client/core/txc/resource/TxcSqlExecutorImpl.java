@@ -17,9 +17,10 @@ package com.codingapi.txlcn.client.core.txc.resource;
 
 import com.codingapi.txlcn.client.core.txc.resource.def.TxcSqlExecutor;
 import com.codingapi.txlcn.client.core.txc.resource.def.bean.*;
-import com.codingapi.txlcn.client.core.txc.resource.init.TxcLockSql;
+import com.codingapi.txlcn.client.core.txc.resource.init.TxcSql;
 import com.codingapi.txlcn.client.core.txc.resource.rs.UpdateSqlPreDataHandler;
 import com.codingapi.txlcn.client.core.txc.resource.util.SqlUtils;
+import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.*;
@@ -28,7 +29,9 @@ import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,15 +47,15 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
 
     private final QueryRunner queryRunner;
 
-    private final TxcLockSql txcLockSql;
+    private final TxcSql txcSql;
 
     private final TxLogger txLogger;
 
 
     @Autowired
-    public TxcSqlExecutorImpl(QueryRunner queryRunner, TxcLockSql txcLockSql, TxLogger txLogger) {
+    public TxcSqlExecutorImpl(QueryRunner queryRunner, TxcSql txcSql, TxLogger txLogger) {
         this.queryRunner = queryRunner;
-        this.txcLockSql = txcLockSql;
+        this.txcSql = txcSql;
         this.txLogger = txLogger;
     }
 
@@ -60,7 +63,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
     @Override
     public void createLockTable() {
         try {
-            queryRunner.execute(txcLockSql.lockTableSql());
+            queryRunner.execute(txcSql.lockTableSql());
         } catch (SQLException e) {
             log.error("txc > sql executor > create lock table error.", e);
         }
@@ -69,7 +72,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
     @Override
     public void createUndoLogTable() {
         try {
-            queryRunner.execute(txcLockSql.undoLogTableSql());
+            queryRunner.execute(txcSql.undoLogTableSql());
         } catch (SQLException e) {
             log.error("txc > sql executor > create undo_log table error.", e);
         }
@@ -116,7 +119,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
 
     @Override
     public void tryLock(Connection connection, LockInfo lockInfo) throws SQLException {
-        String lockSql = "INSERT INTO `" + txcLockSql.lockTableName() +
+        String lockSql = "INSERT INTO `" + txcSql.lockTableName() +
                 "` (table_name, key_value, group_id, unit_id, x_lock, s_lock) values(?, ?, ?, ?, ?, ?)";
         queryRunner.insert(connection, lockSql, new ScalarHandler<Integer>(),
                 lockInfo.getTableName(),
@@ -130,13 +133,20 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
     @Override
     public void clearLock(String groupId, String unitId) throws SQLException {
         log.debug("txc > sql > executor > clear lock. groupId: {}, unitId: {}", groupId, unitId);
-        String cleanLockSql = "DELETE FROM `" + txcLockSql.lockTableName() + "` where group_id = ? and unit_id = ?";
+        String cleanLockSql = "DELETE FROM `" + txcSql.lockTableName() + "` where group_id = ? and unit_id = ?";
         queryRunner.update(cleanLockSql, groupId, unitId);
 
     }
 
     @Override
     public void writeUndoLog(UndoLogDO undoLogDo) throws SQLException {
+        Connection connection = queryRunner.getDataSource().getConnection();
+        writeUndoLogByGivenConnection(connection, undoLogDo);
+        DbUtils.close(connection);
+    }
+
+    @Override
+    public void writeUndoLogByGivenConnection(Connection connection, UndoLogDO undoLogDo) throws SQLException {
         log.debug("txc > write undo log. params: {}", undoLogDo);
         // 后置镜像查询 暂不记录
         txLogger.trace(undoLogDo.getGroupId(), undoLogDo.getUnitId(), "txc",
@@ -144,9 +154,9 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
                         ", unitId: " + undoLogDo.getUnitId());
         // 写
         String undoLogSql = "INSERT INTO `"
-                + txcLockSql.undoLogTableName()
+                + txcSql.undoLogTableName()
                 + "`(gmt_create, gmt_modified, group_id, unit_id, rollback_info) values(?, ?, ?, ?, ?)";
-        long count = queryRunner.insert(undoLogSql,
+        long count = queryRunner.insert(connection, undoLogSql,
                 new ScalarHandler<>(),
                 undoLogDo.getGmtCreate(),
                 undoLogDo.getGmtModified(),
@@ -159,24 +169,28 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
     @Override
     public void applyUndoLog(String groupId, String unitId) throws SQLException {
         log.debug("txc > execute undo log. groupId: {}, unitId: {}", groupId, unitId);
-        String undoLogSql = "SELECT * FROM `" + txcLockSql.undoLogTableName() +
+        String undoLogSql = "SELECT rollback_info FROM `" + txcSql.undoLogTableName() +
                 "` WHERE `group_id`=? and `unit_id`=?";
         Connection connection = null;
         try {
-            BeanProcessor bean = new GenerousBeanProcessor();
-            RowProcessor processor = new BasicRowProcessor(bean);
-            UndoLogDO undoLogDo = queryRunner.query(undoLogSql, new BeanHandler<>(UndoLogDO.class, processor), groupId, unitId);
-            txLogger.trace(groupId, unitId, "txc", "undoLogDo sql " + undoLogDo);
-            if (Objects.isNull(undoLogDo)) {
-                log.warn("txc . undo log not found! if in 'the ex caused mod (should enabled local transaction)' can be ignored.");
+            List<StatementInfo> undoLogDOList = queryRunner.query(undoLogSql, rs -> {
+                List<StatementInfo> list = new ArrayList<>();
+                while (rs.next()) {
+                    list.add(SqlUtils.blobToObject(rs.getBytes(1), StatementInfo.class));
+                }
+                return list;
+            }, groupId, unitId);
+            txLogger.trace(groupId, unitId, "txc", "undoLogDo sql " + undoLogDOList);
+            if (undoLogDOList.isEmpty()) {
+                log.warn("txc . undo log not found!");
+                txLogger.trace(groupId, unitId, Transactions.TXC, "undo log not found!");
                 return;
             }
-            RollbackInfo rollbackInfo = SqlUtils.blobToObject(undoLogDo.getRollbackInfo(), RollbackInfo.class);
+            RollbackInfo rollbackInfo = new RollbackInfo();
+            rollbackInfo.setRollbackSqlList(undoLogDOList);
             txLogger.trace(groupId, unitId, "txc", "rollbackInfo sql " + rollbackInfo.toString());
             connection = queryRunner.getDataSource().getConnection();
             undoRollbackInfoSql(connection, rollbackInfo);
-        } catch (SQLException e) {
-            throw e;
         } finally {
             try {
                 DbUtils.close(connection);
@@ -206,7 +220,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
     public void clearUndoLog(String groupId, String unitId) throws SQLException {
         log.debug("txc > clear undo log. groupId: {}, unitId: {}", groupId, unitId);
         txLogger.trace(groupId, unitId, "txc", "clear undo log");
-        String cleanUndoLogSql = "DELETE FROM `" + txcLockSql.undoLogTableName() + "` WHERE group_id = ? and unit_id = ?";
+        String cleanUndoLogSql = "DELETE FROM `" + txcSql.undoLogTableName() + "` WHERE group_id = ? and unit_id = ?";
         queryRunner.update(cleanUndoLogSql, groupId, unitId);
     }
 }

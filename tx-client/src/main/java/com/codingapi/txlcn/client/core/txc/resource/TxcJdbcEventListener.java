@@ -17,6 +17,7 @@ package com.codingapi.txlcn.client.core.txc.resource;
 
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.core.txc.resource.def.SqlExecuteInterceptor;
+import com.codingapi.txlcn.client.core.txc.resource.def.TxcService;
 import com.codingapi.txlcn.client.core.txc.resource.def.bean.LockableSelect;
 import com.codingapi.txlcn.jdbcproxy.p6spy.common.PreparedStatementInformation;
 import com.codingapi.txlcn.jdbcproxy.p6spy.common.StatementInformation;
@@ -29,7 +30,6 @@ import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 
@@ -42,8 +42,6 @@ public class TxcJdbcEventListener extends P6spyJdbcEventListener {
     private final SqlExecuteInterceptor sqlExecuteInterceptor;
 
 
-
-    @Autowired
     public TxcJdbcEventListener(SqlExecuteInterceptor sqlExecuteInterceptor) {
         this.sqlExecuteInterceptor = sqlExecuteInterceptor;
     }

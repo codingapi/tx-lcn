@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.client.core.txc.resource;
 
 import com.codingapi.txlcn.client.core.txc.resource.def.TxcSqlExecutor;
-import com.codingapi.txlcn.client.core.txc.resource.init.TxcLockSql;
+import com.codingapi.txlcn.client.core.txc.resource.init.TxcSql;
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -35,7 +35,7 @@ public class TxcInitializer implements TxLcnInitializer {
     private TableStructAnalyser tableStructAnalyser;
 
     @Autowired
-    private TxcLockSql txcLockSql;
+    private TxcSql txcSql;
 
     @Autowired
     private TxcSqlExecutor txcSqlExecutor;
@@ -43,10 +43,10 @@ public class TxcInitializer implements TxLcnInitializer {
 
     @Override
     public void init() throws Exception {
-        if (!tableStructAnalyser.existsTable(txcLockSql.lockTableName())) {
+        if (!tableStructAnalyser.existsTable(txcSql.lockTableName())) {
             txcSqlExecutor.createLockTable();
         }
-        if (!tableStructAnalyser.existsTable(txcLockSql.undoLogTableName())) {
+        if (!tableStructAnalyser.existsTable(txcSql.undoLogTableName())) {
             txcSqlExecutor.createUndoLogTable();
         }
     }

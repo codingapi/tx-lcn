@@ -43,7 +43,7 @@ public interface TxcSqlExecutor {
     /**
      * update sql 执行前受影响数据
      *
-     * @param connection Connection
+     * @param connection        Connection
      * @param updateImageParams updateImageParams
      * @return list
      * @throws SQLException SQLException
@@ -52,7 +52,8 @@ public interface TxcSqlExecutor {
 
     /**
      * {@code delete} sql受影响数据
-     * @param connection Connection
+     *
+     * @param connection        Connection
      * @param deleteImageParams deleteImageParams
      * @return list
      * @throws SQLException SQLException
@@ -62,7 +63,7 @@ public interface TxcSqlExecutor {
     /**
      * {@code select} 语句受影响数据查询
      *
-     * @param connection Connection
+     * @param connection        Connection
      * @param selectImageParams selectImageParams
      * @return list
      * @throws SQLException SQLException
@@ -73,7 +74,7 @@ public interface TxcSqlExecutor {
      * 尝试写入锁信息到数据库
      *
      * @param connection Connection
-     * @param lockInfo lockInfo
+     * @param lockInfo   lockInfo
      * @throws SQLException 获取锁失败时抛出
      */
     void tryLock(Connection connection, LockInfo lockInfo) throws SQLException;
@@ -83,7 +84,7 @@ public interface TxcSqlExecutor {
      *
      * @param groupId groupId
      * @param unitId  事务单元
-     * @throws SQLException  SQLException
+     * @throws SQLException SQLException
      */
     void clearLock(String groupId, String unitId) throws SQLException;
 
@@ -94,6 +95,14 @@ public interface TxcSqlExecutor {
      * @throws SQLException SQLException
      */
     void writeUndoLog(UndoLogDO undoLogDo) throws SQLException;
+
+    /**
+     * 写undo_log
+     *
+     * @param undoLogDo undoLogDo
+     * @throws SQLException SQLException
+     */
+    void writeUndoLogByGivenConnection(Connection connection, UndoLogDO undoLogDo) throws SQLException;
 
     /**
      * 回滚undo_log

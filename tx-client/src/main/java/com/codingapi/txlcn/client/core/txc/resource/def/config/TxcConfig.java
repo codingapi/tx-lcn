@@ -15,9 +15,16 @@
  */
 package com.codingapi.txlcn.client.core.txc.resource.def.config;
 
+import com.zaxxer.hikari.HikariConfig;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 /**
  * Description:
@@ -26,11 +33,23 @@ import org.springframework.stereotype.Component;
  *
  * @author codingapi
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ConfigurationProperties(prefix = "tx-lcn.client.txc")
 @Component
-public class TxcConfig {
+@Slf4j
+public class TxcConfig extends HikariConfig {
 
-    private int minIdle = 10;
-
+    @Autowired(required = false)
+    public TxcConfig(DataSourceProperties dataSourceProperties) {
+        if (Objects.isNull(dataSourceProperties)) {
+            log.info("TXC Mode Bak-Connection-Pool used user's config.");
+            return;
+        }
+        this.setDriverClassName(dataSourceProperties.getDriverClassName());
+        this.setJdbcUrl(dataSourceProperties.getUrl());
+        this.setUsername(dataSourceProperties.getUsername());
+        this.setPassword(dataSourceProperties.getPassword());
+        this.setMinimumIdle(10);
+    }
 }

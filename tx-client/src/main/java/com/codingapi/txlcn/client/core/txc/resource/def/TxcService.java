@@ -18,6 +18,8 @@ package com.codingapi.txlcn.client.core.txc.resource.def;
 import com.codingapi.txlcn.commons.exception.TxcLogicException;
 import com.codingapi.txlcn.client.core.txc.resource.def.bean.*;
 
+import java.util.List;
+
 /**
  * Description: TXC事务模式植入的业务
  * Date: 2018/12/17
@@ -28,7 +30,7 @@ public interface TxcService {
     /**
      * 锁定资源。{@code update} {@code delete} 被调用
      *
-     * @param lockInfo lockInfo
+     * @param lockInfo     lockInfo
      * @param rollbackInfo rollbackInfo
      * @throws TxcLogicException TxcLogicException
      */
@@ -38,7 +40,7 @@ public interface TxcService {
      * 锁定资源。{@code select} 被调用
      *
      * @param selectImageParams selectImageParams
-     * @param isxLock isxLock
+     * @param isxLock           isxLock
      * @throws TxcLogicException TxcLogicException
      */
     void lockSelect(SelectImageParams selectImageParams, boolean isxLock) throws TxcLogicException;
@@ -62,8 +64,8 @@ public interface TxcService {
     /**
      * 写undo_log
      *
-     * @param groupId groupId
-     * @param unitId unitId
+     * @param groupId      groupId
+     * @param unitId       unitId
      * @param rollbackInfo rollbackInfo
      * @throws TxcLogicException TxcLogicException
      */
@@ -73,7 +75,7 @@ public interface TxcService {
      * 清理TXC事务
      *
      * @param groupId groupId
-     * @param unitId unitId
+     * @param unitId  unitId
      * @throws TxcLogicException TxcLogicException
      */
     void cleanTxc(String groupId, String unitId) throws TxcLogicException;
@@ -82,8 +84,15 @@ public interface TxcService {
      * 撤销某事务单元数据库操作
      *
      * @param groupId groupId
-     * @param unitId unitId
+     * @param unitId  unitId
      * @throws TxcLogicException TxcLogicException
      */
     void undo(String groupId, String unitId) throws TxcLogicException;
+
+    /**
+     * 插入SQL撤销SQL
+     *
+     * @param insertImageParams insertImageParams
+     */
+    void resolveInsertImage(InsertImageParams insertImageParams) throws TxcLogicException;
 }

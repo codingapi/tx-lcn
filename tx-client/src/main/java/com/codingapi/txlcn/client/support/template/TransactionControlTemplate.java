@@ -109,7 +109,7 @@ public class TransactionControlTemplate {
             // TxManager创建事务组
             MessageDto messageDto = rpcClient.request(remoteKey, MessageCreator.createGroup(groupId));
             if (MessageUtils.statusOk(messageDto)) {
-                log.info("{} > create transaction group: {}, txManager: {}.", transactionType, groupId, remoteKey);
+                log.debug("{} > create transaction group: {}, txManager: {}.", transactionType, groupId, remoteKey);
                 // 缓存发起方切面信息
                 aspectLogger.trace(groupId, unitId, transactionInfo);
                 return;
@@ -149,7 +149,7 @@ public class TransactionControlTemplate {
         try {
             MessageDto messageDto = rpcClient.request(managerKey, MessageCreator.joinGroup(joinGroupParams));
             if (MessageUtils.statusOk(messageDto)) {
-                log.info("{} > joined group.", transactionType);
+                log.debug("{} > joined group.", transactionType);
 
                 // 异步检测
                 dtxChecking.startDelayCheckingAsync(groupId, unitId, transactionType);
@@ -189,7 +189,7 @@ public class TransactionControlTemplate {
                     rpcClient.request(managerKey, MessageCreator.notifyGroup(notifyGroupParams));
             // 成功清理发起方事务
             if (MessageUtils.statusOk(messageDto)) {
-                log.info("{} > close transaction group.", transactionType);
+                log.debug("{} > close transaction group.", transactionType);
                 transactionCleanTemplate.clean(groupId, unitId, transactionType, state);
                 return;
             }

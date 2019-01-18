@@ -67,17 +67,4 @@ public class TxManagerApplication {
         return new TxLcnApplicationRunner(applicationContext);
     }
 
-
-//    @Bean
-//    public CorsFilter corsFilter() {
-//        CorsConfiguration corsConfiguration = new CorsConfiguration();
-//        corsConfiguration.addAllowedOrigin("*");
-//        corsConfiguration.addAllowedHeader("*");
-//        corsConfiguration.addAllowedMethod("*");
-//        corsConfiguration.addExposedHeader("X-New-Token");
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", corsConfiguration);
-//        return new CorsFilter(source);
-//    }
-
 }

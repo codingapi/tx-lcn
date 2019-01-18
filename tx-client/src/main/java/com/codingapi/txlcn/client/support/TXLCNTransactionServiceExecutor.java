@@ -33,20 +33,17 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TXLCNTransactionServiceExecutor {
 
-    private final TXLCNTransactionBeanHelper TXLCNTransactionBeanHelper;
-
     private final TransactionAttachmentCache transactionAttachmentCache;
 
     private final TxLogger txLogger;
-    @Autowired
-    private TXLCNTransactionBeanHelper txlcnTransactionBeanHelper;
+    private final TXLCNTransactionBeanHelper txlcnTransactionBeanHelper;
 
     @Autowired
-    public TXLCNTransactionServiceExecutor(TXLCNTransactionBeanHelper TXLCNTransactionBeanHelper,
-                                           TransactionAttachmentCache transactionAttachmentCache, TxLogger txLogger) {
-        this.TXLCNTransactionBeanHelper = TXLCNTransactionBeanHelper;
+    public TXLCNTransactionServiceExecutor(TransactionAttachmentCache transactionAttachmentCache, TxLogger txLogger,
+                                           TXLCNTransactionBeanHelper txlcnTransactionBeanHelper) {
         this.transactionAttachmentCache = transactionAttachmentCache;
         this.txLogger = txLogger;
+        this.txlcnTransactionBeanHelper = txlcnTransactionBeanHelper;
     }
 
     /**

@@ -135,7 +135,7 @@ public class SimpleDTXChecking implements DTXChecking {
         ScheduledFuture scheduledFuture = delayTasks.get(groupId + unitId);
         if (Objects.nonNull(scheduledFuture)) {
             txLogger.trace(groupId, unitId, Transactions.TAG_TASK, "stop delay checking task");
-            log.info("cancel {}:{} checking.", groupId, unitId);
+            log.debug("cancel {}:{} checking.", groupId, unitId);
             scheduledFuture.cancel(true);
         }
     }
