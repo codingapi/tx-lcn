@@ -25,6 +25,8 @@ import org.springframework.util.DigestUtils;
  */
 public class Transactions {
 
+    private static String applicationId;
+
     /////////// 事务类型  //////////////////
 
     public static final String LCN = "lcn";
@@ -50,7 +52,7 @@ public class Transactions {
      * @return  md5hex val
      */
     public static String unitId(String methodSignature) {
-        return DigestUtils.md5DigestAsHex(methodSignature.getBytes());
+        return DigestUtils.md5DigestAsHex((applicationId+methodSignature).getBytes());
     }
 
     /**
@@ -61,5 +63,10 @@ public class Transactions {
      */
     public static String compensationId(String startMethodSignature) {
         return DigestUtils.md5DigestAsHex(startMethodSignature.getBytes());
+    }
+
+
+    public static void setApplicationId(String applicationId) {
+        Transactions.applicationId = applicationId;
     }
 }
