@@ -15,7 +15,6 @@
  */
 package com.codingapi.txlcn.client.support;
 
-import com.codingapi.txlcn.client.support.CustomizableTransactionSeparator;
 import org.springframework.stereotype.Component;
 
 /**

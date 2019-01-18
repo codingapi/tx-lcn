@@ -19,9 +19,6 @@ import com.codingapi.txlcn.client.dubbo.spi.sleuth.loadbalance.TXLCNLoadBalance;
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
 import com.codingapi.txlcn.spi.sleuth.listener.SleuthParamListener;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Description:
@@ -30,20 +27,16 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author ujued
  */
-@Configuration
-@ComponentScan
 @Slf4j
 public class TxLcnDubboInitializer implements TxLcnInitializer {
+    
 
-    static {
-        System.setProperty("dubbo.provider.filter","tracing");
-        System.setProperty("dubbo.consumer.filter","tracing");
-    }
-
-    @Autowired
     private SleuthParamListener sleuthParamListener;
 
-
+    public TxLcnDubboInitializer(SleuthParamListener sleuthParamListener){
+        this.sleuthParamListener=sleuthParamListener;
+    }
+    
     @Override
     public void init() throws Exception{
         TXLCNLoadBalance.sleuthParamListener = sleuthParamListener;
