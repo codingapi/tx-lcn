@@ -32,6 +32,7 @@ import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -169,6 +170,7 @@ public class AdminServiceImpl implements AdminService {
         List<ListAppMods.AppMod> appMods = new ArrayList<>(limit);
         int firIdx = (page - 1) * limit;
         List<AppInfo> apps = rpcClient.apps();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (int i = 0; i < apps.size(); i++) {
             if (firIdx > apps.size() - 1) {
                 break;
@@ -179,7 +181,7 @@ public class AdminServiceImpl implements AdminService {
             AppInfo appInfo = apps.get(i);
             ListAppMods.AppMod appMod = new ListAppMods.AppMod();
             PropertyMapper.get().from(appInfo::getName).to(appMod::setModId);
-            PropertyMapper.get().from(appInfo::getCreateTime).to(appMod::setRegisterTime);
+            PropertyMapper.get().from(appInfo::getCreateTime).to(t -> appMod.setRegisterTime(dateFormat.format(t)));
             appMods.add(appMod);
         }
         ListAppMods listAppMods = new ListAppMods();
