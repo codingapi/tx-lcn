@@ -17,6 +17,7 @@ package com.codingapi.txlcn.manager.support.service.impl;
 
 import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.commons.util.RandomUtils;
+import com.codingapi.txlcn.logger.db.LogDbProperties;
 import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.helper.TxLcnLogDbHelper;
 import com.codingapi.txlcn.logger.model.*;
@@ -48,6 +49,8 @@ public class AdminServiceImpl implements AdminService {
 
     private final TxManagerConfig managerConfig;
 
+    private final LogDbProperties logDbProperties;
+
     private final DefaultTokenStorage defaultTokenStorage;
 
     private final TxLcnLogDbHelper txLoggerHelper;
@@ -58,11 +61,12 @@ public class AdminServiceImpl implements AdminService {
     public AdminServiceImpl(TxManagerConfig managerConfig,
                             DefaultTokenStorage defaultTokenStorage,
                             TxLcnLogDbHelper txLoggerHelper,
-                            RpcClient rpcClient) {
+                            RpcClient rpcClient, LogDbProperties logDbProperties) {
         this.managerConfig = managerConfig;
         this.defaultTokenStorage = defaultTokenStorage;
         this.txLoggerHelper = txLoggerHelper;
         this.rpcClient = rpcClient;
+        this.logDbProperties = logDbProperties;
     }
 
     @Override
@@ -148,6 +152,7 @@ public class AdminServiceImpl implements AdminService {
         txManagerInfo.setSocketHost(managerConfig.getHost());
         txManagerInfo.setSocketPort(managerConfig.getPort());
         txManagerInfo.setExUrl(managerConfig.isExUrlEnabled() ? managerConfig.getExUrl() : "disabled");
+        txManagerInfo.setEnableTxLogger(logDbProperties.isEnabled());
         return txManagerInfo;
     }
 
