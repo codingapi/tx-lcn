@@ -75,9 +75,9 @@ public class AdminController {
      * @return 操作结果
      * @throws TxManagerException TxManagerException
      */
-    @DeleteMapping("/exceptions")
-    public boolean deleteExceptions(@RequestBody List<Long> ids) throws TxManagerException {
-        txExceptionService.deleteExceptions(ids);
+    @PostMapping("/exceptions")
+    public boolean deleteExceptions(@RequestBody DeleteExceptions deleteExceptions) throws TxManagerException {
+        txExceptionService.deleteExceptions(deleteExceptions.getId());
         return true;
     }
 
