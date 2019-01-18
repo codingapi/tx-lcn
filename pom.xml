@@ -156,19 +156,7 @@
 
             <dependency>
                 <groupId>com.codingapi.txlcn</groupId>
-                <artifactId>tx-spi-sleuth-dubbo</artifactId>
-                <version>${codingapi.txlcn.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.codingapi.txlcn</groupId>
                 <artifactId>tx-client</artifactId>
-                <version>${codingapi.txlcn.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.codingapi.txlcn</groupId>
-                <artifactId>tx-spi-sleuth-springcloud</artifactId>
                 <version>${codingapi.txlcn.version}</version>
             </dependency>
 
@@ -183,7 +171,6 @@
                 <artifactId>tx-commons</artifactId>
                 <version>${codingapi.txlcn.version}</version>
             </dependency>
-
 
             <dependency>
                 <groupId>com.codingapi.txlcn</groupId>
@@ -209,13 +196,11 @@
                 <version>${txlcn-com.github.pagehelper.version}</version>
             </dependency>
 
-
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${txlcn-org.mybatis.spring.boot.version}</version>
             </dependency>
-
 
             <dependency>
                 <groupId>com.h2database</groupId>
@@ -241,13 +226,11 @@
                 <version>${txlcn-com.github.jsqlparser.version}</version>
             </dependency>
 
-
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${txlcn-org.projectlombok.version}</version>
             </dependency>
-
 
             <dependency>
                 <groupId>io.netty</groupId>
@@ -278,21 +261,25 @@
                 <artifactId>hessian</artifactId>
                 <version>${txlcn-hessian.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.dyuproject.protostuff</groupId>
                 <artifactId>protostuff-core</artifactId>
                 <version>${txlcn-protostuff.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.dyuproject.protostuff</groupId>
                 <artifactId>protostuff-runtime</artifactId>
                 <version>${txlcn-protostuff.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.esotericsoftware</groupId>
                 <artifactId>kryo-shaded</artifactId>
                 <version>${txlcn-kryo.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
@@ -306,7 +293,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
 
         </dependencies>
     </dependencyManagement>

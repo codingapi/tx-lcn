@@ -15,6 +15,8 @@
  */
 package com.codingapi.txlcn.client.dubbo.spi.sleuth;
 
+import com.codingapi.txlcn.spi.sleuth.listener.SleuthParamListener;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,6 +30,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan
 public class TxLcnDubboConfiguration {
-
-
+    
+    static {
+        System.setProperty("dubbo.provider.filter","tracing");
+        System.setProperty("dubbo.consumer.filter","tracing");
+    }
+    
+    @Bean
+    public TxLcnDubboInitializer txLcnDubboInitializer(SleuthParamListener sleuthParamListener) {
+        return new TxLcnDubboInitializer(sleuthParamListener);
+    }
+    
 }
