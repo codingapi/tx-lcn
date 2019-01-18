@@ -23,7 +23,6 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 
@@ -41,12 +40,10 @@ public class LogDbHelper implements DisposableBean {
 
     private QueryRunner queryRunner;
 
-
-    @Autowired
     public LogDbHelper(LogDbProperties logDbProperties) throws TxLoggerException {
         log.info("log-db Properties: {}", JSON.toJSONString(logDbProperties));
         if (logDbProperties.getDriverClassName() == null) {
-            throw new TxLoggerException("init TxLogger error. see config [com.codingapi.txlcn.logger.db.LogDbProperties]");
+            throw new TxLoggerException("Init TxLogger error. see config [com.codingapi.txlcn.logger.db.LogDbProperties]");
         }
         hikariDataSource = new HikariDataSource(logDbProperties);
         queryRunner = new QueryRunner(hikariDataSource);

@@ -18,12 +18,14 @@ package com.codingapi.txlcn.logger.db;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.logger.helper.TxLcnLogDbHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -38,8 +40,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class DefaultTxLogger implements TxLogger {
 
-    @Value("${spring.application.name}")
-    private String appName;
+    private final String appId;
 
     private final TxLcnLogDbHelper txLoggerHelper;
 
@@ -47,11 +48,13 @@ public class DefaultTxLogger implements TxLogger {
 
     private final ExecutorService executor;
 
-    @Autowired
-    public DefaultTxLogger(LogDbProperties dbProperties, TxLcnLogDbHelper txLoggerHelper) {
+    public DefaultTxLogger(LogDbProperties dbProperties, TxLcnLogDbHelper txLoggerHelper,
+                           ConfigurableEnvironment environment, ServerProperties serverProperties) {
         this.dbProperties = dbProperties;
         this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         this.txLoggerHelper = txLoggerHelper;
+        String name = environment.getProperty("spring.application.name");
+        this.appId = (StringUtils.hasText(name) ? name : "application") + Optional.ofNullable(serverProperties.getPort()).orElse(0);
 
         // 等待线程池任务完成
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -77,7 +80,7 @@ public class DefaultTxLogger implements TxLogger {
             txLog.setGroupId(groupId);
             txLog.setTag(tag);
             txLog.setUnitId(Objects.isNull(unitId) ? "" : unitId);
-            txLog.setAppName(appName);
+            txLog.setAppName(appId);
             txLog.setCreateTime(getTime());
             log.debug("txLoggerInfoEvent->{}", txLog);
             this.executor.execute(() -> txLoggerHelper.insert(txLog));

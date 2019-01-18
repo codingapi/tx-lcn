@@ -54,7 +54,6 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
     private RowProcessor processor = new BasicRowProcessor(new GenerousBeanProcessor());
 
 
-
     @Override
     public void init() throws Exception {
         if (logDbProperties.isEnabled()) {
@@ -103,7 +102,6 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
     }
 
 
-
     /**
      * GroupID 和 Tag 查询
      *
@@ -126,7 +124,6 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
     }
 
 
-
     /**
      * ag 查询
      *
@@ -145,7 +142,6 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
             throw new NotEnableLogException("not enable logger");
         }
     }
-
 
 
     /**
