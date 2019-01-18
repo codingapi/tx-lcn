@@ -64,7 +64,8 @@ public class DTXLogicWeaver {
             return business.call();
         }
 
-        log.info("tx-unit start---->");
+        log.debug("tx-unit start---->");
+
         // 事务发起方判断
         boolean isTransactionStart = tracerHelper.getGroupId() == null;
 
@@ -96,7 +97,7 @@ public class DTXLogicWeaver {
             }
             transactionAttachmentCache.destroyContext(info.getGroupId());
             DTXLocal.makeNeverAppeared();
-            log.info("tx-unit end------>");
+            log.debug("tx-unit end------>");
         }
     }
 }

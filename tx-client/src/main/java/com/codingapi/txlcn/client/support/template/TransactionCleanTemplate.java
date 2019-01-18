@@ -76,7 +76,7 @@ public class TransactionCleanTemplate {
 
         txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "clean transaction over");
 
-        log.info("clean transaction over");
+        log.debug("clean transaction over");
     }
 
     /**

@@ -19,13 +19,12 @@ import com.codingapi.txlcn.client.core.txc.resource.def.SqlExecuteInterceptor;
 import com.codingapi.txlcn.client.core.txc.resource.def.TxcService;
 import com.codingapi.txlcn.client.core.txc.resource.def.TxcSqlExecutor;
 import com.codingapi.txlcn.client.core.txc.resource.def.config.TxcConfig;
-import com.codingapi.txlcn.client.core.txc.resource.init.MysqlTxcLockSql;
 import com.codingapi.txlcn.client.core.txc.resource.init.TxcExceptionConnectionPool;
-import com.codingapi.txlcn.client.core.txc.resource.init.TxcLockSql;
+import com.codingapi.txlcn.client.core.txc.resource.init.TxcMysql;
+import com.codingapi.txlcn.client.core.txc.resource.init.TxcSql;
 import com.codingapi.txlcn.logger.TxLogger;
 import org.apache.commons.dbutils.QueryRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -45,45 +44,44 @@ public class TxcConfiguration {
         return new QueryRunner(dataSource);
     }
 
-
     @Bean
-    public TxcExceptionConnectionPool txcExceptionConnectionPool(TxcConfig txcConfig, DataSourceProperties dataSourceProperties){
-        return new TxcExceptionConnectionPool(txcConfig,dataSourceProperties);
+    public TxcExceptionConnectionPool txcExceptionConnectionPool(TxcConfig txcConfig) {
+        return new TxcExceptionConnectionPool(txcConfig);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public TxcLockSql txcLockSql(){
-        return new MysqlTxcLockSql();
+    public TxcSql txcLockSql() {
+        return new TxcMysql();
     }
 
     @Bean
-    public TableStructAnalyser tableStructAnalyser(DataSource dataSource){
+    public TableStructAnalyser tableStructAnalyser(DataSource dataSource) {
         return new TableStructAnalyser(dataSource);
     }
 
     @Bean
-    public TxcSqlExecutor txcSqlExecutor(QueryRunner queryRunner, TxcLockSql txcLockSql, TxLogger txLogger){
-        return new TxcSqlExecutorImpl(queryRunner, txcLockSql, txLogger);
+    public TxcSqlExecutor txcSqlExecutor(QueryRunner queryRunner, TxcSql txcSql, TxLogger txLogger) {
+        return new TxcSqlExecutorImpl(queryRunner, txcSql, txLogger);
     }
 
     @Bean
-    public TxcService txcService(TxcSqlExecutor txcSqlExecutor, TxcExceptionConnectionPool txcExceptionConnectionPool, TxLogger txLogger){
+    public TxcService txcService(TxcSqlExecutor txcSqlExecutor, TxcExceptionConnectionPool txcExceptionConnectionPool, TxLogger txLogger) {
         return new TxcServiceImpl(txcSqlExecutor, txcExceptionConnectionPool, txLogger);
     }
 
     @Bean
-    public SqlExecuteInterceptor sqlExecuteInterceptor(TableStructAnalyser tableStructAnalyser, TxcService txcService){
+    public SqlExecuteInterceptor sqlExecuteInterceptor(TableStructAnalyser tableStructAnalyser, TxcService txcService) {
         return new TxcSqlExecuteInterceptor(tableStructAnalyser, txcService);
     }
 
     @Bean
-    public TxcJdbcEventListener txcJdbcEventListener(SqlExecuteInterceptor sqlExecuteInterceptor){
+    public TxcJdbcEventListener txcJdbcEventListener(SqlExecuteInterceptor sqlExecuteInterceptor) {
         return new TxcJdbcEventListener(sqlExecuteInterceptor);
     }
 
     @Bean
-    public TxcInitializer txcInitializer(){
+    public TxcInitializer txcInitializer() {
         return new TxcInitializer();
     }
 

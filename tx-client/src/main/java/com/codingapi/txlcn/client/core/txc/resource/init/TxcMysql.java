@@ -21,12 +21,11 @@ package com.codingapi.txlcn.client.core.txc.resource.init;
  *
  * @author ujued
  */
-public class MysqlTxcLockSql implements TxcLockSql {
-
+public class TxcMysql implements TxcSql {
 
     @Override
     public String lockTableSql() {
-        return  "CREATE TABLE `txc_lock`  (\n" +
+        return "CREATE TABLE `txc_lock`  (\n" +
                 "  `id` bigint(20) NOT NULL AUTO_INCREMENT,\n" +
                 "  `table_name` varchar(64) NULL DEFAULT NULL,\n" +
                 "  `key_value` varchar(32) NULL DEFAULT NULL,\n" +
@@ -47,7 +46,7 @@ public class MysqlTxcLockSql implements TxcLockSql {
                 "  `gmt_modified` bigint(20) NULL DEFAULT NULL,\n" +
                 "  `group_id` varchar(32) NULL DEFAULT NULL,\n" +
                 "  `unit_id` varchar(32) NULL DEFAULT NULL,\n" +
-                "  `rollback_info` blob NULL DEFAULT NULL,\n" +
+                "  `rollback_info` longblob NULL DEFAULT NULL,\n" +
                 "  `status` int(11) NULL DEFAULT NULL,\n" +
                 "  PRIMARY KEY (`id`) USING BTREE\n" +
                 ")";

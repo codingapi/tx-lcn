@@ -249,7 +249,7 @@ public class TxcServiceImpl implements TxcService {
             DTXLocal.makeUnProxy();
             txcSqlExecutor.applyUndoLog(groupId, unitId);
         } catch (SQLException e) {
-            // 撤销失败 txcExceptionConnectionPool 作撤销
+            // 撤销失败 txcExceptionConnectionPool 做撤销
             if (Objects.nonNull(DTXLocal.cur())) {
                 RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
                 if (Objects.nonNull(rollbackInfo)) {

@@ -56,7 +56,7 @@ public class DTXResourceWeaver {
                     throw new IllegalStateException(throwable);
                 }
             });
-            log.info("proxy a sql connection: {}.", connection);
+            log.debug("proxy a sql connection: {}.", connection);
             return connection;
         }
         return point.proceed();

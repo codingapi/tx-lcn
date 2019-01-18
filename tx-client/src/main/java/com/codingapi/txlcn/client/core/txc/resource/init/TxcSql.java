@@ -21,8 +21,7 @@ package com.codingapi.txlcn.client.core.txc.resource.init;
  *
  * @author ujued
  */
-public interface TxcLockSql {
-
+public interface TxcSql {
 
     /**
      * 事务锁表创建SQL

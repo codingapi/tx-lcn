@@ -29,7 +29,6 @@ import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 
@@ -41,9 +40,6 @@ public class TxcJdbcEventListener extends P6spyJdbcEventListener {
 
     private final SqlExecuteInterceptor sqlExecuteInterceptor;
 
-
-
-    @Autowired
     public TxcJdbcEventListener(SqlExecuteInterceptor sqlExecuteInterceptor) {
         this.sqlExecuteInterceptor = sqlExecuteInterceptor;
     }
