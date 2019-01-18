@@ -68,5 +68,5 @@ public class TxManagerInfo {
     /**
      * 允许系统日志
      */
-    private boolean enableTxLogger;
+    private String enableTxLogger;
 }
