@@ -18,7 +18,6 @@ package com.codingapi.txlcn.logger.helper;
 import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.model.Field;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,7 +32,7 @@ public interface TxLcnLogDbHelper {
     /**
      * 数据库初始化操作.
      *
-     * @throws Exception
+     * @throws Exception 初始化失败
      */
     void init() throws Exception;
 
@@ -129,7 +128,7 @@ public interface TxLcnLogDbHelper {
     /**
      * 按字段删除日志
      *
-     * @param fields
+     * @param fields 按给定字段筛选并删除记录
      */
     void deleteByFields(List<Field> fields);
 }
