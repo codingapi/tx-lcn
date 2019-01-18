@@ -152,6 +152,8 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
     @Override
     public void postInsert(StatementInformation statementInformation) throws SQLException {
+        String groupId = DTXLocal.cur().getGroupId();
+        String unitId = DTXLocal.cur().getUnitId();
         Connection connection = (Connection) DTXLocal.cur().getResource();
         Insert insert = (Insert) statementInformation.getAttachment();
         TableStruct tableStruct = tableStructAnalyser.analyse(connection, insert.getTable().getName());
@@ -192,9 +194,11 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
         // 设置Rollback SQL
         RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
-        Object[] paramArray = new Object[params.size()];
-        params.toArray(paramArray);
-        rollbackInfo.getRollbackSqlList().add(new StatementInfo(rollbackSql.toString(), paramArray));
+        try {
+            txcService.resolveInsertImage(new InsertImageParams(groupId, unitId, rollbackSql.toString(), params, rollbackInfo));
+        } catch (TxcLogicException e) {
+            throw new SQLException(e);
+        }
     }
 
     @Override

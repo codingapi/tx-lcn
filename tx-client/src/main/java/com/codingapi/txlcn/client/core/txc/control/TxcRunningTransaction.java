@@ -17,14 +17,12 @@ package com.codingapi.txlcn.client.core.txc.control;
 
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
-import com.codingapi.txlcn.client.core.txc.resource.def.TxcService;
 import com.codingapi.txlcn.client.core.txc.resource.def.bean.RollbackInfo;
 import com.codingapi.txlcn.client.support.TXLCNTransactionControl;
 import com.codingapi.txlcn.client.support.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.client.support.template.TransactionControlTemplate;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
-import com.codingapi.txlcn.commons.exception.TxcLogicException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,17 +37,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TxcRunningTransaction implements TXLCNTransactionControl {
 
-    private final TxcService txcService;
-
     private final TransactionCleanTemplate transactionCleanTemplate;
 
     private final TransactionControlTemplate transactionControlTemplate;
 
     @Autowired
-    public TxcRunningTransaction(TxcService txcService,
-                                 TransactionCleanTemplate transactionCleanTemplate,
+    public TxcRunningTransaction(TransactionCleanTemplate transactionCleanTemplate,
                                  TransactionControlTemplate transactionControlTemplate) {
-        this.txcService = txcService;
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.transactionControlTemplate = transactionControlTemplate;
     }
@@ -80,13 +74,6 @@ public class TxcRunningTransaction implements TXLCNTransactionControl {
 
     @Override
     public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) throws TxClientException {
-        // 写Undo log
-        try {
-            txcService.writeUndoLog(
-                    info.getGroupId(), info.getUnitId(), (RollbackInfo) DTXLocal.cur().getAttachment());
-        } catch (TxcLogicException e) {
-            throw new TxClientException("txc write undo log fail.");
-        }
         // 加入事务组
         transactionControlTemplate.joinGroup(info.getGroupId(), info.getUnitId(), info.getTransactionType(),
                 info.getTransactionInfo());
