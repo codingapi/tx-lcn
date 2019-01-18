@@ -2,6 +2,7 @@
 
 [![Gitter](https://badges.gitter.im/codingapi/tx-lcn.svg)](https://gitter.im/codingapi/tx-lcn?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![BBS](https://bbs.txlcn.org/style/Archlinux/txlcn-bbs.svg)](https://bbs.txlcn.org)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?label=license)](https://github.com/codingapi/tx-lcn/blob/master/LICENSE)
 
 
 ## 项目介绍
@@ -19,21 +20,21 @@
 
 ## 模块划分
 
-docs : 官网文档
-tx-client:TXLCN分布式事务客户端   
-tx-client-dubbo:dubbo框架客户端   
-tx-client-springcloud:springcloud框架客户端   
-tx-commons:公共模块   
-tx-jdbcproxy-p6spy:sql拦截代理，采用了p6spy方式。  
-tx-logger:性能测试日志 
-tx-manager:TXLCN事务管理器   
-tx-spi-message:消息扩展接口   
-tx-spi-message-netty:netty消息实现  
-tx-spi-sleuth:sleuth扩展接口
+1. tx-client:*TXLCN分布式事务客户端*
+2. tx-client-dubbo:*dubbo框架客户端*   
+3. tx-client-springcloud:*springcloud框架客户端*   
+4. tx-commons:*公共模块*   
+5. tx-jdbcproxy-p6spy:*sql拦截代理，采用了p6spy方式*  
+6. tx-logger:*性能测试日志* 
+7. tx-manager:*TXLCN事务管理器*   
+8. tx-spi-message:*消息扩展接口*   
+9. tx-spi-message-netty:*netty消息实现*  
+10. tx-spi-sleuth:*sleuth扩展接口*
 
 
 ## 官网文档
 
+官网文档 见docs分支
 
 https://txlcn.org
 
