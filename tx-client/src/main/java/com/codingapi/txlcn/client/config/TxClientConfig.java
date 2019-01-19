@@ -46,7 +46,7 @@ public class TxClientConfig {
     private Integer dtxAspectOrder;
 
     /**
-     *  aspect connection order
+     * aspect connection order
      */
     private int resourceOrder;
 

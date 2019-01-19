@@ -19,14 +19,12 @@ import com.codingapi.txlcn.client.aspect.BusinessCallback;
 import com.codingapi.txlcn.client.bean.DTXInfo;
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
+import com.codingapi.txlcn.client.support.TXLCNTransactionServiceExecutor;
 import com.codingapi.txlcn.client.support.cache.DTXGroupContext;
 import com.codingapi.txlcn.client.support.cache.TransactionAttachmentCache;
-import com.codingapi.txlcn.spi.sleuth.TracerHelper;
-import com.codingapi.txlcn.client.support.TXLCNTransactionServiceExecutor;
 import com.codingapi.txlcn.commons.util.RandomUtils;
+import com.codingapi.txlcn.spi.sleuth.TracerHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
@@ -37,7 +35,6 @@ import java.util.Objects;
  *
  * @author ujued
  */
-@Component
 @Slf4j
 public class DTXLogicWeaver {
 
@@ -47,7 +44,6 @@ public class DTXLogicWeaver {
 
     private final TransactionAttachmentCache transactionAttachmentCache;
 
-    @Autowired
     public DTXLogicWeaver(TracerHelper tracerHelper,
                           TXLCNTransactionServiceExecutor transactionServiceExecutor,
                           TransactionAttachmentCache transactionAttachmentCache) {

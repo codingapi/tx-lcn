@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.codingapi.txlcn.client.TxClientConfiguration,\
-  com.codingapi.txlcn.client.core.txc.resource.TxcConfiguration

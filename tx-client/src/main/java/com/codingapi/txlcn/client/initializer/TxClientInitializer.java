@@ -17,6 +17,9 @@ package com.codingapi.txlcn.client.initializer;
 
 import com.codingapi.txlcn.client.aspectlog.AspectLogHelper;
 import com.codingapi.txlcn.client.message.TXLCNClientMessageServer;
+import com.codingapi.txlcn.client.support.checking.DTXChecking;
+import com.codingapi.txlcn.client.support.checking.SimpleDTXChecking;
+import com.codingapi.txlcn.client.support.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,15 +34,37 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxClientInitializer implements TxLcnInitializer {
 
-    @Autowired
-    private AspectLogHelper aspectLogHelper;
+    private final AspectLogHelper aspectLogHelper;
+
+    private final TXLCNClientMessageServer txLcnClientMessageServer;
+
+    private final DTXChecking dtxChecking;
+
+    private final TransactionCleanTemplate transactionCleanTemplate;
 
     @Autowired
-    private TXLCNClientMessageServer txLcnClientMessageServer;
+    public TxClientInitializer(AspectLogHelper aspectLogHelper,
+                               TXLCNClientMessageServer txLcnClientMessageServer,
+                               DTXChecking dtxChecking,
+                               TransactionCleanTemplate transactionCleanTemplate) {
+        this.aspectLogHelper = aspectLogHelper;
+        this.txLcnClientMessageServer = txLcnClientMessageServer;
+        this.dtxChecking = dtxChecking;
+        this.transactionCleanTemplate = transactionCleanTemplate;
+    }
 
     @Override
     public void init() throws Exception {
         aspectLogHelper.init();
         txLcnClientMessageServer.init();
+
+        // aware the clean template to the simpleDtxChecking
+        dtxCheckingTransactionCleanTemplateAdapt();
+    }
+
+    private void dtxCheckingTransactionCleanTemplateAdapt() {
+        if (dtxChecking instanceof SimpleDTXChecking) {
+            ((SimpleDTXChecking) dtxChecking).setTransactionCleanTemplate(transactionCleanTemplate);
+        }
     }
 }

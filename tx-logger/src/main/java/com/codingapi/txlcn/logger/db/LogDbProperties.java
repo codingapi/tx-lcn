@@ -36,7 +36,9 @@ public class LogDbProperties extends HikariConfig {
 
     @Autowired(required = false)
     public LogDbProperties(DataSourceProperties dataSourceProperties) {
-        if (Objects.isNull(dataSourceProperties)) {
+        if (Objects.isNull(dataSourceProperties) ||
+                Objects.isNull(dataSourceProperties.getDriverClassName()) ||
+                Objects.isNull(dataSourceProperties.getUrl())) {
             log.info("TxLogger used user's config.");
             return;
         }
