@@ -100,6 +100,7 @@ public interface TxcSqlExecutor {
      * 写undo_log
      *
      * @param undoLogDo undoLogDo
+     * @param connection connection
      * @throws SQLException SQLException
      */
     void writeUndoLogByGivenConnection(Connection connection, UndoLogDO undoLogDo) throws SQLException;

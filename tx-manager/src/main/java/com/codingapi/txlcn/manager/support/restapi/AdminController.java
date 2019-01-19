@@ -56,6 +56,8 @@ public class AdminController {
      *
      * @param page  页码
      * @param limit 记录数
+     * @param extState extState
+     * @param registrar registrar
      * @return ExceptionList
      */
     @GetMapping({"/exceptions/{page}", "/exceptions", "/exceptions/{page}/{limit}"})
@@ -106,6 +108,8 @@ public class AdminController {
      * @param limit     记录数
      * @param groupId   groupId
      * @param tag       tag
+     * @param lTime lTime
+     * @param rTime rtime
      * @param timeOrder timeOrder
      * @return TxLogList
      */
@@ -131,8 +135,9 @@ public class AdminController {
     /**
      * 删除日志
      *
-     * @param deleteLogsReq
+     * @param deleteLogsReq deleteLogsReq
      * @return bool
+     * @throws TxManagerException TxManagerException
      */
     @DeleteMapping("/logs")
     public boolean deleteLogs(@RequestBody DeleteLogsReq deleteLogsReq) throws TxManagerException {
