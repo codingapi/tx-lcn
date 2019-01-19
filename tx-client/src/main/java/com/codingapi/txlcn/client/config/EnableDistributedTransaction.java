@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.client.config;
 
+import com.codingapi.txlcn.client.CoreConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -13,13 +14,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@Import({EnableDTXImportSelector.class})
-public @interface EnableDTX {
-
-    /**
-     * 是否允许
-     *
-     * @return 决策
-     */
-    boolean enabled() default true;
+@Import({CoreConfiguration.class})
+public @interface EnableDistributedTransaction {
 }

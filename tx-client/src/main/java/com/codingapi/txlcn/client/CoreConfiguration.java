@@ -4,6 +4,7 @@ import com.codingapi.txlcn.client.aspect.DataSourceAspect;
 import com.codingapi.txlcn.client.aspect.TransactionAspect;
 import com.codingapi.txlcn.client.aspect.weave.DTXLogicWeaver;
 import com.codingapi.txlcn.client.aspect.weave.DTXResourceWeaver;
+import com.codingapi.txlcn.client.config.EnableDistributedTransaction;
 import com.codingapi.txlcn.client.config.TxClientConfig;
 import com.codingapi.txlcn.client.support.TXLCNTransactionBeanHelper;
 import com.codingapi.txlcn.client.support.TXLCNTransactionServiceExecutor;
@@ -19,7 +20,7 @@ import org.springframework.context.annotation.Bean;
  * Date: 1/19/19
  *
  * @author ujued
- * @see com.codingapi.txlcn.client.config.EnableDTX
+ * @see EnableDistributedTransaction
  */
 public class CoreConfiguration {
 
