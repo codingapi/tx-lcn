@@ -23,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
+
 /**
  * Description:
  * Date: 2018/12/18
@@ -44,7 +46,7 @@ public class AskTransactionStateExecuteService implements RpcExecuteService {
     }
 
     @Override
-    public Object execute(TransactionCmd transactionCmd) {
+    public Serializable execute(TransactionCmd transactionCmd) {
         int state = transactionManager.transactionState(transactionContext.getTransaction(transactionCmd.getGroupId()));
         return state == -1 ? 0 : state;
     }

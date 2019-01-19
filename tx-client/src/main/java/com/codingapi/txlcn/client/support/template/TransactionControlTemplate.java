@@ -15,24 +15,22 @@
  */
 package com.codingapi.txlcn.client.support.template;
 
+import com.codingapi.txlcn.client.aspectlog.AspectLogger;
 import com.codingapi.txlcn.client.bean.DTXLocal;
+import com.codingapi.txlcn.client.message.helper.MessageCreator;
 import com.codingapi.txlcn.client.support.checking.DTXChecking;
 import com.codingapi.txlcn.client.support.checking.DTXExceptionHandler;
-import com.codingapi.txlcn.client.aspectlog.AspectLogger;
-import com.codingapi.txlcn.client.message.helper.MessageCreator;
 import com.codingapi.txlcn.commons.bean.TransactionInfo;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
-import com.codingapi.txlcn.commons.exception.SerializerException;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
-import com.codingapi.txlcn.commons.util.serializer.SerializerContext;
-import com.codingapi.txlcn.spi.message.params.JoinGroupParams;
-import com.codingapi.txlcn.spi.message.params.NotifyGroupParams;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
+import com.codingapi.txlcn.spi.message.params.JoinGroupParams;
+import com.codingapi.txlcn.spi.message.params.NotifyGroupParams;
 import com.codingapi.txlcn.spi.message.util.MessageUtils;
 import com.codingapi.txlcn.spi.sleuth.TracerHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -195,8 +193,7 @@ public class TransactionControlTemplate {
             }
             // 关闭事务组失败
             dtxExceptionHandler.handleNotifyGroupBusinessException(
-                    Arrays.asList(notifyGroupParams, unitId, transactionType),
-                    SerializerContext.getInstance().deSerialize(messageDto.getBytes(), Throwable.class)
+                    Arrays.asList(notifyGroupParams, unitId, transactionType),messageDto.loadBean(Throwable.class)
             );
         } catch (TransactionClearException e) {
             log.error("clear exception", e);
@@ -204,12 +201,7 @@ public class TransactionControlTemplate {
             dtxExceptionHandler.handleNotifyGroupMessageException(
                     Arrays.asList(notifyGroupParams, unitId, transactionType), e
             );
-        } catch (SerializerException e) {
-            dtxExceptionHandler.handleNotifyGroupBusinessException(
-                    Arrays.asList(notifyGroupParams, unitId, transactionType), e
-            );
         }
-
         txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "notify group exception " + state);
     }
 }

@@ -15,20 +15,20 @@
  */
 package com.codingapi.txlcn.manager.core.transaction;
 
-import com.codingapi.txlcn.commons.exception.SerializerException;
 import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.manager.core.context.DTXTransactionContext;
 import com.codingapi.txlcn.manager.core.context.TransactionManager;
-import com.codingapi.txlcn.manager.support.service.TxExceptionService;
-import com.codingapi.txlcn.manager.support.service.WriteTxExceptionDTO;
 import com.codingapi.txlcn.manager.core.message.RpcExecuteService;
 import com.codingapi.txlcn.manager.core.message.TransactionCmd;
+import com.codingapi.txlcn.manager.support.service.TxExceptionService;
+import com.codingapi.txlcn.manager.support.service.WriteTxExceptionDTO;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.params.TxExceptionParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -59,9 +59,9 @@ public class WriteTxExceptionExecuteService implements RpcExecuteService {
     }
 
     @Override
-    public Object execute(TransactionCmd transactionCmd) throws TxManagerException {
+    public Serializable execute(TransactionCmd transactionCmd) throws TxManagerException {
         try {
-            TxExceptionParams txExceptionParams = transactionCmd.getMsg().loadData(TxExceptionParams.class);
+            TxExceptionParams txExceptionParams = transactionCmd.getMsg().loadBean(TxExceptionParams.class);
             WriteTxExceptionDTO writeTxExceptionReq = new WriteTxExceptionDTO();
             writeTxExceptionReq.setModId(rpcClient.getAppName(transactionCmd.getRemoteKey()));
 
@@ -73,7 +73,7 @@ public class WriteTxExceptionExecuteService implements RpcExecuteService {
             writeTxExceptionReq.setUnitId(txExceptionParams.getUnitId());
             writeTxExceptionReq.setRegistrar(Objects.isNull(txExceptionParams.getRegistrar()) ? -1 : txExceptionParams.getRegistrar());
             compensationService.writeTxException(writeTxExceptionReq);
-        } catch (SerializerException e) {
+        } catch (Exception e) {
             throw new TxManagerException(e);
         }
         return null;

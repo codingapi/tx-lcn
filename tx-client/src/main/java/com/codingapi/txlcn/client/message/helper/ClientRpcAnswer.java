@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -59,7 +60,7 @@ public class ClientRpcAnswer implements RpcAnswer {
                 transactionBeanHelper.loadRpcExecuteService(transactionType, transactionCmd.getType());
         MessageDto messageDto = null;
         try {
-            Object message = executeService.execute(transactionCmd);
+            Serializable message = executeService.execute(transactionCmd);
             messageDto = MessageCreator.notifyUnitOkResponse(message,action);
         } catch (TxClientException e) {
             log.error("message > execute error.", e);

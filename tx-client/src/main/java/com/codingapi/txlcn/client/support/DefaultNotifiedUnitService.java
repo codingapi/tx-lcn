@@ -20,12 +20,13 @@ import com.codingapi.txlcn.client.message.helper.TransactionCmd;
 import com.codingapi.txlcn.client.support.cache.DTXGroupContext;
 import com.codingapi.txlcn.client.support.cache.TransactionAttachmentCache;
 import com.codingapi.txlcn.client.support.template.TransactionCleanTemplate;
-import com.codingapi.txlcn.commons.exception.SerializerException;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.spi.message.params.NotifyUnitParams;
+
+import java.io.Serializable;
 
 /**
  * Description: 默认RPC命令业务
@@ -50,9 +51,9 @@ public class DefaultNotifiedUnitService implements RpcExecuteService {
     }
 
     @Override
-    public Object execute(TransactionCmd transactionCmd) throws TxClientException {
+    public Serializable execute(TransactionCmd transactionCmd) throws TxClientException {
         try {
-            NotifyUnitParams notifyUnitParams = transactionCmd.getMsg().loadData(NotifyUnitParams.class);
+            NotifyUnitParams notifyUnitParams = transactionCmd.getMsg().loadBean(NotifyUnitParams.class);
             // 保证业务线程执行完毕后执行事务清理操作
             if (transactionAttachmentCache.hasContext(transactionCmd.getGroupId())) {
                 DTXGroupContext groupContext = transactionAttachmentCache.context(transactionCmd.getGroupId());
@@ -69,7 +70,7 @@ public class DefaultNotifiedUnitService implements RpcExecuteService {
                     notifyUnitParams.getUnitType(),
                     notifyUnitParams.getState());
             return null;
-        } catch (SerializerException | TransactionClearException | InterruptedException e) {
+        } catch (TransactionClearException | InterruptedException e) {
             throw new TxClientException(e);
         }
     }

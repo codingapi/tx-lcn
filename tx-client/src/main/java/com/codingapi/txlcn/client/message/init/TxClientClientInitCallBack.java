@@ -17,7 +17,6 @@ package com.codingapi.txlcn.client.message.init;
 
 import com.codingapi.txlcn.client.config.TxClientConfig;
 import com.codingapi.txlcn.client.message.helper.MessageCreator;
-import com.codingapi.txlcn.commons.exception.SerializerException;
 import com.codingapi.txlcn.spi.message.ClientInitCallBack;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
@@ -66,14 +65,14 @@ public class TxClientClientInitCallBack implements ClientInitCallBack {
             try {
                 log.info("send--->{}", remoteKey);
                 MessageDto msg = rpcClient.request(remoteKey, MessageCreator.initClient(appName + "-" + port));
-                if (msg.getBytes() != null) {
+                if (msg.getData() != null) {
                     //每一次建立连接时将会获取最新的时间
-                    InitClientParams resParams = msg.loadData(InitClientParams.class);
+                    InitClientParams resParams = msg.loadBean(InitClientParams.class);
                     long dtxTime = resParams.getDtxTime();
                     txClientConfig.setDtxTime(dtxTime);
                     log.info("set dtx time finish. time:{}", dtxTime);
                 }
-            } catch (RpcException | SerializerException e) {
+            } catch (RpcException e) {
                 throw new RuntimeException(e);
             }
         });
