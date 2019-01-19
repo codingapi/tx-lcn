@@ -75,7 +75,7 @@ public class TxClientClientInitCallBack implements ClientInitCallBack {
                     log.info("Determined dtx time:{}", dtxTime);
                 }
             } catch (RpcException e) {
-                throw new RuntimeException(e);
+                log.error(e.getMessage());
             }
         });
     }
