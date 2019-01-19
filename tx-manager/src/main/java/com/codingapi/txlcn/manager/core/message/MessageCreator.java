@@ -15,15 +15,13 @@
  */
 package com.codingapi.txlcn.manager.core.message;
 
-import com.codingapi.txlcn.commons.exception.SerializerException;
-import com.codingapi.txlcn.commons.util.serializer.SerializerContext;
 import com.codingapi.txlcn.spi.message.MessageConstants;
-import com.codingapi.txlcn.spi.message.params.NotifyConnectParams;
-import com.codingapi.txlcn.spi.message.params.GetAspectLogParams;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
+import com.codingapi.txlcn.spi.message.params.GetAspectLogParams;
+import com.codingapi.txlcn.spi.message.params.NotifyConnectParams;
 import com.codingapi.txlcn.spi.message.params.NotifyUnitParams;
 
-import java.util.Objects;
+import java.io.Serializable;
 
 /**
  * 消息创建器
@@ -32,13 +30,6 @@ import java.util.Objects;
 public class MessageCreator {
 
 
-    private static byte[] serialize(Object obj) {
-        try {
-            return SerializerContext.getInstance().serialize(obj);
-        } catch (SerializerException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
 
     /**
@@ -50,7 +41,7 @@ public class MessageCreator {
     public static MessageDto newTxManager(NotifyConnectParams notifyConnectParams) {
         MessageDto msg = new MessageDto();
         msg.setAction(MessageConstants.ACTION_NEW_TXMANAGER);
-        msg.setBytes(serialize(notifyConnectParams));
+        msg.setData(notifyConnectParams);
         return msg;
     }
 
@@ -64,7 +55,7 @@ public class MessageCreator {
         MessageDto msg = new MessageDto();
         msg.setGroupId(notifyUnitParams.getGroupId());
         msg.setAction(MessageConstants.ACTION_NOTIFY_UNIT);
-        msg.setBytes(serialize(notifyUnitParams));
+        msg.setData(notifyUnitParams);
         return msg;
     }
 
@@ -74,11 +65,11 @@ public class MessageCreator {
      * @param message  message
      * @return MessageDto
      */
-    public static MessageDto notifyGroupOkResponse(Object message,String action) {
+    public static MessageDto notifyGroupOkResponse(Serializable message, String action) {
         MessageDto messageDto = new MessageDto();
         messageDto.setState(MessageConstants.STATE_OK);
         messageDto.setAction(action);
-        messageDto.setBytes(Objects.isNull(message) ? null : serialize(message));
+        messageDto.setData(message);
         return messageDto;
     }
 
@@ -88,11 +79,11 @@ public class MessageCreator {
      * @param message  message
      * @return MessageDto
      */
-    public static MessageDto notifyGroupFailResponse(Object message,String action) {
+    public static MessageDto notifyGroupFailResponse(Serializable message,String action) {
         MessageDto messageDto = new MessageDto();
         messageDto.setAction(action);
         messageDto.setState(MessageConstants.STATE_EXCEPTION);
-        messageDto.setBytes(Objects.isNull(message) ? null : serialize(message));
+        messageDto.setData(message);
         return messageDto;
     }
 
@@ -105,7 +96,6 @@ public class MessageCreator {
         MessageDto messageDto = new MessageDto();
         messageDto.setAction(action);
         messageDto.setState(MessageConstants.STATE_EXCEPTION);
-        messageDto.setBytes(serialize("Internal Server Error"));
         return messageDto;
     }
 
@@ -117,7 +107,7 @@ public class MessageCreator {
         MessageDto messageDto = new MessageDto();
         messageDto.setGroupId(groupId);
         messageDto.setAction(MessageConstants.ACTION_GET_ASPECT_LOG);
-        messageDto.setBytes(serialize(getAspectLogParams));
+        messageDto.setData(getAspectLogParams);
         return messageDto;
     }
 }

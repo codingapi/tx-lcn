@@ -17,20 +17,18 @@ package com.codingapi.txlcn.client.support.checking;
 
 import com.codingapi.txlcn.client.aspectlog.AspectLogger;
 import com.codingapi.txlcn.client.config.TxClientConfig;
+import com.codingapi.txlcn.client.message.helper.MessageCreator;
+import com.codingapi.txlcn.client.message.helper.TxMangerReporter;
 import com.codingapi.txlcn.client.support.cache.DTXGroupContext;
 import com.codingapi.txlcn.client.support.cache.TransactionAttachmentCache;
+import com.codingapi.txlcn.client.support.template.TransactionCleanTemplate;
+import com.codingapi.txlcn.commons.exception.TransactionClearException;
+import com.codingapi.txlcn.commons.util.Transactions;
+import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
 import com.codingapi.txlcn.spi.message.params.TxExceptionParams;
-import com.codingapi.txlcn.client.support.template.TransactionCleanTemplate;
-import com.codingapi.txlcn.client.message.helper.MessageCreator;
-import com.codingapi.txlcn.client.message.helper.TxMangerReporter;
-import com.codingapi.txlcn.commons.exception.SerializerException;
-import com.codingapi.txlcn.commons.exception.TransactionClearException;
-import com.codingapi.txlcn.commons.util.Transactions;
-import com.codingapi.txlcn.commons.util.serializer.SerializerContext;
-import com.codingapi.txlcn.logger.TxLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -110,7 +108,7 @@ public class SimpleDTXChecking implements DTXChecking {
                 }
                 MessageDto messageDto = TxMangerReporter.requestUntilNonManager(rpcClient,
                         MessageCreator.askTransactionState(groupId, unitId), "ask transaction state error.");
-                int state = SerializerContext.getInstance().deSerialize(messageDto.getBytes(), Short.class);
+                int state = messageDto.loadBean(Short.class);
                 log.debug("support > ask transaction transactionState:{}", state);
                 txLogger.trace(groupId, unitId, Transactions.TAG_TASK, "ask transaction transactionState " + state);
                 if (state == -1) {
@@ -123,7 +121,7 @@ public class SimpleDTXChecking implements DTXChecking {
 
             } catch (RpcException e) {
                 onAskTransactionStateException(groupId, unitId, transactionType);
-            } catch (TransactionClearException | SerializerException | InterruptedException e) {
+            } catch (TransactionClearException | InterruptedException e) {
                 log.error("{} > [transaction transactionState message] error or [clean transaction] error.", transactionType);
             }
         }, clientConfig.getDtxTime(), TimeUnit.MILLISECONDS);

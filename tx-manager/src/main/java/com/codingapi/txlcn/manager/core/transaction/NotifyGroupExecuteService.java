@@ -16,7 +16,6 @@
 package com.codingapi.txlcn.manager.core.transaction;
 
 import com.alibaba.fastjson.JSON;
-import com.codingapi.txlcn.commons.exception.SerializerException;
 import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.commons.exception.UserRollbackException;
 import com.codingapi.txlcn.commons.util.Transactions;
@@ -30,6 +29,8 @@ import com.codingapi.txlcn.spi.message.params.NotifyGroupParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
 
 /**
  * Description:
@@ -55,11 +56,11 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
     }
 
     @Override
-    public Object execute(TransactionCmd transactionCmd) throws TxManagerException {
+    public Serializable execute(TransactionCmd transactionCmd) throws TxManagerException {
         DTXTransaction dtxTransaction = transactionContext.getTransaction(transactionCmd.getGroupId());
         try {
             // 解析参数
-            NotifyGroupParams notifyGroupParams = transactionCmd.getMsg().loadData(NotifyGroupParams.class);
+            NotifyGroupParams notifyGroupParams = transactionCmd.getMsg().loadBean(NotifyGroupParams.class);
             log.debug("notify group params: {}", JSON.toJSONString(notifyGroupParams));
 
             int commitState = notifyGroupParams.getState();
@@ -84,9 +85,7 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
             if(hasThrow){
                 throw new UserRollbackException("user mandatory rollback");
             }
-        } catch (SerializerException e) {
-            throw new TxManagerException(e.getMessage());
-        } finally {
+       } finally {
             transactionManager.close(dtxTransaction);
 
             // 系统日志

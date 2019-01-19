@@ -15,11 +15,14 @@
  */
 package com.codingapi.txlcn.commons.bean;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import java.io.Serializable;
 
 /**
  *
- * create by lorne on 2017/11/11
+ * @author  lorne on 2017/11/11
  */
 public class TransactionInfo implements Serializable{
 
@@ -95,5 +98,11 @@ public class TransactionInfo implements Serializable{
 
     public void setParameterTypes(Class[] parameterTypes) {
         this.parameterTypes = parameterTypes;
+    }
+
+
+    public JSONObject toJsonObject(){
+        String json = JSON.toJSONString(this);
+        return JSON.parseObject(json);
     }
 }

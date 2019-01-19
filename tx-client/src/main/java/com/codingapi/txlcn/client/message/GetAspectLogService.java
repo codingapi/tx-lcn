@@ -15,11 +15,10 @@
  */
 package com.codingapi.txlcn.client.message;
 
-import com.alibaba.fastjson.JSON;
+import com.codingapi.txlcn.client.aspectlog.AspectLog;
+import com.codingapi.txlcn.client.aspectlog.AspectLogHelper;
 import com.codingapi.txlcn.client.message.helper.RpcExecuteService;
 import com.codingapi.txlcn.client.message.helper.TransactionCmd;
-import com.codingapi.txlcn.client.aspectlog.AspectLogHelper;
-import com.codingapi.txlcn.client.aspectlog.AspectLog;
 import com.codingapi.txlcn.commons.bean.TransactionInfo;
 import com.codingapi.txlcn.commons.exception.SerializerException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
@@ -28,6 +27,7 @@ import com.codingapi.txlcn.spi.message.params.GetAspectLogParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -47,14 +47,16 @@ public class GetAspectLogService implements RpcExecuteService {
     }
 
     @Override
-    public Object execute(TransactionCmd transactionCmd) throws TxClientException {
+    public Serializable execute(TransactionCmd transactionCmd) throws TxClientException {
         try {
-            GetAspectLogParams getAspectLogParams =transactionCmd.getMsg().loadData(GetAspectLogParams.class);
+            GetAspectLogParams getAspectLogParams =transactionCmd.getMsg().loadBean(GetAspectLogParams.class);
             AspectLog txLog = txLogHelper.getTxLog(getAspectLogParams.getGroupId(), getAspectLogParams.getUnitId());
             if (Objects.isNull(txLog)) {
                 throw new TxClientException("non exists aspect log.");
             }
-            return JSON.toJSON(SerializerContext.getInstance().deSerialize(txLog.getBytes(), TransactionInfo.class));
+
+            TransactionInfo transactionInfo = SerializerContext.getInstance().deSerialize(txLog.getBytes(), TransactionInfo.class);
+            return transactionInfo.toJsonObject();
         } catch (SerializerException e) {
             throw new TxClientException(e);
         }

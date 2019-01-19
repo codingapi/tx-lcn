@@ -16,13 +16,8 @@
 package com.codingapi.txlcn.manager.support.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.codingapi.txlcn.commons.exception.TxManagerException;
-import com.codingapi.txlcn.spi.message.RpcClient;
-import com.codingapi.txlcn.spi.message.dto.MessageDto;
-import com.codingapi.txlcn.spi.message.exception.RpcException;
-import com.codingapi.txlcn.spi.message.util.MessageUtils;
-import com.codingapi.txlcn.commons.exception.SerializerException;
 import com.codingapi.txlcn.commons.exception.TransactionStateException;
+import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.manager.core.message.MessageCreator;
 import com.codingapi.txlcn.manager.db.domain.TxException;
 import com.codingapi.txlcn.manager.db.mybatis.TxExceptionMapper;
@@ -31,6 +26,10 @@ import com.codingapi.txlcn.manager.support.restapi.model.ExceptionList;
 import com.codingapi.txlcn.manager.support.service.TxExceptionService;
 import com.codingapi.txlcn.manager.support.service.WriteTxExceptionDTO;
 import com.codingapi.txlcn.manager.support.txex.TxExceptionListener;
+import com.codingapi.txlcn.spi.message.RpcClient;
+import com.codingapi.txlcn.spi.message.dto.MessageDto;
+import com.codingapi.txlcn.spi.message.exception.RpcException;
+import com.codingapi.txlcn.spi.message.util.MessageUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -151,11 +150,11 @@ public class TxExceptionServiceImpl implements TxExceptionService {
             for (String remoteKey : remoteKeys) {
                 MessageDto messageDto = rpcClient.request(remoteKey, MessageCreator.getAspectLog(groupId, unitId));
                 if (MessageUtils.statusOk(messageDto)) {
-                    return messageDto.loadData(JSONObject.class);
+                    return messageDto.loadBean(JSONObject.class);
                 }
             }
             throw new TransactionStateException("non exists aspect log", TransactionStateException.NON_ASPECT);
-        } catch (RpcException | SerializerException e) {
+        } catch (RpcException e) {
             throw new TransactionStateException(e, TransactionStateException.RPC_ERR);
         }
     }

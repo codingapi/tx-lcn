@@ -27,6 +27,8 @@ import com.codingapi.txlcn.manager.core.message.TransactionCmd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
+
 /**
  * Description:
  * Date: 2018/12/11
@@ -51,7 +53,7 @@ public class CreateGroupExecuteService implements RpcExecuteService {
     }
 
     @Override
-    public Object execute(TransactionCmd transactionCmd) throws TxManagerException {
+    public Serializable execute(TransactionCmd transactionCmd) throws TxManagerException {
         DTXTransaction dtxTransaction = transactionContext.newContext(transactionCmd.getGroupId());
         try {
             transactionManager.begin(dtxTransaction);

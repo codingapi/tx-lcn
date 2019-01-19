@@ -19,6 +19,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * Description: 事务日志数据
  * Company: CodingApi
@@ -29,7 +31,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AspectLog {
+public class AspectLog implements Serializable {
 
     /**
      * id自增主键
