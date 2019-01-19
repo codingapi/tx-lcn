@@ -64,6 +64,7 @@ public class TxMangerReporter {
      *
      * @param groupId groupId
      * @param unitId  unitId
+     * @param state state
      */
     public void reportTccCleanException(String groupId, String unitId, int state) {
         TxExceptionParams txExceptionParams = new TxExceptionParams();
@@ -105,6 +106,8 @@ public class TxMangerReporter {
      * @param rpcClient      通讯客户端
      * @param messageDto     通讯数据
      * @param whenNonManager 异常提示
+     * @throws RpcException  RpcException
+     * @return MessageDto
      */
     public static MessageDto requestUntilNonManager(RpcClient rpcClient, MessageDto messageDto, String whenNonManager) throws RpcException {
         while (true) {

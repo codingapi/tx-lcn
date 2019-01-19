@@ -67,11 +67,8 @@ public interface AdminService {
     /**
      * 删除日志
      *
-     * @param groupId
-     * @param tag
-     * @param ld
-     * @param rd
-     * @throws TxManagerException
+     * @param deleteLogsReq deleteLogsReq
+     * @throws TxManagerException TxManagerException
      */
     void deleteLogs(DeleteLogsReq deleteLogsReq) throws TxManagerException;
 

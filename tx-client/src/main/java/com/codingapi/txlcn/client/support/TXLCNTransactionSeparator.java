@@ -31,6 +31,7 @@ public interface TXLCNTransactionSeparator {
      *
      * @param txTransactionInfo txTransactionInfo
      * @return TXLCNTransactionState
+     * @throws TransactionException TransactionException
      */
     TXLCNTransactionState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException;
 }

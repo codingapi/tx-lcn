@@ -93,6 +93,7 @@ public interface TxcService {
      * 插入SQL撤销SQL
      *
      * @param insertImageParams insertImageParams
+     * @throws TxcLogicException TxcLogicException
      */
     void resolveInsertImage(InsertImageParams insertImageParams) throws TxcLogicException;
 }

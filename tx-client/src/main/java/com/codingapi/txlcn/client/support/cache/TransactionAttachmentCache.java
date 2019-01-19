@@ -92,7 +92,8 @@ public interface TransactionAttachmentCache {
      * 获取Group上下文
      *
      * @param groupId groupId
-     * @return context
+     * @param <T> t
+     * @return  context
      */
     <T> T context(String groupId);
 
