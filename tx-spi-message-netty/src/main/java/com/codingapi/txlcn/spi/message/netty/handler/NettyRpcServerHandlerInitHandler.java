@@ -20,9 +20,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.codec.serialization.ClassResolvers;
-import io.netty.handler.codec.serialization.ObjectDecoder;
-import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,8 +53,10 @@ public class NettyRpcServerHandlerInitHandler extends ChannelInitializer<Channel
         ch.pipeline().addLast(new IdleStateHandler(managerProperties.getCheckTime(),
                 managerProperties.getCheckTime(), managerProperties.getCheckTime(), TimeUnit.MILLISECONDS));
 
-        ch.pipeline().addLast(new ObjectDecoder(ClassResolvers.weakCachingConcurrentResolver(this.getClass().getClassLoader())));
-        ch.pipeline().addLast(new ObjectEncoder());
+
+        ch.pipeline().addLast(new ObjectSerializerEncoder());
+        ch.pipeline().addLast(new ObjectSerializerDecoder());
+
 
         ch.pipeline().addLast(new RpcCmdDecoder());
         ch.pipeline().addLast(new RpcCmdEncoder());

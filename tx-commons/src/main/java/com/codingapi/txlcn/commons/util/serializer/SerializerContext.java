@@ -17,6 +17,9 @@ package com.codingapi.txlcn.commons.util.serializer;
 
 import com.codingapi.txlcn.commons.exception.SerializerException;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 /**
  * @author lorne  2018/12/31
  *
@@ -51,5 +54,15 @@ public class SerializerContext implements ISerializer {
     @Override
     public <T> T deSerialize(byte[] param, Class<T> clazz) throws SerializerException {
         return protostuffSerializer.deSerialize(param,clazz);
+    }
+
+    @Override
+    public <T> T deSerialize(InputStream inputStream, Class<T> clazz) throws SerializerException {
+        return protostuffSerializer.deSerialize(inputStream,clazz);
+    }
+
+    @Override
+    public void serialize(Object obj, OutputStream outputStream) throws SerializerException {
+        protostuffSerializer.serialize(obj, outputStream);
     }
 }

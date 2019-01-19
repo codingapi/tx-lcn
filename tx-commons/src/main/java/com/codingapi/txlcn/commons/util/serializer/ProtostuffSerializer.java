@@ -22,8 +22,7 @@ import com.dyuproject.protostuff.Schema;
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.*;
 
 /**
  * @author lorne 2017/11/11
@@ -54,10 +53,39 @@ import java.io.ByteArrayOutputStream;
         }
     }
 
+
+    @Override
+    public void serialize(Object obj, OutputStream outputStream) throws SerializerException {
+        Class cls = obj.getClass();
+        LinkedBuffer buffer = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);
+        try {
+            Schema schema = getSchema(cls);
+            ProtostuffIOUtil.writeTo(outputStream, obj, schema, buffer);
+        } catch (Exception e) {
+            throw new SerializerException(e.getMessage(), e);
+        }finally {
+            buffer.clear();
+        }
+    }
+
+
     @Override
     public <T> T deSerialize(byte[] param, Class<T> cls) throws SerializerException {
         T object;
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(param)) {
+            object = OBJENESIS.newInstance(cls);
+            Schema schema = getSchema(cls);
+            ProtostuffIOUtil.mergeFrom(inputStream, object, schema);
+            return object;
+        } catch (Exception e) {
+            throw new SerializerException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public <T> T deSerialize(InputStream inputStream, Class<T> cls) throws SerializerException {
+        T object;
+        try{
             object = OBJENESIS.newInstance(cls);
             Schema schema = getSchema(cls);
             ProtostuffIOUtil.mergeFrom(inputStream, object, schema);

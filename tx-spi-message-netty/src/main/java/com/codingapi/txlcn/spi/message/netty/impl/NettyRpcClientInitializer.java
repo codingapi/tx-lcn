@@ -84,7 +84,7 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
                     b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
                     b.handler(nettyRpcClientHandlerInitHandler);
                     ChannelFuture channelFuture = b.connect(socketAddress).syncUninterruptibly();
-                    log.info("client -> {} , transactionState:{}", socketAddress, channelFuture.isSuccess());
+                    log.info("client -> {} , state :{}", socketAddress, channelFuture.isSuccess());
                     connected = true;
                     break;
 

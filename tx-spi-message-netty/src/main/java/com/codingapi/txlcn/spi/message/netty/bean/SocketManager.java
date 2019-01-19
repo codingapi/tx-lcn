@@ -50,7 +50,7 @@ public class SocketManager {
 
     private static SocketManager manager = null;
 
-    private RpcConfig rpcConfig;
+    private long attrDelayTime = 1000*60;
 
     private SocketManager() {
         channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
@@ -89,7 +89,7 @@ public class SocketManager {
             executorService.schedule(() -> {
                 String key = channel.remoteAddress().toString();
                 appNames.remove(key);
-            }, rpcConfig.getAttrDelayTime(), TimeUnit.MILLISECONDS);
+            }, attrDelayTime, TimeUnit.MILLISECONDS);
         } catch (RejectedExecutionException ignored) {
             // caused down server.
         }
@@ -182,7 +182,7 @@ public class SocketManager {
     }
 
     public void setRpcConfig(RpcConfig rpcConfig) {
-        this.rpcConfig = rpcConfig;
+        attrDelayTime = rpcConfig.getAttrDelayTime();
     }
 
     /**
