@@ -15,32 +15,27 @@
  */
 package com.codingapi.txlcn.client.core.txc.resource;
 
-import com.codingapi.txlcn.client.support.resouce.TransactionResourceExecutor;
+import com.codingapi.txlcn.jdbcproxy.p6spy.common.ConnectionInformation;
+import com.codingapi.txlcn.jdbcproxy.p6spy.wrapper.ConnectionWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
-import java.util.function.Supplier;
 
 /**
- * Description:
- * Date: 2018/12/13
- *
- * @author ujued
+ * @author lorne
  */
-@Component("transaction_txc")
-public class TxcTransactionResourceExecutor implements TransactionResourceExecutor {
-
-    private final ConnectionHelper connectionHelper;
+@Component
+public class ConnectionHelper {
 
     @Autowired
-    public TxcTransactionResourceExecutor(ConnectionHelper connectionHelper) {
-        this.connectionHelper = connectionHelper;
+    private CompoundJdbcEventListener compoundJdbcEventListener;
+
+    public Connection proxy(Connection connection){
+        return ConnectionWrapper.wrap(connection,
+                compoundJdbcEventListener,
+                ConnectionInformation.fromConnection(connection));
     }
 
 
-    @Override
-    public Connection proxyConnection(Supplier<Connection> connectionSupplier) {
-        return connectionHelper.proxy(connectionSupplier.get());
-    }
 }

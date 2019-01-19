@@ -1,1 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.codingapi.txlcn.jdbcproxy.p6spy.P6spySqlConfiguration

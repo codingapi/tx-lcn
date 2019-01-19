@@ -72,7 +72,7 @@ public class TxClientClientInitCallBack implements ClientInitCallBack {
                     InitClientParams resParams = msg.loadBean(InitClientParams.class);
                     long dtxTime = resParams.getDtxTime();
                     txClientConfig.setDtxTime(dtxTime);
-                    log.info("Determined dtx time:{}", dtxTime);
+                    log.info("Determined dtx time {}ms.", dtxTime);
                 }
             } catch (RpcException e) {
                 log.error("Send init message error: {}", e.getMessage());
