@@ -14,6 +14,7 @@ import com.codingapi.txlcn.spi.sleuth.TracerHelper;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Description:
@@ -22,6 +23,7 @@ import org.springframework.context.annotation.Bean;
  * @author ujued
  * @see EnableDistributedTransaction
  */
+@ComponentScan
 public class CoreConfiguration {
 
     @Bean
