@@ -67,7 +67,7 @@ public class DefaultTxLogger implements TxLogger {
     }
 
     private String getTime() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss SSS");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS");
         return format.format(new Date());
     }
 

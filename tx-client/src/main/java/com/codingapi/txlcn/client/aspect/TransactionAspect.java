@@ -26,16 +26,13 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
-import org.springframework.stereotype.Component;
 
 /**
  * LCN 事务拦截器
  * create by lorne on 2018/1/5
  */
 @Aspect
-@Component
 @Slf4j
 public class TransactionAspect implements Ordered {
 
@@ -43,7 +40,6 @@ public class TransactionAspect implements Ordered {
 
     private final DTXLogicWeaver dtxLogicWeaver;
 
-    @Autowired
     public TransactionAspect(TxClientConfig txClientConfig, DTXLogicWeaver dtxLogicWeaver) {
         this.txClientConfig = txClientConfig;
         this.dtxLogicWeaver = dtxLogicWeaver;

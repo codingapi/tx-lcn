@@ -15,14 +15,6 @@
  */
 package com.codingapi.txlcn.client;
 
-import com.codingapi.txlcn.client.support.checking.DTXChecking;
-import com.codingapi.txlcn.client.support.checking.SimpleDTXChecking;
-import com.codingapi.txlcn.client.support.template.TransactionCleanTemplate;
-import com.codingapi.txlcn.commons.runner.TxLcnApplicationRunner;
-import org.springframework.beans.factory.SmartInitializingSingleton;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -35,22 +27,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ComponentScan
-@EnableConfigurationProperties
-public class TxClientConfiguration {
+public class TxClientConfiguration  {
 
-
-    @Bean
-    public TxLcnApplicationRunner txLcnApplicationRunner(ApplicationContext applicationContext){
-        return new TxLcnApplicationRunner(applicationContext);
-    }
-
-    @Bean
-    public SmartInitializingSingleton dtxCheckingTransactionCleanTemplateAdapter(DTXChecking dtxChecking,
-                                                                                 TransactionCleanTemplate transactionCleanTemplate) {
-        if (dtxChecking instanceof SimpleDTXChecking) {
-            return () -> ((SimpleDTXChecking) dtxChecking).setTransactionCleanTemplate(transactionCleanTemplate);
-        }
-        return () -> {
-        };
-    }
 }

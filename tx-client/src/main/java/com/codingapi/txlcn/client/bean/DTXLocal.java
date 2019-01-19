@@ -105,7 +105,7 @@ public class DTXLocal {
 
 
     /**
-     * 获取当前线程变量
+     * 获取当前线程变量。不推荐用此方法，会产生NullPointerException
      *
      * @return 当前线程变量
      */
@@ -114,7 +114,7 @@ public class DTXLocal {
     }
 
     /**
-     * 获取或新建一个线程变量。第一次被调用且被创建会置justNow标志为true
+     * 获取或新建一个线程变量。
      *
      * @return 当前线程变量
      */
