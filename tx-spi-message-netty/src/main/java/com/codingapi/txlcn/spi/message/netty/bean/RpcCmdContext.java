@@ -34,7 +34,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Slf4j
 public class RpcCmdContext {
 
-    private RpcConfig rpcConfig;
+    private int cacheSize = 1024;
+
+    private int waitTime = 1;
 
     private static RpcCmdContext context = null;
 
@@ -108,7 +110,7 @@ public class RpcCmdContext {
     }
 
     private RpcContent createRpcContent() {
-        if (cacheList.size() < rpcConfig.getCacheSize()) {
+        if (cacheList.size() < cacheSize) {
             RpcContent rpcContent = new RpcContent(getWaitTime());
             rpcContent.init();
             cacheList.add(rpcContent);
@@ -136,10 +138,11 @@ public class RpcCmdContext {
 
 
     public void setRpcConfig(RpcConfig rpcConfig) {
-        this.rpcConfig = rpcConfig;
+        cacheSize = rpcConfig.getCacheSize();
+        waitTime = (int) rpcConfig.getWaitTime()/1000;
     }
 
     public int getWaitTime() {
-        return (int) (rpcConfig.getWaitTime() / 1000);
+        return waitTime;
     }
 }
