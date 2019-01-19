@@ -16,7 +16,9 @@
 package com.codingapi.txlcn.logger.helper;
 
 import com.codingapi.txlcn.logger.db.TxLog;
+import com.codingapi.txlcn.logger.exception.TxLoggerException;
 import com.codingapi.txlcn.logger.model.Field;
+import com.codingapi.txlcn.logger.model.LogList;
 
 import java.util.List;
 
@@ -130,5 +132,15 @@ public interface TxLcnLogDbHelper {
      *
      * @param fields 按给定字段筛选并删除记录
      */
-    void deleteByFields(List<Field> fields);
+    void deleteByFields(List<Field> fields) throws TxLoggerException;
+
+    /**
+     * 查找日志
+     *
+     * @param page
+     * @param limit
+     * @param list
+     * @return logs
+     */
+    LogList findByLimitAndFields(int page, int limit, int timeOrder, List<Field> list) throws TxLoggerException;
 }

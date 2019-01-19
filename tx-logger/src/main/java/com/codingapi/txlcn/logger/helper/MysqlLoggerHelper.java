@@ -19,6 +19,7 @@ import com.codingapi.txlcn.logger.db.LogDbHelper;
 import com.codingapi.txlcn.logger.db.LogDbProperties;
 import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.exception.NotEnableLogException;
+import com.codingapi.txlcn.logger.exception.TxLoggerException;
 import com.codingapi.txlcn.logger.model.*;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.GenerousBeanProcessor;
@@ -234,8 +235,16 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
     }
 
     @Override
-    public void deleteByFields(List<Field> fields) {
+    public void deleteByFields(List<Field> fields) throws TxLoggerException {
+        if (Objects.isNull(dbHelper)) {
+            throw new TxLoggerException("系统日志被禁用");
+        }
         StringBuilder sql = new StringBuilder("delete from t_logger where 1=1 and ");
+        List<String> values = whereSqlAppender(sql, fields);
+        dbHelper.update(sql.toString(), values.toArray(new Object[0]));
+    }
+
+    private List<String> whereSqlAppender(StringBuilder sql, List<Field> fields) {
         List<String> values = new ArrayList<>(fields.size());
         fields.forEach(field -> {
             if (field instanceof GroupId) {
@@ -253,7 +262,30 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
             }
         });
         sql.delete(sql.length() - 4, sql.length());
-        dbHelper.update(sql.toString(), values.toArray(new Object[0]));
+        return values;
+    }
+
+    @Override
+    public LogList findByLimitAndFields(int page, int limit, int timeOrder, List<Field> list) throws TxLoggerException {
+        if (Objects.isNull(dbHelper)) {
+            throw new TxLoggerException("系统日志被禁用");
+        }
+        StringBuilder countSql = new StringBuilder("select count(*) from t_logger where 1=1 and ");
+        StringBuilder sql = new StringBuilder("select * from t_logger where 1=1 and ");
+        List<String> values = whereSqlAppender(sql, list);
+        whereSqlAppender(countSql, list);
+        Object[] params = values.toArray(new Object[0]);
+        long total = dbHelper.query(countSql.toString(), new ScalarHandler<>(), params);
+        if (total < (page - 1) * limit) {
+            page = 1;
+        }
+        sql.append(timeOrderSql(timeOrder)).append(" limit ").append((page - 1) * limit).append(", ").append(limit);
+        List<TxLog> txLogs = dbHelper.query(sql.toString(), new BeanListHandler<>(TxLog.class, processor), params);
+
+        LogList logList = new LogList();
+        logList.setTotal(total);
+        logList.setTxLogs(txLogs);
+        return logList;
     }
 
 }

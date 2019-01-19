@@ -115,10 +115,10 @@ public class AdminController {
             @RequestParam(value = "limit", required = false) @PathVariable(value = "limit", required = false) Integer limit,
             @RequestParam(value = "groupId", required = false) String groupId,
             @RequestParam(value = "tag", required = false) String tag,
-            @RequestParam(value = "ld", required = false) Date lTime,
-            @RequestParam(value = "rd", required = false) Date rTime,
-            @RequestParam(value = "timeOrder", required = false) Integer timeOrder) {
-        return adminService.txLogList(page, limit, groupId, tag, timeOrder);
+            @RequestParam(value = "ld", required = false) String lTime,
+            @RequestParam(value = "rd", required = false) String rTime,
+            @RequestParam(value = "timeOrder", required = false) Integer timeOrder) throws TxManagerException {
+        return adminService.txLogList(page, limit, groupId, tag, lTime, rTime, timeOrder);
     }
 
     @GetMapping({"/app-mods/{page}", "/app-mods/{page}/{limit}", "/app-mods"})

@@ -45,10 +45,12 @@ public interface AdminService {
      * @param limit     limit
      * @param groupId   groupId
      * @param tag       tag
+     * @param lTime startTime
+     * @param rTime stopTime
      * @param timeOrder 时间排序1 顺序 2 逆序
      * @return TxLogList
      */
-    TxLogList txLogList(Integer page, Integer limit, String groupId, String tag, Integer timeOrder);
+    TxLogList txLogList(Integer page, Integer limit, String groupId, String tag, String lTime, String rTime, Integer timeOrder) throws TxManagerException;
 
     /**
      * 分布式事务统计信息

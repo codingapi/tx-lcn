@@ -19,6 +19,7 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -32,8 +33,8 @@ import java.io.File;
 @ConfigurationProperties(value = "tx-lcn.aspect.log")
 public class AspectLogDbProperties {
 
-    public AspectLogDbProperties(@Value("${spring.application.name}") String applicationName,
-                                 ServerProperties serverProperties) {
+    public AspectLogDbProperties(ConfigurableEnvironment environment, ServerProperties serverProperties) {
+        String applicationName = environment.getProperty("spring.application.name");
         this.filePath = System.getProperty("user.dir") +
                 File.separator +
                 ".txlcn" +
