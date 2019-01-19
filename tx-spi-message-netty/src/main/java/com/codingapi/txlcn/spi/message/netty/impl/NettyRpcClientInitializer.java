@@ -74,8 +74,8 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
         for (int i = 0; i < rpcConfig.getReconnectCount(); i++) {
             if (SocketManager.getInstance().noConnect(socketAddress)) {
                 try {
-                    log.warn("TM Cluster size:{}", SocketManager.getInstance().currentSize());
-                    log.info("Reconnect TM[{}] - count{}", socketAddress, i + 1);
+                    log.warn("TM cluster size:{}", SocketManager.getInstance().currentSize());
+                    log.info("Connect TM[{}] - count {}", socketAddress, i + 1);
                     Bootstrap b = new Bootstrap();
                     b.group(workerGroup);
                     b.channel(NioSocketChannel.class);
@@ -83,12 +83,12 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
                     b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
                     b.handler(nettyRpcClientHandlerInitHandler);
                     ChannelFuture channelFuture = b.connect(socketAddress).syncUninterruptibly();
-                    log.info("TC[{}] connect state:{}", socketAddress, channelFuture.isSuccess());
+                    log.info("TC connect state:{}", socketAddress, channelFuture.isSuccess());
                     connected = true;
                     break;
 
                 } catch (Exception e) {
-                    log.warn("Reconnect fail. {}ms latter try again.", rpcConfig.getReconnectDelay());
+                    log.warn("Connect TM[{}] fail. {}ms latter try again.", socketAddress, rpcConfig.getReconnectDelay());
                     try {
                         Thread.sleep(rpcConfig.getReconnectDelay());
                     } catch (InterruptedException e1) {
