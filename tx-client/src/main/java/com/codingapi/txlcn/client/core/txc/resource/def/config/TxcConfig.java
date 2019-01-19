@@ -42,7 +42,9 @@ public class TxcConfig extends HikariConfig {
 
     @Autowired(required = false)
     public TxcConfig(DataSourceProperties dataSourceProperties) {
-        if (Objects.isNull(dataSourceProperties)) {
+        if (Objects.isNull(dataSourceProperties) ||
+                Objects.isNull(dataSourceProperties.getDriverClassName()) ||
+                Objects.isNull(dataSourceProperties.getUrl())) {
             log.info("TXC Mode Bak-Connection-Pool used user's config.");
             return;
         }
