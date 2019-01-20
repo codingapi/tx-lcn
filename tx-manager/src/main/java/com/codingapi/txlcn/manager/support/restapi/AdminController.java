@@ -112,6 +112,7 @@ public class AdminController {
      * @param rTime rtime
      * @param timeOrder timeOrder
      * @return TxLogList
+     * @throws TxManagerException TxManagerException
      */
     @GetMapping({"/logs/{page}", "/logs/{page}/{limit}", "/logs"})
     public TxLogList txLogList(

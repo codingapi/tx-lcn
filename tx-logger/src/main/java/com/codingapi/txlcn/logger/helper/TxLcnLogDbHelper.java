@@ -131,6 +131,7 @@ public interface TxLcnLogDbHelper {
      * 按字段删除日志
      *
      * @param fields 按给定字段筛选并删除记录
+     * @throws TxLoggerException TxLoggerException
      */
     void deleteByFields(List<Field> fields) throws TxLoggerException;
 
@@ -140,6 +141,7 @@ public interface TxLcnLogDbHelper {
      * @param page page
      * @param limit limit
      * @param list list
+     * @param timeOrder timeOrder
      * @return logs
      * @throws TxLoggerException TxLoggerException
      */

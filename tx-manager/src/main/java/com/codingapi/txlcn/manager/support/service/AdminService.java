@@ -49,6 +49,7 @@ public interface AdminService {
      * @param rTime stopTime
      * @param timeOrder 时间排序1 顺序 2 逆序
      * @return TxLogList
+     * @throws TxManagerException TxManagerException
      */
     TxLogList txLogList(Integer page, Integer limit, String groupId, String tag, String lTime, String rTime, Integer timeOrder) throws TxManagerException;
 
