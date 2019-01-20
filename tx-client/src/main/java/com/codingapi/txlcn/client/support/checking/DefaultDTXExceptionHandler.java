@@ -16,10 +16,11 @@
 package com.codingapi.txlcn.client.support.checking;
 
 import com.codingapi.txlcn.client.message.helper.TxMangerReporter;
-import com.codingapi.txlcn.client.support.common.template.TransactionCleanTemplate;
+import com.codingapi.txlcn.client.support.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
+import com.codingapi.txlcn.commons.exception.UserRollbackException;
 import com.codingapi.txlcn.spi.message.params.JoinGroupParams;
 import com.codingapi.txlcn.spi.message.params.NotifyGroupParams;
 import com.codingapi.txlcn.spi.message.params.TxExceptionParams;
@@ -42,12 +43,12 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
 
     private final TransactionCleanTemplate transactionCleanTemplate;
 
-    @Autowired
-    private TxMangerReporter txMangerReporter;
+    private final TxMangerReporter txMangerReporter;
 
     @Autowired
-    public DefaultDTXExceptionHandler(TransactionCleanTemplate transactionCleanTemplate) {
+    public DefaultDTXExceptionHandler(TransactionCleanTemplate transactionCleanTemplate, TxMangerReporter txMangerReporter) {
         this.transactionCleanTemplate = transactionCleanTemplate;
+        this.txMangerReporter = txMangerReporter;
     }
 
     @Override
@@ -78,10 +79,19 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
 
     @Override
     public void handleNotifyGroupBusinessException(Object params, Throwable ex) {
+
         List paramList = (List) params;
         NotifyGroupParams notifyGroupParams = (NotifyGroupParams) paramList.get(0);
         String unitId = (String) paramList.get(1);
         String transactionType = (String) paramList.get(2);
+
+        //用户强制回滚.
+        if (ex instanceof UserRollbackException) {
+            notifyGroupParams.setState(0);
+        }
+        if ((ex.getCause() != null && ex.getCause() instanceof UserRollbackException)) {
+            notifyGroupParams.setState(0);
+        }
 
         // 结束事务
         try {

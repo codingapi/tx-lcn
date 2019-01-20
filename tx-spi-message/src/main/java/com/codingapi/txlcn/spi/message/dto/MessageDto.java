@@ -16,8 +16,6 @@
 package com.codingapi.txlcn.spi.message.dto;
 
 import com.codingapi.txlcn.spi.message.MessageConstants;
-import com.codingapi.txlcn.commons.exception.SerializerException;
-import com.codingapi.txlcn.commons.util.serializer.SerializerContext;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +30,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
+@SuppressWarnings("unchecked")
 public class MessageDto implements Serializable {
 
     /**
@@ -47,15 +46,15 @@ public class MessageDto implements Serializable {
     /**
      * 请求参数
      */
-    private byte[] bytes;
+    private Serializable data;
 
     /**
      * 请求状态
      */
     private int state = MessageConstants.STATE_REQUEST;
 
-    public <T> T loadData(Class<T> tClass) throws SerializerException {
-        return SerializerContext.getInstance().deSerialize(bytes,tClass);
+    public <T> T loadBean(Class<T> tClass){
+        return (T)data;
     }
 
 }

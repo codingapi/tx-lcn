@@ -18,6 +18,7 @@ package com.codingapi.txlcn.client.support;
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
 import com.codingapi.txlcn.commons.annotation.DTXPropagation;
+import com.codingapi.txlcn.commons.exception.TransactionException;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -30,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomizableTransactionSeparator implements TXLCNTransactionSeparator {
 
     @Override
-    public TXLCNTransactionState loadTransactionState(TxTransactionInfo txTransactionInfo) {
+    public TXLCNTransactionState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException {
 
         // 本线程已经参与分布式事务(本地方法互调)
         if (DTXLocal.cur().isInUnit()) {

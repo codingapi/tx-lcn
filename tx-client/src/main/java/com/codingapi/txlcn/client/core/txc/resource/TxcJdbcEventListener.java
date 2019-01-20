@@ -17,11 +17,11 @@ package com.codingapi.txlcn.client.core.txc.resource;
 
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.core.txc.resource.def.SqlExecuteInterceptor;
+import com.codingapi.txlcn.client.core.txc.resource.def.TxcService;
 import com.codingapi.txlcn.client.core.txc.resource.def.bean.LockableSelect;
 import com.codingapi.txlcn.jdbcproxy.p6spy.common.PreparedStatementInformation;
 import com.codingapi.txlcn.jdbcproxy.p6spy.common.StatementInformation;
-import com.codingapi.txlcn.jdbcproxy.p6spy.event.SimpleJdbcEventListener;
-import com.codingapi.txlcn.jdbcproxy.p6spy.util.TxcUtils;
+import com.codingapi.txlcn.jdbcproxy.p6spy.event.P6spyJdbcEventListener;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -30,8 +30,6 @@ import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 
@@ -39,25 +37,18 @@ import java.sql.SQLException;
  * @author lorne
  */
 @Slf4j
-@Component
-public class TxcJdbcEventListener extends SimpleJdbcEventListener {
+public class TxcJdbcEventListener extends P6spyJdbcEventListener {
 
     private final SqlExecuteInterceptor sqlExecuteInterceptor;
 
 
-    @Autowired
     public TxcJdbcEventListener(SqlExecuteInterceptor sqlExecuteInterceptor) {
         this.sqlExecuteInterceptor = sqlExecuteInterceptor;
     }
 
     @Override
-    public void onBeforeAnyExecute(StatementInformation statementInformation) throws SQLException {
+    public String onBeforeAnyExecute(StatementInformation statementInformation) throws SQLException {
         String sql = statementInformation.getSqlWithValues();
-
-        // 忽略TxcSQL
-        if (TxcUtils.isTxcSQL(sql)) {
-            return;
-        }
 
         // 当前业务链接
         DTXLocal.cur().setResource(statementInformation.getStatement().getConnection());
@@ -81,6 +72,7 @@ public class TxcJdbcEventListener extends SimpleJdbcEventListener {
         } catch (JSQLParserException e) {
             throw new SQLException(e);
         }
+        return sql;
     }
 
     @Override
@@ -127,4 +119,5 @@ public class TxcJdbcEventListener extends SimpleJdbcEventListener {
             }
         }
     }
+
 }

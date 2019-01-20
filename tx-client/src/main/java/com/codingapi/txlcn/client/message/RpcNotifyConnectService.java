@@ -17,14 +17,14 @@ package com.codingapi.txlcn.client.message;
 
 import com.codingapi.txlcn.client.message.helper.RpcExecuteService;
 import com.codingapi.txlcn.client.message.helper.TransactionCmd;
-import com.codingapi.txlcn.commons.exception.SerializerException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
-import com.codingapi.txlcn.spi.message.params.NotifyConnectParams;
 import com.codingapi.txlcn.spi.message.RpcClientInitializer;
+import com.codingapi.txlcn.spi.message.params.NotifyConnectParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.net.InetSocketAddress;
 
 /**
@@ -46,20 +46,12 @@ public class RpcNotifyConnectService implements RpcExecuteService {
     }
 
     @Override
-    public Object execute(TransactionCmd transactionCmd) throws TxClientException {
-        try {
+    public Serializable execute(TransactionCmd transactionCmd) throws TxClientException {
+        log.info("transactionCmd->{}", transactionCmd);
 
-            log.info("transactionCmd->{}", transactionCmd);
+        NotifyConnectParams notifyConnectParams = transactionCmd.getMsg().loadBean(NotifyConnectParams.class);
 
-            NotifyConnectParams notifyConnectParams = transactionCmd.getMsg().loadData(NotifyConnectParams.class);
-
-            log.info("notifyConnectParams->{}", notifyConnectParams);
-
-            rpcClientInitializer.connect(new InetSocketAddress(notifyConnectParams.getHost(), notifyConnectParams.getPort()));
-        } catch (SerializerException e) {
-            throw new TxClientException(e);
-        }
-
+        rpcClientInitializer.connect(new InetSocketAddress(notifyConnectParams.getHost(), notifyConnectParams.getPort()));
         return null;
     }
 }

@@ -16,19 +16,21 @@
 package com.codingapi.txlcn.manager.core.transaction;
 
 import com.alibaba.fastjson.JSON;
-import com.codingapi.txlcn.spi.message.params.NotifyGroupParams;
-import com.codingapi.txlcn.commons.exception.SerializerException;
 import com.codingapi.txlcn.commons.exception.TxManagerException;
+import com.codingapi.txlcn.commons.exception.UserRollbackException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.manager.core.context.DTXTransaction;
-import com.codingapi.txlcn.manager.core.context.TransactionManager;
 import com.codingapi.txlcn.manager.core.context.DTXTransactionContext;
+import com.codingapi.txlcn.manager.core.context.TransactionManager;
 import com.codingapi.txlcn.manager.core.message.RpcExecuteService;
 import com.codingapi.txlcn.manager.core.message.TransactionCmd;
+import com.codingapi.txlcn.spi.message.params.NotifyGroupParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
 
 /**
  * Description:
@@ -54,29 +56,36 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
     }
 
     @Override
-    public Object execute(TransactionCmd transactionCmd) throws TxManagerException {
+    public Serializable execute(TransactionCmd transactionCmd) throws TxManagerException {
         DTXTransaction dtxTransaction = transactionContext.getTransaction(transactionCmd.getGroupId());
         try {
             // 解析参数
-            NotifyGroupParams notifyGroupParams = transactionCmd.getMsg().loadData(NotifyGroupParams.class);
+            NotifyGroupParams notifyGroupParams = transactionCmd.getMsg().loadBean(NotifyGroupParams.class);
             log.debug("notify group params: {}", JSON.toJSONString(notifyGroupParams));
+
+            int commitState = notifyGroupParams.getState();
+            //获取事务状态（当手动回滚时会先设置状态）
+            int transactionState = transactionManager.transactionState(dtxTransaction);
+            boolean hasThrow = false;
+            if (transactionState == 0) {
+                commitState = 0;
+                hasThrow  = true;
+            }
 
             // 系统日志
             txLogger.trace(
                     transactionCmd.getGroupId(), "",
                     Transactions.TAG_TRANSACTION, "notify group " + notifyGroupParams.getState());
 
-            if (notifyGroupParams.getState() == 1) {
+            if (commitState == 1) {
                 transactionManager.commit(dtxTransaction);
-                return null;
-            } else if (notifyGroupParams.getState() == 0) {
+            } else if (commitState == 0) {
                 transactionManager.rollback(dtxTransaction);
-                return null;
             }
-            log.error("ignored transaction state:{}", notifyGroupParams.getState());
-        } catch (SerializerException e) {
-            throw new TxManagerException(e.getMessage());
-        } finally {
+            if(hasThrow){
+                throw new UserRollbackException("user mandatory rollback");
+            }
+       } finally {
             transactionManager.close(dtxTransaction);
 
             // 系统日志

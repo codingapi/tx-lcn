@@ -15,17 +15,17 @@
  */
 package com.codingapi.txlcn.manager;
 
-import com.codingapi.txlcn.manager.support.TxManagerManagerRefreshing;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.codingapi.txlcn.commons.runner.TxLcnApplicationRunner;
+import com.codingapi.txlcn.logger.TxLoggerConfiguration;
+import com.codingapi.txlcn.manager.banner.TxLcnManagerBanner;
+import com.codingapi.txlcn.spi.MessageConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
-import javax.annotation.PostConstruct;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -38,15 +38,13 @@ import java.util.concurrent.TimeUnit;
  * @author lorne
  */
 @SpringBootApplication
+@Import({TxLoggerConfiguration.class, MessageConfiguration.class})
 public class TxManagerApplication {
 
-    // Tx-manager 默认打开日志记录，在管理后台查看
-    static {
-        System.setProperty("tx-lcn.logger.enabled", "true");
-    }
-
     public static void main(String[] args) {
-        SpringApplication.run(TxManagerApplication.class, args);
+        SpringApplication springApplication = new SpringApplication(TxManagerApplication.class);
+        springApplication.setBanner(new TxLcnManagerBanner());
+        springApplication.run(args);
     }
 
     @Bean
@@ -67,23 +65,10 @@ public class TxManagerApplication {
         return new RestTemplate();
     }
 
-    @Autowired
-    private TxManagerManagerRefreshing txManagerManagerRefreshing;
-
-    @PostConstruct
-    public void init() {
-        txManagerManagerRefreshing.refresh();
-    }
 
     @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("*");
-        corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.addExposedHeader("X-New-Token");
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
-        return new CorsFilter(source);
+    public TxLcnApplicationRunner txLcnApplicationRunner(ApplicationContext applicationContext) {
+        return new TxLcnApplicationRunner(applicationContext);
     }
+
 }

@@ -17,8 +17,7 @@ package com.codingapi.txlcn.client.support;
 
 
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
-import com.codingapi.txlcn.client.support.common.TransactionUnitTypeList;
-import com.codingapi.txlcn.client.support.common.cache.TransactionAttachmentCache;
+import com.codingapi.txlcn.client.support.cache.TransactionAttachmentCache;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
@@ -34,15 +33,18 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TXLCNTransactionServiceExecutor {
 
+    private final TransactionAttachmentCache transactionAttachmentCache;
+
+    private final TxLogger txLogger;
+    private final TXLCNTransactionBeanHelper txlcnTransactionBeanHelper;
 
     @Autowired
-    private LCNTransactionBeanHelper lcnTransactionBeanHelper;
-
-    @Autowired
-    private TransactionAttachmentCache transactionAttachmentCache;
-
-    @Autowired
-    private TxLogger txLogger;
+    public TXLCNTransactionServiceExecutor(TransactionAttachmentCache transactionAttachmentCache, TxLogger txLogger,
+                                           TXLCNTransactionBeanHelper txlcnTransactionBeanHelper) {
+        this.transactionAttachmentCache = transactionAttachmentCache;
+        this.txLogger = txLogger;
+        this.txlcnTransactionBeanHelper = txlcnTransactionBeanHelper;
+    }
 
     /**
      * 事务业务执行
@@ -58,7 +60,7 @@ public class TXLCNTransactionServiceExecutor {
 
         // 2. 事务状态抉择器
         TXLCNTransactionSeparator lcnTransactionSeparator =
-                lcnTransactionBeanHelper.loadLCNTransactionStateResolver(transactionType);
+                txlcnTransactionBeanHelper.loadLCNTransactionStateResolver(transactionType);
 
         // 3. 获取事务状态
         TXLCNTransactionState lcnTransactionState = lcnTransactionSeparator.loadTransactionState(info);
@@ -69,14 +71,13 @@ public class TXLCNTransactionServiceExecutor {
 
         // 4. 获取bean
         TXLCNTransactionControl lcnTransactionControl =
-                lcnTransactionBeanHelper.loadLCNTransactionControl(transactionType, lcnTransactionState);
+                txlcnTransactionBeanHelper.loadLCNTransactionControl(transactionType, lcnTransactionState);
 
         // 5. 织入事务操作
 
         // 5.1 记录事务类型到事务上下文
         transactionAttachmentCache.attach(
                 info.getGroupId(), info.getUnitId(), new TransactionUnitTypeList().selfAdd(transactionType));
-
         try {
             // 5.2 业务执行前
             txLogger.trace(info.getGroupId(), info.getUnitId(), Transactions.TAG_TRANSACTION, "pre service business code");

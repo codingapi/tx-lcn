@@ -17,6 +17,8 @@ package com.codingapi.txlcn.manager.core.message;
 
 import com.codingapi.txlcn.commons.exception.TxManagerException;
 
+import java.io.Serializable;
+
 /**
  * LCN分布式事务 manager业务处理
  * @author lorne
@@ -27,7 +29,8 @@ public interface RpcExecuteService {
      * 执行业务
      * @param transactionCmd  transactionCmd
      * @return  Object
+     * @throws TxManagerException TxManagerException
      */
-    Object execute(TransactionCmd transactionCmd) throws TxManagerException;
+    Serializable execute(TransactionCmd transactionCmd) throws TxManagerException;
 
 }

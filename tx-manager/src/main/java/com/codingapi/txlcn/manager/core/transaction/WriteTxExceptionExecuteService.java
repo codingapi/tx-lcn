@@ -15,18 +15,20 @@
  */
 package com.codingapi.txlcn.manager.core.transaction;
 
-import com.codingapi.txlcn.commons.exception.SerializerException;
 import com.codingapi.txlcn.commons.exception.TxManagerException;
-import com.codingapi.txlcn.manager.support.service.TxExceptionService;
-import com.codingapi.txlcn.manager.support.service.WriteTxExceptionDTO;
+import com.codingapi.txlcn.manager.core.context.DTXTransactionContext;
+import com.codingapi.txlcn.manager.core.context.TransactionManager;
 import com.codingapi.txlcn.manager.core.message.RpcExecuteService;
 import com.codingapi.txlcn.manager.core.message.TransactionCmd;
+import com.codingapi.txlcn.manager.support.service.TxExceptionService;
+import com.codingapi.txlcn.manager.support.service.WriteTxExceptionDTO;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.params.TxExceptionParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -43,24 +45,35 @@ public class WriteTxExceptionExecuteService implements RpcExecuteService {
 
     private final RpcClient rpcClient;
 
+    private final TransactionManager transactionManager;
+
+    private final DTXTransactionContext transactionContext;
+
     @Autowired
-    public WriteTxExceptionExecuteService(TxExceptionService compensationService, RpcClient rpcClient) {
+    public WriteTxExceptionExecuteService(TxExceptionService compensationService, RpcClient rpcClient,
+                                          TransactionManager transactionManager, DTXTransactionContext transactionContext) {
         this.compensationService = compensationService;
         this.rpcClient = rpcClient;
+        this.transactionManager = transactionManager;
+        this.transactionContext = transactionContext;
     }
 
     @Override
-    public Object execute(TransactionCmd transactionCmd) throws TxManagerException {
+    public Serializable execute(TransactionCmd transactionCmd) throws TxManagerException {
         try {
-            TxExceptionParams txExceptionParams = transactionCmd.getMsg().loadData(TxExceptionParams.class);
+            TxExceptionParams txExceptionParams = transactionCmd.getMsg().loadBean(TxExceptionParams.class);
             WriteTxExceptionDTO writeTxExceptionReq = new WriteTxExceptionDTO();
             writeTxExceptionReq.setModId(rpcClient.getAppName(transactionCmd.getRemoteKey()));
-            writeTxExceptionReq.setTransactionState(txExceptionParams.getTransactionState());
+
+            //获取事务状态（可能存在设置了手动回滚）
+            int transactionState = transactionManager.transactionState(transactionContext.getTransaction(txExceptionParams.getGroupId()));
+
+            writeTxExceptionReq.setTransactionState(transactionState == -1 ? txExceptionParams.getTransactionState() : transactionState);
             writeTxExceptionReq.setGroupId(txExceptionParams.getGroupId());
             writeTxExceptionReq.setUnitId(txExceptionParams.getUnitId());
             writeTxExceptionReq.setRegistrar(Objects.isNull(txExceptionParams.getRegistrar()) ? -1 : txExceptionParams.getRegistrar());
             compensationService.writeTxException(writeTxExceptionReq);
-        } catch (SerializerException e) {
+        } catch (Exception e) {
             throw new TxManagerException(e);
         }
         return null;

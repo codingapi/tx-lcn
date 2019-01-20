@@ -16,6 +16,7 @@
 package com.codingapi.txlcn.client.support;
 
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
+import com.codingapi.txlcn.commons.exception.TransactionException;
 
 /**
  * Description: 事务分离器
@@ -30,6 +31,7 @@ public interface TXLCNTransactionSeparator {
      *
      * @param txTransactionInfo txTransactionInfo
      * @return TXLCNTransactionState
+     * @throws TransactionException TransactionException
      */
-    TXLCNTransactionState loadTransactionState(TxTransactionInfo txTransactionInfo);
+    TXLCNTransactionState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException;
 }

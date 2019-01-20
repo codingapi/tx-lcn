@@ -15,13 +15,11 @@
  */
 package com.codingapi.txlcn.client.message.helper;
 
-import com.codingapi.txlcn.spi.message.params.*;
-import com.codingapi.txlcn.commons.exception.SerializerException;
-import com.codingapi.txlcn.commons.util.serializer.SerializerContext;
 import com.codingapi.txlcn.spi.message.MessageConstants;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
+import com.codingapi.txlcn.spi.message.params.*;
 
-import java.util.Objects;
+import java.io.Serializable;
 
 /**
  * @author lorne
@@ -29,13 +27,6 @@ import java.util.Objects;
 public class MessageCreator {
 
 
-    private static byte[] serialize(Object obj) {
-        try {
-            return SerializerContext.getInstance().serialize(obj);
-        } catch (SerializerException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * 创建事务组
@@ -60,7 +51,7 @@ public class MessageCreator {
         MessageDto msg = new MessageDto();
         msg.setGroupId(joinGroupParams.getGroupId());
         msg.setAction(MessageConstants.ACTION_JOIN_GROUP);
-        msg.setBytes(serialize(joinGroupParams));
+        msg.setData(joinGroupParams);
         return msg;
     }
 
@@ -74,7 +65,7 @@ public class MessageCreator {
         MessageDto msg = new MessageDto();
         msg.setGroupId(notifyGroupParams.getGroupId());
         msg.setAction(MessageConstants.ACTION_NOTIFY_GROUP);
-        msg.setBytes(serialize(notifyGroupParams));
+        msg.setData(notifyGroupParams);
         return msg;
     }
 
@@ -85,11 +76,11 @@ public class MessageCreator {
      * @param action action
      * @return MessageDto
      */
-    public static MessageDto notifyUnitOkResponse(Object message,String action) {
+    public static MessageDto notifyUnitOkResponse(Serializable message, String action) {
         MessageDto messageDto = new MessageDto();
         messageDto.setAction(action);
         messageDto.setState(MessageConstants.STATE_OK);
-        messageDto.setBytes(Objects.isNull(message) ? null : (message instanceof byte[] ? (byte[]) message : serialize(message)));
+        messageDto.setData(message);
         return messageDto;
     }
 
@@ -100,11 +91,11 @@ public class MessageCreator {
      * @param action action
      * @return MessageDto
      */
-    public static MessageDto notifyUnitFailResponse(Object message,String action) {
+    public static MessageDto notifyUnitFailResponse(Serializable message,String action) {
         MessageDto messageDto = new MessageDto();
         messageDto.setAction(action);
         messageDto.setState(MessageConstants.STATE_EXCEPTION);
-        messageDto.setBytes(Objects.isNull(message) ? null : serialize(message));
+        messageDto.setData(message);
         return messageDto;
     }
 
@@ -119,7 +110,7 @@ public class MessageCreator {
         MessageDto messageDto = new MessageDto();
         messageDto.setGroupId(groupId);
         messageDto.setAction(MessageConstants.ACTION_ASK_TRANSACTION_STATE);
-        messageDto.setBytes(serialize(new AskTransactionStateParams(groupId, unitId)));
+        messageDto.setData(new AskTransactionStateParams(groupId, unitId));
         return messageDto;
     }
 
@@ -133,7 +124,7 @@ public class MessageCreator {
         MessageDto messageDto = new MessageDto();
         messageDto.setAction(MessageConstants.ACTION_WRITE_EXCEPTION);
         messageDto.setGroupId(txExceptionParams.getGroupId());
-        messageDto.setBytes(serialize(txExceptionParams));
+        messageDto.setData(txExceptionParams);
         return messageDto;
     }
 
@@ -146,8 +137,8 @@ public class MessageCreator {
         InitClientParams initClientParams = new InitClientParams();
         initClientParams.setAppName(appName);
         MessageDto messageDto = new MessageDto();
-        messageDto.setGroupId("INITCLIENTGROUPID");
-        messageDto.setBytes(serialize(initClientParams));
+        messageDto.setGroupId(MessageConstants.ACTION_INIT_GROUPID);
+        messageDto.setData(initClientParams);
         messageDto.setAction(MessageConstants.ACTION_INIT_CLIENT);
         return messageDto;
     }

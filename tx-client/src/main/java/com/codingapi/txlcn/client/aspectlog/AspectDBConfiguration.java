@@ -29,8 +29,8 @@ import org.springframework.context.annotation.Configuration;
 public class AspectDBConfiguration {
 
     @Bean
-    public AspectLogDbHelper aspectLogDbHelper(){
-        return new AspectLogDbHelper();
+    public AspectLogDbHelper aspectLogDbHelper(AspectLogDbProperties aspectLogDbProperties){
+        return new AspectLogDbHelper(aspectLogDbProperties);
     }
 
 }

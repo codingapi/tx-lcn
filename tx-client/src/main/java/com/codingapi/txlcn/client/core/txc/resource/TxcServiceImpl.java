@@ -18,16 +18,14 @@ package com.codingapi.txlcn.client.core.txc.resource;
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.core.txc.resource.def.TxcService;
 import com.codingapi.txlcn.client.core.txc.resource.def.TxcSqlExecutor;
+import com.codingapi.txlcn.client.core.txc.resource.def.bean.*;
 import com.codingapi.txlcn.client.core.txc.resource.init.TxcExceptionConnectionPool;
 import com.codingapi.txlcn.client.core.txc.resource.util.SqlUtils;
 import com.codingapi.txlcn.commons.exception.TxcLogicException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
-import com.codingapi.txlcn.client.core.txc.resource.def.bean.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.DbUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -43,7 +41,7 @@ import java.util.Objects;
  *
  * @author ujued
  */
-@Service
+
 @Slf4j
 public class TxcServiceImpl implements TxcService {
 
@@ -53,7 +51,6 @@ public class TxcServiceImpl implements TxcService {
 
     private final TxLogger txLogger;
 
-    @Autowired
     public TxcServiceImpl(TxcSqlExecutor txcSqlExecutor, TxcExceptionConnectionPool txcExceptionConnectionPool, TxLogger txLogger) {
         this.txcSqlExecutor = txcSqlExecutor;
         this.txcExceptionConnectionPool = txcExceptionConnectionPool;
@@ -139,7 +136,21 @@ public class TxcServiceImpl implements TxcService {
                     params[index] = fieldValue.getValue();
                 }
                 SqlUtils.cutSuffix(SqlUtils.AND, rollbackSql);
-                updateImageParams.getRollbackInfo().getRollbackSqlList().add(new StatementInfo(rollbackSql.toString(), params));
+                StatementInfo statementInfo = new StatementInfo(rollbackSql.toString(), params);
+                updateImageParams.getRollbackInfo().getRollbackSqlList().add(statementInfo);
+
+                // save to db
+                UndoLogDO undoLogDO = new UndoLogDO();
+                undoLogDO.setGroupId(updateImageParams.getGroupId());
+                undoLogDO.setUnitId(updateImageParams.getUnitId());
+                undoLogDO.setRollbackInfo(SqlUtils.objectToBlob(statementInfo));
+                undoLogDO.setGmtCreate(System.currentTimeMillis());
+                undoLogDO.setGmtModified(System.currentTimeMillis());
+                try {
+                    txcSqlExecutor.writeUndoLogByGivenConnection(connection, undoLogDO);
+                } catch (SQLException e) {
+                    throw new TxcLogicException(e);
+                }
 
                 // Lock Resource
                 this.lockResource(new LockInfo()
@@ -176,14 +187,29 @@ public class TxcServiceImpl implements TxcService {
                 Object[] params = new Object[v.getFields().size()];
                 for (int i = 0; i < v.getFields().size(); i++) {
                     FieldValue fieldValue = v.getFields().get(i);
-                    rollbackSql.append('`').append(fieldValue.getFieldName()).append('`').append(SqlUtils.SQL_COMMA_SEPARATOR);
+                    rollbackSql.append(fieldValue.getFieldName()).append(SqlUtils.SQL_COMMA_SEPARATOR);
                     values.append("?, ");
                     params[i] = fieldValue.getValue();
                 }
                 SqlUtils.cutSuffix(SqlUtils.SQL_COMMA_SEPARATOR, rollbackSql);
                 SqlUtils.cutSuffix(SqlUtils.SQL_COMMA_SEPARATOR, values);
                 rollbackSql.append(") values(").append(values).append(')');
-                deleteImageParams.getRollbackInfo().getRollbackSqlList().add(new StatementInfo(rollbackSql.toString(), params));
+
+                StatementInfo statementInfo = new StatementInfo(rollbackSql.toString(), params);
+                deleteImageParams.getRollbackInfo().getRollbackSqlList().add(statementInfo);
+
+                // save to db
+                UndoLogDO undoLogDO = new UndoLogDO();
+                undoLogDO.setGmtCreate(System.currentTimeMillis());
+                undoLogDO.setGmtModified(System.currentTimeMillis());
+                undoLogDO.setGroupId(deleteImageParams.getGroupId());
+                undoLogDO.setUnitId(deleteImageParams.getUnitId());
+                undoLogDO.setRollbackInfo(SqlUtils.objectToBlob(statementInfo));
+                try {
+                    txcSqlExecutor.writeUndoLogByGivenConnection(connection, undoLogDO);
+                } catch (SQLException e) {
+                    throw new TxcLogicException(e);
+                }
 
                 // Lock Resource
                 this.lockResource(new LockInfo()
@@ -246,31 +272,54 @@ public class TxcServiceImpl implements TxcService {
 
     @Override
     public void undo(String groupId, String unitId) throws TxcLogicException {
+        if (Objects.nonNull(DTXLocal.cur())) {
+            RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
+            if (Objects.nonNull(rollbackInfo)) {
+                txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "rollback by txEx pool.");
+                Connection connection = null;
+                try {
+                    connection = txcExceptionConnectionPool.getConnection();
+                    txcSqlExecutor.undoRollbackInfoSql(connection, rollbackInfo);
+                    return;
+                } catch (SQLException e1) {
+                    throw new TxcLogicException(e1);
+                } finally {
+                    try {
+                        DbUtils.close(connection);
+                    } catch (SQLException ignored) {
+                    }
+                }
+            }
+        }
+
         try {
             DTXLocal.makeUnProxy();
             txcSqlExecutor.applyUndoLog(groupId, unitId);
         } catch (SQLException e) {
-            // 撤销失败 txcExceptionConnectionPool 作撤销
-            if (Objects.nonNull(DTXLocal.cur())) {
-                RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
-                if (Objects.nonNull(rollbackInfo)) {
-                    txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "rollback by txEx pool.");
-                    Connection connection = null;
-                    try {
-                        connection = txcExceptionConnectionPool.getConnection();
-                        txcSqlExecutor.undoRollbackInfoSql(connection, rollbackInfo);
-                    } catch (SQLException e1) {
-                        throw new TxcLogicException(e1);
-                    } finally {
-                        try {
-                            DbUtils.close(connection);
-                        } catch (SQLException ignored) {
-                        }
-                    }
-                }
-            }
+            throw new TxcLogicException(e);
         } finally {
             DTXLocal.undoProxyStatus();
+        }
+    }
+
+    @Override
+    public void resolveInsertImage(InsertImageParams insertImageParams) throws TxcLogicException {
+        Connection connection = (Connection) DTXLocal.cur().getResource();
+        Object[] paramArray = insertImageParams.getParams().toArray(new Object[0]);
+        StatementInfo statementInfo = new StatementInfo(insertImageParams.getRollbackSql(), paramArray);
+        insertImageParams.getRollbackInfo().getRollbackSqlList().add(statementInfo);
+
+        // save to db
+        UndoLogDO undoLogDO = new UndoLogDO();
+        undoLogDO.setGmtCreate(System.currentTimeMillis());
+        undoLogDO.setGmtModified(System.currentTimeMillis());
+        undoLogDO.setRollbackInfo(SqlUtils.objectToBlob(statementInfo));
+        undoLogDO.setGroupId(insertImageParams.getGroupId());
+        undoLogDO.setUnitId(insertImageParams.getUnitId());
+        try {
+            txcSqlExecutor.writeUndoLogByGivenConnection(connection, undoLogDO);
+        } catch (SQLException e) {
+            throw new TxcLogicException(e);
         }
     }
 }

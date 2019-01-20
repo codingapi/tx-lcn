@@ -19,6 +19,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * Description:
  * Date: 2018/12/5
@@ -28,7 +30,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class NotifyUnitParams {
+public class NotifyUnitParams implements Serializable {
+
     private String groupId;
 
     private String unitId;

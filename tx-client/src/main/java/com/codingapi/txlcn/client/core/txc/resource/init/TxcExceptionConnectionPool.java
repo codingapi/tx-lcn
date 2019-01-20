@@ -17,9 +17,7 @@ package com.codingapi.txlcn.client.core.txc.resource.init;
 
 import com.codingapi.txlcn.client.core.txc.resource.def.config.TxcConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -31,32 +29,21 @@ import java.sql.SQLException;
  *
  * @author codingapi
  */
-@Component
+@Slf4j
 public class TxcExceptionConnectionPool {
 
-    private int minIdle;
+    private final HikariDataSource hikariDataSource;
 
-    private HikariDataSource hikariDataSource;
-
-    private final DataSourceProperties dataSourceProperties;
-
-    @Autowired
-    public TxcExceptionConnectionPool(TxcConfig txcConfig, DataSourceProperties dataSourceProperties) {
-        this.minIdle = txcConfig.getMinIdle();
-        this.dataSourceProperties = dataSourceProperties;
-    }
-
-    public void init(){
+    public TxcExceptionConnectionPool(TxcConfig txcConfig) {
         hikariDataSource = new HikariDataSource();
-        hikariDataSource.setJdbcUrl(dataSourceProperties.getUrl());
-        hikariDataSource.setDriverClassName(dataSourceProperties.getDriverClassName());
-        hikariDataSource.setUsername(dataSourceProperties.getUsername());
-        hikariDataSource.setPassword(dataSourceProperties.getPassword());
-        hikariDataSource.setMinimumIdle(minIdle);
+        hikariDataSource.setJdbcUrl(txcConfig.getJdbcUrl());
+        hikariDataSource.setDriverClassName(txcConfig.getDriverClassName());
+        hikariDataSource.setUsername(txcConfig.getUsername());
+        hikariDataSource.setPassword(txcConfig.getPassword());
+        hikariDataSource.setMinimumIdle(txcConfig.getMinimumIdle());
     }
 
     public Connection getConnection() throws SQLException {
         return hikariDataSource.getConnection();
     }
-
 }

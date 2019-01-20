@@ -5,7 +5,7 @@
     <parent>
         <artifactId>tx-lcn</artifactId>
         <groupId>com.codingapi.txlcn</groupId>
-        <version>5.0.0.RC1</version>
+        <version>5.0.0.RC2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -22,11 +22,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>tx-spi-sleuth</artifactId>
         </dependency>
 
         <dependency>

@@ -16,21 +16,20 @@
 package com.codingapi.txlcn.manager.support.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.codingapi.txlcn.spi.message.RpcClient;
-import com.codingapi.txlcn.spi.message.dto.MessageDto;
-import com.codingapi.txlcn.spi.message.exception.RpcException;
-import com.codingapi.txlcn.spi.message.util.MessageUtils;
-import com.codingapi.txlcn.commons.exception.SerializerException;
 import com.codingapi.txlcn.commons.exception.TransactionStateException;
-import com.codingapi.txlcn.logger.TxLogger;
+import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.manager.core.message.MessageCreator;
 import com.codingapi.txlcn.manager.db.domain.TxException;
-import com.codingapi.txlcn.manager.db.mapper.TxExceptionMapper;
+import com.codingapi.txlcn.manager.db.mybatis.TxExceptionMapper;
 import com.codingapi.txlcn.manager.support.restapi.model.ExceptionInfo;
 import com.codingapi.txlcn.manager.support.restapi.model.ExceptionList;
 import com.codingapi.txlcn.manager.support.service.TxExceptionService;
 import com.codingapi.txlcn.manager.support.service.WriteTxExceptionDTO;
 import com.codingapi.txlcn.manager.support.txex.TxExceptionListener;
+import com.codingapi.txlcn.spi.message.RpcClient;
+import com.codingapi.txlcn.spi.message.dto.MessageDto;
+import com.codingapi.txlcn.spi.message.exception.RpcException;
+import com.codingapi.txlcn.spi.message.util.MessageUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -57,17 +56,13 @@ public class TxExceptionServiceImpl implements TxExceptionService {
 
     private final RpcClient rpcClient;
 
-    private final TxLogger txLogger;
-
     private final TxExceptionListener txExceptionListener;
 
     @Autowired
-    public TxExceptionServiceImpl(TxExceptionMapper txExceptionMapper,
-                                  RpcClient rpcClient, TxLogger txLogger,
+    public TxExceptionServiceImpl(TxExceptionMapper txExceptionMapper, RpcClient rpcClient,
                                   TxExceptionListener txExceptionListener) {
         this.txExceptionMapper = txExceptionMapper;
         this.rpcClient = rpcClient;
-        this.txLogger = txLogger;
         this.txExceptionListener = txExceptionListener;
     }
 
@@ -97,7 +92,7 @@ public class TxExceptionServiceImpl implements TxExceptionService {
     }
 
     @Override
-    public ExceptionList exceptionList(Integer page, Integer limit, String keyword, int registrar) {
+    public ExceptionList exceptionList(Integer page, Integer limit, Integer exState, String keyword, Integer registrar) {
         if (Objects.isNull(page) || page <= 0) {
             page = 1;
         }
@@ -105,7 +100,16 @@ public class TxExceptionServiceImpl implements TxExceptionService {
             limit = 10;
         }
         Page pageInfo = PageHelper.startPage(page, limit, true);
-        List<TxException> txExceptions = txExceptionMapper.findAll();
+        List<TxException> txExceptions;
+        if ((Objects.nonNull(exState) && exState != -2) && (Objects.nonNull(registrar) && registrar != -2)) {
+            txExceptions = txExceptionMapper.findByExStateAndRegistrar(exState, registrar);
+        } else if (Objects.nonNull(exState) && exState != -2) {
+            txExceptions = txExceptionMapper.findByExState(exState);
+        } else if (Objects.nonNull(registrar) && registrar != -2) {
+            txExceptions = txExceptionMapper.findByRegistrar(registrar);
+        } else {
+            txExceptions = txExceptionMapper.findAll();
+        }
         List<ExceptionInfo> exceptionInfoList = new ArrayList<>(txExceptions.size());
         for (TxException txException : txExceptions) {
             ExceptionInfo exceptionInfo = new ExceptionInfo();
@@ -138,20 +142,25 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         if (Objects.isNull(exception)) {
             throw new TransactionStateException("non exists aspect log", TransactionStateException.NON_ASPECT);
         }
-        List<String> modList = rpcClient.moduleList(exception.getModId());
-        if (modList.isEmpty()) {
+        List<String> remoteKeys = rpcClient.remoteKeys(exception.getModId());
+        if (remoteKeys.isEmpty()) {
             throw new TransactionStateException("non mod found", TransactionStateException.NON_MOD);
         }
         try {
-            for (String mod : modList) {
-                MessageDto messageDto = rpcClient.request(mod, MessageCreator.getAspectLog(groupId, unitId));
+            for (String remoteKey : remoteKeys) {
+                MessageDto messageDto = rpcClient.request(remoteKey, MessageCreator.getAspectLog(groupId, unitId));
                 if (MessageUtils.statusOk(messageDto)) {
-                    return messageDto.loadData(JSONObject.class);
+                    return messageDto.loadBean(JSONObject.class);
                 }
             }
             throw new TransactionStateException("non exists aspect log", TransactionStateException.NON_ASPECT);
-        } catch (RpcException | SerializerException e) {
+        } catch (RpcException e) {
             throw new TransactionStateException(e, TransactionStateException.RPC_ERR);
         }
+    }
+
+    @Override
+    public void deleteExceptions(List<Long> ids) throws TxManagerException {
+        txExceptionMapper.deleteByIdList(ids);
     }
 }

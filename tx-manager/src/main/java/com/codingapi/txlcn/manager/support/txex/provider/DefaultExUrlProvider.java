@@ -42,17 +42,15 @@ public class DefaultExUrlProvider {
 
     private final MailProperties mailProperties;
     private final JavaMailSender javaMailSender;
-    @Autowired(required = false)
-    public DefaultExUrlProvider(TxManagerConfig txManagerConfig) {
-        this(null, null, txManagerConfig);
-    }
 
-    @Autowired(required = false)
-    public DefaultExUrlProvider(JavaMailSender javaMailSender,
-                                MailProperties mailProperties,
-                                TxManagerConfig txManagerConfig) {
+    public DefaultExUrlProvider(@Autowired(required = false) JavaMailSender javaMailSender,
+                                @Autowired(required = false) MailProperties mailProperties,
+                                @Autowired TxManagerConfig txManagerConfig) {
         this.javaMailSender = javaMailSender;
         this.mailProperties = mailProperties;
+        Objects.requireNonNull(txManagerConfig, "tx-manager config can't be null.");
+
+        // ujued's email can be ignored.
         if (Objects.isNull(javaMailSender)) {
             if (txManagerConfig.getExUrl().contains("ujued@qq.com")) {
                 txManagerConfig.setExUrlEnabled(false);
@@ -63,7 +61,7 @@ public class DefaultExUrlProvider {
     @PostMapping("/provider/email-to/{email}")
     public boolean email(@PathVariable("email") String email, @RequestBody TxException txEx) {
         if (Objects.isNull(javaMailSender)) {
-            log.error("non admin mail configured. so tx exception not send.");
+            log.error("non admin mail configured. so tx exception not be send to email:" + email);
             return false;
         }
         SimpleMailMessage message = new SimpleMailMessage();

@@ -15,10 +15,10 @@
  */
 package com.codingapi.txlcn.client.core.lcn.control;
 
-import com.codingapi.txlcn.client.core.lcn.resource.LCNConnectionProxy;
+import com.codingapi.txlcn.client.core.lcn.resource.LcnConnectionProxy;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
-import com.codingapi.txlcn.client.support.common.cache.TransactionAttachmentCache;
-import com.codingapi.txlcn.client.support.common.TransactionCleanService;
+import com.codingapi.txlcn.client.support.cache.TransactionAttachmentCache;
+import com.codingapi.txlcn.client.support.TransactionCleanService;
 import com.codingapi.txlcn.spi.message.dto.RpcResponseState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class LcnTransactionCleanService implements TransactionCleanService {
 
     @Override
     public void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException {
-        Optional<LCNConnectionProxy> lcnConnectionProxy = transactionAttachmentCache.attachment(groupId, LCNConnectionProxy.class);
+        Optional<LcnConnectionProxy> lcnConnectionProxy = transactionAttachmentCache.attachment(groupId, LcnConnectionProxy.class);
         if (lcnConnectionProxy.isPresent()) {
             if (lcnConnectionProxy.get().notify(state).equals(RpcResponseState.success)) {
                 // 移除本地LCN事务相关对象
@@ -56,7 +56,7 @@ public class LcnTransactionCleanService implements TransactionCleanService {
             log.error("本地事务通知失败");
             throw new TransactionClearException("通知资源时出错");
         }
-        log.error("local non transaction, but notified. probably net message timeout . groupId: {}, state: {}", groupId, state);
+        log.error("local non transaction, but notified. probably net message timeout . groupId: {}, transactionState: {}", groupId, state);
         throw new TransactionClearException("local non transaction, but notified. probably net message timeout .");
     }
 }

@@ -16,12 +16,11 @@
 package com.codingapi.txlcn.client.aspectlog;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.dbutils.*;
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -46,7 +45,6 @@ public class AspectLogHelper {
     }
 
 
-    @PostConstruct
     public void init() {
         aspectLogDbHelper.update("CREATE TABLE IF NOT EXISTS TXLCN_LOG " +
                 "(" +

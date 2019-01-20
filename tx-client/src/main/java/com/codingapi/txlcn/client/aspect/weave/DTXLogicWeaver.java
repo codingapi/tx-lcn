@@ -19,12 +19,12 @@ import com.codingapi.txlcn.client.aspect.BusinessCallback;
 import com.codingapi.txlcn.client.bean.DTXInfo;
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
-import com.codingapi.txlcn.spi.sleuth.TracerHelper;
 import com.codingapi.txlcn.client.support.TXLCNTransactionServiceExecutor;
+import com.codingapi.txlcn.client.support.cache.DTXGroupContext;
+import com.codingapi.txlcn.client.support.cache.TransactionAttachmentCache;
 import com.codingapi.txlcn.commons.util.RandomUtils;
+import com.codingapi.txlcn.spi.sleuth.TracerHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
@@ -35,7 +35,6 @@ import java.util.Objects;
  *
  * @author ujued
  */
-@Component
 @Slf4j
 public class DTXLogicWeaver {
 
@@ -43,11 +42,14 @@ public class DTXLogicWeaver {
 
     private final TXLCNTransactionServiceExecutor transactionServiceExecutor;
 
-    @Autowired
+    private final TransactionAttachmentCache transactionAttachmentCache;
+
     public DTXLogicWeaver(TracerHelper tracerHelper,
-                          TXLCNTransactionServiceExecutor transactionServiceExecutor) {
+                          TXLCNTransactionServiceExecutor transactionServiceExecutor,
+                          TransactionAttachmentCache transactionAttachmentCache) {
         this.tracerHelper = tracerHelper;
         this.transactionServiceExecutor = transactionServiceExecutor;
+        this.transactionAttachmentCache = transactionAttachmentCache;
     }
 
     public Object runTransaction(DTXInfo dtxInfo, BusinessCallback business) throws Throwable {
@@ -58,7 +60,8 @@ public class DTXLogicWeaver {
             return business.call();
         }
 
-        log.info("tx-unit start---->");
+        log.debug("tx-unit start---->");
+
         // 事务发起方判断
         boolean isTransactionStart = tracerHelper.getGroupId() == null;
 
@@ -81,13 +84,16 @@ public class DTXLogicWeaver {
 
         //LCN事务处理器
         try {
+            transactionAttachmentCache.setContext(info.getGroupId(), new DTXGroupContext());
             return transactionServiceExecutor.transactionRunning(info);
         } finally {
-            synchronized (DTXLocal.cur()) {
-                DTXLocal.cur().notifyAll();
+            DTXGroupContext context = transactionAttachmentCache.context(info.getGroupId());
+            synchronized (context.getLock()) {
+                context.getLock().notifyAll();
             }
+            transactionAttachmentCache.destroyContext(info.getGroupId());
             DTXLocal.makeNeverAppeared();
-            log.info("tx-unit end------>");
+            log.debug("tx-unit end------>");
         }
     }
 }

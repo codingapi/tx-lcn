@@ -16,8 +16,11 @@
 package com.codingapi.txlcn.client.bean;
 
 
+import com.codingapi.txlcn.client.core.tcc.control.TccTransactionCleanService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Objects;
 
 /**
  * 分布式事务远程调用控制对象
@@ -63,15 +66,26 @@ public class DTXLocal {
     private Object attachment;
 
     /**
-     * 业务执行结果，1 成功 0 失败
+     * 系统分布式事务状态
      */
-    private int state;
+    private int sysTransactionState = 1;
+
+    /**
+     * 用户分布式事务状态
+     */
+    private int userTransactionState = -1;
 
     /**
      * 是否代理资源
      */
     private boolean proxy;
 
+    /**
+     * 是否是刚刚创建的DTXLocal. 不是特别了解这个意思时，不要轻易操作这个值。
+     *
+     * @see TccTransactionCleanService#clear(java.lang.String, int, java.lang.String, java.lang.String)
+     */
+    private boolean justNow;
 
     //////// private     ///////////////////////
     /**
@@ -91,7 +105,7 @@ public class DTXLocal {
 
 
     /**
-     * 获取当前线程变量
+     * 获取当前线程变量。不推荐用此方法，会产生NullPointerException
      *
      * @return 当前线程变量
      */
@@ -100,7 +114,7 @@ public class DTXLocal {
     }
 
     /**
-     * 获取或新建一个线程变量
+     * 获取或新建一个线程变量。
      *
      * @return 当前线程变量
      */
@@ -148,5 +162,15 @@ public class DTXLocal {
             log.debug("clean thread local[{}]: {}", DTXLocal.class.getSimpleName(), cur());
             currentLocal.set(null);
         }
+    }
+
+    /**
+     * 事务状态
+     *
+     * @return 1 commit 0 rollback
+     */
+    public static int transactionState() {
+        DTXLocal dtxLocal = Objects.requireNonNull(currentLocal.get(), "DTX can't be null.");
+        return dtxLocal.userTransactionState == -1 ? dtxLocal.sysTransactionState : dtxLocal.userTransactionState;
     }
 }

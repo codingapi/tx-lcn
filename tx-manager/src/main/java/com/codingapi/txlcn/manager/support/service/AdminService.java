@@ -16,9 +16,10 @@
 package com.codingapi.txlcn.manager.support.service;
 
 import com.codingapi.txlcn.commons.exception.TxManagerException;
-import com.codingapi.txlcn.manager.support.restapi.model.DTXInfo;
-import com.codingapi.txlcn.manager.support.restapi.model.TxLogList;
-import com.codingapi.txlcn.manager.support.restapi.model.TxManagerInfo;
+import com.codingapi.txlcn.manager.support.restapi.model.*;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Description:
@@ -32,21 +33,25 @@ public interface AdminService {
      * 登陆
      *
      * @param password password
-     * @return  token
+     * @return token
+     * @throws TxManagerException TxManagerException
      */
     String login(String password) throws TxManagerException;
 
     /**
      * 查询TX 日志
      *
-     * @param page page
-     * @param limit limit
-     * @param  groupId groupId
-     * @param tag tag
+     * @param page      page
+     * @param limit     limit
+     * @param groupId   groupId
+     * @param tag       tag
+     * @param lTime startTime
+     * @param rTime stopTime
      * @param timeOrder 时间排序1 顺序 2 逆序
      * @return TxLogList
+     * @throws TxManagerException TxManagerException
      */
-    TxLogList txLogList(Integer page, Integer limit, String groupId, String tag, Integer timeOrder);
+    TxLogList txLogList(Integer page, Integer limit, String groupId, String tag, String lTime, String rTime, Integer timeOrder) throws TxManagerException;
 
     /**
      * 分布式事务统计信息
@@ -61,4 +66,21 @@ public interface AdminService {
      * @return TxManagerInfo
      */
     TxManagerInfo getTxManagerInfo();
+
+    /**
+     * 删除日志
+     *
+     * @param deleteLogsReq deleteLogsReq
+     * @throws TxManagerException TxManagerException
+     */
+    void deleteLogs(DeleteLogsReq deleteLogsReq) throws TxManagerException;
+
+    /**
+     * AppMods
+     *
+     * @param page  page
+     * @param limit limit
+     * @return AppMods
+     */
+    ListAppMods listAppMods(Integer page, Integer limit);
 }

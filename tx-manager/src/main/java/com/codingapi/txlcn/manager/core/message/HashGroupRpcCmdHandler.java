@@ -46,7 +46,7 @@ public class HashGroupRpcCmdHandler {
     public HashGroupRpcCmdHandler(ManagerRpcBeanHelper beanHelper, TxManagerConfig managerConfig) {
         this.concurrentLevel = Math.max(
                 (int) (Runtime.getRuntime().availableProcessors() / (1 - 0.8)), managerConfig.getConcurrentLevel());
-        log.info("concurrent level is {}", this.concurrentLevel);
+        log.info("Transaction concurrent level is {}", this.concurrentLevel);
         this.beanHelper = beanHelper;
         this.executors = new ArrayList<>(this.concurrentLevel);
         for (int i = 0; i < this.concurrentLevel; i++) {
@@ -75,7 +75,7 @@ public class HashGroupRpcCmdHandler {
             throw new IllegalStateException("bad request! message's groupId not nullable!");
         }
         int index = Math.abs(rpcCmd.getMsg().getGroupId().hashCode() % this.concurrentLevel);
-        log.info("group:{}'s message dispatched executor index: {}", rpcCmd.getMsg().getGroupId(), index);
+        log.debug("group:{}'s message dispatched executor index: {}", rpcCmd.getMsg().getGroupId(), index);
 
         // 提交事务消息，处理
         executors.get(index).submit(new RpcCmdTask(beanHelper, rpcCmd));

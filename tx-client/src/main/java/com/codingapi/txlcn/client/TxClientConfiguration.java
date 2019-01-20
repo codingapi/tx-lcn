@@ -1,67 +1,57 @@
-/*
- * Copyright 2017-2019 CodingApi .
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.codingapi.txlcn.client;
 
-import com.codingapi.txlcn.client.core.txc.resource.init.DefaultTxcSettingFactory;
-import com.codingapi.txlcn.client.core.txc.resource.init.TxcSettingFactory;
-import com.codingapi.txlcn.client.support.checking.DTXChecking;
-import com.codingapi.txlcn.client.support.checking.SimpleDTXChecking;
-import com.codingapi.txlcn.client.support.common.template.TransactionCleanTemplate;
-import org.apache.commons.dbutils.QueryRunner;
-import org.springframework.beans.factory.SmartInitializingSingleton;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import com.codingapi.txlcn.client.aspect.DataSourceAspect;
+import com.codingapi.txlcn.client.aspect.TransactionAspect;
+import com.codingapi.txlcn.client.aspect.weave.DTXLogicWeaver;
+import com.codingapi.txlcn.client.aspect.weave.DTXResourceWeaver;
+import com.codingapi.txlcn.client.config.EnableDistributedTransaction;
+import com.codingapi.txlcn.client.config.TxClientConfig;
+import com.codingapi.txlcn.client.support.TXLCNTransactionBeanHelper;
+import com.codingapi.txlcn.client.support.TXLCNTransactionServiceExecutor;
+import com.codingapi.txlcn.client.support.cache.TransactionAttachmentCache;
+import com.codingapi.txlcn.commons.runner.TxLcnApplicationRunner;
+import com.codingapi.txlcn.spi.sleuth.TracerHelper;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import javax.sql.DataSource;
-
 /**
  * Description:
- * Company: CodingApi
- * Date: 2018/12/10
+ * Date: 1/19/19
  *
- * @author lorne
+ * @author ujued
+ * @see EnableDistributedTransaction
  */
 @Configuration
 @ComponentScan
-@EnableConfigurationProperties
 public class TxClientConfiguration {
 
-
     @Bean
-    public QueryRunner queryRunner(DataSource dataSource) {
-        return new QueryRunner(dataSource);
+    public ApplicationRunner txLcnApplicationRunner(ApplicationContext applicationContext) {
+        return new TxLcnApplicationRunner(applicationContext);
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    public TxcSettingFactory txcSettingFactory() {
-        return new DefaultTxcSettingFactory();
+    public DataSourceAspect dataSourceAspect(TxClientConfig clientConfig, DTXResourceWeaver resourceWeaver) {
+        return new DataSourceAspect(clientConfig, resourceWeaver);
     }
 
+    @Bean
+    public TransactionAspect transactionAspect(TxClientConfig clientConfig, DTXLogicWeaver logicWeaver) {
+        return new TransactionAspect(clientConfig, logicWeaver);
+    }
 
     @Bean
-    public SmartInitializingSingleton dtxCheckingTransactionCleanTemplateAdapter(DTXChecking dtxChecking,
-                                                                                 TransactionCleanTemplate transactionCleanTemplate) {
-        if (dtxChecking instanceof SimpleDTXChecking) {
-            return () -> ((SimpleDTXChecking) dtxChecking).setTransactionCleanTemplate(transactionCleanTemplate);
-        }
-        return () -> {
-        };
+    public DTXLogicWeaver dtxLogicWeaver(TracerHelper tracerHelper,
+                                         TXLCNTransactionServiceExecutor transactionServiceExecutor,
+                                         TransactionAttachmentCache transactionAttachmentCache) {
+        return new DTXLogicWeaver(tracerHelper, transactionServiceExecutor, transactionAttachmentCache);
+    }
+
+    @Bean
+    public DTXResourceWeaver dtxResourceWeaver(TXLCNTransactionBeanHelper transactionBeanHelper) {
+        return new DTXResourceWeaver(transactionBeanHelper);
     }
 }

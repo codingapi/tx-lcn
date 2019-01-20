@@ -18,7 +18,7 @@ package com.codingapi.txlcn.spi.message.netty.impl;
 import com.codingapi.txlcn.spi.message.RpcClientInitializer;
 import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.spi.message.dto.TxManagerHost;
-import com.codingapi.txlcn.spi.message.netty.SocketManager;
+import com.codingapi.txlcn.spi.message.netty.bean.SocketManager;
 import com.codingapi.txlcn.spi.message.netty.em.NettyType;
 import com.codingapi.txlcn.spi.message.netty.handler.NettyRpcClientHandlerInitHandler;
 import io.netty.bootstrap.Bootstrap;
@@ -35,6 +35,7 @@ import org.springframework.stereotype.Service;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Description:
@@ -47,24 +48,31 @@ import java.util.List;
 @Slf4j
 public class NettyRpcClientInitializer implements RpcClientInitializer, DisposableBean {
 
-
     @Autowired
     private NettyRpcClientHandlerInitHandler nettyRpcClientHandlerInitHandler;
-
-    private EventLoopGroup workerGroup;
 
     @Autowired
     private RpcConfig rpcConfig;
 
+    private EventLoopGroup workerGroup;
+
+    private CountDownLatch countDownLatch;
 
     @Override
     public void init(List<TxManagerHost> hosts) {
         NettyContext.type = NettyType.client;
         NettyContext.params = hosts;
         workerGroup = new NioEventLoopGroup();
+        this.countDownLatch = new CountDownLatch(hosts.size());
         for (TxManagerHost host : hosts) {
             connect(new InetSocketAddress(host.getHost(), host.getPort()));
         }
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        }
+        log.info("TM cluster size:{}", SocketManager.getInstance().currentSize());
     }
 
 
@@ -74,9 +82,7 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
         for (int i = 0; i < rpcConfig.getReconnectCount(); i++) {
             if (SocketManager.getInstance().noConnect(socketAddress)) {
                 try {
-                    log.warn("current manager size:{}", SocketManager.getInstance().currentSize());
-
-                    log.info("try reconnect {} - {}", socketAddress, i + 1);
+                    log.info("Connect TM[{}] - count {}", socketAddress, i + 1);
                     Bootstrap b = new Bootstrap();
                     b.group(workerGroup);
                     b.channel(NioSocketChannel.class);
@@ -84,22 +90,28 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
                     b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
                     b.handler(nettyRpcClientHandlerInitHandler);
                     ChannelFuture channelFuture = b.connect(socketAddress).syncUninterruptibly();
-                    log.info("client -> {} , state:{}", socketAddress, channelFuture.isSuccess());
+                    channelFuture.addListener(future -> countDownLatch.countDown());
+                    log.info("TC connect state:{}", socketAddress, channelFuture.isSuccess());
                     connected = true;
                     break;
 
                 } catch (Exception e) {
-                    log.warn("reconnect fail. will latter try again.");
+                    countDownLatch.countDown();
+                    log.warn("Connect TM[{}] fail. {}ms latter try again.", socketAddress, rpcConfig.getReconnectDelay());
                     try {
-                        Thread.sleep(1000 * rpcConfig.getReconnectDelay());
+                        Thread.sleep(rpcConfig.getReconnectDelay());
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }
                 }
             }
         }
+
         if (!connected) {
-            log.warn("finally, netty connection fail , address is {}", socketAddress);
+            log.warn("Finally, netty connection fail , address is {}", socketAddress);
+            if (SocketManager.getInstance().currentSize() == 0) {
+                throw new IllegalStateException("Can not connect any TM, DTX disabled.");
+            }
         }
     }
 
@@ -107,6 +119,6 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
     @Override
     public void destroy() throws Exception {
         workerGroup.shutdownGracefully();
-        log.info("client was down.");
+        log.info("TC was down.");
     }
 }

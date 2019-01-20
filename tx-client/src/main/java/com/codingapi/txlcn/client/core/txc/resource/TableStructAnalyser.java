@@ -19,7 +19,6 @@ import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.core.txc.resource.def.bean.TableStruct;
 import org.apache.commons.dbutils.DbUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -33,7 +32,7 @@ import java.sql.SQLException;
  *
  * @author ujued
  */
-@Component
+
 public class TableStructAnalyser {
 
     private final DataSource dataSource;

@@ -18,7 +18,7 @@ package com.codingapi.txlcn.client.aspect;
 import com.codingapi.txlcn.client.aspect.weave.DTXLogicWeaver;
 import com.codingapi.txlcn.client.bean.DTXInfo;
 import com.codingapi.txlcn.client.config.TxClientConfig;
-import com.codingapi.txlcn.client.support.common.DTXInfoPool;
+import com.codingapi.txlcn.client.support.DTXInfoPool;
 import com.codingapi.txlcn.commons.annotation.*;
 import com.codingapi.txlcn.commons.util.Transactions;
 import lombok.extern.slf4j.Slf4j;
@@ -26,29 +26,23 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
-import org.springframework.stereotype.Component;
-
-import java.util.Objects;
 
 /**
  * LCN 事务拦截器
  * create by lorne on 2018/1/5
  */
 @Aspect
-@Component
 @Slf4j
 public class TransactionAspect implements Ordered {
 
     private final TxClientConfig txClientConfig;
 
-    private final com.codingapi.txlcn.client.aspect.weave.DTXLogicWeaver DTXLogicWeaver;
+    private final DTXLogicWeaver dtxLogicWeaver;
 
-    @Autowired
-    public TransactionAspect(TxClientConfig txClientConfig, DTXLogicWeaver DTXLogicWeaver) {
+    public TransactionAspect(TxClientConfig txClientConfig, DTXLogicWeaver dtxLogicWeaver) {
         this.txClientConfig = txClientConfig;
-        this.DTXLogicWeaver = DTXLogicWeaver;
+        this.dtxLogicWeaver = dtxLogicWeaver;
     }
 
     /**
@@ -85,8 +79,8 @@ public class TransactionAspect implements Ordered {
         DTXInfo dtxInfo = DTXInfoPool.get(point);
         TxTransaction txTransaction = dtxInfo.getBusinessMethod().getAnnotation(TxTransaction.class);
         dtxInfo.setTransactionType(txTransaction.type());
-        dtxInfo.setTransactionPropagation(txTransaction.dtxp());
-        return DTXLogicWeaver.runTransaction(dtxInfo, point::proceed);
+        dtxInfo.setTransactionPropagation(txTransaction.propagation());
+        return dtxLogicWeaver.runTransaction(dtxInfo, point::proceed);
     }
 
     @Around("lcnTransactionPointcut() && !txcTransactionPointcut()" +
@@ -95,8 +89,8 @@ public class TransactionAspect implements Ordered {
         DTXInfo dtxInfo = DTXInfoPool.get(point);
         LcnTransaction lcnTransaction = dtxInfo.getBusinessMethod().getAnnotation(LcnTransaction.class);
         dtxInfo.setTransactionType(Transactions.LCN);
-        dtxInfo.setTransactionPropagation(lcnTransaction.dtxp());
-        return DTXLogicWeaver.runTransaction(dtxInfo, point::proceed);
+        dtxInfo.setTransactionPropagation(lcnTransaction.propagation());
+        return dtxLogicWeaver.runTransaction(dtxInfo, point::proceed);
     }
 
     @Around("txcTransactionPointcut() && !lcnTransactionPointcut()" +
@@ -105,8 +99,8 @@ public class TransactionAspect implements Ordered {
         DTXInfo dtxInfo = DTXInfoPool.get(point);
         TxcTransaction txcTransaction = dtxInfo.getBusinessMethod().getAnnotation(TxcTransaction.class);
         dtxInfo.setTransactionType(Transactions.TXC);
-        dtxInfo.setTransactionPropagation(txcTransaction.dtxp());
-        return DTXLogicWeaver.runTransaction(dtxInfo, point::proceed);
+        dtxInfo.setTransactionPropagation(txcTransaction.propagation());
+        return dtxLogicWeaver.runTransaction(dtxInfo, point::proceed);
     }
 
     @Around("tccTransactionPointcut() && !lcnTransactionPointcut()" +
@@ -115,8 +109,8 @@ public class TransactionAspect implements Ordered {
         DTXInfo dtxInfo = DTXInfoPool.get(point);
         TccTransaction tccTransaction = dtxInfo.getBusinessMethod().getAnnotation(TccTransaction.class);
         dtxInfo.setTransactionType(Transactions.TCC);
-        dtxInfo.setTransactionPropagation(tccTransaction.dtxp());
-        return DTXLogicWeaver.runTransaction(dtxInfo, point::proceed);
+        dtxInfo.setTransactionPropagation(tccTransaction.propagation());
+        return dtxLogicWeaver.runTransaction(dtxInfo, point::proceed);
     }
 
     @Around("this(com.codingapi.txlcn.commons.annotation.ITxTransaction) && execution( * *(..))")
@@ -128,13 +122,12 @@ public class TransactionAspect implements Ordered {
         ITxTransaction txTransaction = (ITxTransaction) point.getThis();
         dtxInfo.setTransactionType(txTransaction.transactionType());
         dtxInfo.setTransactionPropagation(DTXPropagation.REQUIRED);
-        return DTXLogicWeaver.runTransaction(dtxInfo, point::proceed);
+        return dtxLogicWeaver.runTransaction(dtxInfo, point::proceed);
     }
 
     @Override
     public int getOrder() {
-        return Objects.isNull(txClientConfig.getDtxAspectOrder()) ?
-                txClientConfig.getControlOrder() : txClientConfig.getDtxAspectOrder();
+        return txClientConfig.getDtxAspectOrder();
     }
 
 }

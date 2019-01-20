@@ -15,23 +15,21 @@
  */
 package com.codingapi.txlcn.manager.core.context;
 
-import com.codingapi.txlcn.spi.message.RpcClient;
-import com.codingapi.txlcn.spi.message.dto.MessageDto;
-import com.codingapi.txlcn.spi.message.exception.RpcException;
-import com.codingapi.txlcn.spi.message.params.NotifyUnitParams;
-import com.codingapi.txlcn.spi.message.util.MessageUtils;
 import com.codingapi.txlcn.commons.exception.JoinGroupException;
-import com.codingapi.txlcn.commons.exception.SerializerException;
-import com.codingapi.txlcn.commons.util.Transactions;
-import com.codingapi.txlcn.commons.util.serializer.SerializerContext;
-import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.commons.exception.TransactionException;
+import com.codingapi.txlcn.commons.util.Transactions;
+import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.manager.core.group.GroupRelationship;
 import com.codingapi.txlcn.manager.core.group.TransUnit;
 import com.codingapi.txlcn.manager.core.group.TransactionUnit;
 import com.codingapi.txlcn.manager.core.message.MessageCreator;
 import com.codingapi.txlcn.manager.core.message.RpcExceptionHandler;
 import com.codingapi.txlcn.manager.support.service.TxExceptionService;
+import com.codingapi.txlcn.spi.message.RpcClient;
+import com.codingapi.txlcn.spi.message.dto.MessageDto;
+import com.codingapi.txlcn.spi.message.exception.RpcException;
+import com.codingapi.txlcn.spi.message.params.NotifyUnitParams;
+import com.codingapi.txlcn.spi.message.util.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -86,8 +84,12 @@ public class SimpleTransactionManager implements TransactionManager {
         transUnit.setRemoteKey(transactionUnit.messageContextId());
         transUnit.setUnitType(transactionUnit.unitType());
         transUnit.setUnitId(transactionUnit.unitId());
-        log.info("unit:{} joined group:{}", transactionUnit.unitId(), dtxTransaction.groupId());
+        log.debug("unit:{} joined group:{}", transactionUnit.unitId(), dtxTransaction.groupId());
         try {
+            //手动回滚时设置状态为回滚状态 0
+            if(transactionUnit.getTransactionState()==0){
+                groupRelationship.setTransactionState(dtxTransaction.groupId(),0);
+            }
             groupRelationship.joinGroup(dtxTransaction.groupId(), transUnit);
         } catch (JoinGroupException e) {
             throw new TransactionException(e);
@@ -113,6 +115,7 @@ public class SimpleTransactionManager implements TransactionManager {
     @Override
     public int transactionState(DTXTransaction groupTransaction) {
         int state = exceptionService.transactionState(groupTransaction.groupId());
+        //存在数据时返回数据状态
         if (state != -1) {
             return state;
         }
@@ -136,9 +139,9 @@ public class SimpleTransactionManager implements TransactionManager {
                 if (!MessageUtils.statusOk(respMsg)) {
                     // 提交/回滚失败的消息处理
                     List<Object> params = Arrays.asList(notifyUnitParams, transUnit.getRemoteKey());
-                    rpcExceptionHandler.handleNotifyUnitBusinessException(params, throwable(respMsg.getBytes()));
+                    rpcExceptionHandler.handleNotifyUnitBusinessException(params,respMsg.loadBean(Throwable.class));
                 }
-            } catch (RpcException | SerializerException e) {
+            } catch (RpcException e) {
                 // 提交/回滚通讯失败
                 List<Object> params = Arrays.asList(notifyUnitParams, transUnit.getRemoteKey());
                 rpcExceptionHandler.handleNotifyUnitMessageException(params, e);
@@ -148,7 +151,4 @@ public class SimpleTransactionManager implements TransactionManager {
         }
     }
 
-    private Throwable throwable(byte[] data) throws SerializerException {
-        return SerializerContext.getInstance().deSerialize(data, Throwable.class);
-    }
 }

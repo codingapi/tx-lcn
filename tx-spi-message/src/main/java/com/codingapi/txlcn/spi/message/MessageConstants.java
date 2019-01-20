@@ -72,6 +72,11 @@ public class MessageConstants {
      */
     public static final String ACTION_INIT_CLIENT = "initClient";
 
+    /**
+     * 初始化客户端GroupId默认值
+     */
+    public static final String ACTION_INIT_GROUPID = "INITCLIENTGROUPID";
+
 
 
 

@@ -20,6 +20,8 @@ import com.codingapi.txlcn.commons.exception.TransactionStateException;
 import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.manager.support.restapi.model.ExceptionList;
 
+import java.util.List;
+
 /**
  * Description:
  * Date: 2018/12/18
@@ -39,7 +41,7 @@ public interface TxExceptionService {
     /**
      * 获取事务状态
      *
-     * @param  groupId groupId
+     * @param groupId groupId
      * @return transactionState
      */
     int transactionState(String groupId);
@@ -47,22 +49,31 @@ public interface TxExceptionService {
     /**
      * 获取补偿列表
      *
-     * @param page page
-     * @param limit limit
-     * @param keyword  keyword
-     * @param registrar  registrar
+     * @param page      page
+     * @param limit     limit
+     * @param exState   exState
+     * @param keyword   keyword
+     * @param registrar registrar
      * @return ExceptionList
      */
-    ExceptionList exceptionList(Integer page, Integer limit, String keyword, int registrar);
+    ExceptionList exceptionList(Integer page, Integer limit, Integer exState, String keyword, Integer registrar);
 
     /**
      * Client 切面信息
      *
      * @param groupId groupId
-     * @param unitId unitId
+     * @param unitId  unitId
      * @return JSONObject
-     * @throws TxManagerException TxManagerException
+     * @throws TxManagerException        TxManagerException
      * @throws TransactionStateException TransactionStateException
      */
     JSONObject getTransactionInfo(String groupId, String unitId) throws TxManagerException, TransactionStateException;
+
+    /**
+     * 删除异常
+     *
+     * @param ids 异常标识
+     * @throws TxManagerException ex
+     */
+    void deleteExceptions(List<Long> ids) throws TxManagerException;
 }

@@ -16,7 +16,6 @@
 package com.codingapi.txlcn.client.core.txc.resource;
 
 import com.codingapi.txlcn.client.support.resouce.TransactionResourceExecutor;
-import com.codingapi.txlcn.jdbcproxy.p6spy.spring.ConnectionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -18,7 +18,7 @@ package com.codingapi.txlcn.client.core.txc.control;
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
 import com.codingapi.txlcn.client.core.txc.resource.def.bean.RollbackInfo;
-import com.codingapi.txlcn.client.support.common.template.TransactionControlTemplate;
+import com.codingapi.txlcn.client.support.template.TransactionControlTemplate;
 import com.codingapi.txlcn.client.support.TXLCNTransactionControl;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import lombok.extern.slf4j.Slf4j;
@@ -63,20 +63,20 @@ public class TxcStartingTransaction implements TXLCNTransactionControl {
 
     @Override
     public void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) {
-        DTXLocal.cur().setState(0);
+        DTXLocal.cur().setSysTransactionState(0);
 
     }
 
     @Override
     public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) {
         // set state equ 1
-        DTXLocal.cur().setState(1);
+        DTXLocal.cur().setSysTransactionState(1);
     }
 
     @Override
     public void postBusinessCode(TxTransactionInfo info) {
         RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
-        int state = DTXLocal.cur().getState();
+        int state = DTXLocal.transactionState();
 
         // 非成功状态。（事务导致）{#link TxcServiceImpl.lockResource}
         if (Objects.nonNull(rollbackInfo) && rollbackInfo.getStatus() < 0) {

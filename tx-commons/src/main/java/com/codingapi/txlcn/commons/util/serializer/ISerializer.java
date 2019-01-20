@@ -18,18 +18,22 @@ package com.codingapi.txlcn.commons.util.serializer;
 
 import com.codingapi.txlcn.commons.exception.SerializerException;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 /**
  * @author lorne 2017/11/11
  */
 public interface ISerializer {
+
     /**
      * 序列化对象
      *
      * @param obj 需要序更列化的对象
-     * @return byte []  序列号结果
+     * @param outputStream  写入对象
      * @throws SerializerException  序列化异常
      */
-    byte[] serialize(Object obj) throws SerializerException;
+    void serialize(Object obj, OutputStream outputStream) throws SerializerException ;
 
 
     /**
@@ -43,4 +47,30 @@ public interface ISerializer {
      */
 
     <T> T deSerialize(byte[] param, Class<T> clazz) throws SerializerException;
+
+
+
+
+    /**
+     * 反序列化对象
+     *
+     * @param inputStream 需要反序列化的inputStream
+     * @param clazz 反序列化成为的bean对象Class
+     * @param <T>   反序列化成为的bean对象
+     * @return  对象
+     * @throws SerializerException  序列化异常
+     */
+
+    <T> T deSerialize(InputStream inputStream, Class<T> clazz) throws SerializerException;
+
+
+    /**
+     * 序列化对象
+     *
+     * @param obj 需要序更列化的对象
+     * @return byte []  序列号结果
+     * @throws SerializerException  序列化异常
+     */
+    byte[] serialize(Object obj) throws SerializerException;
+
 }

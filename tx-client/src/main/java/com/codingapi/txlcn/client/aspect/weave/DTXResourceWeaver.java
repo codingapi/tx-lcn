@@ -16,12 +16,10 @@
 package com.codingapi.txlcn.client.aspect.weave;
 
 import com.codingapi.txlcn.client.bean.DTXLocal;
-import com.codingapi.txlcn.client.support.LCNTransactionBeanHelper;
+import com.codingapi.txlcn.client.support.TXLCNTransactionBeanHelper;
 import com.codingapi.txlcn.client.support.resouce.TransactionResourceExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.util.Objects;
@@ -33,14 +31,12 @@ import java.util.Objects;
  *
  * @author lorne
  */
-@Component
 @Slf4j
 public class DTXResourceWeaver {
 
-    private final LCNTransactionBeanHelper transactionBeanHelper;
+    private final TXLCNTransactionBeanHelper transactionBeanHelper;
 
-    @Autowired
-    public DTXResourceWeaver(LCNTransactionBeanHelper transactionBeanHelper) {
+    public DTXResourceWeaver(TXLCNTransactionBeanHelper transactionBeanHelper) {
         this.transactionBeanHelper = transactionBeanHelper;
     }
 
@@ -56,7 +52,7 @@ public class DTXResourceWeaver {
                     throw new IllegalStateException(throwable);
                 }
             });
-            log.info("proxy a sql connection: {}.", connection);
+            log.debug("proxy a sql connection: {}.", connection);
             return connection;
         }
         return point.proceed();

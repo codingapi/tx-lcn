@@ -17,25 +17,27 @@ package com.codingapi.txlcn.manager.support.service.impl;
 
 import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.commons.util.RandomUtils;
+import com.codingapi.txlcn.logger.db.LogDbProperties;
 import com.codingapi.txlcn.logger.db.TxLog;
-import com.codingapi.txlcn.logger.db.TxLoggerHelper;
+import com.codingapi.txlcn.logger.exception.TxLoggerException;
+import com.codingapi.txlcn.logger.helper.TxLcnLogDbHelper;
+import com.codingapi.txlcn.logger.model.*;
 import com.codingapi.txlcn.manager.config.TxManagerConfig;
-import com.codingapi.txlcn.manager.support.service.AdminService;
 import com.codingapi.txlcn.manager.support.restapi.auth.DefaultTokenStorage;
-import com.codingapi.txlcn.manager.support.restapi.model.DTXInfo;
-import com.codingapi.txlcn.manager.support.restapi.model.TxManagerLog;
-import com.codingapi.txlcn.manager.support.restapi.model.TxLogList;
-import com.codingapi.txlcn.manager.support.restapi.model.TxManagerInfo;
+import com.codingapi.txlcn.manager.support.restapi.model.*;
+import com.codingapi.txlcn.manager.support.service.AdminService;
 import com.codingapi.txlcn.spi.message.RpcClient;
+import com.codingapi.txlcn.spi.message.dto.AppInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Description:
@@ -48,25 +50,24 @@ public class AdminServiceImpl implements AdminService {
 
     private final TxManagerConfig managerConfig;
 
+    private final LogDbProperties logDbProperties;
+
     private final DefaultTokenStorage defaultTokenStorage;
 
-    private final TxLoggerHelper txLoggerHelper;
+    private final TxLcnLogDbHelper txLoggerHelper;
 
     private final RpcClient rpcClient;
-
-    private final RedisTemplate<String, String> redisTemplate;
 
     @Autowired
     public AdminServiceImpl(TxManagerConfig managerConfig,
                             DefaultTokenStorage defaultTokenStorage,
-                            TxLoggerHelper txLoggerHelper,
-                            RpcClient rpcClient,
-                            RedisTemplate<String, String> redisTemplate) {
+                            TxLcnLogDbHelper txLoggerHelper,
+                            RpcClient rpcClient, LogDbProperties logDbProperties) {
         this.managerConfig = managerConfig;
         this.defaultTokenStorage = defaultTokenStorage;
         this.txLoggerHelper = txLoggerHelper;
         this.rpcClient = rpcClient;
-        this.redisTemplate = redisTemplate;
+        this.logDbProperties = logDbProperties;
     }
 
     @Override
@@ -80,7 +81,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public TxLogList txLogList(Integer page, Integer limit, String groupId, String tag, Integer timeOrder) {
+    public TxLogList txLogList(Integer page, Integer limit, String groupId, String tag, String startTime,
+                               String stopTime, Integer timeOrder) throws TxManagerException {
 
         // 参数保证
         if (Objects.isNull(page) || page < 1) {
@@ -93,46 +95,38 @@ public class AdminServiceImpl implements AdminService {
             timeOrder = 2;
         }
 
-        // 区分筛选条件
-        long total;
-        List<TxLog> txLogs;
-        if (!StringUtils.isEmpty(groupId) && !StringUtils.isEmpty(tag)) {
-            total = txLoggerHelper.findByGroupAndTagTotal(groupId, tag);
-            if (total < (page - 1) * limit) {
-                page = 1;
-            }
-            txLogs = txLoggerHelper.findByGroupAndTag((page - 1) * limit, limit, groupId, tag, timeOrder);
-        } else if (!StringUtils.isEmpty(tag)) {
-            total = txLoggerHelper.findByTagTotal(tag);
-            if (total < (page - 1) * limit) {
-                page = 1;
-            }
-            txLogs = txLoggerHelper.findByTag((page - 1) * limit, limit, tag, timeOrder);
-        } else if (!StringUtils.isEmpty(groupId)) {
-            total = txLoggerHelper.findByGroupIdTotal(groupId);
-            if (total < (page - 1) * limit) {
-                page = 1;
-            }
-            txLogs = txLoggerHelper.findByGroupId((page - 1) * limit, limit, groupId, timeOrder);
-        } else {
-            total = txLoggerHelper.findByLimitTotal();
-            if (total < (page - 1) * limit) {
-                page = 1;
-            }
-            txLogs = txLoggerHelper.findByLimit((page - 1) * limit, limit, timeOrder);
+        List<Field> list = Stream.of(new GroupId(groupId), new Tag(tag), new StartTime(startTime), new StopTime(stopTime))
+                .filter(Field::ok).collect(Collectors.toList());
+        LogList logList = null;
+        try {
+            logList = txLoggerHelper.findByLimitAndFields(page, limit, timeOrder, list);
+        } catch (TxLoggerException e) {
+            throw new TxManagerException(e);
         }
 
         // 组装返回数据
-        List<TxManagerLog> txManagerLogs = new ArrayList<>(txLogs.size());
-        for (TxLog txLog : txLogs) {
+        List<TxManagerLog> txManagerLogs = new ArrayList<>(logList.getTxLogs().size());
+        for (TxLog txLog : logList.getTxLogs()) {
             TxManagerLog txManagerLog = new TxManagerLog();
             BeanUtils.copyProperties(txLog, txManagerLog);
             txManagerLogs.add(txManagerLog);
         }
         TxLogList txLogList = new TxLogList();
-        txLogList.setTotal(total);
+        txLogList.setTotal(logList.getTotal());
         txLogList.setLogs(txManagerLogs);
         return txLogList;
+    }
+
+    @Override
+    public void deleteLogs(DeleteLogsReq deleteLogsReq) throws TxManagerException {
+        List<Field> list = Stream.of(new GroupId(deleteLogsReq.getGroupId()), new Tag(deleteLogsReq.getTag()),
+                new StartTime(deleteLogsReq.getLTime()), new StopTime(deleteLogsReq.getRTime()))
+                .filter(Field::ok).collect(Collectors.toList());
+        try {
+            txLoggerHelper.deleteByFields(list);
+        } catch (TxLoggerException e) {
+            throw new TxManagerException(e);
+        }
     }
 
     @Override
@@ -152,6 +146,38 @@ public class AdminServiceImpl implements AdminService {
         txManagerInfo.setSocketHost(managerConfig.getHost());
         txManagerInfo.setSocketPort(managerConfig.getPort());
         txManagerInfo.setExUrl(managerConfig.isExUrlEnabled() ? managerConfig.getExUrl() : "disabled");
+        txManagerInfo.setEnableTxLogger(String.valueOf(logDbProperties.isEnabled()));
         return txManagerInfo;
+    }
+
+    @Override
+    public ListAppMods listAppMods(Integer page, Integer limit) {
+        if (Objects.isNull(limit) || limit < 1) {
+            limit = 10;
+        }
+        if (Objects.isNull(page) || page < 1) {
+            page = 1;
+        }
+        List<ListAppMods.AppMod> appMods = new ArrayList<>(limit);
+        int firIdx = (page - 1) * limit;
+        List<AppInfo> apps = rpcClient.apps();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for (int i = 0; i < apps.size(); i++) {
+            if (firIdx > apps.size() - 1) {
+                break;
+            }
+            if (i < firIdx) {
+                continue;
+            }
+            AppInfo appInfo = apps.get(i);
+            ListAppMods.AppMod appMod = new ListAppMods.AppMod();
+            PropertyMapper.get().from(appInfo::getName).to(appMod::setModId);
+            PropertyMapper.get().from(appInfo::getCreateTime).to(t -> appMod.setRegisterTime(dateFormat.format(t)));
+            appMods.add(appMod);
+        }
+        ListAppMods listAppMods = new ListAppMods();
+        listAppMods.setTotal(apps.size());
+        listAppMods.setAppMods(appMods);
+        return listAppMods;
     }
 }

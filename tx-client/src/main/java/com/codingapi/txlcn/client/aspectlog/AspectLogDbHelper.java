@@ -24,7 +24,6 @@ import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.PostConstruct;
 import java.sql.SQLException;
 
 /**
@@ -42,10 +41,7 @@ public class AspectLogDbHelper implements DisposableBean {
     private QueryRunner queryRunner;
 
     @Autowired
-    private AspectLogDbProperties aspectLogDbProperties;
-
-    @PostConstruct
-    public void init() {
+    public AspectLogDbHelper(AspectLogDbProperties aspectLogDbProperties) {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setDriverClassName(org.h2.Driver.class.getName());
         log.info("init db at {}", aspectLogDbProperties.getFilePath());
@@ -54,7 +50,6 @@ public class AspectLogDbHelper implements DisposableBean {
         queryRunner = new QueryRunner(hikariDataSource);
         log.info("init db finish.");
     }
-
 
     public int update(String sql, Object... params) {
         try {

@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.manager.core.message;
 
+import com.codingapi.txlcn.commons.exception.UserRollbackException;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.manager.support.ManagerRpcBeanHelper;
 import com.codingapi.txlcn.spi.message.RpcClient;
@@ -24,6 +25,7 @@ import com.codingapi.txlcn.spi.message.exception.RpcException;
 import com.codingapi.txlcn.spi.message.LCNCmdType;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -57,9 +59,9 @@ public class RpcCmdTask implements Runnable {
         RpcExecuteService rpcExecuteService = rpcBeanHelper.loadManagerService(transactionCmd.getType());
         MessageDto messageDto = null;
         try {
-            Object message = rpcExecuteService.execute(transactionCmd);
+            Serializable message = rpcExecuteService.execute(transactionCmd);
             messageDto = MessageCreator.notifyGroupOkResponse(message,action);
-        } catch (Throwable e) {
+        } catch(Throwable e) {
             log.error(e.getMessage(), e);
             messageDto = MessageCreator.notifyGroupFailResponse(e,action);
             txLogger.trace(transactionCmd.getGroupId(),"","rpccmd","error->"+messageDto.getAction());

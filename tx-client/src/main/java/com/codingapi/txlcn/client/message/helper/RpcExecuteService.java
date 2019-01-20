@@ -18,6 +18,8 @@ package com.codingapi.txlcn.client.message.helper;
 
 import com.codingapi.txlcn.commons.exception.TxClientException;
 
+import java.io.Serializable;
+
 /**
  *  LCN分布式事务资源控制
  * @author lorne
@@ -30,6 +32,6 @@ public interface RpcExecuteService {
      * @throws  TxClientException TxClientException
      * @return object
      */
-    Object execute(TransactionCmd transactionCmd) throws TxClientException;
+    Serializable execute(TransactionCmd transactionCmd) throws TxClientException;
 
 }

@@ -18,14 +18,13 @@ package com.codingapi.txlcn.manager.support.restapi;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.txlcn.commons.exception.TransactionStateException;
 import com.codingapi.txlcn.commons.exception.TxManagerException;
-import com.codingapi.txlcn.manager.support.restapi.model.ExceptionList;
-import com.codingapi.txlcn.manager.support.restapi.model.Token;
-import com.codingapi.txlcn.manager.support.restapi.model.TxLogList;
-import com.codingapi.txlcn.manager.support.restapi.model.TxManagerInfo;
+import com.codingapi.txlcn.manager.support.restapi.model.*;
 import com.codingapi.txlcn.manager.support.service.AdminService;
 import com.codingapi.txlcn.manager.support.service.TxExceptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 /**
  * Description:
@@ -57,13 +56,30 @@ public class AdminController {
      *
      * @param page  页码
      * @param limit 记录数
+     * @param extState extState
+     * @param registrar registrar
      * @return ExceptionList
      */
     @GetMapping({"/exceptions/{page}", "/exceptions", "/exceptions/{page}/{limit}"})
     public ExceptionList exceptionList(
             @RequestParam(value = "page", required = false) @PathVariable(value = "page", required = false) Integer page,
-            @RequestParam(value = "limit", required = false) @PathVariable(value = "limit", required = false) Integer limit) {
-        return txExceptionService.exceptionList(page, limit, null, 1);
+            @RequestParam(value = "limit", required = false) @PathVariable(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "extState", required = false) Integer extState,
+            @RequestParam(value = "registrar", required = false) Integer registrar) {
+        return txExceptionService.exceptionList(page, limit, extState, null, registrar);
+    }
+
+    /**
+     * 删除异常信息
+     *
+     * @param deleteExceptions 异常信息标示
+     * @return 操作结果
+     * @throws TxManagerException TxManagerException
+     */
+    @PostMapping("/exceptions")
+    public boolean deleteExceptions(@RequestBody DeleteExceptions deleteExceptions) throws TxManagerException {
+        txExceptionService.deleteExceptions(deleteExceptions.getId());
+        return true;
     }
 
     /**
@@ -72,7 +88,7 @@ public class AdminController {
      * @param groupId groupId
      * @param unitId  unitId
      * @return transaction info
-     * @throws  TxManagerException TxManagerException
+     * @throws TxManagerException TxManagerException
      */
     @GetMapping("/log/transaction-info")
     public JSONObject transactionInfo(
@@ -88,12 +104,15 @@ public class AdminController {
     /**
      * 日志信息
      *
-     * @param page  页码
-     * @param limit 记录数
-     * @param groupId  groupId
-     * @param tag  tag
-     * @param timeOrder  timeOrder
+     * @param page      页码
+     * @param limit     记录数
+     * @param groupId   groupId
+     * @param tag       tag
+     * @param lTime lTime
+     * @param rTime rtime
+     * @param timeOrder timeOrder
      * @return TxLogList
+     * @throws TxManagerException TxManagerException
      */
     @GetMapping({"/logs/{page}", "/logs/{page}/{limit}", "/logs"})
     public TxLogList txLogList(
@@ -101,8 +120,30 @@ public class AdminController {
             @RequestParam(value = "limit", required = false) @PathVariable(value = "limit", required = false) Integer limit,
             @RequestParam(value = "groupId", required = false) String groupId,
             @RequestParam(value = "tag", required = false) String tag,
-            @RequestParam(value = "timeOrder", required = false) Integer timeOrder) {
-        return adminService.txLogList(page, limit, groupId, tag, timeOrder);
+            @RequestParam(value = "ld", required = false) String lTime,
+            @RequestParam(value = "rd", required = false) String rTime,
+            @RequestParam(value = "timeOrder", required = false) Integer timeOrder) throws TxManagerException {
+        return adminService.txLogList(page, limit, groupId, tag, lTime, rTime, timeOrder);
+    }
+
+    @GetMapping({"/app-mods/{page}", "/app-mods/{page}/{limit}", "/app-mods"})
+    public ListAppMods listAppMods(
+            @PathVariable(value = "page", required = false) @RequestParam(value = "page", required = false) Integer page,
+            @PathVariable(value = "limit", required = false) @RequestParam(value = "limit", required = false) Integer limit) {
+        return adminService.listAppMods(page, limit);
+    }
+
+    /**
+     * 删除日志
+     *
+     * @param deleteLogsReq deleteLogsReq
+     * @return bool
+     * @throws TxManagerException TxManagerException
+     */
+    @DeleteMapping("/logs")
+    public boolean deleteLogs(@RequestBody DeleteLogsReq deleteLogsReq) throws TxManagerException {
+        adminService.deleteLogs(deleteLogsReq);
+        return true;
     }
 
     /**
