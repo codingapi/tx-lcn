@@ -84,7 +84,7 @@ public class SimpleTransactionManager implements TransactionManager {
         transUnit.setRemoteKey(transactionUnit.messageContextId());
         transUnit.setUnitType(transactionUnit.unitType());
         transUnit.setUnitId(transactionUnit.unitId());
-        log.info("unit:{} joined group:{}", transactionUnit.unitId(), dtxTransaction.groupId());
+        log.debug("unit:{} joined group:{}", transactionUnit.unitId(), dtxTransaction.groupId());
         try {
             //手动回滚时设置状态为回滚状态 0
             if(transactionUnit.getTransactionState()==0){

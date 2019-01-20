@@ -75,7 +75,7 @@ public class HashGroupRpcCmdHandler {
             throw new IllegalStateException("bad request! message's groupId not nullable!");
         }
         int index = Math.abs(rpcCmd.getMsg().getGroupId().hashCode() % this.concurrentLevel);
-        log.info("group:{}'s message dispatched executor index: {}", rpcCmd.getMsg().getGroupId(), index);
+        log.debug("group:{}'s message dispatched executor index: {}", rpcCmd.getMsg().getGroupId(), index);
 
         // 提交事务消息，处理
         executors.get(index).submit(new RpcCmdTask(beanHelper, rpcCmd));
