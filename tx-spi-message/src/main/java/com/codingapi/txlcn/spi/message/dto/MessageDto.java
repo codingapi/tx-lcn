@@ -16,13 +16,10 @@
 package com.codingapi.txlcn.spi.message.dto;
 
 import com.codingapi.txlcn.spi.message.MessageConstants;
-import com.codingapi.txlcn.commons.exception.SerializerException;
-import com.codingapi.txlcn.commons.util.serializer.SerializerContext;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
@@ -33,6 +30,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
+@SuppressWarnings("unchecked")
 public class MessageDto implements Serializable {
 
     /**

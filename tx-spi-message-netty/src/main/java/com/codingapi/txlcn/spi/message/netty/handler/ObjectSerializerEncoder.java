@@ -26,8 +26,6 @@ import java.io.Serializable;
 
 /**
  * @author lorne
- * @date 2019/1/19
- * @description
  */
 @Slf4j
 public class ObjectSerializerEncoder extends MessageToByteEncoder<Serializable> {

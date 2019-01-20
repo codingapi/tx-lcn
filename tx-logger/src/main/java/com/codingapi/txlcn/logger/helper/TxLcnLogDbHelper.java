@@ -137,10 +137,11 @@ public interface TxLcnLogDbHelper {
     /**
      * 查找日志
      *
-     * @param page
-     * @param limit
-     * @param list
+     * @param page page
+     * @param limit limit
+     * @param list list
      * @return logs
+     * @throws TxLoggerException TxLoggerException
      */
     LogList findByLimitAndFields(int page, int limit, int timeOrder, List<Field> list) throws TxLoggerException;
 }

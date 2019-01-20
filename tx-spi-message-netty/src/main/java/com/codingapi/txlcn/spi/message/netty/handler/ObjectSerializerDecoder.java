@@ -27,8 +27,6 @@ import java.util.List;
 
 /**
  * @author lorne
- * @date 2019/1/19
- * @description
  */
 @Slf4j
 public class ObjectSerializerDecoder extends MessageToMessageDecoder<ByteBuf> {
