@@ -10,6 +10,8 @@ import java.util.List;
  */
 public interface FastStorage {
     
+    
+    /*-----------------------以下为事务组相关------------------------------*/
     /**
      * 初始化事务组
      *
@@ -97,6 +99,9 @@ public interface FastStorage {
      */
     void releaseLock(String cate, String key) throws FastStorageException;
     
+    
+    
+    /*-----------------------以下为Manager后台token相关------------------------------*/
     /**
      * 保存token
      *
@@ -121,6 +126,9 @@ public interface FastStorage {
      */
     void removeToken(String token) throws FastStorageException;
     
+    
+    
+    /*-----------------------以下为Manager注册管理相关------------------------------*/
     /**
      * 保存Manager地址 ip:port
      *
