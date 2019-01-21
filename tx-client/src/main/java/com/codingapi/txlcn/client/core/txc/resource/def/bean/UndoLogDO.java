@@ -18,6 +18,10 @@ package com.codingapi.txlcn.client.core.txc.resource.def.bean;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Blob;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Description: 撤销日志数据对象
  * Date: 2018/12/13
@@ -31,6 +35,8 @@ public class UndoLogDO {
     private String groupId;
     private String unitId;
     private byte[] rollbackInfo;
+    private String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+    private int sqlType;
     private long gmtCreate = System.currentTimeMillis();
     private long gmtModified = System.currentTimeMillis();
 }

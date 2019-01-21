@@ -200,6 +200,19 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
     }
 
     @Override
+    public void applyUndoLog(List<StatementInfo> statementInfoList) throws SQLException {
+        Connection connection = null;
+        try {
+            RollbackInfo rollbackInfo = new RollbackInfo();
+            connection = queryRunner.getDataSource().getConnection();
+            rollbackInfo.setRollbackSqlList(statementInfoList);
+            undoRollbackInfoSql(connection, rollbackInfo);
+        } finally {
+            DbUtils.close(connection);
+        }
+    }
+
+    @Override
     public void undoRollbackInfoSql(Connection connection, RollbackInfo rollbackInfo) throws SQLException {
         try {
             connection.setAutoCommit(false);

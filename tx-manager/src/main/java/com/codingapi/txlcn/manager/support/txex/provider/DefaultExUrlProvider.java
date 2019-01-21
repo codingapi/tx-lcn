@@ -17,7 +17,7 @@ package com.codingapi.txlcn.manager.support.txex.provider;
 
 import com.alibaba.fastjson.JSON;
 import com.codingapi.txlcn.manager.config.TxManagerConfig;
-import com.codingapi.txlcn.manager.db.domain.TxException;
+import com.codingapi.txlcn.manager.support.db.domain.TxException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mail.MailProperties;

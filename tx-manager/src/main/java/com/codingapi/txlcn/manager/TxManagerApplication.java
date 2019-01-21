@@ -18,14 +18,19 @@ package com.codingapi.txlcn.manager;
 import com.codingapi.txlcn.commons.runner.TxLcnApplicationRunner;
 import com.codingapi.txlcn.logger.TxLoggerConfiguration;
 import com.codingapi.txlcn.manager.banner.TxLcnManagerBanner;
+import com.codingapi.txlcn.manager.config.TxManagerConfig;
+import com.codingapi.txlcn.manager.core.storage.FastStorage;
+import com.codingapi.txlcn.manager.core.storage.RedisStorage;
 import com.codingapi.txlcn.spi.MessageConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ServiceLoader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -65,6 +70,17 @@ public class TxManagerApplication {
         return new RestTemplate();
     }
 
+    @Bean
+    public FastStorage fastStorage(RedisTemplate<String, Object> redisTemplate, TxManagerConfig managerConfig) {
+        for (FastStorage fastStorage : ServiceLoader.load(FastStorage.class)) {
+            if (fastStorage instanceof RedisStorage) {
+                ((RedisStorage) fastStorage).setManagerConfig(managerConfig);
+                ((RedisStorage) fastStorage).setRedisTemplate(redisTemplate);
+            }
+            return fastStorage;
+        }
+        throw new IllegalStateException("Non FastStorage.");
+    }
 
     @Bean
     public TxLcnApplicationRunner txLcnApplicationRunner(ApplicationContext applicationContext) {

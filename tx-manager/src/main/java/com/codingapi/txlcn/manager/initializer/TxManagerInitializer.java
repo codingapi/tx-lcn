@@ -16,8 +16,10 @@
 package com.codingapi.txlcn.manager.initializer;
 
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
-import com.codingapi.txlcn.manager.db.redis.RedisManagerStorage;
-import com.codingapi.txlcn.manager.support.TxManagerAutoCluster;
+import com.codingapi.txlcn.manager.config.TxManagerConfig;
+import com.codingapi.txlcn.manager.core.storage.FastStorage;
+import com.codingapi.txlcn.manager.core.storage.FastStorageException;
+import com.codingapi.txlcn.manager.support.cluster.TxManagerAutoCluster;
 import com.codingapi.txlcn.manager.support.message.TxLcnManagerServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,26 +36,37 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TxManagerInitializer implements TxLcnInitializer {
 
+    private final TxManagerAutoCluster managerAutoCluster;
+
+    private final FastStorage fastStorage;
+
+    private final TxLcnManagerServer txLcnManagerServer;
+
+    private final TxManagerConfig managerConfig;
 
     @Autowired
-    private TxManagerAutoCluster managerAutoCluster;
-
-    @Autowired
-    private RedisManagerStorage redisManagerStorage;
-
-    @Autowired
-    private TxLcnManagerServer txLcnManagerServer;
+    public TxManagerInitializer(TxManagerAutoCluster managerAutoCluster, FastStorage fastStorage,
+                                TxLcnManagerServer txLcnManagerServer, TxManagerConfig managerConfig) {
+        this.managerAutoCluster = managerAutoCluster;
+        this.fastStorage = fastStorage;
+        this.txLcnManagerServer = txLcnManagerServer;
+        this.managerConfig = managerConfig;
+    }
 
     @Override
     public void init() throws Exception {
-        
+
         txLcnManagerServer.init();
-        
-        redisManagerStorage.init();
-        
+
+        // Init TM list
+        initTMList();
+
         // 新增节点 读取redis个节点信息后 通知客户端连接
         managerAutoCluster.refresh();
     }
 
+    private void initTMList() throws FastStorageException {
+        fastStorage.saveTMAddress(managerConfig.getHost() + ":" + managerConfig.getPort());
+    }
 
 }

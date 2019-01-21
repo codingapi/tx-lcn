@@ -15,8 +15,9 @@
  */
 package com.codingapi.txlcn.manager.core.transaction;
 
-import com.codingapi.txlcn.manager.core.context.DTXTransactionContext;
-import com.codingapi.txlcn.manager.core.context.TransactionManager;
+import com.codingapi.txlcn.commons.exception.TransactionException;
+import com.codingapi.txlcn.manager.core.DTXContextRegistry;
+import com.codingapi.txlcn.manager.core.TransactionManager;
 import com.codingapi.txlcn.manager.core.message.RpcExecuteService;
 import com.codingapi.txlcn.manager.core.message.TransactionCmd;
 import lombok.extern.slf4j.Slf4j;
@@ -37,17 +38,21 @@ public class AskTransactionStateExecuteService implements RpcExecuteService {
 
     private final TransactionManager transactionManager;
 
-    private final DTXTransactionContext transactionContext;
+    private final DTXContextRegistry dtxContextRegistry;
 
     @Autowired
-    public AskTransactionStateExecuteService(TransactionManager transactionManager, DTXTransactionContext transactionContext) {
+    public AskTransactionStateExecuteService(TransactionManager transactionManager, DTXContextRegistry dtxContextRegistry) {
         this.transactionManager = transactionManager;
-        this.transactionContext = transactionContext;
+        this.dtxContextRegistry = dtxContextRegistry;
     }
 
     @Override
     public Serializable execute(TransactionCmd transactionCmd) {
-        int state = transactionManager.transactionState(transactionContext.getTransaction(transactionCmd.getGroupId()));
-        return state == -1 ? 0 : state;
+        try {
+            int state = transactionManager.transactionState(dtxContextRegistry.get(transactionCmd.getGroupId()));
+            return state == -1 ? 0 : state;
+        } catch (TransactionException e) {
+            return 0;
+        }
     }
 }

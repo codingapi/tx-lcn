@@ -62,14 +62,12 @@ public interface TxcService {
     void resolveDeleteImage(DeleteImageParams deleteImageParams) throws TxcLogicException;
 
     /**
-     * 写undo_log
+     * 插入SQL撤销SQL
      *
-     * @param groupId      groupId
-     * @param unitId       unitId
-     * @param rollbackInfo rollbackInfo
+     * @param insertImageParams insertImageParams
      * @throws TxcLogicException TxcLogicException
      */
-    void writeUndoLog(String groupId, String unitId, RollbackInfo rollbackInfo) throws TxcLogicException;
+    void resolveInsertImage(InsertImageParams insertImageParams) throws TxcLogicException;
 
     /**
      * 清理TXC事务
@@ -88,12 +86,4 @@ public interface TxcService {
      * @throws TxcLogicException TxcLogicException
      */
     void undo(String groupId, String unitId) throws TxcLogicException;
-
-    /**
-     * 插入SQL撤销SQL
-     *
-     * @param insertImageParams insertImageParams
-     * @throws TxcLogicException TxcLogicException
-     */
-    void resolveInsertImage(InsertImageParams insertImageParams) throws TxcLogicException;
 }

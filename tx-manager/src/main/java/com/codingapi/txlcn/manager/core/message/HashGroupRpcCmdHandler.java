@@ -68,7 +68,7 @@ public class HashGroupRpcCmdHandler {
 
     }
 
-    public void handleMessage(RpcCmd rpcCmd) {
+    void handleMessage(RpcCmd rpcCmd) {
         // 按事务组hash值从有限的线程池中做出选择
         String groupId = rpcCmd.getMsg().getGroupId();
         if (Objects.isNull(groupId)) {

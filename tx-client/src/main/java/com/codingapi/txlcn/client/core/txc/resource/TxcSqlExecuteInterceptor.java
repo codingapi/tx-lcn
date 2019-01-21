@@ -164,38 +164,10 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
         insert.getItemsList().accept(primaryKeyListVisitor);
 
         // 自增主键
-        ResultSet rs = statementInformation.getStatement().getGeneratedKeys();
-        StringBuilder rollbackSql = new StringBuilder(SqlUtils.DELETE)
-                .append(SqlUtils.FROM)
-                .append(tableStruct.getTableName())
-                .append(SqlUtils.WHERE);
-        List<Object> params = new ArrayList<>();
-
-        for (int i = 0; rs.next(); i++) {
-            Map<String, Object> pks = primaryKeyListVisitor.getPrimaryKeyValuesList().get(i);
-            for (String key : tableStruct.getFullyQualifiedPrimaryKeys()) {
-                rollbackSql.append(key).append("=? and ");
-                if (pks.containsKey(key)) {
-                    params.add(pks.get(key));
-                } else {
-                    params.add(rs.getObject(1));
-                }
-            }
-            SqlUtils.cutSuffix(SqlUtils.AND, rollbackSql);
-            rollbackSql.append(SqlUtils.OR);
-        }
-        DbUtils.close(rs);
-        SqlUtils.cutSuffix(SqlUtils.OR, rollbackSql);
-
-        if (params.size() == 0) {
-            log.warn("nothing to insert");
-            return;
-        }
-
-        // 设置Rollback SQL
-        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
         try {
-            txcService.resolveInsertImage(new InsertImageParams(groupId, unitId, rollbackSql.toString(), params, rollbackInfo));
+            txcService.resolveInsertImage(new InsertImageParams(groupId, unitId, tableStruct.getTableName(),
+                    statementInformation.getStatement().getGeneratedKeys(), primaryKeyListVisitor.getPrimaryKeyValuesList(),
+                    tableStruct.getFullyQualifiedPrimaryKeys()));
         } catch (TxcLogicException e) {
             throw new SQLException(e);
         }

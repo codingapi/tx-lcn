@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.client.support.template;
 
-import com.codingapi.txlcn.client.aspectlog.AspectLogger;
+import com.codingapi.txlcn.client.corelog.aspect.AspectLogger;
 import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.message.helper.MessageCreator;
 import com.codingapi.txlcn.client.support.checking.DTXChecking;

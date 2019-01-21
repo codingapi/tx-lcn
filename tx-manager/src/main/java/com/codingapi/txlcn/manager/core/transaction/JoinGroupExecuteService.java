@@ -19,10 +19,9 @@ import com.codingapi.txlcn.commons.exception.TransactionException;
 import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
-import com.codingapi.txlcn.manager.core.context.DTXTransaction;
-import com.codingapi.txlcn.manager.core.context.DTXTransactionContext;
-import com.codingapi.txlcn.manager.core.context.TransactionManager;
-import com.codingapi.txlcn.manager.core.group.TransactionUnit;
+import com.codingapi.txlcn.manager.core.DTXContext;
+import com.codingapi.txlcn.manager.core.DTXContextRegistry;
+import com.codingapi.txlcn.manager.core.TransactionManager;
 import com.codingapi.txlcn.manager.core.message.RpcExecuteService;
 import com.codingapi.txlcn.manager.core.message.TransactionCmd;
 import com.codingapi.txlcn.spi.message.params.JoinGroupParams;
@@ -44,37 +43,34 @@ public class JoinGroupExecuteService implements RpcExecuteService {
 
     private final TransactionManager transactionManager;
 
-    private final DTXTransactionContext transactionContext;
+    private final DTXContextRegistry dtxContextRegistry;
 
     private final TxLogger txLogger;
 
 
     @Autowired
     public JoinGroupExecuteService(TxLogger txLogger, TransactionManager transactionManager,
-                                   DTXTransactionContext transactionContext) {
+                                   DTXContextRegistry dtxContextRegistry) {
         this.txLogger = txLogger;
         this.transactionManager = transactionManager;
-        this.transactionContext = transactionContext;
+        this.dtxContextRegistry = dtxContextRegistry;
     }
 
 
     @Override
     public Serializable execute(TransactionCmd transactionCmd) throws TxManagerException {
-        DTXTransaction dtxTransaction = transactionContext.getTransaction(transactionCmd.getGroupId());
         try {
+            DTXContext dtxContext = dtxContextRegistry.get(transactionCmd.getGroupId());
             JoinGroupParams joinGroupParams = transactionCmd.getMsg().loadBean(JoinGroupParams.class);
             txLogger.trace(
                     transactionCmd.getGroupId(), joinGroupParams.getUnitId(), Transactions.TAG_TRANSACTION, "start join group");
-            TransactionUnit transactionUnit =
-                    new TransactionUnit(joinGroupParams.getUnitId(), joinGroupParams.getUnitType(),joinGroupParams.getTransactionState(), transactionCmd.getRemoteKey());
-            transactionManager.join(dtxTransaction, transactionUnit);
-
+            transactionManager.join(dtxContext, joinGroupParams.getUnitId(), joinGroupParams.getUnitType(),
+                    transactionCmd.getRemoteKey(), joinGroupParams.getTransactionState());
             txLogger.trace(
                     transactionCmd.getGroupId(), joinGroupParams.getUnitId(), Transactions.TAG_TRANSACTION, "over join group");
         } catch (TransactionException e) {
             throw new TxManagerException(e.getLocalizedMessage());
         }
-
         // non response
         return null;
     }
