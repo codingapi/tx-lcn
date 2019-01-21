@@ -18,6 +18,7 @@ package com.codingapi.txlcn.client.core.txc.resource.def.bean;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ import java.util.List;
  */
 @NoArgsConstructor
 @Data
-public class FieldCluster {
+public class FieldCluster implements Serializable {
     /**
      * 普通字段相关信息
      */

@@ -99,7 +99,7 @@ public interface TxcSqlExecutor {
     /**
      * 写undo_log
      *
-     * @param undoLogDo undoLogDo
+     * @param undoLogDo  undoLogDo
      * @param connection connection
      * @throws SQLException SQLException
      */
@@ -113,6 +113,14 @@ public interface TxcSqlExecutor {
      * @throws SQLException SQLException
      */
     void applyUndoLog(String groupId, String unitId) throws SQLException;
+
+    /**
+     * 回滚undo_log
+     *
+     * @param statementInfoList
+     * @throws SQLException
+     */
+    void applyUndoLog(List<StatementInfo> statementInfoList) throws SQLException;
 
     /**
      * 清除undo_log

@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.client.support.checking;
 
-import com.codingapi.txlcn.client.aspectlog.AspectLogger;
+import com.codingapi.txlcn.client.corelog.aspect.AspectLogger;
 import com.codingapi.txlcn.client.config.TxClientConfig;
 import com.codingapi.txlcn.client.message.helper.MessageCreator;
 import com.codingapi.txlcn.client.message.helper.TxMangerReporter;
@@ -30,6 +30,7 @@ import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
 import com.codingapi.txlcn.spi.message.params.TxExceptionParams;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,22 +47,11 @@ import java.util.concurrent.*;
  */
 @Component
 @Slf4j
-public class SimpleDTXChecking implements DTXChecking {
+public class SimpleDTXChecking implements DTXChecking, DisposableBean {
 
     private static final Map<String, ScheduledFuture> delayTasks = new ConcurrentHashMap<>();
     private static final ScheduledExecutorService scheduledExecutorService =
             Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
-
-    static {
-        // 等待线程池任务完成
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            scheduledExecutorService.shutdown();
-            try {
-                scheduledExecutorService.awaitTermination(10, TimeUnit.MINUTES);
-            } catch (InterruptedException ignored) {
-            }
-        }));
-    }
 
     private TransactionCleanTemplate transactionCleanTemplate;
 
@@ -148,6 +138,16 @@ public class SimpleDTXChecking implements DTXChecking {
             transactionCleanTemplate.compensationClean(groupId, unitId, transactionType, 0);
         } catch (TransactionClearException e) {
             log.error("{} > clean transaction error.", transactionType);
+        }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        scheduledExecutorService.shutdown();
+        try {
+            // for non over tasks.
+            scheduledExecutorService.awaitTermination(10, TimeUnit.MINUTES);
+        } catch (InterruptedException ignored) {
         }
     }
 }

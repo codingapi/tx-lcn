@@ -18,6 +18,8 @@ package com.codingapi.txlcn.client.core.txc.resource.def.bean;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * Description: 某行记录中某个字段相关信息
  * Date: 2018/12/13
@@ -26,7 +28,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class FieldValue {
+public class FieldValue implements Serializable {
     private String tableName;
     private String fieldName;
     private Object value;

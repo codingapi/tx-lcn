@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.manager.support.txex;
 
 import com.codingapi.txlcn.manager.config.TxManagerConfig;
-import com.codingapi.txlcn.manager.db.domain.TxException;
+import com.codingapi.txlcn.manager.support.db.domain.TxException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

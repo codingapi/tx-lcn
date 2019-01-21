@@ -21,6 +21,10 @@ import com.codingapi.txlcn.client.core.txc.resource.def.bean.ModifiedRecord;
 import com.codingapi.txlcn.commons.exception.SerializerException;
 import com.codingapi.txlcn.commons.util.serializer.SerializerContext;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -61,6 +65,11 @@ public class SqlUtils {
 
     public static final String LOCK_IN_SHARE_MODE = "LOCK IN SHARE MODE";
 
+    public static final int SQL_TYPE_INSERT = 1;
+    public static final int SQL_TYPE_DELETE = 2;
+    public static final int SQL_TYPE_UPDATE = 3;
+    public static final int SQL_TYPE_SELECT = 4;
+
 
     /**
      * 从完全标识字段名获取表名
@@ -78,7 +87,7 @@ public class SqlUtils {
     /**
      * 从字符串构造器剪掉结束符
      *
-     * @param suffix suffix
+     * @param suffix        suffix
      * @param stringBuilder stringBuilder
      */
     public static void cutSuffix(String suffix, StringBuilder stringBuilder) {
@@ -90,7 +99,7 @@ public class SqlUtils {
     /**
      * 获取修改记录
      *
-     * @param rs rs
+     * @param rs      rs
      * @param columns columns
      * @return ModifiedRecord
      * @throws SQLException SQLException
@@ -129,18 +138,18 @@ public class SqlUtils {
     }
 
     /**
-     * bytes to java object
+     * bytes to java object.
      *
      * @param blob blob
      * @param type type
-     * @param <T> T
+     * @param <T>  T
      * @return T
      */
     public static <T> T blobToObject(byte[] blob, Class<T> type) {
         try {
             return SerializerContext.getInstance().deSerialize(blob, type);
         } catch (SerializerException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 }

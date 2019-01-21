@@ -66,11 +66,6 @@ public class TxcConfiguration {
     }
 
     @Bean
-    public TxcService txcService(TxcSqlExecutor txcSqlExecutor, TxcExceptionConnectionPool txcExceptionConnectionPool, TxLogger txLogger) {
-        return new TxcServiceImpl(txcSqlExecutor, txcExceptionConnectionPool, txLogger);
-    }
-
-    @Bean
     public SqlExecuteInterceptor sqlExecuteInterceptor(TableStructAnalyser tableStructAnalyser, TxcService txcService) {
         return new TxcSqlExecuteInterceptor(tableStructAnalyser, txcService);
     }

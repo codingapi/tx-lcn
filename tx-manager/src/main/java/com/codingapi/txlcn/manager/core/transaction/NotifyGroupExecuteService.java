@@ -16,13 +16,14 @@
 package com.codingapi.txlcn.manager.core.transaction;
 
 import com.alibaba.fastjson.JSON;
+import com.codingapi.txlcn.commons.exception.TransactionException;
 import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.commons.exception.UserRollbackException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
-import com.codingapi.txlcn.manager.core.context.DTXTransaction;
-import com.codingapi.txlcn.manager.core.context.DTXTransactionContext;
-import com.codingapi.txlcn.manager.core.context.TransactionManager;
+import com.codingapi.txlcn.manager.core.DTXContext;
+import com.codingapi.txlcn.manager.core.DTXContextRegistry;
+import com.codingapi.txlcn.manager.core.TransactionManager;
 import com.codingapi.txlcn.manager.core.message.RpcExecuteService;
 import com.codingapi.txlcn.manager.core.message.TransactionCmd;
 import com.codingapi.txlcn.spi.message.params.NotifyGroupParams;
@@ -46,30 +47,31 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
 
     private final TransactionManager transactionManager;
 
-    private final DTXTransactionContext transactionContext;
+    private final DTXContextRegistry dtxContextRegistry;
 
     @Autowired
-    public NotifyGroupExecuteService(TxLogger txLogger, TransactionManager transactionManager, DTXTransactionContext transactionContext) {
+    public NotifyGroupExecuteService(TxLogger txLogger, TransactionManager transactionManager,
+                                     DTXContextRegistry dtxContextRegistry) {
         this.txLogger = txLogger;
         this.transactionManager = transactionManager;
-        this.transactionContext = transactionContext;
+        this.dtxContextRegistry = dtxContextRegistry;
     }
 
     @Override
     public Serializable execute(TransactionCmd transactionCmd) throws TxManagerException {
-        DTXTransaction dtxTransaction = transactionContext.getTransaction(transactionCmd.getGroupId());
         try {
+            DTXContext dtxContext = dtxContextRegistry.get(transactionCmd.getGroupId());
             // 解析参数
             NotifyGroupParams notifyGroupParams = transactionCmd.getMsg().loadBean(NotifyGroupParams.class);
             log.debug("notify group params: {}", JSON.toJSONString(notifyGroupParams));
 
             int commitState = notifyGroupParams.getState();
             //获取事务状态（当手动回滚时会先设置状态）
-            int transactionState = transactionManager.transactionState(dtxTransaction);
+            int transactionState = transactionManager.transactionState(dtxContext);
             boolean hasThrow = false;
             if (transactionState == 0) {
                 commitState = 0;
-                hasThrow  = true;
+                hasThrow = true;
             }
 
             // 系统日志
@@ -78,16 +80,17 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
                     Transactions.TAG_TRANSACTION, "notify group " + notifyGroupParams.getState());
 
             if (commitState == 1) {
-                transactionManager.commit(dtxTransaction);
+                transactionManager.commit(dtxContext);
             } else if (commitState == 0) {
-                transactionManager.rollback(dtxTransaction);
+                transactionManager.rollback(dtxContext);
             }
-            if(hasThrow){
+            if (hasThrow) {
                 throw new UserRollbackException("user mandatory rollback");
             }
-       } finally {
-            transactionManager.close(dtxTransaction);
-
+        } catch (TransactionException e) {
+            throw new TxManagerException(e);
+        } finally {
+            transactionManager.close(transactionCmd.getGroupId());
             // 系统日志
             txLogger.trace(transactionCmd.getGroupId(), "", Transactions.TAG_TRANSACTION, "notify group over");
         }

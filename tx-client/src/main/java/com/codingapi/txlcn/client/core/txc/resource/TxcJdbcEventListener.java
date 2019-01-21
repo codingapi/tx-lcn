@@ -55,7 +55,6 @@ public class TxcJdbcEventListener extends P6spyJdbcEventListener {
 
         // 拦截处理
         try {
-            long startTime = System.currentTimeMillis();
             Statement statement = CCJSqlParserUtil.parse(sql);
             log.debug("statement > {}", statement);
             statementInformation.setAttachment(statement);
@@ -68,7 +67,6 @@ public class TxcJdbcEventListener extends P6spyJdbcEventListener {
             } else if (statement instanceof Select) {
                 sqlExecuteInterceptor.preSelect(new LockableSelect((Select) statement));
             }
-            log.debug("used time: {} ms", System.currentTimeMillis() - startTime);
         } catch (JSQLParserException e) {
             throw new SQLException(e);
         }

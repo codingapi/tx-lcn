@@ -15,10 +15,13 @@
  */
 package com.codingapi.txlcn.manager.support.restapi.auth;
 
-import com.codingapi.txlcn.manager.db.redis.RedisTokenStorage;
-import org.springframework.context.annotation.Primary;
-import org.springframework.data.redis.core.RedisTemplate;
+import com.codingapi.txlcn.manager.core.storage.FastStorage;
+import com.codingapi.txlcn.manager.core.storage.FastStorageException;
+import com.codingapi.txlcn.manager.support.restapi.auth.sauth.token.TokenStorage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Description:
@@ -27,10 +30,51 @@ import org.springframework.stereotype.Component;
  * @author ujued
  */
 @Component
-@Primary
-public class DefaultTokenStorage extends RedisTokenStorage {
+public class DefaultTokenStorage implements TokenStorage {
 
-    public DefaultTokenStorage(RedisTemplate<String, String> redisTemplate) {
-        super(redisTemplate);
+    private final FastStorage fastStorage;
+
+    @Autowired
+    public DefaultTokenStorage(FastStorage fastStorage) {
+        this.fastStorage = fastStorage;
+    }
+
+    @Override
+    public boolean exist(String token) {
+        try {
+            List<String> tokens = fastStorage.findTokens();
+            return tokens.contains(token);
+        } catch (FastStorageException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public void add(String token) {
+        try {
+            fastStorage.saveToken(token);
+        } catch (FastStorageException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    @Override
+    public void remove(String token) {
+        try {
+            fastStorage.removeToken(token);
+        } catch (FastStorageException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    @Override
+    public void clear() {
+        try {
+            for (String s : fastStorage.findTokens()) {
+                fastStorage.removeToken(s);
+            }
+        } catch (FastStorageException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

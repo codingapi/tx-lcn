@@ -15,7 +15,8 @@
  */
 package com.codingapi.txlcn.client.initializer;
 
-import com.codingapi.txlcn.client.aspectlog.AspectLogHelper;
+import com.codingapi.txlcn.client.corelog.aspect.AspectLogHelper;
+import com.codingapi.txlcn.client.corelog.txc.TxcLogHelper;
 import com.codingapi.txlcn.client.message.TXLCNClientMessageServer;
 import com.codingapi.txlcn.client.support.checking.DTXChecking;
 import com.codingapi.txlcn.client.support.checking.SimpleDTXChecking;
@@ -36,6 +37,8 @@ public class TxClientInitializer implements TxLcnInitializer {
 
     private final AspectLogHelper aspectLogHelper;
 
+    private final TxcLogHelper txcLogHelper;
+
     private final TXLCNClientMessageServer txLcnClientMessageServer;
 
     private final DTXChecking dtxChecking;
@@ -46,19 +49,23 @@ public class TxClientInitializer implements TxLcnInitializer {
     public TxClientInitializer(AspectLogHelper aspectLogHelper,
                                TXLCNClientMessageServer txLcnClientMessageServer,
                                DTXChecking dtxChecking,
-                               TransactionCleanTemplate transactionCleanTemplate) {
+                               TransactionCleanTemplate transactionCleanTemplate, TxcLogHelper txcLogHelper) {
         this.aspectLogHelper = aspectLogHelper;
         this.txLcnClientMessageServer = txLcnClientMessageServer;
         this.dtxChecking = dtxChecking;
         this.transactionCleanTemplate = transactionCleanTemplate;
+        this.txcLogHelper = txcLogHelper;
     }
 
     @Override
     public void init() throws Exception {
         aspectLogHelper.init();
+
+        txcLogHelper.init();
+
         txLcnClientMessageServer.init();
 
-        // aware the clean template to the simpleDtxChecking
+        // aware the transaction clean template to the simpleDtxChecking
         dtxCheckingTransactionCleanTemplateAdapt();
     }
 
