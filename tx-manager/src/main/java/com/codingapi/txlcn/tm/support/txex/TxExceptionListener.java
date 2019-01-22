@@ -13,43 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.spi.message;
+package com.codingapi.txlcn.tm.support.txex;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.codingapi.txlcn.tm.support.db.domain.TxException;
 
 /**
  * Description:
- * Date: 19-1-9 下午6:04
+ * Date: 19-1-3 上午9:40
  *
  * @author ujued
  */
-@NoArgsConstructor
-@Data
-public class RpcConfig {
-    /**
-     * 最大等待时间 单位:(ms)
-     */
-    private long waitTime = 5000;
+public interface TxExceptionListener {
 
     /**
-     * 最大缓存锁的数量
+     * 实务异常时
+     *
+     * @param txException txException
      */
-    private int cacheSize = 1024;
-
-    /**
-     * appName 参数延迟删除时间 单位：(s)
-     */
-    private long attrDelayTime = 36 * 1000;
-
-    /**
-     * 断线重连次数
-     */
-    private int reconnectCount = 5;
-
-    /**
-     * 重连延迟时间 （s）
-     */
-    private long reconnectDelay = 10000;
-
+    void onException(TxException txException);
 }

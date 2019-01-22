@@ -77,8 +77,15 @@ public class MessageConstants {
      */
     public static final String ACTION_INIT_GROUPID = "INITCLIENTGROUPID";
 
+    /**
+     * 查询分布式事务锁
+     */
+    public static final String ACTION_ACQUIRE_DTX_LOCK = "qdtxl";
 
-
+    /**
+     *
+     */
+    public static final String ACTION_RELEASE_DTX_LOCK = "rdtxl";
 
     /**
      * 发起请求状态
@@ -94,6 +101,5 @@ public class MessageConstants {
      * 响应异常状态
      */
     public static final int STATE_EXCEPTION = 500;
-
 
 }

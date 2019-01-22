@@ -89,48 +89,10 @@ public interface TxcSqlExecutor {
     void clearLock(String groupId, String unitId) throws SQLException;
 
     /**
-     * 写undo_log
-     *
-     * @param undoLogDo undoLogDo
-     * @throws SQLException SQLException
-     */
-    void writeUndoLog(UndoLogDO undoLogDo) throws SQLException;
-
-    /**
-     * 写undo_log
-     *
-     * @param undoLogDo  undoLogDo
-     * @param connection connection
-     * @throws SQLException SQLException
-     */
-    void writeUndoLogByGivenConnection(Connection connection, UndoLogDO undoLogDo) throws SQLException;
-
-    /**
-     * 回滚undo_log
-     *
-     * @param groupId groupId
-     * @param unitId  事务单元
-     * @throws SQLException SQLException
-     */
-    void applyUndoLog(String groupId, String unitId) throws SQLException;
-
-    /**
      * 回滚undo_log
      *
      * @param statementInfoList
      * @throws SQLException
      */
     void applyUndoLog(List<StatementInfo> statementInfoList) throws SQLException;
-
-    /**
-     * 清除undo_log
-     *
-     * @param groupId groupId
-     * @param unitId  事务单元
-     * @throws SQLException SQLException
-     */
-    void clearUndoLog(String groupId, String unitId) throws SQLException;
-
-
-    void undoRollbackInfoSql(Connection connection, RollbackInfo rollbackInfo) throws SQLException;
 }

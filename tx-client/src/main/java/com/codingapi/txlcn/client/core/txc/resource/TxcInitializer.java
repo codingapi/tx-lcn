@@ -19,6 +19,7 @@ import com.codingapi.txlcn.client.core.txc.resource.def.TxcSqlExecutor;
 import com.codingapi.txlcn.client.core.txc.resource.init.TxcSql;
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Description:
@@ -27,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author codingapi
  */
-
+@Component
 public class TxcInitializer implements TxLcnInitializer {
 
 

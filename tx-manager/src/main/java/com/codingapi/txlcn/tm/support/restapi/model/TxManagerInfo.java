@@ -13,43 +13,60 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.spi.message;
+package com.codingapi.txlcn.tm.support.restapi.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * Description:
- * Date: 19-1-9 下午6:04
+ * Date: 2018/12/28
  *
  * @author ujued
  */
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RpcConfig {
-    /**
-     * 最大等待时间 单位:(ms)
-     */
-    private long waitTime = 5000;
+public class TxManagerInfo {
 
     /**
-     * 最大缓存锁的数量
+     * Netty主机
      */
-    private int cacheSize = 1024;
+    private String socketHost;
 
     /**
-     * appName 参数延迟删除时间 单位：(s)
+     * Netty端口
      */
-    private long attrDelayTime = 36 * 1000;
+    private int socketPort;
 
     /**
-     * 断线重连次数
+     * Netty心跳时间
      */
-    private int reconnectCount = 5;
+    private long heartbeatTime;
 
     /**
-     * 重连延迟时间 （s）
+     * 注册的资源管理服务数量
      */
-    private long reconnectDelay = 10000;
+    private int clientCount;
 
+    /**
+     * 事务并发处理等级
+     */
+    private int concurrentLevel;
+
+    /**
+     * 分布式事务时间
+     */
+    private long dtxTime;
+
+    /**
+     * 异常通知
+     */
+    private String exUrl;
+
+    /**
+     * 允许系统日志
+     */
+    private String enableTxLogger;
 }

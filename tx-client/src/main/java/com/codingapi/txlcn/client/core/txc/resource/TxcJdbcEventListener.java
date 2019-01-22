@@ -30,12 +30,14 @@ import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 
 /**
  * @author lorne
  */
+@Component
 @Slf4j
 public class TxcJdbcEventListener extends P6spyJdbcEventListener {
 

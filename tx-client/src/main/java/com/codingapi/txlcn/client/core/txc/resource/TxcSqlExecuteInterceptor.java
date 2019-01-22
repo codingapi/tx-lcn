@@ -33,6 +33,7 @@ import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SelectItem;
 import net.sf.jsqlparser.statement.update.Update;
 import org.apache.commons.dbutils.DbUtils;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -49,6 +50,7 @@ import java.util.Map;
  *
  * @author ujued
  */
+@Component
 @Slf4j
 public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 

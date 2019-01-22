@@ -15,14 +15,10 @@
  */
 package com.codingapi.txlcn.client.core.txc.resource;
 
-import com.codingapi.txlcn.client.core.txc.resource.def.SqlExecuteInterceptor;
-import com.codingapi.txlcn.client.core.txc.resource.def.TxcService;
-import com.codingapi.txlcn.client.core.txc.resource.def.TxcSqlExecutor;
 import com.codingapi.txlcn.client.core.txc.resource.def.config.TxcConfig;
 import com.codingapi.txlcn.client.core.txc.resource.init.TxcExceptionConnectionPool;
 import com.codingapi.txlcn.client.core.txc.resource.init.TxcMysql;
 import com.codingapi.txlcn.client.core.txc.resource.init.TxcSql;
-import com.codingapi.txlcn.logger.TxLogger;
 import org.apache.commons.dbutils.QueryRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -54,30 +50,4 @@ public class TxcConfiguration {
     public TxcSql txcLockSql() {
         return new TxcMysql();
     }
-
-    @Bean
-    public TableStructAnalyser tableStructAnalyser(DataSource dataSource) {
-        return new TableStructAnalyser(dataSource);
-    }
-
-    @Bean
-    public TxcSqlExecutor txcSqlExecutor(QueryRunner queryRunner, TxcSql txcSql, TxLogger txLogger) {
-        return new TxcSqlExecutorImpl(queryRunner, txcSql, txLogger);
-    }
-
-    @Bean
-    public SqlExecuteInterceptor sqlExecuteInterceptor(TableStructAnalyser tableStructAnalyser, TxcService txcService) {
-        return new TxcSqlExecuteInterceptor(tableStructAnalyser, txcService);
-    }
-
-    @Bean
-    public TxcJdbcEventListener txcJdbcEventListener(SqlExecuteInterceptor sqlExecuteInterceptor) {
-        return new TxcJdbcEventListener(sqlExecuteInterceptor);
-    }
-
-    @Bean
-    public TxcInitializer txcInitializer() {
-        return new TxcInitializer();
-    }
-
 }

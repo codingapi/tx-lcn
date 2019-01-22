@@ -79,7 +79,18 @@ public enum LCNCmdType {
      * 获取切面日志
      * 简写 gal
      */
-    getAspectLog("get-aspect-log", MessageConstants.ACTION_GET_ASPECT_LOG);
+    getAspectLog("get-aspect-log", MessageConstants.ACTION_GET_ASPECT_LOG),
+
+    /**
+     * 查询分布式事务锁
+     * 简写 qdtxl
+     */
+    queryDTXLock("acquire-dtx-lock", MessageConstants.ACTION_ACQUIRE_DTX_LOCK),
+
+    /**
+     * 释放分布式事务锁
+     */
+    releaseDTXLock("release-dtx-lock", MessageConstants.ACTION_RELEASE_DTX_LOCK);
 
 
     private String code;
@@ -110,6 +121,8 @@ public enum LCNCmdType {
                 return notifyUnit;
             case MessageConstants.ACTION_JOIN_GROUP:
                 return joinGroup;
+            case MessageConstants.ACTION_ACQUIRE_DTX_LOCK:
+                return queryDTXLock;
             case MessageConstants.ACTION_ASK_TRANSACTION_STATE:
                 return askTransactionState;
             case MessageConstants.ACTION_WRITE_EXCEPTION:

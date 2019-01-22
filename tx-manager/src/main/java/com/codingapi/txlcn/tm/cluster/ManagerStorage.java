@@ -13,43 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.spi.message;
+package com.codingapi.txlcn.tm.cluster;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.List;
 
 /**
  * Description:
- * Date: 19-1-9 下午6:04
+ * Company: CodingApi
+ * Date: 2018/12/29
  *
- * @author ujued
+ * @author codingapi
  */
-@NoArgsConstructor
-@Data
-public class RpcConfig {
+public interface ManagerStorage {
+    
     /**
-     * 最大等待时间 单位:(ms)
+     * 获取Manager地址列表
+     *
+     * @return addressList
      */
-    private long waitTime = 5000;
-
+    List<String> addressList();
+    
     /**
-     * 最大缓存锁的数量
+     * 移除Manager服务
+     *
+     * @param address manager address
      */
-    private int cacheSize = 1024;
-
-    /**
-     * appName 参数延迟删除时间 单位：(s)
-     */
-    private long attrDelayTime = 36 * 1000;
-
-    /**
-     * 断线重连次数
-     */
-    private int reconnectCount = 5;
-
-    /**
-     * 重连延迟时间 （s）
-     */
-    private long reconnectDelay = 10000;
-
+    void remove(String address);
 }

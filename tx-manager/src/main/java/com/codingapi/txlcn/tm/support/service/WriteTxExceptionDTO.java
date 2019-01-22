@@ -13,43 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.spi.message;
+package com.codingapi.txlcn.tm.support.service;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * Description:
- * Date: 19-1-9 下午6:04
+ * Date: 2018/12/18
  *
  * @author ujued
  */
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RpcConfig {
-    /**
-     * 最大等待时间 单位:(ms)
-     */
-    private long waitTime = 5000;
+public class WriteTxExceptionDTO {
+    private String groupId;
+    private String unitId;
+    private String modId;
+    private Integer transactionState;
+    private Short registrar;
 
-    /**
-     * 最大缓存锁的数量
-     */
-    private int cacheSize = 1024;
-
-    /**
-     * appName 参数延迟删除时间 单位：(s)
-     */
-    private long attrDelayTime = 36 * 1000;
-
-    /**
-     * 断线重连次数
-     */
-    private int reconnectCount = 5;
-
-    /**
-     * 重连延迟时间 （s）
-     */
-    private long reconnectDelay = 10000;
-
+    public WriteTxExceptionDTO(String groupId, String unitId, String modId, Integer transactionState) {
+        this.groupId = groupId;
+        this.unitId = unitId;
+        this.transactionState = transactionState;
+        this.modId = modId;
+    }
 }

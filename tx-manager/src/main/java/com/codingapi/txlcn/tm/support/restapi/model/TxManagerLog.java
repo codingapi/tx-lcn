@@ -13,43 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.spi.message;
+package com.codingapi.txlcn.tm.support.restapi.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * Description:
- * Date: 19-1-9 下午6:04
+ * Date: 2018/12/24
  *
  * @author ujued
  */
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RpcConfig {
+public class TxManagerLog {
+    private Long id;
     /**
-     * 最大等待时间 单位:(ms)
+     * 事务组ID
      */
-    private long waitTime = 5000;
+    private String groupId;
 
     /**
-     * 最大缓存锁的数量
+     * 事务单元ID
      */
-    private int cacheSize = 1024;
+    private String unitId;
 
     /**
-     * appName 参数延迟删除时间 单位：(s)
+     * TAG
      */
-    private long attrDelayTime = 36 * 1000;
+    private String tag;
 
     /**
-     * 断线重连次数
+     * 日志内容
      */
-    private int reconnectCount = 5;
+    private String content;
 
     /**
-     * 重连延迟时间 （s）
+     * 创建时间
      */
-    private long reconnectDelay = 10000;
-
+    private String createTime;
 }

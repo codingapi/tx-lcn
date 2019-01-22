@@ -13,43 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.spi.message;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
+package com.codingapi.txlcn.tm.core.message;
 
 /**
  * Description:
- * Date: 19-1-9 下午6:04
+ * Date: 2018/12/18
  *
  * @author ujued
  */
-@NoArgsConstructor
-@Data
-public class RpcConfig {
-    /**
-     * 最大等待时间 单位:(ms)
-     */
-    private long waitTime = 5000;
+public interface RpcExceptionHandler {
 
     /**
-     * 最大缓存锁的数量
+     * 通知事务单元业务异常
+     *
+     * @param params params
+     * @param e e
      */
-    private int cacheSize = 1024;
+    void handleNotifyUnitBusinessException(Object params, Throwable e);
 
     /**
-     * appName 参数延迟删除时间 单位：(s)
+     * 通知事务单元通讯异常
+     *
+     * @param params  params
+     * @param e e
      */
-    private long attrDelayTime = 36 * 1000;
-
-    /**
-     * 断线重连次数
-     */
-    private int reconnectCount = 5;
-
-    /**
-     * 重连延迟时间 （s）
-     */
-    private long reconnectDelay = 10000;
-
+    void handleNotifyUnitMessageException(Object params, Throwable e);
 }

@@ -13,43 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.spi.message;
+package com.codingapi.txlcn.tm.support.restapi.auth.sauth;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Description:
- * Date: 19-1-9 下午6:04
+ * Date: 2018/11/23
  *
  * @author ujued
  */
-@NoArgsConstructor
-@Data
-public class RpcConfig {
-    /**
-     * 最大等待时间 单位:(ms)
-     */
-    private long waitTime = 5000;
+public interface SAuthLogic {
 
-    /**
-     * 最大缓存锁的数量
-     */
-    private int cacheSize = 1024;
+    default List<String> ignoreUrls() {
+        return Collections.emptyList();
+    }
 
-    /**
-     * appName 参数延迟删除时间 单位：(s)
-     */
-    private long attrDelayTime = 36 * 1000;
+    default boolean isIgnored(HttpServletRequest request) throws SAuthHandleException {
+        return false;
+    }
 
-    /**
-     * 断线重连次数
-     */
-    private int reconnectCount = 5;
-
-    /**
-     * 重连延迟时间 （s）
-     */
-    private long reconnectDelay = 10000;
-
+    boolean verify(String token);
 }

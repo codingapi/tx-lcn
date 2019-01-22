@@ -13,43 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.spi.message;
+package com.codingapi.txlcn.tm.support.restapi;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Description:
- * Date: 19-1-9 下午6:04
+ * Date: 1/11/19
  *
  * @author ujued
  */
-@NoArgsConstructor
-@Data
-public class RpcConfig {
-    /**
-     * 最大等待时间 单位:(ms)
-     */
-    private long waitTime = 5000;
+@Controller
+public class RedirectController {
 
-    /**
-     * 最大缓存锁的数量
-     */
-    private int cacheSize = 1024;
-
-    /**
-     * appName 参数延迟删除时间 单位：(s)
-     */
-    private long attrDelayTime = 36 * 1000;
-
-    /**
-     * 断线重连次数
-     */
-    private int reconnectCount = 5;
-
-    /**
-     * 重连延迟时间 （s）
-     */
-    private long reconnectDelay = 10000;
-
+    @RequestMapping("/")
+    public String index() {
+        return "redirect:/admin/index.html";
+    }
 }

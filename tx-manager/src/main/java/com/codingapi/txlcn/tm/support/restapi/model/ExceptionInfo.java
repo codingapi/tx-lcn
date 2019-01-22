@@ -13,43 +13,60 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.spi.message;
+package com.codingapi.txlcn.tm.support.restapi.model;
 
+import com.alibaba.fastjson.JSONObject;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * Description:
- * Date: 19-1-9 下午6:04
+ * Date: 2018/12/20
  *
  * @author ujued
  */
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RpcConfig {
-    /**
-     * 最大等待时间 单位:(ms)
-     */
-    private long waitTime = 5000;
+public class ExceptionInfo {
+
+    private long id;
 
     /**
-     * 最大缓存锁的数量
+     * 事务组ID
      */
-    private int cacheSize = 1024;
+    private String groupId;
 
     /**
-     * appName 参数延迟删除时间 单位：(s)
+     * 事务单元ID
      */
-    private long attrDelayTime = 36 * 1000;
+    private String unitId;
 
     /**
-     * 断线重连次数
+     * 资源管理服务地址
      */
-    private int reconnectCount = 5;
+    private String modId;
 
     /**
-     * 重连延迟时间 （s）
+     * 异常情况。-1 【未知】 0 【TxManager通知事务】， 1 【TxClient查询事务状态】 2 【事务发起方通知事务组】
      */
-    private long reconnectDelay = 10000;
+    private int registrar;
 
+    /**
+     * 异常状态 0 待处理 1已处理
+     */
+    private short exState;
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+
+    /**
+     * 事务信息
+     */
+    private JSONObject transactionInfo;
 }
