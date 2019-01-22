@@ -15,7 +15,6 @@
  */
 package com.codingapi.txlcn.manager.core.message;
 
-import com.codingapi.txlcn.commons.exception.UserRollbackException;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.manager.support.ManagerRpcBeanHelper;
 import com.codingapi.txlcn.spi.message.RpcClient;

@@ -65,7 +65,7 @@ public class TxClientClientInitCallBack implements ClientInitCallBack {
         log.info("TC[{}] connect TM[{}] successfully!", modId, remoteKey);
         singleThreadExecutor.submit(() -> {
             try {
-                log.info("Send init message to TM", remoteKey);
+                log.info("Send init message to TM {}", remoteKey);
                 MessageDto msg = rpcClient.request(remoteKey, MessageCreator.initClient(modId));
                 if (msg.getData() != null) {
                     //每一次建立连接时将会获取最新的时间

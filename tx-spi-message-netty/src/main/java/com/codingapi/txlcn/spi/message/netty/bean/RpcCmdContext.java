@@ -139,7 +139,8 @@ public class RpcCmdContext {
 
     public void setRpcConfig(RpcConfig rpcConfig) {
         cacheSize = rpcConfig.getCacheSize();
-        waitTime = (int) rpcConfig.getWaitTime()/1000;
+        // 提供最少1S的等待时间
+        waitTime = (int) rpcConfig.getWaitTime()/1000+1;
     }
 
     public int getWaitTime() {
