@@ -28,6 +28,9 @@ public class TxcLogHelper implements LogHelper {
         this.h2DbHelper = h2DbHelper;
     }
 
+    /**
+     * TXC撤销日志存储表准备
+     */
     @Override
     public void init() {
         h2DbHelper.update("CREATE TABLE IF NOT EXISTS TXC_UNDO_LOG (" +
@@ -41,12 +44,26 @@ public class TxcLogHelper implements LogHelper {
         log.info("Txc log table finish");
     }
 
+    /**
+     * 保存TXC撤销日志
+     *
+     * @param undoLogDO 撤销日志对象
+     * @throws SQLException 数据库操作失败
+     */
     public void saveUndoLog(UndoLogDO undoLogDO) throws SQLException {
         String sql = "INSERT INTO TXC_UNDO_LOG (UNIT_ID,GROUP_ID,SQL_TYPE,ROLLBACK_INFO,CREATE_TIME) VALUES(?,?,?,?,?)";
         h2DbHelper.queryRunner().update(sql, undoLogDO.getUnitId(), undoLogDO.getGroupId(), undoLogDO.getSqlType(),
                 undoLogDO.getRollbackInfo(), undoLogDO.getCreateTime());
     }
 
+    /**
+     * 获取某个事务下具体UNIT的TXC撤销日志
+     *
+     * @param groupId groupId
+     * @param unitId  unitId
+     * @return
+     * @throws SQLException 数据库操作失败
+     */
     public List<UndoLogDO> getUndoLogByGroupAndUnitId(String groupId, String unitId) throws SQLException {
         String sql = "SELECT * FROM TXC_UNDO_LOG WHERE GROUP_ID = ? and UNIT_ID = ?";
         return h2DbHelper.queryRunner().query(sql, rs -> {
@@ -64,6 +81,13 @@ public class TxcLogHelper implements LogHelper {
         }, groupId, unitId);
     }
 
+    /**
+     * 删除TXC撤销日志
+     *
+     * @param groupId groupId
+     * @param unitId  unitId
+     * @throws SQLException 数据库操作失败
+     */
     public void deleteUndoLog(String groupId, String unitId) throws SQLException {
         String sql = "DELETE FROM TXC_UNDO_LOG WHERE GROUP_ID=? AND UNIT_ID=?";
         h2DbHelper.queryRunner().update(sql, groupId, unitId);

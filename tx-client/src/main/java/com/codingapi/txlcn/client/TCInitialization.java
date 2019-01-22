@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.initializer;
+package com.codingapi.txlcn.client;
 
 import com.codingapi.txlcn.client.corelog.aspect.AspectLogHelper;
 import com.codingapi.txlcn.client.corelog.txc.TxcLogHelper;
@@ -22,8 +22,11 @@ import com.codingapi.txlcn.client.support.checking.DTXChecking;
 import com.codingapi.txlcn.client.support.checking.SimpleDTXChecking;
 import com.codingapi.txlcn.client.support.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
+import com.codingapi.txlcn.commons.util.Transactions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /**
  * Description:
@@ -33,7 +36,7 @@ import org.springframework.stereotype.Component;
  * @author codingapi
  */
 @Component
-public class TxClientInitializer implements TxLcnInitializer {
+public class TCInitialization implements TxLcnInitializer {
 
     private final AspectLogHelper aspectLogHelper;
 
@@ -45,16 +48,20 @@ public class TxClientInitializer implements TxLcnInitializer {
 
     private final TransactionCleanTemplate transactionCleanTemplate;
 
+    private final ConfigurableEnvironment environment;
+
     @Autowired
-    public TxClientInitializer(AspectLogHelper aspectLogHelper,
-                               TXLCNClientMessageServer txLcnClientMessageServer,
-                               DTXChecking dtxChecking,
-                               TransactionCleanTemplate transactionCleanTemplate, TxcLogHelper txcLogHelper) {
+    public TCInitialization(AspectLogHelper aspectLogHelper,
+                            TXLCNClientMessageServer txLcnClientMessageServer,
+                            DTXChecking dtxChecking,
+                            TransactionCleanTemplate transactionCleanTemplate, TxcLogHelper txcLogHelper,
+                            ConfigurableEnvironment environment) {
         this.aspectLogHelper = aspectLogHelper;
         this.txLcnClientMessageServer = txLcnClientMessageServer;
         this.dtxChecking = dtxChecking;
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.txcLogHelper = txcLogHelper;
+        this.environment = environment;
     }
 
     @Override
@@ -67,11 +74,21 @@ public class TxClientInitializer implements TxLcnInitializer {
 
         // aware the transaction clean template to the simpleDtxChecking
         dtxCheckingTransactionCleanTemplateAdapt();
+
+        // init util classes
+        utilClassesInit();
     }
 
     private void dtxCheckingTransactionCleanTemplateAdapt() {
         if (dtxChecking instanceof SimpleDTXChecking) {
             ((SimpleDTXChecking) dtxChecking).setTransactionCleanTemplate(transactionCleanTemplate);
         }
+    }
+
+    private void utilClassesInit() {
+        String name = environment.getProperty("spring.application.name");
+        String application = StringUtils.hasText(name) ? name : "application";
+        String port = environment.getProperty("server.port");
+        Transactions.setApplicationId(String.format("%s:%s", application, port));
     }
 }

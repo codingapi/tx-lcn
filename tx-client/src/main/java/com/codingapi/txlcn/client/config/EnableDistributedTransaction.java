@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.client.config;
 
-import com.codingapi.txlcn.client.TxClientConfiguration;
+import com.codingapi.txlcn.client.TCConfiguration;
 import com.codingapi.txlcn.logger.TxLoggerConfiguration;
 import com.codingapi.txlcn.spi.sleuth.TxSleuthApiConfiguration;
 import org.springframework.context.annotation.Import;
@@ -16,7 +16,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@Import({TxClientConfiguration.class,
+@Import({TCConfiguration.class,
         TxLoggerConfiguration.class,
         TxSleuthApiConfiguration.class,
         DependenciesImportSelector.class})

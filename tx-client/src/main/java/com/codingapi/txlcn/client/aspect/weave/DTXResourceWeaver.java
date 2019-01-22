@@ -20,6 +20,7 @@ import com.codingapi.txlcn.client.support.TXLCNTransactionBeanHelper;
 import com.codingapi.txlcn.client.support.resouce.TransactionResourceExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.util.Objects;
@@ -31,6 +32,7 @@ import java.util.Objects;
  *
  * @author lorne
  */
+@Component
 @Slf4j
 public class DTXResourceWeaver {
 

@@ -25,6 +25,7 @@ import com.codingapi.txlcn.client.support.cache.TransactionAttachmentCache;
 import com.codingapi.txlcn.commons.util.RandomUtils;
 import com.codingapi.txlcn.spi.sleuth.TracerHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
@@ -35,6 +36,7 @@ import java.util.Objects;
  *
  * @author ujued
  */
+@Component
 @Slf4j
 public class DTXLogicWeaver {
 

@@ -22,11 +22,13 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.core.Ordered;
+import org.springframework.stereotype.Component;
 
 /**
  * create by lorne on 2018/1/5
  */
 @Aspect
+@Component
 @Slf4j
 public class DataSourceAspect implements Ordered {
 
