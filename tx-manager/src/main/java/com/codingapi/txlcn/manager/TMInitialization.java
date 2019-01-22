@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.manager.initializer;
+package com.codingapi.txlcn.manager;
 
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
 import com.codingapi.txlcn.manager.config.TxManagerConfig;
 import com.codingapi.txlcn.manager.core.storage.FastStorage;
 import com.codingapi.txlcn.manager.core.storage.FastStorageException;
-import com.codingapi.txlcn.manager.support.cluster.TxManagerAutoCluster;
+import com.codingapi.txlcn.manager.cluster.TxManagerAutoCluster;
 import com.codingapi.txlcn.manager.support.message.TxLcnManagerServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class TxManagerInitializer implements TxLcnInitializer {
+public class TMInitialization implements TxLcnInitializer {
 
     private final TxManagerAutoCluster managerAutoCluster;
 
@@ -45,8 +45,8 @@ public class TxManagerInitializer implements TxLcnInitializer {
     private final TxManagerConfig managerConfig;
 
     @Autowired
-    public TxManagerInitializer(TxManagerAutoCluster managerAutoCluster, FastStorage fastStorage,
-                                TxLcnManagerServer txLcnManagerServer, TxManagerConfig managerConfig) {
+    public TMInitialization(TxManagerAutoCluster managerAutoCluster, FastStorage fastStorage,
+                            TxLcnManagerServer txLcnManagerServer, TxManagerConfig managerConfig) {
         this.managerAutoCluster = managerAutoCluster;
         this.fastStorage = fastStorage;
         this.txLcnManagerServer = txLcnManagerServer;
@@ -56,12 +56,13 @@ public class TxManagerInitializer implements TxLcnInitializer {
     @Override
     public void init() throws Exception {
 
+        // init TM RPC Component
         txLcnManagerServer.init();
 
-        // Init TM list
+        // Init TM instance list
         initTMList();
 
-        // 新增节点 读取redis个节点信息后 通知客户端连接
+        // auto cluster
         managerAutoCluster.refresh();
     }
 

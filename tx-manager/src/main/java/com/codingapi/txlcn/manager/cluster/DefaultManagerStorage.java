@@ -1,4 +1,4 @@
-package com.codingapi.txlcn.manager.support.cluster;
+package com.codingapi.txlcn.manager.cluster;
 
 import com.codingapi.txlcn.manager.config.TxManagerConfig;
 import com.codingapi.txlcn.manager.core.storage.FastStorage;

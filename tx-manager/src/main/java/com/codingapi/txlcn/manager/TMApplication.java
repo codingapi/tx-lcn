@@ -44,10 +44,10 @@ import java.util.concurrent.TimeUnit;
  */
 @SpringBootApplication
 @Import({TxLoggerConfiguration.class, MessageConfiguration.class})
-public class TxManagerApplication {
+public class TMApplication {
 
     public static void main(String[] args) {
-        SpringApplication springApplication = new SpringApplication(TxManagerApplication.class);
+        SpringApplication springApplication = new SpringApplication(TMApplication.class);
         springApplication.setBanner(new TxLcnManagerBanner());
         springApplication.run(args);
     }

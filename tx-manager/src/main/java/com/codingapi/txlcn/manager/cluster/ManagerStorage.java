@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.manager.support.cluster;
+package com.codingapi.txlcn.manager.cluster;
 
 import java.util.List;
 
