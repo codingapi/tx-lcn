@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.client.core.tcc;
 
-import com.codingapi.txlcn.client.bean.TCCTransactionInfo;
+import com.codingapi.txlcn.client.bean.TccTransactionInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,6 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author ujued
  */
 @Component
-public class TccTransactionInfoCache extends ConcurrentHashMap<String, TCCTransactionInfo> {
+public class TccTransactionInfoCache extends ConcurrentHashMap<String, TccTransactionInfo> {
 
 }

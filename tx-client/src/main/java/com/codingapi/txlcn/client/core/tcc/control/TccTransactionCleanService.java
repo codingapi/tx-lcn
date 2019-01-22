@@ -19,7 +19,7 @@ import com.codingapi.txlcn.client.bean.DTXLocal;
 import com.codingapi.txlcn.client.core.tcc.TccTransactionInfoCache;
 import com.codingapi.txlcn.client.message.helper.TxMangerReporter;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
-import com.codingapi.txlcn.client.bean.TCCTransactionInfo;
+import com.codingapi.txlcn.client.bean.TccTransactionInfo;
 import com.codingapi.txlcn.client.support.cache.TransactionAttachmentCache;
 import com.codingapi.txlcn.client.support.TransactionCleanService;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +61,7 @@ public class TccTransactionCleanService implements TransactionCleanService {
 
     @Override
     public void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException {
-        TCCTransactionInfo tccInfo = tccTransactionInfoCache.get(unitId);
+        TccTransactionInfo tccInfo = tccTransactionInfoCache.get(unitId);
 
         Object object = applicationContext.getBean(tccInfo.getExecuteClass());
         Method exeMethod = null;

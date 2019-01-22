@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.client.core.tcc.control;
 
 import com.codingapi.txlcn.client.bean.DTXLocal;
-import com.codingapi.txlcn.client.bean.TCCTransactionInfo;
+import com.codingapi.txlcn.client.bean.TccTransactionInfo;
 import com.codingapi.txlcn.client.bean.TxTransactionInfo;
 import com.codingapi.txlcn.client.core.tcc.TccTransactionInfoCache;
 import com.codingapi.txlcn.client.support.TXLCNTransactionControl;
@@ -48,7 +48,7 @@ public class TccStartingTransaction implements TXLCNTransactionControl {
         this.tccTransactionInfoCache = tccTransactionInfoCache;
     }
 
-    static TCCTransactionInfo prepareTccInfo(TxTransactionInfo info) throws BeforeBusinessException {
+    static TccTransactionInfo prepareTccInfo(TxTransactionInfo info) throws BeforeBusinessException {
         Method method = info.getPointMethod();
         TccTransaction tccTransaction = method.getAnnotation(TccTransaction.class);
         if (tccTransaction == null) {
@@ -67,7 +67,7 @@ public class TccStartingTransaction implements TXLCNTransactionControl {
             executeClass = info.getTransactionInfo().getTargetClazz();
         }
 
-        TCCTransactionInfo tccInfo = new TCCTransactionInfo();
+        TccTransactionInfo tccInfo = new TccTransactionInfo();
         tccInfo.setExecuteClass(executeClass);
         tccInfo.setCancelMethod(cancelMethod);
         tccInfo.setConfirmMethod(confirmMethod);

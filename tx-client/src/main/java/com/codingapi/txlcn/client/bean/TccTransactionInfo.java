@@ -21,7 +21,7 @@ import lombok.Data;
  * @author 侯存路
  */
 @Data
-public class TCCTransactionInfo {
+public class TccTransactionInfo {
 
 
     /**

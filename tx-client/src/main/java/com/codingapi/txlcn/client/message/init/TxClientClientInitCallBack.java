@@ -62,10 +62,9 @@ public class TxClientClientInitCallBack implements ClientInitCallBack {
     @Override
     public void connected(String remoteKey) {
         String modId = appName + ":" + port;
-        log.info("TC[{}] connect TM[{}] successfully!", modId, remoteKey);
         singleThreadExecutor.submit(() -> {
             try {
-                log.info("Send init message to TM {}", remoteKey);
+                log.info("Send init message to TM[{}]", remoteKey);
                 MessageDto msg = rpcClient.request(remoteKey, MessageCreator.initClient(modId));
                 if (msg.getData() != null) {
                     //每一次建立连接时将会获取最新的时间
@@ -73,9 +72,12 @@ public class TxClientClientInitCallBack implements ClientInitCallBack {
                     long dtxTime = resParams.getDtxTime();
                     txClientConfig.setDtxTime(dtxTime);
                     log.info("Determined dtx time {}ms.", dtxTime);
+                    log.info("TC[{}] connect TM[{}] successfully!", modId, remoteKey);
+                    return;
                 }
+                log.error("TM[{}] exception. connect fail!", remoteKey);
             } catch (RpcException e) {
-                log.error("Send init message error: {}", e.getMessage());
+                log.error("Send init message exception: {}. connect fail!", e.getMessage());
             }
         });
     }
