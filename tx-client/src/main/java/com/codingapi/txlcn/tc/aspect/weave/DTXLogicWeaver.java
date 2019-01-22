@@ -15,16 +15,17 @@
  */
 package com.codingapi.txlcn.tc.aspect.weave;
 
-import com.codingapi.txlcn.tc.aspect.BusinessCallback;
-import com.codingapi.txlcn.tc.bean.DTXInfo;
-import com.codingapi.txlcn.tc.bean.DTXLocal;
-import com.codingapi.txlcn.tc.bean.TxTransactionInfo;
-import com.codingapi.txlcn.tc.support.TXLCNTransactionServiceExecutor;
-import com.codingapi.txlcn.tc.support.cache.DTXGroupContext;
-import com.codingapi.txlcn.tc.support.cache.TransactionAttachmentCache;
 import com.codingapi.txlcn.commons.util.RandomUtils;
 import com.codingapi.txlcn.spi.sleuth.TracerHelper;
+import com.codingapi.txlcn.tc.aspect.BusinessCallback;
+import com.codingapi.txlcn.tc.core.DTXInfo;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
+import com.codingapi.txlcn.tc.core.DTXServiceExecutor;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
+import com.codingapi.txlcn.tc.support.context.DTXContext;
+import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -42,22 +43,21 @@ public class DTXLogicWeaver {
 
     private final TracerHelper tracerHelper;
 
-    private final TXLCNTransactionServiceExecutor transactionServiceExecutor;
+    private final DTXServiceExecutor transactionServiceExecutor;
 
-    private final TransactionAttachmentCache transactionAttachmentCache;
+    private final TCGlobalContext context;
 
-    public DTXLogicWeaver(TracerHelper tracerHelper,
-                          TXLCNTransactionServiceExecutor transactionServiceExecutor,
-                          TransactionAttachmentCache transactionAttachmentCache) {
+    @Autowired
+    public DTXLogicWeaver(TracerHelper tracerHelper, DTXServiceExecutor transactionServiceExecutor, TCGlobalContext context) {
         this.tracerHelper = tracerHelper;
         this.transactionServiceExecutor = transactionServiceExecutor;
-        this.transactionAttachmentCache = transactionAttachmentCache;
+        this.context = context;
     }
 
     public Object runTransaction(DTXInfo dtxInfo, BusinessCallback business) throws Throwable {
 
-        if (Objects.isNull(DTXLocal.cur())) {
-            DTXLocal.getOrNew();
+        if (Objects.isNull(DTXLocalContext.cur())) {
+            DTXLocalContext.getOrNew();
         } else {
             return business.call();
         }
@@ -70,14 +70,14 @@ public class DTXLogicWeaver {
         // 该线程事务
         String groupId = isTransactionStart ? RandomUtils.randomKey() : tracerHelper.getGroupId();
         String unitId = dtxInfo.getUnitId();
-        DTXLocal dtxLocal = DTXLocal.getOrNew();
-        if (dtxLocal.getUnitId() != null) {
-            dtxLocal.setInUnit(true);
-            log.info("tx > unit[{}] in unit: {}", unitId, dtxLocal.getUnitId());
+        DTXLocalContext dtxLocalContext = DTXLocalContext.getOrNew();
+        if (dtxLocalContext.getUnitId() != null) {
+            dtxLocalContext.setInUnit(true);
+            log.info("tx > unit[{}] in unit: {}", unitId, dtxLocalContext.getUnitId());
         }
-        dtxLocal.setUnitId(unitId);
-        dtxLocal.setGroupId(groupId);
-        dtxLocal.setTransactionType(dtxInfo.getTransactionType());
+        dtxLocalContext.setUnitId(unitId);
+        dtxLocalContext.setGroupId(groupId);
+        dtxLocalContext.setTransactionType(dtxInfo.getTransactionType());
 
         // 事务参数
         TxTransactionInfo info = new TxTransactionInfo(dtxInfo.getTransactionType(), isTransactionStart,
@@ -86,15 +86,15 @@ public class DTXLogicWeaver {
 
         //LCN事务处理器
         try {
-            transactionAttachmentCache.setContext(info.getGroupId(), new DTXGroupContext());
+            context.newDTXContext(groupId);
             return transactionServiceExecutor.transactionRunning(info);
         } finally {
-            DTXGroupContext context = transactionAttachmentCache.context(info.getGroupId());
-            synchronized (context.getLock()) {
-                context.getLock().notifyAll();
+            DTXContext dtxContext = context.dtxContext(info.getGroupId());
+            synchronized (dtxContext.getLock()) {
+                dtxContext.getLock().notifyAll();
             }
-            transactionAttachmentCache.destroyContext(info.getGroupId());
-            DTXLocal.makeNeverAppeared();
+            context.destroyDTXContext(info.getGroupId());
+            DTXLocalContext.makeNeverAppeared();
             log.debug("tx-unit end------>");
         }
     }

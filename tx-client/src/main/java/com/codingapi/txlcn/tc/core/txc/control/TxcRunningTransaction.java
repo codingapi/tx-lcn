@@ -15,10 +15,10 @@
  */
 package com.codingapi.txlcn.tc.core.txc.control;
 
-import com.codingapi.txlcn.tc.bean.DTXLocal;
-import com.codingapi.txlcn.tc.bean.TxTransactionInfo;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
 import com.codingapi.txlcn.tc.core.txc.resource.def.bean.RollbackInfo;
-import com.codingapi.txlcn.tc.support.TXLCNTransactionControl;
+import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.tc.support.template.TransactionControlTemplate;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
  */
 @Component("control_txc_running")
 @Slf4j
-public class TxcRunningTransaction implements TXLCNTransactionControl {
+public class TxcRunningTransaction implements DTXLocalControl {
 
     private final TransactionCleanTemplate transactionCleanTemplate;
 
@@ -52,10 +52,10 @@ public class TxcRunningTransaction implements TXLCNTransactionControl {
     public void preBusinessCode(TxTransactionInfo info) {
 
         // 准备回滚信息容器
-        DTXLocal.cur().setAttachment(new RollbackInfo());
+        DTXLocalContext.cur().setAttachment(new RollbackInfo());
 
         // TXC 类型事务需要代理资源
-        DTXLocal.makeProxy();
+        DTXLocalContext.makeProxy();
     }
 
     @Override
@@ -63,7 +63,7 @@ public class TxcRunningTransaction implements TXLCNTransactionControl {
         try {
             log.info("txc > running > clean transaction.");
             transactionCleanTemplate.clean(
-                    DTXLocal.cur().getGroupId(),
+                    DTXLocalContext.cur().getGroupId(),
                     info.getUnitId(),
                     info.getTransactionType(),
                     0);

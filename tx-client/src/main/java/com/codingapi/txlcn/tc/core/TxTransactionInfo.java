@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.bean;
+package com.codingapi.txlcn.tc.core;
 
 
 import com.codingapi.txlcn.tc.aspect.BusinessCallback;

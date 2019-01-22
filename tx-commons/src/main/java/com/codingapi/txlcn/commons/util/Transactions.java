@@ -25,7 +25,7 @@ import org.springframework.util.DigestUtils;
  */
 public class Transactions {
 
-    private static String applicationId;
+    public static String APPLICATION_ID_WHEN_RUNNING;
 
     /////////// 事务类型  //////////////////
 
@@ -48,11 +48,11 @@ public class Transactions {
     /**
      * 方法签名生成事务单元ID
      *
-     * @param methodSignature  方法签名key
-     * @return  md5hex val
+     * @param methodSignature 方法签名key
+     * @return md5hex val
      */
     public static String unitId(String methodSignature) {
-        return DigestUtils.md5DigestAsHex((applicationId+methodSignature).getBytes());
+        return DigestUtils.md5DigestAsHex((APPLICATION_ID_WHEN_RUNNING + methodSignature).getBytes());
     }
 
     /**
@@ -66,7 +66,7 @@ public class Transactions {
     }
 
 
-    public static void setApplicationId(String applicationId) {
-        Transactions.applicationId = applicationId;
+    public static void setApplicationIdWhenRunning(String applicationIdWhenRunning) {
+        Transactions.APPLICATION_ID_WHEN_RUNNING = applicationIdWhenRunning;
     }
 }

@@ -28,15 +28,17 @@ import org.springframework.lang.NonNull;
 public class DependenciesImportSelector implements ImportSelector {
 
     /**
-     * spi classes
+     * resolve the spi classes
      *
      * @param importingClassMetadata importingClassMetadata
-     * @return String[]
+     * @return spi classes
      */
     @Override
     @NonNull
     public String[] selectImports(@NonNull AnnotationMetadata importingClassMetadata) {
-        return new String[]{"com.codingapi.txlcn.spi.MessageConfiguration",
-                "com.codingapi.txlcn.client.spi.SleuthConfiguration"};
+        return new String[]{
+                "com.codingapi.txlcn.spi.MessageConfiguration",
+                "com.codingapi.txlcn.client.spi.SleuthConfiguration"
+        };
     }
 }

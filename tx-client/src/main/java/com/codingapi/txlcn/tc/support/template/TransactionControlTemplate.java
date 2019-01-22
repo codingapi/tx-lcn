@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.tc.support.template;
 
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
-import com.codingapi.txlcn.tc.bean.DTXLocal;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.message.helper.MessageCreator;
 import com.codingapi.txlcn.tc.support.checking.DTXChecking;
 import com.codingapi.txlcn.tc.support.checking.DTXExceptionHandler;
@@ -140,7 +140,7 @@ public class TransactionControlTemplate {
         joinGroupParams.setGroupId(groupId);
         joinGroupParams.setUnitId(unitId);
         joinGroupParams.setUnitType(transactionType);
-        joinGroupParams.setTransactionState(DTXLocal.transactionState());
+        joinGroupParams.setTransactionState(DTXLocalContext.transactionState());
         // 日志
         log.debug("transaction type[{}] > join group > groupId: {}, unitId: {}, remoteKeys: {}",
                 transactionType, groupId, unitId, managerKey);

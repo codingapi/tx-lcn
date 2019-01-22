@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.bean;
+package com.codingapi.txlcn.tc.core;
 
 
 import com.codingapi.txlcn.tc.core.tcc.control.TccTransactionCleanService;
@@ -28,9 +28,9 @@ import java.util.Objects;
  */
 @Data
 @Slf4j
-public class DTXLocal {
+public class DTXLocalContext {
 
-    private final static ThreadLocal<DTXLocal> currentLocal = new InheritableThreadLocal<DTXLocal>();
+    private final static ThreadLocal<DTXLocalContext> currentLocal = new InheritableThreadLocal<DTXLocalContext>();
 
     /**
      * 事务类型
@@ -109,7 +109,7 @@ public class DTXLocal {
      *
      * @return 当前线程变量
      */
-    public static DTXLocal cur() {
+    public static DTXLocalContext cur() {
         return currentLocal.get();
     }
 
@@ -118,9 +118,9 @@ public class DTXLocal {
      *
      * @return 当前线程变量
      */
-    public static DTXLocal getOrNew() {
+    public static DTXLocalContext getOrNew() {
         if (currentLocal.get() == null) {
-            currentLocal.set(new DTXLocal());
+            currentLocal.set(new DTXLocalContext());
         }
         return currentLocal.get();
     }
@@ -159,7 +159,7 @@ public class DTXLocal {
      */
     public static void makeNeverAppeared() {
         if (currentLocal.get() != null) {
-            log.debug("clean thread local[{}]: {}", DTXLocal.class.getSimpleName(), cur());
+            log.debug("clean thread local[{}]: {}", DTXLocalContext.class.getSimpleName(), cur());
             currentLocal.set(null);
         }
     }
@@ -170,7 +170,7 @@ public class DTXLocal {
      * @return 1 commit 0 rollback
      */
     public static int transactionState() {
-        DTXLocal dtxLocal = Objects.requireNonNull(currentLocal.get(), "DTX can't be null.");
-        return dtxLocal.userTransactionState == -1 ? dtxLocal.sysTransactionState : dtxLocal.userTransactionState;
+        DTXLocalContext dtxLocalContext = Objects.requireNonNull(currentLocal.get(), "DTX can't be null.");
+        return dtxLocalContext.userTransactionState == -1 ? dtxLocalContext.sysTransactionState : dtxLocalContext.userTransactionState;
     }
 }

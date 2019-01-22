@@ -13,25 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.support;
+package com.codingapi.txlcn.tc.core;
 
-import com.codingapi.txlcn.tc.bean.TxTransactionInfo;
-import com.codingapi.txlcn.commons.exception.TransactionException;
+import com.codingapi.txlcn.commons.exception.TransactionClearException;
 
 /**
- * Description: 事务分离器
- * Date: 2018/12/5
+ * Description:
+ * Date: 2018/12/13
  *
  * @author ujued
  */
-public interface TXLCNTransactionSeparator {
+public interface TransactionCleanService {
 
     /**
-     * 判断事务状态
+     * 事务清理业务
      *
-     * @param txTransactionInfo txTransactionInfo
-     * @return TXLCNTransactionState
-     * @throws TransactionException TransactionException
+     * @param groupId groupId
+     * @param state    事务状态 1 提交 0 回滚
+     * @param unitId unitId
+     * @param unitType 事务类型
+     * @throws TransactionClearException TransactionClearException
      */
-    TXLCNTransactionState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException;
+    void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException;
 }

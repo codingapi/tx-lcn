@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.support;
+package com.codingapi.txlcn.tc.message.transaction;
 
-import com.codingapi.txlcn.tc.message.helper.RpcExecuteService;
-import com.codingapi.txlcn.tc.message.helper.TransactionCmd;
-import com.codingapi.txlcn.tc.support.cache.DTXGroupContext;
-import com.codingapi.txlcn.tc.support.cache.TransactionAttachmentCache;
-import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.spi.message.params.NotifyUnitParams;
+import com.codingapi.txlcn.tc.message.helper.RpcExecuteService;
+import com.codingapi.txlcn.tc.message.helper.TransactionCmd;
+import com.codingapi.txlcn.tc.support.context.DTXContext;
+import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
+import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Description: 默认RPC命令业务
@@ -40,14 +41,13 @@ public class DefaultNotifiedUnitService implements RpcExecuteService {
 
     private final TxLogger txLogger;
 
-    private final TransactionAttachmentCache transactionAttachmentCache;
-
+    private TCGlobalContext context;
 
     public DefaultNotifiedUnitService(TransactionCleanTemplate transactionCleanTemplate,
-                                      TxLogger txLogger, TransactionAttachmentCache transactionAttachmentCache) {
+                                      TxLogger txLogger, TCGlobalContext context) {
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.txLogger = txLogger;
-        this.transactionAttachmentCache = transactionAttachmentCache;
+        this.context = context;
     }
 
     @Override
@@ -55,12 +55,12 @@ public class DefaultNotifiedUnitService implements RpcExecuteService {
         try {
             NotifyUnitParams notifyUnitParams = transactionCmd.getMsg().loadBean(NotifyUnitParams.class);
             // 保证业务线程执行完毕后执行事务清理操作
-            if (transactionAttachmentCache.hasContext(transactionCmd.getGroupId())) {
-                DTXGroupContext groupContext = transactionAttachmentCache.context(transactionCmd.getGroupId());
-                synchronized (groupContext.getLock()) {
+            DTXContext dtxContext = context.dtxContext(transactionCmd.getGroupId());
+            if (Objects.nonNull(dtxContext)) {
+                synchronized (dtxContext.getLock()) {
                     txLogger.trace(transactionCmd.getGroupId(), notifyUnitParams.getUnitId(), Transactions.TAG_TRANSACTION,
                             "clean transaction cmd waiting for business code finish.");
-                    groupContext.getLock().wait();
+                    dtxContext.getLock().wait();
                 }
             }
             // 事务清理操作

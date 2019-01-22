@@ -17,17 +17,13 @@ package com.codingapi.txlcn.tc.core.lcn.control;
 
 import com.codingapi.txlcn.commons.exception.TransactionException;
 import com.codingapi.txlcn.commons.util.Transactions;
-import com.codingapi.txlcn.spi.sleuth.TracerHelper;
-import com.codingapi.txlcn.tc.bean.TxTransactionInfo;
-import com.codingapi.txlcn.tc.support.CustomizableTransactionSeparator;
-import com.codingapi.txlcn.tc.support.TXLCNTransactionState;
-import com.codingapi.txlcn.tc.support.TransactionUnitTypeList;
-import com.codingapi.txlcn.tc.support.cache.TransactionAttachmentCache;
+import com.codingapi.txlcn.tc.core.DTXState;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
+import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
+import com.codingapi.txlcn.tc.support.propagation.CustomizableTransactionSeparator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 /**
  * Description:
@@ -39,30 +35,19 @@ import java.util.Optional;
 @Component("transaction_state_resolver_lcn")
 public class LcnTypeTransactionSeparator extends CustomizableTransactionSeparator {
 
-    private final TransactionAttachmentCache transactionAttachmentCache;
-
-    private final TracerHelper tracerHelper;
+    private final TCGlobalContext globalContext;
 
     @Autowired
-    public LcnTypeTransactionSeparator(TransactionAttachmentCache transactionAttachmentCache, TracerHelper tracerHelper) {
-        this.transactionAttachmentCache = transactionAttachmentCache;
-        this.tracerHelper = tracerHelper;
+    public LcnTypeTransactionSeparator(TCGlobalContext globalContext) {
+        this.globalContext = globalContext;
     }
 
     @Override
-    public TXLCNTransactionState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException {
-
-        // 不存在GroupId时不自定义
-        if (tracerHelper.getGroupId() == null) {
-            return super.loadTransactionState(txTransactionInfo);
-        }
-
+    public DTXState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException {
         // 一个模块存在多个LCN类型的事务单元在一个事务内走DEFAULT
-        Optional<TransactionUnitTypeList> sameTransUnitTypeList =
-                transactionAttachmentCache.attachment(tracerHelper.getGroupId(), TransactionUnitTypeList.class);
-        if (sameTransUnitTypeList.isPresent() && sameTransUnitTypeList.get().contains(Transactions.LCN)) {
+        if (globalContext.dtxContext(txTransactionInfo.getGroupId()).getTransactionTypes().contains(Transactions.LCN)) {
             log.info("Default by LCN assert !");
-            return TXLCNTransactionState.DEFAULT;
+            return DTXState.DEFAULT;
         }
         return super.loadTransactionState(txTransactionInfo);
     }

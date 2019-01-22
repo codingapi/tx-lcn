@@ -15,10 +15,10 @@
  */
 package com.codingapi.txlcn.tc.core.tcc.control;
 
-import com.codingapi.txlcn.tc.bean.DTXLocal;
-import com.codingapi.txlcn.tc.bean.TxTransactionInfo;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
 import com.codingapi.txlcn.tc.core.tcc.TccTransactionInfoCache;
-import com.codingapi.txlcn.tc.support.TXLCNTransactionControl;
+import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.tc.support.template.TransactionControlTemplate;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
  */
 @Service(value = "control_tcc_running")
 @Slf4j
-public class TccRunningTransaction implements TXLCNTransactionControl {
+public class TccRunningTransaction implements DTXLocalControl {
 
     private final TccTransactionInfoCache tccTransactionInfoCache;
 
@@ -65,7 +65,7 @@ public class TccRunningTransaction implements TXLCNTransactionControl {
     public void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) {
         try {
             transactionCleanTemplate.clean(
-                    DTXLocal.cur().getGroupId(),
+                    DTXLocalContext.cur().getGroupId(),
                     info.getUnitId(),
                     info.getTransactionType(),
                     0);

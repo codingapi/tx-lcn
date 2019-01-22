@@ -13,43 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.support;
+package com.codingapi.txlcn.tc.support.propagation;
+
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
+import com.codingapi.txlcn.commons.exception.TransactionException;
+import com.codingapi.txlcn.tc.core.DTXState;
 
 /**
- * @author lorne
+ * Description: 事务分离器
+ * Date: 2018/12/5
+ *
+ * @author ujued
  */
-public enum TXLCNTransactionState {
+public interface TXLCNTransactionSeparator {
 
     /**
-     * 发起事务状态
+     * 判断事务状态
+     *
+     * @param txTransactionInfo txTransactionInfo
+     * @return DTXState
+     * @throws TransactionException TransactionException
      */
-    STARTING("starting"),
-
-    /**
-     * 参与中事务状态
-     */
-    RUNNING("running"),
-
-    /**
-     * 默认事务
-     */
-    DEFAULT("default"),
-
-    /**
-     * 不参与分布式事务
-     */
-    NON("non");
-
-
-    private String code;
-
-
-    TXLCNTransactionState(String code) {
-        this.code = code;
-    }
-
-
-    public String getCode() {
-        return code;
-    }
+    DTXState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException;
 }

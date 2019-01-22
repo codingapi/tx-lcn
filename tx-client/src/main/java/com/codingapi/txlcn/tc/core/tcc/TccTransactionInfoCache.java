@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tc.core.tcc;
 
-import com.codingapi.txlcn.tc.bean.TccTransactionInfo;
+import com.codingapi.txlcn.tc.core.TccTransactionInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;

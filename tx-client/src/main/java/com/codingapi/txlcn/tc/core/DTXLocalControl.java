@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.support;
+package com.codingapi.txlcn.tc.core;
 
-import com.codingapi.txlcn.tc.bean.TxTransactionInfo;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
 
@@ -23,7 +23,7 @@ import com.codingapi.txlcn.commons.exception.TxClientException;
  *  LCN分布式事务控制
  * @author lorne
  */
-public interface TXLCNTransactionControl {
+public interface DTXLocalControl {
 
     /**
      * 业务代码执行前

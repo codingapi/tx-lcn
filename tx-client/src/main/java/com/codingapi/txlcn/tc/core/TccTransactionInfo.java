@@ -13,16 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.support;
+package com.codingapi.txlcn.tc.core;
 
-import org.springframework.stereotype.Component;
+import lombok.Data;
 
 /**
- * Description: 默认的事务分离器
- * Date: 2018/12/5
- *
- * @author ujued
+ * @author 侯存路
  */
-@Component("transaction_state_resolver_default")
-public class DefaultTransactionSeparator extends CustomizableTransactionSeparator {
+@Data
+public class TccTransactionInfo {
+
+
+    /**
+     * Tcc 事务 提交/回滚 执行类
+     */
+    private Class<?> executeClass;
+
+
+    /**
+     * 回滚方法名称
+     */
+    private String cancelMethod;
+
+
+    /**
+     * 提交名称
+     */
+    private String confirmMethod;
+
+
+    /**
+     * 参数
+     */
+    private Object[] methodParameter;
+
+
+    /**
+     * 参数类型
+     */
+    private Class[] methodTypeParameter;
+
 }

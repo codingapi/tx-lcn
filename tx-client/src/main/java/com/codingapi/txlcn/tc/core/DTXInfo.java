@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.support;
+package com.codingapi.txlcn.tc.core;
 
-import com.codingapi.txlcn.tc.bean.DTXInfo;
+import com.codingapi.txlcn.commons.annotation.DTXPropagation;
+import com.codingapi.txlcn.commons.bean.TransactionInfo;
 import com.codingapi.txlcn.commons.util.Transactions;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -28,18 +31,45 @@ import java.util.Objects;
 
 /**
  * Description:
- * Date: 19-1-11 下午1:26
+ * Date: 19-1-11 下午1:21
  *
  * @author ujued
  */
-public class DTXInfoPool {
-    private static final DTXInfoPool dtxInfoPool = new DTXInfoPool();
-    private Map<String, DTXInfo> dtxInfoCache = new ConcurrentReferenceHashMap<>();
+@AllArgsConstructor
+@Data
+public class DTXInfo {
+    private static final Map<String, DTXInfo> dtxInfoCache = new ConcurrentReferenceHashMap<>();
 
-    private DTXInfoPool() {
+    private String transactionType;
+
+    private DTXPropagation transactionPropagation;
+
+    private TransactionInfo transactionInfo;
+
+    /**
+     * 用户实例对象的业务方法（包含注解信息）
+     */
+    private Method businessMethod;
+
+    private String unitId;
+
+    private DTXInfo(Method method, Object[] args, Class<?> targetClass) {
+        this.transactionInfo = new TransactionInfo();
+        this.transactionInfo.setTargetClazz(targetClass);
+        this.transactionInfo.setArgumentValues(args);
+        this.transactionInfo.setMethod(method.getName());
+        this.transactionInfo.setMethodStr(method.toString());
+        this.transactionInfo.setParameterTypes(method.getParameterTypes());
+
+        this.businessMethod = method;
+        this.unitId = Transactions.unitId(method.toString());
     }
 
-    private DTXInfo get0(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+    private void reanalyseMethodArgs(Object[] args) {
+        this.transactionInfo.setArgumentValues(args);
+    }
+
+    public static DTXInfo getFromCache(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         String signature = proceedingJoinPoint.getSignature().toString();
         String unitId = Transactions.unitId(signature);
         DTXInfo dtxInfo = dtxInfoCache.get(unitId);
@@ -55,7 +85,7 @@ public class DTXInfoPool {
         return dtxInfo;
     }
 
-    private DTXInfo get0(MethodInvocation methodInvocation) {
+    public static DTXInfo getFromCache(MethodInvocation methodInvocation) {
         String signature = methodInvocation.getMethod().toString();
         String unitId = Transactions.unitId(signature);
         DTXInfo dtxInfo = dtxInfoCache.get(unitId);
@@ -68,7 +98,7 @@ public class DTXInfoPool {
         return dtxInfo;
     }
 
-    private DTXInfo get0(Method method, Object[] args, Class<?> targetClass) {
+    public static DTXInfo getFromCache(Method method, Object[] args, Class<?> targetClass) {
         String signature = method.getName();
         String unitId = Transactions.unitId(signature);
         DTXInfo dtxInfo = dtxInfoCache.get(unitId);
@@ -78,17 +108,5 @@ public class DTXInfoPool {
         }
         dtxInfo.reanalyseMethodArgs(args);
         return dtxInfo;
-    }
-
-    public static DTXInfo get(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        return dtxInfoPool.get0(proceedingJoinPoint);
-    }
-
-    public static DTXInfo get(MethodInvocation methodInvocation) {
-        return dtxInfoPool.get0(methodInvocation);
-    }
-
-    public static DTXInfo get(Method method, Object[] args, Class<?> targetClass) {
-        return dtxInfoPool.get0(method, args, targetClass);
     }
 }

@@ -13,26 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.support;
-
-import java.util.ArrayList;
+package com.codingapi.txlcn.tc.core;
 
 /**
- * Description:
- * Date: 2018/12/5
- *
- * @author ujued
+ * @author lorne
  */
-public class TransactionUnitTypeList extends ArrayList<String> {
+public enum DTXState {
 
     /**
-     * 添加一个元素并返回列表自身
-     *
-     * @param  transactionType transactionType
-     * @return TransactionUnitTypeList
+     * 发起事务状态
      */
-    public TransactionUnitTypeList selfAdd(String transactionType) {
-        this.add(transactionType);
-        return this;
+    STARTING("starting"),
+
+    /**
+     * 参与中事务状态
+     */
+    RUNNING("running"),
+
+    /**
+     * 默认事务
+     */
+    DEFAULT("default"),
+
+    /**
+     * 不参与分布式事务
+     */
+    NON("non");
+
+
+    private String code;
+
+
+    DTXState(String code) {
+        this.code = code;
+    }
+
+
+    public String getCode() {
+        return code;
     }
 }

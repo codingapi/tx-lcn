@@ -15,9 +15,9 @@
  */
 package com.codingapi.txlcn.tc.core.lcn.control;
 
-import com.codingapi.txlcn.tc.bean.TxTransactionInfo;
-import com.codingapi.txlcn.tc.bean.DTXLocal;
-import com.codingapi.txlcn.tc.support.TXLCNTransactionControl;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
+import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -29,10 +29,10 @@ import org.springframework.stereotype.Component;
  */
 @Component("control_lcn_default")
 @Slf4j
-public class LcnDefaultTransaction implements TXLCNTransactionControl {
+public class LcnDefaultTransaction implements DTXLocalControl {
     @Override
     public void preBusinessCode(TxTransactionInfo info) {
         // LCN 需要代理资源
-        DTXLocal.makeProxy();
+        DTXLocalContext.makeProxy();
     }
 }

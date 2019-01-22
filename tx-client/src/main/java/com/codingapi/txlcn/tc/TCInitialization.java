@@ -89,6 +89,6 @@ public class TCInitialization implements TxLcnInitializer {
         String name = environment.getProperty("spring.application.name");
         String application = StringUtils.hasText(name) ? name : "application";
         String port = environment.getProperty("server.port");
-        Transactions.setApplicationId(String.format("%s:%s", application, port));
+        Transactions.setApplicationIdWhenRunning(String.format("%s:%s", application, port));
     }
 }

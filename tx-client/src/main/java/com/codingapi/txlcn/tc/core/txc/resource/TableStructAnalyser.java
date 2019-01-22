@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core.txc.resource;
 
-import com.codingapi.txlcn.tc.bean.DTXLocal;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.txc.resource.def.bean.TableStruct;
 import org.apache.commons.dbutils.DbUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,12 +70,12 @@ public class TableStructAnalyser {
     public TableStruct analyse(String table) throws SQLException {
         Connection connection = null;
         try {
-            DTXLocal.makeUnProxy();
+            DTXLocalContext.makeUnProxy();
             connection = dataSource.getConnection();
             connection.setAutoCommit(true);
             return analyse(connection, table);
         } finally {
-            DTXLocal.undoProxyStatus();
+            DTXLocalContext.undoProxyStatus();
             DbUtils.close(connection);
         }
     }
@@ -106,13 +106,13 @@ public class TableStructAnalyser {
     public boolean existsTable(String tableName) throws SQLException {
         Connection connection = null;
         try {
-            DTXLocal.makeUnProxy();
+            DTXLocalContext.makeUnProxy();
             connection = dataSource.getConnection();
             connection.setAutoCommit(true);
             return existsTable(connection, tableName);
         } finally {
             DbUtils.close(connection);
-            DTXLocal.undoProxyStatus();
+            DTXLocalContext.undoProxyStatus();
         }
     }
 }

@@ -15,12 +15,12 @@
  */
 package com.codingapi.txlcn.tc.core.tcc.control;
 
-import com.codingapi.txlcn.tc.support.TXLCNTransactionControl;
+import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import org.springframework.stereotype.Component;
 
 /**
  * @author 侯存路
  */
 @Component("control_tcc_default")
-public class TccDefaultTransaction implements TXLCNTransactionControl {
+public class TccDefaultTransaction implements DTXLocalControl {
 }

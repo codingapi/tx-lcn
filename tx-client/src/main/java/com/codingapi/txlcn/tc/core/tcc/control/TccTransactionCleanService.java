@@ -15,13 +15,12 @@
  */
 package com.codingapi.txlcn.tc.core.tcc.control;
 
-import com.codingapi.txlcn.tc.bean.DTXLocal;
+import com.codingapi.txlcn.commons.exception.TransactionClearException;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
+import com.codingapi.txlcn.tc.core.TccTransactionInfo;
+import com.codingapi.txlcn.tc.core.TransactionCleanService;
 import com.codingapi.txlcn.tc.core.tcc.TccTransactionInfoCache;
 import com.codingapi.txlcn.tc.message.helper.TxMangerReporter;
-import com.codingapi.txlcn.commons.exception.TransactionClearException;
-import com.codingapi.txlcn.tc.bean.TccTransactionInfo;
-import com.codingapi.txlcn.tc.support.cache.TransactionAttachmentCache;
-import com.codingapi.txlcn.tc.support.TransactionCleanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -40,8 +39,6 @@ import java.util.Objects;
 @Slf4j
 public class TccTransactionCleanService implements TransactionCleanService {
 
-    private final TransactionAttachmentCache transactionAttachmentCache;
-
     private final ApplicationContext applicationContext;
 
     private final TccTransactionInfoCache tccTransactionInfoCache;
@@ -49,11 +46,9 @@ public class TccTransactionCleanService implements TransactionCleanService {
     private final TxMangerReporter txMangerReporter;
 
     @Autowired
-    public TccTransactionCleanService(TransactionAttachmentCache transactionAttachmentCache,
-                                      ApplicationContext applicationContext,
+    public TccTransactionCleanService(ApplicationContext applicationContext,
                                       TccTransactionInfoCache tccTransactionInfoCache,
                                       TxMangerReporter txMangerReporter) {
-        this.transactionAttachmentCache = transactionAttachmentCache;
         this.applicationContext = applicationContext;
         this.tccTransactionInfoCache = tccTransactionInfoCache;
         this.txMangerReporter = txMangerReporter;
@@ -68,11 +63,11 @@ public class TccTransactionCleanService implements TransactionCleanService {
 
         try {
             // 用户的 confirm or cancel method 可以用到这个
-            if (Objects.isNull(DTXLocal.cur())) {
-                DTXLocal.getOrNew().setJustNow(true);
+            if (Objects.isNull(DTXLocalContext.cur())) {
+                DTXLocalContext.getOrNew().setJustNow(true);
             }
-            DTXLocal.getOrNew().setGroupId(groupId);
-            DTXLocal.cur().setUnitId(unitId);
+            DTXLocalContext.getOrNew().setGroupId(groupId);
+            DTXLocalContext.cur().setUnitId(unitId);
             exeMethod = tccInfo.getExecuteClass().getMethod(
                     state == 1 ? tccInfo.getConfirmMethod() : tccInfo.getCancelMethod(),
                     tccInfo.getMethodTypeParameter());
@@ -82,14 +77,12 @@ public class TccTransactionCleanService implements TransactionCleanService {
                 log.error("tcc clean error.", e);
                 txMangerReporter.reportTccCleanException(groupId, unitId, state);
             }
-            // 清理与事务组生命周期一样的资源 see: com.codingapi.txlcn.tc.support.TXLCNTransactionServiceExecutor.transactionRunning
-            transactionAttachmentCache.removeAttachments(groupId, unitId);
         } catch (Exception e) {
             log.error(" rpc_tcc_" + exeMethod + e.getMessage());
             throw new TransactionClearException(e.getMessage());
         } finally {
-            if (DTXLocal.cur().isJustNow()) {
-                DTXLocal.makeNeverAppeared();
+            if (DTXLocalContext.cur().isJustNow()) {
+                DTXLocalContext.makeNeverAppeared();
             }
         }
     }

@@ -16,9 +16,8 @@
 package com.codingapi.txlcn.tc.aspect;
 
 import com.codingapi.txlcn.tc.aspect.weave.DTXLogicWeaver;
-import com.codingapi.txlcn.tc.bean.DTXInfo;
+import com.codingapi.txlcn.tc.core.DTXInfo;
 import com.codingapi.txlcn.tc.config.TxClientConfig;
-import com.codingapi.txlcn.tc.support.DTXInfoPool;
 import com.codingapi.txlcn.commons.annotation.*;
 import com.codingapi.txlcn.commons.util.Transactions;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +77,7 @@ public class TransactionAspect implements Ordered {
 
     @Around("txTransactionPointcut()")
     public Object transactionRunning(ProceedingJoinPoint point) throws Throwable {
-        DTXInfo dtxInfo = DTXInfoPool.get(point);
+        DTXInfo dtxInfo = DTXInfo.getFromCache(point);
         TxTransaction txTransaction = dtxInfo.getBusinessMethod().getAnnotation(TxTransaction.class);
         dtxInfo.setTransactionType(txTransaction.type());
         dtxInfo.setTransactionPropagation(txTransaction.propagation());
@@ -88,7 +87,7 @@ public class TransactionAspect implements Ordered {
     @Around("lcnTransactionPointcut() && !txcTransactionPointcut()" +
             "&& !tccTransactionPointcut() && !txTransactionPointcut()")
     public Object runWithLcnTransaction(ProceedingJoinPoint point) throws Throwable {
-        DTXInfo dtxInfo = DTXInfoPool.get(point);
+        DTXInfo dtxInfo = DTXInfo.getFromCache(point);
         LcnTransaction lcnTransaction = dtxInfo.getBusinessMethod().getAnnotation(LcnTransaction.class);
         dtxInfo.setTransactionType(Transactions.LCN);
         dtxInfo.setTransactionPropagation(lcnTransaction.propagation());
@@ -98,7 +97,7 @@ public class TransactionAspect implements Ordered {
     @Around("txcTransactionPointcut() && !lcnTransactionPointcut()" +
             "&& !tccTransactionPointcut() && !txTransactionPointcut()")
     public Object runWithTxcTransaction(ProceedingJoinPoint point) throws Throwable {
-        DTXInfo dtxInfo = DTXInfoPool.get(point);
+        DTXInfo dtxInfo = DTXInfo.getFromCache(point);
         TxcTransaction txcTransaction = dtxInfo.getBusinessMethod().getAnnotation(TxcTransaction.class);
         dtxInfo.setTransactionType(Transactions.TXC);
         dtxInfo.setTransactionPropagation(txcTransaction.propagation());
@@ -108,7 +107,7 @@ public class TransactionAspect implements Ordered {
     @Around("tccTransactionPointcut() && !lcnTransactionPointcut()" +
             "&& !txcTransactionPointcut() && !txTransactionPointcut()")
     public Object runWithTccTransaction(ProceedingJoinPoint point) throws Throwable {
-        DTXInfo dtxInfo = DTXInfoPool.get(point);
+        DTXInfo dtxInfo = DTXInfo.getFromCache(point);
         TccTransaction tccTransaction = dtxInfo.getBusinessMethod().getAnnotation(TccTransaction.class);
         dtxInfo.setTransactionType(Transactions.TCC);
         dtxInfo.setTransactionPropagation(tccTransaction.propagation());
@@ -120,7 +119,7 @@ public class TransactionAspect implements Ordered {
         if (!(point.getThis() instanceof ITxTransaction)) {
             throw new IllegalStateException("error join point");
         }
-        DTXInfo dtxInfo = DTXInfoPool.get(point);
+        DTXInfo dtxInfo = DTXInfo.getFromCache(point);
         ITxTransaction txTransaction = (ITxTransaction) point.getThis();
         dtxInfo.setTransactionType(txTransaction.transactionType());
         dtxInfo.setTransactionPropagation(DTXPropagation.REQUIRED);

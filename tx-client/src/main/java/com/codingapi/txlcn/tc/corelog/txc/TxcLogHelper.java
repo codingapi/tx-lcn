@@ -41,7 +41,7 @@ public class TxcLogHelper implements LogHelper {
                 "ROLLBACK_INFO BLOB NOT NULL," +
                 "CREATE_TIME CHAR(23) NOT NULL, " +
                 "PRIMARY KEY(ID) )");
-        log.info("Txc log table finish");
+        log.info("Txc log table finish (H2 DATABASE)");
     }
 
     /**

@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tc.message.helper;
 
+import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.spi.message.MessageConstants;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.params.*;
@@ -25,8 +26,6 @@ import java.io.Serializable;
  * @author lorne
  */
 public class MessageCreator {
-
-
 
     /**
      * 创建事务组
@@ -70,10 +69,48 @@ public class MessageCreator {
     }
 
     /**
+     * 申请锁消息
+     *
+     * @param groupId  groupId
+     * @param lockId   lockId
+     * @param lockType lockType
+     * @return message
+     */
+    public static MessageDto acquireLock(String groupId, String lockId, int lockType) {
+        DTXLockParams dtxLockParams = new DTXLockParams();
+        dtxLockParams.setContextId(Transactions.APPLICATION_ID_WHEN_RUNNING);
+        dtxLockParams.setLockId(lockId);
+        dtxLockParams.setLockType(lockType);
+        MessageDto messageDto = new MessageDto();
+        messageDto.setAction(MessageConstants.ACTION_ACQUIRE_DTX_LOCK);
+        messageDto.setData(dtxLockParams);
+        messageDto.setGroupId(groupId);
+        return messageDto;
+    }
+
+    /**
+     * 释放锁消息
+     *
+     * @param groupId groupId
+     * @param lockId  lockId
+     * @return message
+     */
+    public static MessageDto releaseLock(String groupId, String lockId) {
+        DTXLockParams dtxLockParams = new DTXLockParams();
+        dtxLockParams.setContextId(Transactions.APPLICATION_ID_WHEN_RUNNING);
+        dtxLockParams.setLockId(lockId);
+        MessageDto messageDto = new MessageDto();
+        messageDto.setAction(MessageConstants.ACTION_RELEASE_DTX_LOCK);
+        messageDto.setData(dtxLockParams);
+        messageDto.setGroupId(groupId);
+        return messageDto;
+    }
+
+    /**
      * 通知事务单元成功
      *
      * @param message message
-     * @param action action
+     * @param action  action
      * @return MessageDto
      */
     public static MessageDto notifyUnitOkResponse(Serializable message, String action) {
@@ -88,13 +125,13 @@ public class MessageCreator {
      * 通知事务单元失败
      *
      * @param message message
-     * @param action action
+     * @param action  action
      * @return MessageDto
      */
-    public static MessageDto notifyUnitFailResponse(Serializable message,String action) {
+    public static MessageDto notifyUnitFailResponse(Serializable message, String action) {
         MessageDto messageDto = new MessageDto();
-        messageDto.setAction(action);
         messageDto.setState(MessageConstants.STATE_EXCEPTION);
+        messageDto.setAction(action);
         messageDto.setData(message);
         return messageDto;
     }
@@ -103,7 +140,7 @@ public class MessageCreator {
      * 询问事务状态指令
      *
      * @param groupId groupId
-     * @param unitId unitId
+     * @param unitId  unitId
      * @return MessageDto
      */
     public static MessageDto askTransactionState(String groupId, String unitId) {
@@ -130,7 +167,8 @@ public class MessageCreator {
 
     /**
      * 初始化客户端请求
-     * @param  appName appName
+     *
+     * @param appName appName
      * @return MessageDto
      */
     public static MessageDto initClient(String appName) {

@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.support;
+package com.codingapi.txlcn.tc.core;
 
 
-import com.codingapi.txlcn.tc.bean.TxTransactionInfo;
-import com.codingapi.txlcn.tc.support.cache.TransactionAttachmentCache;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
+import com.codingapi.txlcn.tc.support.TXLCNTransactionBeanHelper;
+import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
+import com.codingapi.txlcn.tc.support.propagation.TXLCNTransactionSeparator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,19 +32,20 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class TXLCNTransactionServiceExecutor {
+public class DTXServiceExecutor {
 
-    private final TransactionAttachmentCache transactionAttachmentCache;
+    private final TCGlobalContext globalContext;
 
     private final TxLogger txLogger;
+
     private final TXLCNTransactionBeanHelper txlcnTransactionBeanHelper;
 
     @Autowired
-    public TXLCNTransactionServiceExecutor(TransactionAttachmentCache transactionAttachmentCache, TxLogger txLogger,
-                                           TXLCNTransactionBeanHelper txlcnTransactionBeanHelper) {
-        this.transactionAttachmentCache = transactionAttachmentCache;
+    public DTXServiceExecutor(TxLogger txLogger, TXLCNTransactionBeanHelper txlcnTransactionBeanHelper,
+                              TCGlobalContext globalContext) {
         this.txLogger = txLogger;
         this.txlcnTransactionBeanHelper = txlcnTransactionBeanHelper;
+        this.globalContext = globalContext;
     }
 
     /**
@@ -63,25 +65,25 @@ public class TXLCNTransactionServiceExecutor {
                 txlcnTransactionBeanHelper.loadLCNTransactionStateResolver(transactionType);
 
         // 3. 获取事务状态
-        TXLCNTransactionState lcnTransactionState = lcnTransactionSeparator.loadTransactionState(info);
+        DTXState lcnTransactionState = lcnTransactionSeparator.loadTransactionState(info);
         // 3.1 如果不参与分布式事务立即终止
-        if (lcnTransactionState.equals(TXLCNTransactionState.NON)) {
+        if (lcnTransactionState.equals(DTXState.NON)) {
             return info.getBusinessCallback().call();
         }
 
         // 4. 获取bean
-        TXLCNTransactionControl lcnTransactionControl =
+        DTXLocalControl lcnTransactionControl =
                 txlcnTransactionBeanHelper.loadLCNTransactionControl(transactionType, lcnTransactionState);
 
         // 5. 织入事务操作
-
-        // 5.1 记录事务类型到事务上下文
-        transactionAttachmentCache.attach(
-                info.getGroupId(), info.getUnitId(), new TransactionUnitTypeList().selfAdd(transactionType));
         try {
+            // 5.1 记录事务类型到事务上下文
+            globalContext.dtxContext(info.getGroupId()).getTransactionTypes().add(transactionType);
+
             // 5.2 业务执行前
             txLogger.trace(info.getGroupId(), info.getUnitId(), Transactions.TAG_TRANSACTION, "pre service business code");
             lcnTransactionControl.preBusinessCode(info);
+
             // 5.3 执行业务
             txLogger.trace(info.getGroupId(), info.getUnitId(), Transactions.TAG_TRANSACTION, "do service business code");
             Object result = lcnTransactionControl.doBusinessCode(info);
@@ -91,7 +93,7 @@ public class TXLCNTransactionServiceExecutor {
             lcnTransactionControl.onBusinessCodeSuccess(info, result);
             return result;
         } catch (BeforeBusinessException e) {
-            log.error("business", e);
+            txLogger.trace(info.getGroupId(), info.getUnitId(), Transactions.TAG_TRANSACTION, "before business code error");
             throw e;
         } catch (Throwable e) {
             // 5.5 业务执行失败

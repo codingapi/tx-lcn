@@ -15,9 +15,9 @@
  */
 package com.codingapi.txlcn.tc.core.lcn.control;
 
-import com.codingapi.txlcn.tc.bean.DTXLocal;
-import com.codingapi.txlcn.tc.bean.TxTransactionInfo;
-import com.codingapi.txlcn.tc.support.TXLCNTransactionControl;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
+import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import com.codingapi.txlcn.tc.support.template.TransactionControlTemplate;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
  */
 @Service(value = "control_lcn_starting")
 @Slf4j
-public class LcnStartingTransaction implements TXLCNTransactionControl {
+public class LcnStartingTransaction implements DTXLocalControl {
 
     private final TransactionControlTemplate transactionControlTemplate;
 
@@ -46,23 +46,23 @@ public class LcnStartingTransaction implements TXLCNTransactionControl {
                 info.getGroupId(), info.getUnitId(), info.getTransactionInfo(), info.getTransactionType());
 
         // LCN 类型事务需要代理资源
-        DTXLocal.makeProxy();
+        DTXLocalContext.makeProxy();
     }
 
     @Override
     public void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) {
-        DTXLocal.cur().setSysTransactionState(0);
+        DTXLocalContext.cur().setSysTransactionState(0);
     }
 
     @Override
     public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) {
-        DTXLocal.cur().setSysTransactionState(1);
+        DTXLocalContext.cur().setSysTransactionState(1);
     }
 
     @Override
     public void postBusinessCode(TxTransactionInfo info) {
         // RPC 关闭事务组
         transactionControlTemplate.notifyGroup(
-                info.getGroupId(), info.getUnitId(), info.getTransactionType(), DTXLocal.transactionState());
+                info.getGroupId(), info.getUnitId(), info.getTransactionType(), DTXLocalContext.transactionState());
     }
 }

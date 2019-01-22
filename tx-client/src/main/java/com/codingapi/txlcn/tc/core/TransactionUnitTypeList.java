@@ -13,46 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.bean;
+package com.codingapi.txlcn.tc.core;
 
-import lombok.Data;
+import java.util.ArrayList;
 
 /**
- * @author 侯存路
+ * Description:
+ * Date: 2018/12/5
+ *
+ * @author ujued
  */
-@Data
-public class TccTransactionInfo {
-
+public class TransactionUnitTypeList extends ArrayList<String> {
 
     /**
-     * Tcc 事务 提交/回滚 执行类
+     * builder type to add element.
+     *
+     * @param transactionType transactionType
+     * @return TransactionUnitTypeList
      */
-    private  Class<?> executeClass;
-
-
-    /**
-     *  回滚方法名称
-     */
-    private  String cancelMethod;
-
-
-    /**
-     *  提交名称
-     */
-    private  String confirmMethod;
-
-
-    /**
-     *  参数
-     */
-    private  Object [] methodParameter;
-
-
-    /**
-     *  参数类型
-     */
-    private  Class [] methodTypeParameter;
-
-
-
+    public TransactionUnitTypeList selfAdd(String transactionType) {
+        this.add(transactionType);
+        return this;
+    }
 }

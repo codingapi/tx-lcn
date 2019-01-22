@@ -9,9 +9,10 @@ import java.util.List;
  * @author ujued
  */
 public interface FastStorage {
-    
-    
+
+
     /*-----------------------以下为事务组相关------------------------------*/
+
     /**
      * 初始化事务组
      *
@@ -19,7 +20,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void initGroup(String groupId) throws FastStorageException;
-    
+
     /**
      * 某个事务组是否存在某个单元信息
      *
@@ -28,7 +29,7 @@ public interface FastStorage {
      * @return bool
      */
     boolean containsTransactionUnit(String groupId, TransactionUnit transactionUnit);
-    
+
     /**
      * 是否存在事务组
      *
@@ -36,7 +37,7 @@ public interface FastStorage {
      * @return bool
      */
     boolean containsGroup(String groupId);
-    
+
     /**
      * 获取同一事务组的所有单元信息
      *
@@ -45,7 +46,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     List<TransactionUnit> findTransactionUnitsFromGroup(String groupId) throws FastStorageException;
-    
+
     /**
      * 事务组加入新事物单元
      *
@@ -54,7 +55,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void saveTransactionUnitToGroup(String groupId, TransactionUnit transactionUnit) throws FastStorageException;
-    
+
     /**
      * 创建事务组
      *
@@ -62,7 +63,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void clearGroup(String groupId) throws FastStorageException;
-    
+
     /**
      * 保存事务状态
      *
@@ -71,7 +72,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void saveTransactionState(String groupId, int state) throws FastStorageException;
-    
+
     /**
      * 获取事务组状态
      *
@@ -80,28 +81,30 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     int getTransactionState(String groupId) throws FastStorageException;
-    
+
     /**
-     * 获取锁
+     * 保存锁
      *
-     * @param cate cate
-     * @param key  key
+     * @param contextId contextId
+     * @param lockId    lockId
+     * @param type      type
      * @throws FastStorageException fastStorageException
      */
-    void acquireLock(String cate, String key) throws FastStorageException;
-    
+    void acquireLock(String contextId, String lockId, int type) throws FastStorageException;
+
     /**
      * 释放锁
      *
-     * @param cate cate
-     * @param key  key
+     * @param contextId contextId
+     * @param lockId    lockId
      * @throws FastStorageException fastStorageException
      */
-    void releaseLock(String cate, String key) throws FastStorageException;
-    
-    
-    
+    void releaseLock(String contextId, String lockId) throws FastStorageException;
+
+
+
     /*-----------------------以下为Manager后台token相关------------------------------*/
+
     /**
      * 保存token
      *
@@ -109,7 +112,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void saveToken(String token) throws FastStorageException;
-    
+
     /**
      * 查找所有的token
      *
@@ -117,7 +120,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     List<String> findTokens() throws FastStorageException;
-    
+
     /**
      * 移除token
      *
@@ -125,10 +128,11 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void removeToken(String token) throws FastStorageException;
-    
-    
-    
+
+
+
     /*-----------------------以下为Manager注册管理相关------------------------------*/
+
     /**
      * 保存Manager地址 ip:port
      *
@@ -136,7 +140,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void saveTMAddress(String address) throws FastStorageException;
-    
+
     /**
      * 查询所有Manager地址
      *
@@ -144,7 +148,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     List<String> findTMAddresses() throws FastStorageException;
-    
+
     /**
      * 移除Manager地址
      *
@@ -152,5 +156,5 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void removeTMAddress(String address) throws FastStorageException;
-    
+
 }

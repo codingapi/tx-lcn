@@ -2,6 +2,7 @@ package com.codingapi.txlcn.tm.core.storage.redis;
 
 import com.alibaba.fastjson.JSON;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
+import com.codingapi.txlcn.commons.lock.DTXLocks;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.tm.core.storage.FastStorageException;
 import com.codingapi.txlcn.tm.core.storage.TransactionUnit;
@@ -106,16 +107,19 @@ public class RedisStorage implements FastStorage {
     }
 
     @Override
-    public void acquireLock(String cate, String key) throws FastStorageException {
-        String globalLockId = cate + key;
+    public void acquireLock(String contextId, String lockId, int lockType) throws FastStorageException {
+        String globalLockId = contextId + lockId;
         redisTemplate.setEnableTransactionSupport(true);
         try {
             redisTemplate.multi();
-            if (Optional.ofNullable(redisTemplate.hasKey(globalLockId)).orElse(true)) {
-                // has lock
-                throw new FastStorageException("repeat lock", FastStorageException.EX_CODE_REPEAT_LOCK);
+            Object type = redisTemplate.opsForValue().get(globalLockId);
+            if (Objects.nonNull(type)) {
+                if (type.equals(DTXLocks.X_LOCK) || lockType != DTXLocks.S_LOCK) {
+                    // repeat x_lock exception
+                    throw new FastStorageException("repeat x_lock", FastStorageException.EX_CODE_REPEAT_LOCK);
+                }
             }
-            redisTemplate.opsForValue().set(globalLockId, Boolean.TRUE, managerConfig.getDtxLockTime(), TimeUnit.MILLISECONDS);
+            redisTemplate.opsForValue().set(globalLockId, lockType, managerConfig.getDtxLockTime(), TimeUnit.MILLISECONDS);
             redisTemplate.exec();
         } catch (Exception e) {
             redisTemplate.discard();

@@ -29,9 +29,9 @@ public class AcquireDTXLockExecuteService implements RpcExecuteService {
 
     @Override
     public Serializable execute(TransactionCmd transactionCmd) throws TxManagerException {
-        DTXLockParams DTXLockParams = transactionCmd.getMsg().loadBean(DTXLockParams.class);
+        DTXLockParams dtxLockParams = transactionCmd.getMsg().loadBean(DTXLockParams.class);
         try {
-            fastStorage.acquireLock(DTXLockParams.getContextId(), DTXLockParams.getLockId());
+            fastStorage.acquireLock(dtxLockParams.getContextId(), dtxLockParams.getLockId(), dtxLockParams.getLockType());
             return true;
         } catch (FastStorageException e) {
             throw new TxManagerException(e);

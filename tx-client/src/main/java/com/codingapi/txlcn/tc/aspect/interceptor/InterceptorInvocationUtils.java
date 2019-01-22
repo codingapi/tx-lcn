@@ -15,8 +15,7 @@
  */
 package com.codingapi.txlcn.tc.aspect.interceptor;
 
-import com.codingapi.txlcn.tc.bean.DTXInfo;
-import com.codingapi.txlcn.tc.support.DTXInfoPool;
+import com.codingapi.txlcn.tc.core.DTXInfo;
 import com.codingapi.txlcn.commons.annotation.*;
 import com.codingapi.txlcn.commons.util.Transactions;
 import org.aopalliance.intercept.MethodInvocation;
@@ -32,7 +31,7 @@ import java.util.Objects;
  */
 class InterceptorInvocationUtils {
 
-    static DTXInfo load(MethodInvocation invocation){
+    static DTXInfo load(MethodInvocation invocation) {
         TxTransaction txTransaction = invocation.getMethod().getAnnotation(TxTransaction.class);
         String transactionType = Transactions.LCN;
         DTXPropagation dtxPropagation = DTXPropagation.REQUIRED;
@@ -59,7 +58,7 @@ class InterceptorInvocationUtils {
                 }
             }
         }
-        DTXInfo dtxInfo = DTXInfoPool.get(invocation);
+        DTXInfo dtxInfo = DTXInfo.getFromCache(invocation);
         dtxInfo.setTransactionType(transactionType);
         dtxInfo.setTransactionPropagation(dtxPropagation);
         return dtxInfo;

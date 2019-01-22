@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.tc.aspect.weave;
 
-import com.codingapi.txlcn.tc.bean.DTXLocal;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.support.TXLCNTransactionBeanHelper;
 import com.codingapi.txlcn.tc.support.resouce.TransactionResourceExecutor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,9 +43,9 @@ public class DTXResourceWeaver {
     }
 
     public Object around(ProceedingJoinPoint point) throws Throwable {
-        DTXLocal dtxLocal = DTXLocal.cur();
-        if (Objects.nonNull(dtxLocal) && dtxLocal.isProxy()) {
-            String transactionType = dtxLocal.getTransactionType();
+        DTXLocalContext dtxLocalContext = DTXLocalContext.cur();
+        if (Objects.nonNull(dtxLocalContext) && dtxLocalContext.isProxy()) {
+            String transactionType = dtxLocalContext.getTransactionType();
             TransactionResourceExecutor transactionResourceExecutor = transactionBeanHelper.loadTransactionResourceExecuter(transactionType);
             Connection connection = transactionResourceExecutor.proxyConnection(() -> {
                 try {

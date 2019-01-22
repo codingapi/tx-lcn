@@ -15,16 +15,16 @@
  */
 package com.codingapi.txlcn.tc.core.lcn.control;
 
-import com.codingapi.txlcn.tc.core.lcn.resource.LcnConnectionProxy;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
-import com.codingapi.txlcn.tc.support.cache.TransactionAttachmentCache;
-import com.codingapi.txlcn.tc.support.TransactionCleanService;
 import com.codingapi.txlcn.spi.message.dto.RpcResponseState;
+import com.codingapi.txlcn.tc.core.TransactionCleanService;
+import com.codingapi.txlcn.tc.core.lcn.resource.LcnConnectionProxy;
+import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import java.util.Objects;
 
 /**
  * Description:
@@ -36,21 +36,20 @@ import java.util.Optional;
 @Slf4j
 public class LcnTransactionCleanService implements TransactionCleanService {
 
-    private final TransactionAttachmentCache transactionAttachmentCache;
+    private final TCGlobalContext context;
 
     @Autowired
-    public LcnTransactionCleanService(TransactionAttachmentCache transactionAttachmentCache) {
-        this.transactionAttachmentCache = transactionAttachmentCache;
+    public LcnTransactionCleanService(TCGlobalContext context) {
+        this.context = context;
     }
-
 
     @Override
     public void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException {
-        Optional<LcnConnectionProxy> lcnConnectionProxy = transactionAttachmentCache.attachment(groupId, LcnConnectionProxy.class);
-        if (lcnConnectionProxy.isPresent()) {
-            if (lcnConnectionProxy.get().notify(state).equals(RpcResponseState.success)) {
+        LcnConnectionProxy connectionProxy = (LcnConnectionProxy) context.lcnConnection(groupId, unitId, () -> null);
+        if (Objects.nonNull(connectionProxy)) {
+            if (connectionProxy.notify(state).equals(RpcResponseState.success)) {
                 // 移除本地LCN事务相关对象
-                transactionAttachmentCache.removeAttachments(groupId, unitId);
+                context.removeLcnConnection(groupId, unitId);
                 return;
             }
             log.error("本地事务通知失败");

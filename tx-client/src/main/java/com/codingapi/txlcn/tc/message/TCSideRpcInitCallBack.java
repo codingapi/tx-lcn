@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.message.init;
+package com.codingapi.txlcn.tc.message;
 
 import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.tc.message.helper.MessageCreator;
@@ -39,7 +39,7 @@ import java.util.concurrent.Executors;
  */
 @Component
 @Slf4j
-public class TxClientClientInitCallBack implements ClientInitCallBack {
+public class TCSideRpcInitCallBack implements ClientInitCallBack {
 
     private final RpcClient rpcClient;
 
@@ -54,7 +54,7 @@ public class TxClientClientInitCallBack implements ClientInitCallBack {
     private Integer port;
 
     @Autowired
-    public TxClientClientInitCallBack(RpcClient rpcClient, TxClientConfig txClientConfig) {
+    public TCSideRpcInitCallBack(RpcClient rpcClient, TxClientConfig txClientConfig) {
         this.rpcClient = rpcClient;
         this.txClientConfig = txClientConfig;
     }
@@ -71,8 +71,8 @@ public class TxClientClientInitCallBack implements ClientInitCallBack {
                     InitClientParams resParams = msg.loadBean(InitClientParams.class);
                     long dtxTime = resParams.getDtxTime();
                     txClientConfig.setDtxTime(dtxTime);
-                    log.info("Determined dtx time {}ms.", dtxTime);
-                    log.info("TC[{}] connect TM[{}] successfully!", modId, remoteKey);
+                    log.info("Finally, determined dtx time is {}ms.", dtxTime);
+                    log.info("TC[{}] established TM[{}] successfully!", modId, remoteKey);
                     return;
                 }
                 log.error("TM[{}] exception. connect fail!", remoteKey);

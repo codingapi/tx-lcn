@@ -15,9 +15,9 @@
  */
 package com.codingapi.txlcn.tc.core.lcn.resource;
 
-import com.codingapi.txlcn.tc.bean.DTXLocal;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
+import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.support.resouce.TransactionResourceExecutor;
-import com.codingapi.txlcn.tc.support.cache.TransactionAttachmentCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,21 +32,18 @@ import java.util.function.Supplier;
 @Slf4j
 public class LcnTransactionResourceExecutor implements TransactionResourceExecutor {
 
-
-    private final TransactionAttachmentCache transactionAttachmentCache;
+    private final TCGlobalContext context;
 
     @Autowired
-    public LcnTransactionResourceExecutor(TransactionAttachmentCache transactionAttachmentCache) {
-        this.transactionAttachmentCache = transactionAttachmentCache;
+    public LcnTransactionResourceExecutor(TCGlobalContext context) {
+        this.context = context;
     }
 
     @Override
     public Connection proxyConnection(Supplier<Connection> connectionSupplier) throws Throwable {
-        String groupId = DTXLocal.cur().getGroupId();
-        String unitId = DTXLocal.cur().getUnitId();
-        Connection connection = transactionAttachmentCache.attachment(
-                groupId, unitId, LcnConnectionProxy.class, () -> new LcnConnectionProxy(connectionSupplier.get())
-        );
+        String groupId = DTXLocalContext.cur().getGroupId();
+        String unitId = DTXLocalContext.cur().getUnitId();
+        Connection connection = context.lcnConnection(groupId, unitId, connectionSupplier);
         connection.setAutoCommit(false);
         return connection;
     }

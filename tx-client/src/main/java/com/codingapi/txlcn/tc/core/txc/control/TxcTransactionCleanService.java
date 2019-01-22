@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.tc.core.txc.control;
 
 import com.codingapi.txlcn.tc.core.txc.resource.def.TxcService;
-import com.codingapi.txlcn.tc.support.TransactionCleanService;
+import com.codingapi.txlcn.tc.core.TransactionCleanService;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.exception.TxcLogicException;
 import lombok.extern.slf4j.Slf4j;

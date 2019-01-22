@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core.txc.resource;
 
-import com.codingapi.txlcn.tc.bean.DTXLocal;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.txc.resource.def.SqlExecuteInterceptor;
 import com.codingapi.txlcn.tc.core.txc.resource.def.TxcService;
 import com.codingapi.txlcn.tc.core.txc.resource.def.bean.*;
@@ -63,10 +63,10 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
     @Override
     public void preUpdate(Update update) throws SQLException {
         // 获取线程传递参数
-        String groupId = DTXLocal.cur().getGroupId();
-        String unitId = DTXLocal.cur().getUnitId();
-        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
-        Connection connection = (Connection) DTXLocal.cur().getResource();
+        String groupId = DTXLocalContext.cur().getGroupId();
+        String unitId = DTXLocalContext.cur().getUnitId();
+        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocalContext.cur().getAttachment();
+        Connection connection = (Connection) DTXLocalContext.cur().getResource();
 
 
         // Update相关数据准备
@@ -103,10 +103,10 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
         log.debug("do pre delete: {}", delete);
 
         // 获取线程传递参数
-        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
-        String groupId = DTXLocal.cur().getGroupId();
-        String unitId = DTXLocal.cur().getUnitId();
-        Connection connection = (Connection) DTXLocal.cur().getResource();
+        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocalContext.cur().getAttachment();
+        String groupId = DTXLocalContext.cur().getGroupId();
+        String unitId = DTXLocalContext.cur().getUnitId();
+        Connection connection = (Connection) DTXLocalContext.cur().getResource();
 
         // 获取Sql Table
         if (delete.getTables().size() == 0) {
@@ -151,9 +151,9 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
     @Override
     public void postInsert(StatementInformation statementInformation) throws SQLException {
-        String groupId = DTXLocal.cur().getGroupId();
-        String unitId = DTXLocal.cur().getUnitId();
-        Connection connection = (Connection) DTXLocal.cur().getResource();
+        String groupId = DTXLocalContext.cur().getGroupId();
+        String unitId = DTXLocalContext.cur().getUnitId();
+        Connection connection = (Connection) DTXLocalContext.cur().getResource();
         Insert insert = (Insert) statementInformation.getAttachment();
         TableStruct tableStruct = tableStructAnalyser.analyse(connection, insert.getTable().getName());
 
@@ -196,7 +196,7 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
         List<String> primaryKeys = new ArrayList<>();
         Table leftTable = (Table) plainSelect.getFromItem();
         List<SelectItem> selectItems = new ArrayList<>();
-        Connection connection = (Connection) DTXLocal.cur().getResource();
+        Connection connection = (Connection) DTXLocalContext.cur().getResource();
 
         TableStruct leftTableStruct = tableStructAnalyser.analyse(connection, leftTable.getName());
         leftTableStruct.getPrimaryKeys().forEach(primaryKey -> {
@@ -221,9 +221,9 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
         // 尝试锁定
         log.info("lock select sql: {}", plainSelect);
-        String groupId = DTXLocal.cur().getGroupId();
-        String unitId = DTXLocal.cur().getUnitId();
-        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
+        String groupId = DTXLocalContext.cur().getGroupId();
+        String unitId = DTXLocalContext.cur().getUnitId();
+        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocalContext.cur().getAttachment();
 
         SelectImageParams selectImageParams = new SelectImageParams();
         selectImageParams.setGroupId(groupId);

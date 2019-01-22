@@ -15,13 +15,6 @@
  */
 package com.codingapi.txlcn.tc.support.checking;
 
-import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
-import com.codingapi.txlcn.tc.config.TxClientConfig;
-import com.codingapi.txlcn.tc.message.helper.MessageCreator;
-import com.codingapi.txlcn.tc.message.helper.TxMangerReporter;
-import com.codingapi.txlcn.tc.support.cache.DTXGroupContext;
-import com.codingapi.txlcn.tc.support.cache.TransactionAttachmentCache;
-import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
@@ -29,6 +22,13 @@ import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
 import com.codingapi.txlcn.spi.message.params.TxExceptionParams;
+import com.codingapi.txlcn.tc.config.TxClientConfig;
+import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
+import com.codingapi.txlcn.tc.message.helper.MessageCreator;
+import com.codingapi.txlcn.tc.message.helper.TxMangerReporter;
+import com.codingapi.txlcn.tc.support.context.DTXContext;
+import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
+import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,18 +65,17 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
 
     private final TxMangerReporter txMangerReporter;
 
-    private final TransactionAttachmentCache transactionAttachmentCache;
+    private final TCGlobalContext context;
 
     @Autowired
-    public SimpleDTXChecking(RpcClient rpcClient, TxClientConfig clientConfig,
-                             AspectLogger aspectLogger, TxLogger txLogger, TxMangerReporter txMangerReporter,
-                             TransactionAttachmentCache transactionAttachmentCache) {
+    public SimpleDTXChecking(RpcClient rpcClient, TxClientConfig clientConfig, AspectLogger aspectLogger,
+                             TxLogger txLogger, TxMangerReporter txMangerReporter, TCGlobalContext context) {
         this.rpcClient = rpcClient;
         this.clientConfig = clientConfig;
         this.aspectLogger = aspectLogger;
         this.txLogger = txLogger;
         this.txMangerReporter = txMangerReporter;
-        this.transactionAttachmentCache = transactionAttachmentCache;
+        this.context = context;
     }
 
     public void setTransactionCleanTemplate(TransactionCleanTemplate transactionCleanTemplate) {
@@ -88,12 +87,12 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
         txLogger.trace(groupId, unitId, Transactions.TAG_TASK, "start delay checking task");
         ScheduledFuture scheduledFuture = scheduledExecutorService.schedule(() -> {
             try {
-                if (transactionAttachmentCache.hasContext(groupId)) {
-                    DTXGroupContext context = transactionAttachmentCache.context(groupId);
-                    synchronized (context.getLock()) {
+                DTXContext dtxContext = context.dtxContext(groupId);
+                if (Objects.nonNull(dtxContext)) {
+                    synchronized (dtxContext.getLock()) {
                         txLogger.trace(groupId, unitId, Transactions.TAG_TASK,
                                 "checking waiting for business code finish.");
-                        context.getLock().wait();
+                        dtxContext.getLock().wait();
                     }
                 }
                 MessageDto messageDto = TxMangerReporter.requestUntilNonManager(rpcClient,

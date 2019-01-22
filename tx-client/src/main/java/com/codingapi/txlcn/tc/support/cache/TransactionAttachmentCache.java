@@ -15,6 +15,8 @@
  */
 package com.codingapi.txlcn.tc.support.cache;
 
+import com.codingapi.txlcn.tc.support.context.DTXContext;
+
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -95,7 +97,7 @@ public interface TransactionAttachmentCache {
      * @param <T> t
      * @return  context
      */
-    <T> T context(String groupId);
+    DTXContext context(String groupId);
 
     /**
      * 设置Group上下文
@@ -103,7 +105,7 @@ public interface TransactionAttachmentCache {
      * @param groupId groupId
      * @param context context
      */
-    void setContext(String groupId, Object context);
+    void setContext(String groupId, DTXContext context);
 
     /**
      * 销毁事务组上下文

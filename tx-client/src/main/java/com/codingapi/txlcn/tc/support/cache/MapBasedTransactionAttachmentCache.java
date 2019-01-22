@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tc.support.cache;
 
+import com.codingapi.txlcn.tc.support.context.DTXContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -58,7 +59,7 @@ public class MapBasedTransactionAttachmentCache implements TransactionAttachment
      * 线程安全的Cache
      */
     private Map<String, GroupCache> transactionInfoMap = new ConcurrentHashMap<>(64);
-    private Map<String, Object> context = new ConcurrentHashMap<>(64);
+    private Map<String, DTXContext> context = new ConcurrentHashMap<>(64);
 
 
     @Override
@@ -127,13 +128,12 @@ public class MapBasedTransactionAttachmentCache implements TransactionAttachment
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> T context(String groupId) {
-        return (T) this.context.get(groupId);
+    public DTXContext context(String groupId) {
+        return this.context.get(groupId);
     }
 
     @Override
-    public void setContext(String groupId, Object context) {
+    public void setContext(String groupId, DTXContext context) {
         this.context.put(groupId, context);
     }
 

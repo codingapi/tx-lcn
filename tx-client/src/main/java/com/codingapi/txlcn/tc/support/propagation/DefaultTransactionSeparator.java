@@ -13,26 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.support;
+package com.codingapi.txlcn.tc.support.propagation;
 
-import com.codingapi.txlcn.commons.exception.TransactionClearException;
+import org.springframework.stereotype.Component;
 
 /**
- * Description:
- * Date: 2018/12/13
+ * Description: 默认的事务分离器
+ * Date: 2018/12/5
  *
  * @author ujued
  */
-public interface TransactionCleanService {
-
-    /**
-     * 事务清理业务
-     *
-     * @param groupId groupId
-     * @param state    事务状态 1 提交 0 回滚
-     * @param unitId unitId
-     * @param unitType 事务类型
-     * @throws TransactionClearException TransactionClearException
-     */
-    void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException;
+@Component("transaction_state_resolver_default")
+public class DefaultTransactionSeparator extends CustomizableTransactionSeparator {
 }

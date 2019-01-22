@@ -15,15 +15,16 @@
  */
 package com.codingapi.txlcn.tc.core.txc.resource.util;
 
+import com.codingapi.txlcn.commons.exception.SerializerException;
+import com.codingapi.txlcn.commons.util.serializer.SerializerContext;
 import com.codingapi.txlcn.tc.core.txc.resource.def.bean.FieldCluster;
 import com.codingapi.txlcn.tc.core.txc.resource.def.bean.FieldValue;
 import com.codingapi.txlcn.tc.core.txc.resource.def.bean.ModifiedRecord;
-import com.codingapi.txlcn.commons.exception.SerializerException;
-import com.codingapi.txlcn.commons.util.serializer.SerializerContext;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Description:
@@ -107,7 +108,7 @@ public class SqlUtils {
             fieldValue.setFieldName(column);
             fieldValue.setTableName(SqlUtils.tableName(column));
             fieldValue.setValue(rs.getObject(column));
-            fieldValue.setValueType(fieldValue.getValue().getClass());
+            fieldValue.setValueType(Objects.isNull(fieldValue.getValue()) ? Void.class : fieldValue.getValue().getClass());
             if (record.getFieldClusters().get(fieldValue.getTableName()) != null) {
                 record.getFieldClusters().get(fieldValue.getTableName()).getFields().add(fieldValue);
             } else {

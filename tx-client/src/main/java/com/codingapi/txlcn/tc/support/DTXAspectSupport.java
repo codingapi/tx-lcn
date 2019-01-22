@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.tc.support;
 
-import com.codingapi.txlcn.tc.bean.DTXLocal;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
 
 /**
  * Description:
@@ -30,6 +30,6 @@ public class DTXAspectSupport  {
      * 回滚分布式事务
      */
     public static void setRollbackOnly() {
-        DTXLocal.cur().setUserTransactionState(0);
+        DTXLocalContext.cur().setUserTransactionState(0);
     }
 }

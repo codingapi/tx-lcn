@@ -15,11 +15,11 @@
  */
 package com.codingapi.txlcn.tc.core.txc.control;
 
-import com.codingapi.txlcn.tc.bean.DTXLocal;
-import com.codingapi.txlcn.tc.bean.TxTransactionInfo;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
 import com.codingapi.txlcn.tc.core.txc.resource.def.bean.RollbackInfo;
 import com.codingapi.txlcn.tc.support.template.TransactionControlTemplate;
-import com.codingapi.txlcn.tc.support.TXLCNTransactionControl;
+import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ import java.util.Objects;
  */
 @Component("control_txc_starting")
 @Slf4j
-public class TxcStartingTransaction implements TXLCNTransactionControl {
+public class TxcStartingTransaction implements DTXLocalControl {
 
     private final TransactionControlTemplate transactionControlTemplate;
 
@@ -54,29 +54,29 @@ public class TxcStartingTransaction implements TXLCNTransactionControl {
             throw new BeforeBusinessException(e);
         }
         // 准备回滚信息容器
-        DTXLocal.cur().setAttachment(new RollbackInfo());
+        DTXLocalContext.cur().setAttachment(new RollbackInfo());
 
         // TXC 类型事务需要代理资源
-        DTXLocal.makeProxy();
+        DTXLocalContext.makeProxy();
 
     }
 
     @Override
     public void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) {
-        DTXLocal.cur().setSysTransactionState(0);
+        DTXLocalContext.cur().setSysTransactionState(0);
 
     }
 
     @Override
     public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) {
         // set state equ 1
-        DTXLocal.cur().setSysTransactionState(1);
+        DTXLocalContext.cur().setSysTransactionState(1);
     }
 
     @Override
     public void postBusinessCode(TxTransactionInfo info) {
-        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocal.cur().getAttachment();
-        int state = DTXLocal.transactionState();
+        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocalContext.cur().getAttachment();
+        int state = DTXLocalContext.transactionState();
 
         // 非成功状态。（事务导致）{#link TxcServiceImpl.lockResource}
         if (Objects.nonNull(rollbackInfo) && rollbackInfo.getStatus() < 0) {

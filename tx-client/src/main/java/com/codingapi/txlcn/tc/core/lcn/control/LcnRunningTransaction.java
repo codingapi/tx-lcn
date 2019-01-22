@@ -15,9 +15,9 @@
  */
 package com.codingapi.txlcn.tc.core.lcn.control;
 
-import com.codingapi.txlcn.tc.bean.DTXLocal;
-import com.codingapi.txlcn.tc.bean.TxTransactionInfo;
-import com.codingapi.txlcn.tc.support.TXLCNTransactionControl;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
+import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.tc.support.template.TransactionControlTemplate;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
@@ -38,7 +38,7 @@ import java.util.Optional;
  */
 @Component("control_lcn_running")
 @Slf4j
-public class LcnRunningTransaction implements TXLCNTransactionControl {
+public class LcnRunningTransaction implements DTXLocalControl {
 
     private final TracerHelper tracerHelper;
 
@@ -59,7 +59,7 @@ public class LcnRunningTransaction implements TXLCNTransactionControl {
     @Override
     public void preBusinessCode(TxTransactionInfo info) {
         // LCN 类型事务需要代理资源
-        DTXLocal.makeProxy();
+        DTXLocalContext.makeProxy();
     }
 
 

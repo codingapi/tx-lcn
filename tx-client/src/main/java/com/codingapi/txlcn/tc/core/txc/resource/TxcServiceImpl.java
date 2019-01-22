@@ -15,7 +15,10 @@
  */
 package com.codingapi.txlcn.tc.core.txc.resource;
 
-import com.codingapi.txlcn.tc.bean.DTXLocal;
+import com.codingapi.txlcn.commons.exception.TxcLogicException;
+import com.codingapi.txlcn.commons.lock.DTXLocks;
+import com.codingapi.txlcn.spi.message.exception.RpcException;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.txc.resource.def.TxcService;
 import com.codingapi.txlcn.tc.core.txc.resource.def.TxcSqlExecutor;
 import com.codingapi.txlcn.tc.core.txc.resource.def.bean.*;
@@ -24,7 +27,7 @@ import com.codingapi.txlcn.tc.core.txc.resource.undo.TableRecordList;
 import com.codingapi.txlcn.tc.core.txc.resource.undo.UndoLogAnalyser;
 import com.codingapi.txlcn.tc.core.txc.resource.util.SqlUtils;
 import com.codingapi.txlcn.tc.corelog.txc.TxcLogHelper;
-import com.codingapi.txlcn.commons.exception.TxcLogicException;
+import com.codingapi.txlcn.tc.message.ReliableMessenger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.DbUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,28 +56,31 @@ public class TxcServiceImpl implements TxcService {
 
     private final TxcLogHelper txcLogHelper;
 
+    private final ReliableMessenger reliableMessenger;
+
     @Autowired
-    public TxcServiceImpl(TxcSqlExecutor txcSqlExecutor, TxcLogHelper txcLogHelper) {
+    public TxcServiceImpl(TxcSqlExecutor txcSqlExecutor, TxcLogHelper txcLogHelper, ReliableMessenger reliableMessenger) {
         this.txcSqlExecutor = txcSqlExecutor;
         this.txcLogHelper = txcLogHelper;
+        this.reliableMessenger = reliableMessenger;
     }
 
     @Override
     public void lockResource(LockInfo lockInfo, RollbackInfo rollbackInfo) throws TxcLogicException {
         try {
-            Connection connection = (Connection) DTXLocal.cur().getResource();
             // key value MD5 HEX to store
-            lockInfo.setKeyValue(DigestUtils.md5DigestAsHex(lockInfo.getKeyValue().getBytes(StandardCharsets.UTF_8)));
-            txcSqlExecutor.tryLock(connection, lockInfo);
-        } catch (SQLException e) {
-            rollbackInfo.setStatus(-1);
-            throw new TxcLogicException("Resource is locked! Place try again later.");
+            String lockId = DigestUtils.md5DigestAsHex(lockInfo.getKeyValue().getBytes(StandardCharsets.UTF_8));
+            if (!reliableMessenger.acquireLock(lockInfo.getGroupId(), lockId, lockInfo.isXLock() ? DTXLocks.X_LOCK : DTXLocks.S_LOCK)) {
+                throw new TxcLogicException("resource is locked! place try again later.");
+            }
+        } catch (RpcException e) {
+            throw new TxcLogicException("can't contact to any TM for lock info. default error.");
         }
     }
 
     @Override
     public void lockSelect(SelectImageParams selectImageParams, boolean isxLock) throws TxcLogicException {
-        Connection connection = (Connection) DTXLocal.cur().getResource();
+        Connection connection = (Connection) DTXLocalContext.cur().getResource();
         try {
             List<ModifiedRecord> modifiedRecords = txcSqlExecutor.selectSqlPreviousPrimaryKeys(connection, selectImageParams);
             for (ModifiedRecord modifiedRecord : modifiedRecords) {
@@ -99,7 +105,7 @@ public class TxcServiceImpl implements TxcService {
 
         // 前置镜像数据集
         List<ModifiedRecord> modifiedRecords;
-        Connection connection = (Connection) DTXLocal.cur().getResource();
+        Connection connection = (Connection) DTXLocalContext.cur().getResource();
         try {
             modifiedRecords = txcSqlExecutor.updateSqlPreviousData(connection, updateImageParams);
         } catch (SQLException e) {
@@ -145,7 +151,7 @@ public class TxcServiceImpl implements TxcService {
 
         // 前置数据
         List<ModifiedRecord> modifiedRecords;
-        Connection connection = (Connection) DTXLocal.cur().getResource();
+        Connection connection = (Connection) DTXLocalContext.cur().getResource();
         try {
             modifiedRecords = txcSqlExecutor.deleteSqlPreviousData(connection, deleteImageParams);
         } catch (SQLException e) {
@@ -233,16 +239,8 @@ public class TxcServiceImpl implements TxcService {
     @Override
     public void cleanTxc(String groupId, String unitId) throws TxcLogicException {
         // 清理事务单元相关锁
-        try {
-            DTXLocal.makeUnProxy();
-            txcSqlExecutor.clearLock(groupId, unitId);
-        } catch (SQLException e) {
-            if (e.getErrorCode() != SqlUtils.MYSQL_TABLE_NOT_EXISTS_CODE) {
-                throw new TxcLogicException(e);
-            }
-        } finally {
-            DTXLocal.undoProxyStatus();
-        }
+//            reliableMessenger.releaseLock(groupId, )
+        // todo RELEASE
 
         // 清理事务单元相关undo_log
         try {

@@ -15,19 +15,16 @@
  */
 package com.codingapi.txlcn.tc.core.tcc.control;
 
-import com.codingapi.txlcn.tc.bean.TxTransactionInfo;
-import com.codingapi.txlcn.tc.support.CustomizableTransactionSeparator;
-import com.codingapi.txlcn.tc.support.TXLCNTransactionState;
-import com.codingapi.txlcn.tc.support.TransactionUnitTypeList;
-import com.codingapi.txlcn.tc.support.cache.TransactionAttachmentCache;
 import com.codingapi.txlcn.commons.exception.TransactionException;
 import com.codingapi.txlcn.commons.util.Transactions;
-import com.codingapi.txlcn.spi.sleuth.TracerHelper;
+import com.codingapi.txlcn.tc.core.DTXState;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
+import com.codingapi.txlcn.tc.support.context.DTXContext;
+import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
+import com.codingapi.txlcn.tc.support.propagation.CustomizableTransactionSeparator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 /**
  * Description:
@@ -39,27 +36,18 @@ import java.util.Optional;
 @Component("transaction_state_resolver_tcc")
 public class TccTypeTransactionSeparator extends CustomizableTransactionSeparator {
 
-    private final TransactionAttachmentCache transactionAttachmentCache;
-
-    private final TracerHelper tracerHelper;
+    private final TCGlobalContext globalContext;
 
     @Autowired
-    public TccTypeTransactionSeparator(TransactionAttachmentCache transactionAttachmentCache, TracerHelper tracerHelper) {
-        this.transactionAttachmentCache = transactionAttachmentCache;
-        this.tracerHelper = tracerHelper;
+    public TccTypeTransactionSeparator(TCGlobalContext globalContext) {
+        this.globalContext = globalContext;
     }
 
     @Override
-    public TXLCNTransactionState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException {
-        // 不存在GroupId时不自定义
-        if (tracerHelper.getGroupId() == null) {
-            return super.loadTransactionState(txTransactionInfo);
-        }
-
+    public DTXState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException {
         // 一个模块存在多个TCC类型的事务单元在一个事务内时不支持
-        Optional<TransactionUnitTypeList> sameTransUnitTypeList =
-                transactionAttachmentCache.attachment(tracerHelper.getGroupId(), TransactionUnitTypeList.class);
-        if (sameTransUnitTypeList.isPresent() && sameTransUnitTypeList.get().contains(Transactions.LCN)) {
+        DTXContext dtxContext = globalContext.dtxContext(txTransactionInfo.getGroupId());
+        if (dtxContext.getTransactionTypes().contains(Transactions.LCN)) {
             throw new TransactionException("unsupported operate : TCC unit call TCC unit.");
         }
         return super.loadTransactionState(txTransactionInfo);

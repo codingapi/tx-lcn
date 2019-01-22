@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.support;
+package com.codingapi.txlcn.tc.support.propagation;
 
-import com.codingapi.txlcn.tc.bean.DTXLocal;
-import com.codingapi.txlcn.tc.bean.TxTransactionInfo;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
 import com.codingapi.txlcn.commons.annotation.DTXPropagation;
 import com.codingapi.txlcn.commons.exception.TransactionException;
+import com.codingapi.txlcn.tc.core.DTXState;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -31,25 +32,24 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomizableTransactionSeparator implements TXLCNTransactionSeparator {
 
     @Override
-    public TXLCNTransactionState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException {
+    public DTXState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException {
 
         // 本线程已经参与分布式事务(本地方法互调)
-        if (DTXLocal.cur().isInUnit()) {
-            log.info("Default by DTXLocal is not null! {}", DTXLocal.cur());
-            return TXLCNTransactionState.DEFAULT;
+        if (DTXLocalContext.cur().isInUnit()) {
+            log.info("Default by DTXLocalContext is not null! {}", DTXLocalContext.cur());
+            return DTXState.DEFAULT;
         }
 
         // 发起分布式事务条件
         if (txTransactionInfo.isTransactionStart()) {
             // 发起方时，对于只加入DTX的事务单元走默认处理
             if (DTXPropagation.SUPPORTS.equals(txTransactionInfo.getPropagation())) {
-                return TXLCNTransactionState.NON;
+                return DTXState.NON;
             }
-            return TXLCNTransactionState.STARTING;
+            return DTXState.STARTING;
         }
 
-
         // 加入分布式事务
-        return TXLCNTransactionState.RUNNING;
+        return DTXState.RUNNING;
     }
 }

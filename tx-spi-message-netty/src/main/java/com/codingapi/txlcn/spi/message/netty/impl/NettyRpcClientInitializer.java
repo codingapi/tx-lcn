@@ -56,6 +56,9 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
 
     private EventLoopGroup workerGroup;
 
+    /**
+     * 统计TM 数量
+     */
     private CountDownLatch countDownLatch;
 
     @Override
@@ -82,7 +85,7 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
         for (int i = 0; i < rpcConfig.getReconnectCount(); i++) {
             if (SocketManager.getInstance().noConnect(socketAddress)) {
                 try {
-                    log.info("Connect TM[{}] - count {}", socketAddress, i + 1);
+                    log.info("Try connect TM[{}] - count {}", socketAddress, i + 1);
                     Bootstrap b = new Bootstrap();
                     b.group(workerGroup);
                     b.channel(NioSocketChannel.class);
@@ -91,7 +94,6 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
                     b.handler(nettyRpcClientHandlerInitHandler);
                     ChannelFuture channelFuture = b.connect(socketAddress).syncUninterruptibly();
                     channelFuture.addListener(future -> countDownLatch.countDown());
-                    log.info("TC connect state:{}", socketAddress, channelFuture.isSuccess());
                     connected = true;
                     break;
 

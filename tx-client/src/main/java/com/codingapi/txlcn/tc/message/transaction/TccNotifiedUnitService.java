@@ -15,8 +15,7 @@
  */
 package com.codingapi.txlcn.tc.message.transaction;
 
-import com.codingapi.txlcn.tc.support.DefaultNotifiedUnitService;
-import com.codingapi.txlcn.tc.support.cache.TransactionAttachmentCache;
+import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.logger.TxLogger;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +34,7 @@ public class TccNotifiedUnitService extends DefaultNotifiedUnitService {
 
     @Autowired
     public TccNotifiedUnitService(TransactionCleanTemplate transactionCleanTemplate,
-                                  TransactionAttachmentCache transactionAttachmentCache, TxLogger txLogger) {
-        super(transactionCleanTemplate, txLogger, transactionAttachmentCache);
+                                  TCGlobalContext context, TxLogger txLogger) {
+        super(transactionCleanTemplate, txLogger, context);
     }
 }
