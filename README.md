@@ -5,9 +5,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?label=license)](https://github.com/codingapi/tx-lcn/blob/master/LICENSE)
 
 
-## 项目介绍
-
-
+## 项的目介绍
 
 
 5.0完全拥抱springboot体系,JDK版本为1.8开发，将不仅仅支持LCN事务模式，也引入了TCC，TXC模式，同时把分布式事务协调的模式抽象出来，让各种模式可以嵌套使用。
