@@ -1,0 +1,12 @@
+
+.next-table .highlight-row td{
+  background: #f76867;
+  color: #ffffff;
+  border: none;
+}
+
+.next-table .highlight-row-yellow td{
+  background: #e4dc7d;
+  color: #ffffff;
+  border: none;
+}
