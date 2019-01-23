@@ -32,6 +32,7 @@ import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SelectItem;
 import net.sf.jsqlparser.statement.update.Update;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -55,6 +56,7 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
     private final TxcService txcService;
 
+    @Autowired
     public TxcSqlExecuteInterceptor(TableStructAnalyser tableStructAnalyser, TxcService txcService) {
         this.tableStructAnalyser = tableStructAnalyser;
         this.txcService = txcService;
@@ -63,11 +65,7 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
     @Override
     public void preUpdate(Update update) throws SQLException {
         // 获取线程传递参数
-        String groupId = DTXLocalContext.cur().getGroupId();
-        String unitId = DTXLocalContext.cur().getUnitId();
-        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocalContext.cur().getAttachment();
         Connection connection = (Connection) DTXLocalContext.cur().getResource();
-
 
         // Update相关数据准备
         List<String> columns = new ArrayList<>(update.getColumns().size());
@@ -85,14 +83,12 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
         // 前置准备
         try {
-            txcService.resolveUpdateImage(new UpdateImageParams()
-                    .setGroupId(groupId)
-                    .setUnitId(unitId)
-                    .setRollbackInfo(rollbackInfo)
-                    .setColumns(columns)
-                    .setPrimaryKeys(primaryKeys)
-                    .setTables(tables)
-                    .setWhereSql(update.getWhere() == null ? "1=1" : update.getWhere().toString()));
+            UpdateImageParams updateImageParams = new UpdateImageParams();
+            updateImageParams.setColumns(columns);
+            updateImageParams.setPrimaryKeys(primaryKeys);
+            updateImageParams.setTables(tables);
+            updateImageParams.setWhereSql(update.getWhere() == null ? "1=1" : update.getWhere().toString());
+            txcService.resolveUpdateImage(updateImageParams);
         } catch (TxcLogicException e) {
             throw new SQLException(e.getMessage());
         }
@@ -100,12 +96,7 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
     @Override
     public void preDelete(Delete delete) throws SQLException {
-        log.debug("do pre delete: {}", delete);
-
         // 获取线程传递参数
-        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocalContext.cur().getAttachment();
-        String groupId = DTXLocalContext.cur().getGroupId();
-        String unitId = DTXLocalContext.cur().getUnitId();
         Connection connection = (Connection) DTXLocalContext.cur().getResource();
 
         // 获取Sql Table
@@ -120,29 +111,22 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
         for (Table table : delete.getTables()) {
             TableStruct tableStruct = tableStructAnalyser.analyse(connection, table.getName());
-            tableStruct.getColumns().forEach((k, v) -> {
-                columns.add(tableStruct.getTableName() + SqlUtils.DOT + k);
-            });
-            tableStruct.getPrimaryKeys().forEach(primaryKey -> {
-                primaryKeys.add(tableStruct.getTableName() + SqlUtils.DOT + primaryKey);
-            });
+            tableStruct.getColumns().forEach((k, v) -> columns.add(tableStruct.getTableName() + SqlUtils.DOT + k));
+            tableStruct.getPrimaryKeys().forEach(primaryKey -> primaryKeys.add(tableStruct.getTableName() + SqlUtils.DOT + primaryKey));
             tables.add(tableStruct.getTableName());
         }
 
         // 前置准备
         try {
-            txcService.resolveDeleteImage(new DeleteImageParams()
-                    .setGroupId(groupId)
-                    .setUnitId(unitId)
-                    .setRollbackInfo(rollbackInfo)
-                    .setSqlWhere(delete.getWhere().toString())
-                    .setColumns(columns)
-                    .setPrimaryKeys(primaryKeys)
-                    .setTables(tables));
+            DeleteImageParams deleteImageParams = new DeleteImageParams();
+            deleteImageParams.setColumns(columns);
+            deleteImageParams.setPrimaryKeys(primaryKeys);
+            deleteImageParams.setTables(tables);
+            deleteImageParams.setSqlWhere(delete.getWhere().toString());
+            txcService.resolveDeleteImage(deleteImageParams);
         } catch (TxcLogicException e) {
             throw new SQLException(e.getMessage());
         }
-
     }
 
     @Override
@@ -221,15 +205,8 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
         // 尝试锁定
         log.info("lock select sql: {}", plainSelect);
-        String groupId = DTXLocalContext.cur().getGroupId();
-        String unitId = DTXLocalContext.cur().getUnitId();
-        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocalContext.cur().getAttachment();
-
         SelectImageParams selectImageParams = new SelectImageParams();
-        selectImageParams.setGroupId(groupId);
-        selectImageParams.setUnitId(unitId);
         selectImageParams.setPrimaryKeys(primaryKeys);
-        selectImageParams.setRollbackInfo(rollbackInfo);
         selectImageParams.setSql(plainSelect.toString());
 
         try {

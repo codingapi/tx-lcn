@@ -15,14 +15,15 @@
  */
 package com.codingapi.txlcn.tc.core.txc.control;
 
-import com.codingapi.txlcn.tc.core.DTXLocalContext;
-import com.codingapi.txlcn.tc.core.TxTransactionInfo;
-import com.codingapi.txlcn.tc.core.txc.resource.def.bean.RollbackInfo;
-import com.codingapi.txlcn.tc.core.DTXLocalControl;
-import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
-import com.codingapi.txlcn.tc.support.template.TransactionControlTemplate;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
+import com.codingapi.txlcn.commons.util.Transactions;
+import com.codingapi.txlcn.logger.TxLogger;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
+import com.codingapi.txlcn.tc.core.DTXLocalControl;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
+import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
+import com.codingapi.txlcn.tc.support.template.TransactionControlTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,19 +42,18 @@ public class TxcRunningTransaction implements DTXLocalControl {
 
     private final TransactionControlTemplate transactionControlTemplate;
 
+    private final TxLogger txLogger;
+
     @Autowired
     public TxcRunningTransaction(TransactionCleanTemplate transactionCleanTemplate,
-                                 TransactionControlTemplate transactionControlTemplate) {
+                                 TransactionControlTemplate transactionControlTemplate, TxLogger txLogger) {
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.transactionControlTemplate = transactionControlTemplate;
+        this.txLogger = txLogger;
     }
 
     @Override
     public void preBusinessCode(TxTransactionInfo info) {
-
-        // 准备回滚信息容器
-        DTXLocalContext.cur().setAttachment(new RollbackInfo());
-
         // TXC 类型事务需要代理资源
         DTXLocalContext.makeProxy();
     }
@@ -61,14 +61,11 @@ public class TxcRunningTransaction implements DTXLocalControl {
     @Override
     public void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) {
         try {
-            log.info("txc > running > clean transaction.");
-            transactionCleanTemplate.clean(
-                    DTXLocalContext.cur().getGroupId(),
-                    info.getUnitId(),
-                    info.getTransactionType(),
-                    0);
+            log.debug("txc > running > clean transaction.");
+            transactionCleanTemplate.clean(info.getGroupId(), info.getUnitId(), info.getTransactionType(), 0);
         } catch (TransactionClearException e) {
             log.error("txc > Clean Transaction Error", e);
+            txLogger.trace(info.getGroupId(), info.getUnitId(), Transactions.TE, "clean transaction error");
         }
     }
 

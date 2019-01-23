@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * Description:
@@ -17,6 +18,6 @@ import java.io.Serializable;
 @Data
 public class DTXLockParams implements Serializable {
     private String contextId;
-    private String lockId;
+    private Set<String> locks;
     private int lockType;
 }

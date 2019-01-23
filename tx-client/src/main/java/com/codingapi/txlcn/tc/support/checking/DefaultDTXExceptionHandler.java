@@ -15,6 +15,8 @@
  */
 package com.codingapi.txlcn.tc.support.checking;
 
+import com.codingapi.txlcn.commons.util.Transactions;
+import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.tc.message.helper.TxMangerReporter;
 import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
@@ -46,6 +48,9 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
     private final TxMangerReporter txMangerReporter;
 
     @Autowired
+    private TxLogger txLogger;
+
+    @Autowired
     public DefaultDTXExceptionHandler(TransactionCleanTemplate transactionCleanTemplate, TxMangerReporter txMangerReporter) {
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.txMangerReporter = txMangerReporter;
@@ -63,11 +68,15 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
 
     @Override
     public void handleJoinGroupBusinessException(Object params, Throwable ex) throws TxClientException {
-        JoinGroupParams joinGroupParams = (JoinGroupParams) params;
+        List paramList = (List) params;
+        String groupId = (String) paramList.get(0);
+        String unitId = (String) paramList.get(1);
+        String unitType = (String) paramList.get(2);
         try {
-            transactionCleanTemplate.clean(joinGroupParams.getGroupId(), joinGroupParams.getUnitId(), joinGroupParams.getUnitType(), 0);
+            transactionCleanTemplate.clean(groupId, unitId, unitType, 0);
         } catch (TransactionClearException e) {
-            log.error("{} > clean transaction error.", joinGroupParams.getUnitType());
+            log.error("{} > clean transaction error.", unitType);
+            txLogger.trace(groupId, unitId, Transactions.TE, "clean transaction fail.");
         }
         throw new TxClientException(ex);
     }
@@ -79,23 +88,23 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
 
     @Override
     public void handleNotifyGroupBusinessException(Object params, Throwable ex) {
-
         List paramList = (List) params;
-        NotifyGroupParams notifyGroupParams = (NotifyGroupParams) paramList.get(0);
-        String unitId = (String) paramList.get(1);
-        String transactionType = (String) paramList.get(2);
+        String groupId = (String) paramList.get(0);
+        int state = (int) paramList.get(1);
+        String unitId = (String) paramList.get(2);
+        String transactionType = (String) paramList.get(3);
 
         //用户强制回滚.
         if (ex instanceof UserRollbackException) {
-            notifyGroupParams.setState(0);
+            state = 0;
         }
         if ((ex.getCause() != null && ex.getCause() instanceof UserRollbackException)) {
-            notifyGroupParams.setState(0);
+            state = 0;
         }
 
         // 结束事务
         try {
-            transactionCleanTemplate.clean(notifyGroupParams.getGroupId(), unitId, transactionType, notifyGroupParams.getState());
+            transactionCleanTemplate.clean(groupId, unitId, transactionType, state);
         } catch (TransactionClearException e) {
             log.error("{} > clean transaction error.", transactionType);
         }
@@ -105,8 +114,9 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
     public void handleNotifyGroupMessageException(Object params, Throwable ex) {
         // 当0 时候
         List paramList = (List) params;
-        NotifyGroupParams notifyGroupParams = (NotifyGroupParams) paramList.get(0);
-        if (notifyGroupParams.getState() == 0) {
+        String groupId = (String) paramList.get(0);
+        int state = (int) paramList.get(1);
+        if (state == 0) {
             handleNotifyGroupBusinessException(params, ex);
             return;
         }
@@ -121,16 +131,15 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
         // 该两种情况下补偿信息均可以忽略,可直接把本地补偿记录数据删除。
 
 
-        String unitId = (String) paramList.get(1);
-        String transactionType = (String) paramList.get(2);
+        String unitId = (String) paramList.get(2);
+        String transactionType = (String) paramList.get(3);
         try {
-            transactionCleanTemplate.compensationClean(notifyGroupParams.getGroupId(), unitId, transactionType, notifyGroupParams.getState());
+            transactionCleanTemplate.compensationClean(groupId, unitId, transactionType, state);
         } catch (TransactionClearException e) {
             log.error("{} > compensationClean transaction error.", transactionType);
         }
 
         // 上报Manager，上报直到成功.
-        txMangerReporter.reportTransactionState(notifyGroupParams.getGroupId(), null,
-                TxExceptionParams.NOTIFY_GROUP_ERROR, notifyGroupParams.getState());
+        txMangerReporter.reportTransactionState(groupId, null, TxExceptionParams.NOTIFY_GROUP_ERROR, state);
     }
 }

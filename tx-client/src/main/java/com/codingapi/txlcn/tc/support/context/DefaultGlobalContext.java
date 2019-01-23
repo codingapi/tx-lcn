@@ -1,15 +1,13 @@
 package com.codingapi.txlcn.tc.support.context;
 
+import com.codingapi.txlcn.commons.exception.TCGlobalContextException;
 import com.codingapi.txlcn.commons.util.function.ThrowableSupplier;
 import com.codingapi.txlcn.tc.core.TccTransactionInfo;
 import com.codingapi.txlcn.tc.core.lcn.resource.LcnConnectionProxy;
-import com.codingapi.txlcn.tc.core.tcc.TccTransactionInfoCache;
-import com.codingapi.txlcn.tc.support.cache.TransactionAttachmentCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-import java.util.function.Supplier;
+import java.util.*;
 
 /**
  * Description:
@@ -20,60 +18,90 @@ import java.util.function.Supplier;
 @Component
 public class DefaultGlobalContext implements TCGlobalContext {
 
-    private final TransactionAttachmentCache transactionAttachmentCache;
-
-    private final TccTransactionInfoCache tccTransactionInfoCache;
+    private final AttachmentCache attachmentCache;
 
     @Autowired
-    public DefaultGlobalContext(TransactionAttachmentCache transactionAttachmentCache, TccTransactionInfoCache tccTransactionInfoCache) {
-        this.transactionAttachmentCache = transactionAttachmentCache;
-        this.tccTransactionInfoCache = tccTransactionInfoCache;
+    public DefaultGlobalContext(AttachmentCache attachmentCache) {
+        this.attachmentCache = attachmentCache;
     }
 
     @Override
-    public Connection lcnConnection(String groupId, String unitId, Supplier<Connection> supplier) {
-        return transactionAttachmentCache.attachment(
-                groupId, unitId, LcnConnectionProxy.class, () -> new LcnConnectionProxy(supplier.get())
-        );
+    public void setLcnConnection(String groupId, LcnConnectionProxy connectionProxy) {
+        attachmentCache.attach(groupId, LcnConnectionProxy.class.getName(), connectionProxy);
     }
 
     @Override
-    public void removeLcnConnection(String groupId, String unitId) {
-        transactionAttachmentCache.removeAttachments(groupId, unitId);
-    }
-
-    @Override
-    public TccTransactionInfo tccTransactionInfo(String groupId, String unitId, ThrowableSupplier<TccTransactionInfo> supplier)
-            throws Throwable {
-        if (tccTransactionInfoCache.get(groupId + unitId) == null) {
-            tccTransactionInfoCache.putIfAbsent(groupId + unitId, supplier.get());
+    public LcnConnectionProxy getLcnConnection(String groupId)
+            throws TCGlobalContextException {
+        if (attachmentCache.containsKey(groupId, LcnConnectionProxy.class.getName())) {
+            return attachmentCache.attachment(groupId, LcnConnectionProxy.class.getName());
         }
-        return tccTransactionInfoCache.get(groupId + unitId);
+        throw new TCGlobalContextException("non exists lcn connection");
     }
 
     @Override
-    public String txcLockId(String groupId, String unitId, Supplier<String> lockId) {
-        return null;
+    public TccTransactionInfo tccTransactionInfo(String unitId, ThrowableSupplier<TccTransactionInfo> supplier) throws Throwable {
+        if (Objects.isNull(supplier)) {
+            return attachmentCache.attachment(unitId, TccTransactionInfo.class.getName());
+        }
+
+        if (attachmentCache.containsKey(unitId, TccTransactionInfo.class.getName())) {
+            return attachmentCache.attachment(unitId, TccTransactionInfo.class.getName());
+        }
+
+        TccTransactionInfo tccTransactionInfo = supplier.get();
+        attachmentCache.attach(unitId, TccTransactionInfo.class.getName(), tccTransactionInfo);
+        return tccTransactionInfo;
     }
 
     @Override
-    public void removeTxcLockId(String groupId, String unitId) {
+    @SuppressWarnings("unchecked")
+    public void addTxcLockId(String groupId, String unitId, Set<String> lockIdList) {
+        String lockPrefix = "txc.lock." + unitId;
+        if (attachmentCache.containsKey(groupId, lockPrefix)) {
+            ((Set) attachmentCache.attachment(groupId, lockPrefix)).addAll(lockIdList);
+            return;
+        }
+        Set<String> lockList = new HashSet<>(lockIdList);
+        attachmentCache.attach(groupId, lockPrefix, lockList);
+    }
 
+    @Override
+    public Set<String> findTxcLockSet(String groupId, String unitId) throws TCGlobalContextException {
+        if (attachmentCache.containsKey(groupId, "txc.lock." + unitId)) {
+            return attachmentCache.attachment(groupId, "txc.lock." + unitId);
+        }
+        throw new TCGlobalContextException("non exists lock id.");
     }
 
     @Override
     public void newDTXContext(String groupId) {
-        transactionAttachmentCache.setContext(groupId, new DTXContext());
+        attachmentCache.attach(groupId + ".dtx", "dtx.context", new DTXContext());
         dtxContext(groupId);
     }
 
+    /**
+     * 在用户业务前生成，业务后销毁
+     *
+     * @param groupId
+     */
     @Override
     public void destroyDTXContext(String groupId) {
-        transactionAttachmentCache.destroyContext(groupId);
+        attachmentCache.remove(groupId + ".dtx", "dtx.context");
     }
 
     @Override
     public DTXContext dtxContext(String groupId) {
-        return transactionAttachmentCache.context(groupId);
+        return attachmentCache.attachment(groupId + ".dtx", "dtx.context");
+    }
+
+    /**
+     * 清理事务时调用
+     *
+     * @param groupId groupId
+     */
+    @Override
+    public void clearGroup(String groupId) {
+        this.attachmentCache.remove(groupId);
     }
 }

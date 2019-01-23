@@ -21,6 +21,7 @@ import com.codingapi.txlcn.tc.support.checking.DTXChecking;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
+import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,57 +44,69 @@ public class TransactionCleanTemplate {
 
     private final TxLogger txLogger;
 
+    private final TCGlobalContext globalContext;
+
     @Autowired
     public TransactionCleanTemplate(TXLCNTransactionBeanHelper transactionBeanHelper,
                                     DTXChecking dtxChecking,
                                     AspectLogger aspectLogger,
-                                    TxLogger txLogger) {
+                                    TxLogger txLogger, TCGlobalContext globalContext) {
         this.transactionBeanHelper = transactionBeanHelper;
         this.dtxChecking = dtxChecking;
         this.aspectLogger = aspectLogger;
         this.txLogger = txLogger;
+        this.globalContext = globalContext;
     }
 
     /**
      * 清理事务
      *
-     * @param groupId groupId
-     * @param unitId unitId
+     * @param groupId  groupId
+     * @param unitId   unitId
      * @param unitType unitType
-     * @param state transactionState
+     * @param state    transactionState
      * @throws TransactionClearException TransactionClearException
      */
     public void clean(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
         txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "clean transaction");
 
-        transactionBeanHelper.loadTransactionCleanService(unitType).clear(
-                groupId, state, unitId, unitType
-        );
+        try {
+            transactionBeanHelper.loadTransactionCleanService(unitType).clear(
+                    groupId, state, unitId, unitType
+            );
+        } finally {
+            globalContext.clearGroup(groupId);
 
-        dtxChecking.stopDelayChecking(groupId, unitId);
+            dtxChecking.stopDelayChecking(groupId, unitId);
 
-        aspectLogger.clearLog(groupId, unitId);
+            aspectLogger.clearLog(groupId, unitId);
 
-        txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "clean transaction over");
+            txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "clean transaction over");
 
-        log.debug("clean transaction over");
+            log.debug("clean transaction over");
+        }
     }
 
     /**
      * 清理事务（不清理切面日志）
      *
-     * @param groupId groupId
-     * @param unitId unitId
+     * @param groupId  groupId
+     * @param unitId   unitId
      * @param unitType unitType
-     * @param state transactionState
+     * @param state    transactionState
      * @throws TransactionClearException TransactionClearException
      */
     public void compensationClean(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
         txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "clean compensation transaction");
-        transactionBeanHelper.loadTransactionCleanService(unitType).clear(
-                groupId, state, unitId, unitType
-        );
+        try {
+            transactionBeanHelper.loadTransactionCleanService(unitType).clear(
+                    groupId, state, unitId, unitType
+            );
+        } finally {
+            globalContext.clearGroup(groupId);
 
-        dtxChecking.stopDelayChecking(groupId, unitId);
+            dtxChecking.stopDelayChecking(groupId, unitId);
+        }
+
     }
 }

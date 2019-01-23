@@ -51,7 +51,7 @@ public class AsyncH2DBAspectLogger implements AspectLogger {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             executorService.shutdown();
             try {
-                executorService.awaitTermination(10, TimeUnit.MINUTES);
+                executorService.awaitTermination(6, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
             }
         }));

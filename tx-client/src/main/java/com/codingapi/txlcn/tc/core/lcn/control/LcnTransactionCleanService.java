@@ -15,16 +15,14 @@
  */
 package com.codingapi.txlcn.tc.core.lcn.control;
 
+import com.codingapi.txlcn.commons.exception.TCGlobalContextException;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
-import com.codingapi.txlcn.spi.message.dto.RpcResponseState;
 import com.codingapi.txlcn.tc.core.TransactionCleanService;
 import com.codingapi.txlcn.tc.core.lcn.resource.LcnConnectionProxy;
 import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
 
 /**
  * Description:
@@ -36,26 +34,22 @@ import java.util.Objects;
 @Slf4j
 public class LcnTransactionCleanService implements TransactionCleanService {
 
-    private final TCGlobalContext context;
+    private final TCGlobalContext globalContext;
 
     @Autowired
-    public LcnTransactionCleanService(TCGlobalContext context) {
-        this.context = context;
+    public LcnTransactionCleanService(TCGlobalContext globalContext) {
+        this.globalContext = globalContext;
     }
 
     @Override
     public void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException {
-        LcnConnectionProxy connectionProxy = (LcnConnectionProxy) context.lcnConnection(groupId, unitId, () -> null);
-        if (Objects.nonNull(connectionProxy)) {
-            if (connectionProxy.notify(state).equals(RpcResponseState.success)) {
-                // 移除本地LCN事务相关对象
-                context.removeLcnConnection(groupId, unitId);
-                return;
-            }
-            log.error("本地事务通知失败");
-            throw new TransactionClearException("通知资源时出错");
+        try {
+            LcnConnectionProxy connectionProxy = globalContext.getLcnConnection(groupId);
+            connectionProxy.notify(state);
+            // todo notify exception
+        } catch (TCGlobalContextException e) {
+            log.error("local non transaction, but notified. probably net message timeout . groupId: {}, transactionState: {}", groupId, state);
+            throw new TransactionClearException("local non transaction, but notified. probably net message timeout .");
         }
-        log.error("local non transaction, but notified. probably net message timeout . groupId: {}, transactionState: {}", groupId, state);
-        throw new TransactionClearException("local non transaction, but notified. probably net message timeout .");
     }
 }

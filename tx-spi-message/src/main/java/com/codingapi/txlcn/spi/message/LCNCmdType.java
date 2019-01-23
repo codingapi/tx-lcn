@@ -85,7 +85,7 @@ public enum LCNCmdType {
      * 查询分布式事务锁
      * 简写 qdtxl
      */
-    queryDTXLock("acquire-dtx-lock", MessageConstants.ACTION_ACQUIRE_DTX_LOCK),
+    acquireDTXLock("acquire-dtx-lock", MessageConstants.ACTION_ACQUIRE_DTX_LOCK),
 
     /**
      * 释放分布式事务锁
@@ -122,7 +122,9 @@ public enum LCNCmdType {
             case MessageConstants.ACTION_JOIN_GROUP:
                 return joinGroup;
             case MessageConstants.ACTION_ACQUIRE_DTX_LOCK:
-                return queryDTXLock;
+                return acquireDTXLock;
+            case MessageConstants.ACTION_RELEASE_DTX_LOCK:
+                return releaseDTXLock;
             case MessageConstants.ACTION_ASK_TRANSACTION_STATE:
                 return askTransactionState;
             case MessageConstants.ACTION_WRITE_EXCEPTION:

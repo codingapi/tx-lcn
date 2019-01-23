@@ -4,8 +4,9 @@ import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.tm.core.message.RpcExecuteService;
 import com.codingapi.txlcn.tm.core.message.TransactionCmd;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
-import com.codingapi.txlcn.tm.core.storage.FastStorageException;
+import com.codingapi.txlcn.commons.exception.FastStorageException;
 import com.codingapi.txlcn.spi.message.params.DTXLockParams;
+import com.codingapi.txlcn.tm.core.storage.LockValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +32,10 @@ public class AcquireDTXLockExecuteService implements RpcExecuteService {
     public Serializable execute(TransactionCmd transactionCmd) throws TxManagerException {
         DTXLockParams dtxLockParams = transactionCmd.getMsg().loadBean(DTXLockParams.class);
         try {
-            fastStorage.acquireLock(dtxLockParams.getContextId(), dtxLockParams.getLockId(), dtxLockParams.getLockType());
+            LockValue lockValue = new LockValue();
+            lockValue.setGroupId(transactionCmd.getGroupId());
+            lockValue.setLockType(dtxLockParams.getLockType());
+            fastStorage.acquireLocks(dtxLockParams.getContextId(), dtxLockParams.getLocks(), lockValue);
             return true;
         } catch (FastStorageException e) {
             throw new TxManagerException(e);

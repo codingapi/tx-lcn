@@ -145,7 +145,7 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
         scheduledExecutorService.shutdown();
         try {
             // for non over tasks.
-            scheduledExecutorService.awaitTermination(10, TimeUnit.MINUTES);
+            scheduledExecutorService.awaitTermination(6, TimeUnit.SECONDS);
         } catch (InterruptedException ignored) {
         }
     }

@@ -16,14 +16,13 @@
 package com.codingapi.txlcn.tm.core.transaction;
 
 import com.codingapi.txlcn.commons.exception.TxManagerException;
-import com.codingapi.txlcn.tm.core.DTXContextRegistry;
+import com.codingapi.txlcn.spi.message.RpcClient;
+import com.codingapi.txlcn.spi.message.params.TxExceptionParams;
 import com.codingapi.txlcn.tm.core.TransactionManager;
 import com.codingapi.txlcn.tm.core.message.RpcExecuteService;
 import com.codingapi.txlcn.tm.core.message.TransactionCmd;
 import com.codingapi.txlcn.tm.support.service.TxExceptionService;
 import com.codingapi.txlcn.tm.support.service.WriteTxExceptionDTO;
-import com.codingapi.txlcn.spi.message.RpcClient;
-import com.codingapi.txlcn.spi.message.params.TxExceptionParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -47,15 +46,12 @@ public class WriteTxExceptionExecuteService implements RpcExecuteService {
 
     private final TransactionManager transactionManager;
 
-    private final DTXContextRegistry dtxContextRegistry;
-
     @Autowired
     public WriteTxExceptionExecuteService(TxExceptionService compensationService, RpcClient rpcClient,
-                                          TransactionManager transactionManager, DTXContextRegistry dtxContextRegistry) {
+                                          TransactionManager transactionManager) {
         this.compensationService = compensationService;
         this.rpcClient = rpcClient;
         this.transactionManager = transactionManager;
-        this.dtxContextRegistry = dtxContextRegistry;
     }
 
     @Override
@@ -66,7 +62,7 @@ public class WriteTxExceptionExecuteService implements RpcExecuteService {
             writeTxExceptionReq.setModId(rpcClient.getAppName(transactionCmd.getRemoteKey()));
 
             //获取事务状态（可能存在设置了手动回滚）
-            int transactionState = transactionManager.transactionState(dtxContextRegistry.get(transactionCmd.getGroupId()));
+            int transactionState = transactionManager.transactionState(transactionCmd.getGroupId());
 
             writeTxExceptionReq.setTransactionState(transactionState == -1 ? txExceptionParams.getTransactionState() : transactionState);
             writeTxExceptionReq.setGroupId(txExceptionParams.getGroupId());

@@ -17,13 +17,11 @@ package com.codingapi.txlcn.tc.core.txc.resource;
 
 import com.codingapi.txlcn.tc.core.txc.resource.def.TxcSqlExecutor;
 import com.codingapi.txlcn.tc.core.txc.resource.def.bean.*;
-import com.codingapi.txlcn.tc.core.txc.resource.init.TxcSql;
-import com.codingapi.txlcn.tc.core.txc.resource.rs.UpdateSqlPreDataHandler;
 import com.codingapi.txlcn.tc.core.txc.resource.util.SqlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.ScalarHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -43,30 +41,9 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
 
     private final QueryRunner queryRunner;
 
-    private final TxcSql txcSql;
-
-    public TxcSqlExecutorImpl(QueryRunner queryRunner, TxcSql txcSql) {
+    @Autowired
+    public TxcSqlExecutorImpl(QueryRunner queryRunner) {
         this.queryRunner = queryRunner;
-        this.txcSql = txcSql;
-    }
-
-
-    @Override
-    public void createLockTable() {
-        try {
-            queryRunner.execute(txcSql.lockTableSql());
-        } catch (SQLException e) {
-            log.error("txc > sql executor > create lock table error.", e);
-        }
-    }
-
-    @Override
-    public void createUndoLogTable() {
-        try {
-            queryRunner.execute(txcSql.undoLogTableSql());
-        } catch (SQLException e) {
-            log.error("txc > sql executor > create undo_log table error.", e);
-        }
     }
 
     @Override
@@ -82,7 +59,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
                 + SqlUtils.WHERE
                 + updateImageParams.getWhereSql();
         return queryRunner.query(connection, beforeSql,
-                new UpdateSqlPreDataHandler(updateImageParams.getPrimaryKeys(), updateImageParams.getColumns()));
+                new TxcModifiedRecordListHandler(updateImageParams.getPrimaryKeys(), updateImageParams.getColumns()));
     }
 
     @Override
@@ -94,7 +71,7 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
                 SqlUtils.WHERE +
                 deleteImageParams.getSqlWhere();
         return queryRunner.query(connection, beforeSql,
-                new UpdateSqlPreDataHandler(
+                new TxcModifiedRecordListHandler(
                         deleteImageParams.getPrimaryKeys(),
                         deleteImageParams.getColumns()));
     }
@@ -103,30 +80,9 @@ public class TxcSqlExecutorImpl implements TxcSqlExecutor {
     public List<ModifiedRecord> selectSqlPreviousPrimaryKeys(Connection connection, SelectImageParams selectImageParams)
             throws SQLException {
         return queryRunner.query(connection, selectImageParams.getSql(),
-                new UpdateSqlPreDataHandler(
+                new TxcModifiedRecordListHandler(
                         selectImageParams.getPrimaryKeys(),
                         selectImageParams.getPrimaryKeys()));
-    }
-
-    @Override
-    public void tryLock(Connection connection, LockInfo lockInfo) throws SQLException {
-        String lockSql = "INSERT INTO `" + txcSql.lockTableName() +
-                "` (table_name, key_value, group_id, unit_id, x_lock, s_lock) values(?, ?, ?, ?, ?, ?)";
-        queryRunner.insert(connection, lockSql, new ScalarHandler<Integer>(),
-                lockInfo.getTableName(),
-                lockInfo.getKeyValue(),
-                lockInfo.getGroupId(),
-                lockInfo.getUnitId(),
-                lockInfo.isXLock() ? 1 : null,
-                lockInfo.isXLock() ? null : 1);
-    }
-
-    @Override
-    public void clearLock(String groupId, String unitId) throws SQLException {
-        log.debug("txc > sql > executor > clear lock. groupId: {}, unitId: {}", groupId, unitId);
-        String cleanLockSql = "DELETE FROM `" + txcSql.lockTableName() + "` where group_id = ? and unit_id = ?";
-        queryRunner.update(cleanLockSql, groupId, unitId);
-
     }
 
     @Override

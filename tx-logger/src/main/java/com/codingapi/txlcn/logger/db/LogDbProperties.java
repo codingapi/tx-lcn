@@ -21,6 +21,8 @@ import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
@@ -29,13 +31,14 @@ import java.util.Objects;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@ConfigurationProperties(prefix = "tx-lcn.logger")
+@Component
 @Slf4j
 public class LogDbProperties extends HikariConfig {
 
     private boolean enabled = false;
 
-    @Autowired(required = false)
-    public LogDbProperties(DataSourceProperties dataSourceProperties) {
+    public LogDbProperties(@Autowired(required = false) DataSourceProperties dataSourceProperties) {
         if (Objects.isNull(dataSourceProperties) ||
                 Objects.isNull(dataSourceProperties.getDriverClassName()) ||
                 Objects.isNull(dataSourceProperties.getUrl())) {

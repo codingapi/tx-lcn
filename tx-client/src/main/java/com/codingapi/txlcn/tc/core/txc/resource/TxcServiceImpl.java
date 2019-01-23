@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core.txc.resource;
 
+import com.codingapi.txlcn.commons.exception.TCGlobalContextException;
 import com.codingapi.txlcn.commons.exception.TxcLogicException;
 import com.codingapi.txlcn.commons.lock.DTXLocks;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
@@ -28,6 +29,7 @@ import com.codingapi.txlcn.tc.core.txc.resource.undo.UndoLogAnalyser;
 import com.codingapi.txlcn.tc.core.txc.resource.util.SqlUtils;
 import com.codingapi.txlcn.tc.corelog.txc.TxcLogHelper;
 import com.codingapi.txlcn.tc.message.ReliableMessenger;
+import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.DbUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +39,7 @@ import org.springframework.util.DigestUtils;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Description:
@@ -58,24 +58,67 @@ public class TxcServiceImpl implements TxcService {
 
     private final ReliableMessenger reliableMessenger;
 
+    private final TCGlobalContext globalContext;
+
     @Autowired
-    public TxcServiceImpl(TxcSqlExecutor txcSqlExecutor, TxcLogHelper txcLogHelper, ReliableMessenger reliableMessenger) {
+    public TxcServiceImpl(TxcSqlExecutor txcSqlExecutor, TxcLogHelper txcLogHelper,
+                          ReliableMessenger reliableMessenger, TCGlobalContext globalContext) {
         this.txcSqlExecutor = txcSqlExecutor;
         this.txcLogHelper = txcLogHelper;
         this.reliableMessenger = reliableMessenger;
+        this.globalContext = globalContext;
     }
 
-    @Override
-    public void lockResource(LockInfo lockInfo, RollbackInfo rollbackInfo) throws TxcLogicException {
+    /**
+     * lock data line
+     *
+     * @param groupId   groupId
+     * @param unitId    unitId
+     * @param lockIdSet lockIdSet
+     * @param isXLock   isXLock
+     * @throws TxcLogicException 业务异常
+     */
+    private void lockDataLine(String groupId, String unitId, Set<String> lockIdSet, boolean isXLock) throws TxcLogicException {
         try {
-            // key value MD5 HEX to store
-            String lockId = DigestUtils.md5DigestAsHex(lockInfo.getKeyValue().getBytes(StandardCharsets.UTF_8));
-            if (!reliableMessenger.acquireLock(lockInfo.getGroupId(), lockId, lockInfo.isXLock() ? DTXLocks.X_LOCK : DTXLocks.S_LOCK)) {
+            if (!reliableMessenger.acquireLocks(lockIdSet, isXLock ? DTXLocks.X_LOCK : DTXLocks.S_LOCK)) {
                 throw new TxcLogicException("resource is locked! place try again later.");
             }
+            globalContext.addTxcLockId(groupId, unitId, lockIdSet);
         } catch (RpcException e) {
             throw new TxcLogicException("can't contact to any TM for lock info. default error.");
         }
+    }
+
+    /**
+     * save sql undo log
+     *
+     * @param groupId    groupId
+     * @param unitId     unitId
+     * @param sqlType    sqlType
+     * @param recordList recordList
+     * @throws TxcLogicException 业务异常
+     */
+    private void saveUndoLog(String groupId, String unitId, int sqlType, TableRecordList recordList) throws TxcLogicException {
+        UndoLogDO undoLogDO = new UndoLogDO();
+        undoLogDO.setRollbackInfo(SqlUtils.objectToBlob(recordList));
+        undoLogDO.setUnitId(unitId);
+        undoLogDO.setGroupId(groupId);
+        undoLogDO.setSqlType(sqlType);
+        try {
+            txcLogHelper.saveUndoLog(undoLogDO);
+        } catch (SQLException e) {
+            throw new TxcLogicException(e);
+        }
+    }
+
+    /**
+     * Hex String
+     *
+     * @param content origin string
+     * @return hex
+     */
+    private String hex(String content) {
+        return DigestUtils.md5DigestAsHex(content.getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
@@ -83,18 +126,15 @@ public class TxcServiceImpl implements TxcService {
         Connection connection = (Connection) DTXLocalContext.cur().getResource();
         try {
             List<ModifiedRecord> modifiedRecords = txcSqlExecutor.selectSqlPreviousPrimaryKeys(connection, selectImageParams);
+            Set<String> lockIdSet = new HashSet<>();
             for (ModifiedRecord modifiedRecord : modifiedRecords) {
                 for (Map.Entry<String, FieldCluster> entry : modifiedRecord.getFieldClusters().entrySet()) {
-                    String k = entry.getKey();
                     FieldCluster v = entry.getValue();
-                    lockResource(new LockInfo()
-                            .setGroupId(selectImageParams.getGroupId())
-                            .setUnitId(selectImageParams.getUnitId())
-                            .setxLock(isxLock)
-                            .setKeyValue(v.getPrimaryKeys().toString())
-                            .setTableName(k), selectImageParams.getRollbackInfo());
+                    // key value MD5 HEX to store
+                    lockIdSet.add(hex(v.getPrimaryKeys().toString()));
                 }
             }
+            lockDataLine(DTXLocalContext.cur().getGroupId(), DTXLocalContext.cur().getUnitId(), lockIdSet, isxLock);
         } catch (SQLException e) {
             throw new TxcLogicException(e);
         }
@@ -102,7 +142,6 @@ public class TxcServiceImpl implements TxcService {
 
     @Override
     public void resolveUpdateImage(UpdateImageParams updateImageParams) throws TxcLogicException {
-
         // 前置镜像数据集
         List<ModifiedRecord> modifiedRecords;
         Connection connection = (Connection) DTXLocalContext.cur().getResource();
@@ -112,8 +151,8 @@ public class TxcServiceImpl implements TxcService {
             throw new TxcLogicException(e);
         }
 
-
         TableRecordList tableRecords = new TableRecordList();
+        Set<String> lockIdSet = new HashSet<>();
 
         // Build reverse sql
         for (ModifiedRecord modifiedRecord : modifiedRecords) {
@@ -121,34 +160,25 @@ public class TxcServiceImpl implements TxcService {
                 TableRecord tableRecord = new TableRecord();
                 tableRecord.setTableName(entry.getKey());
                 tableRecord.setFieldCluster(entry.getValue());
+
                 tableRecords.getTableRecords().add(tableRecord);
 
-                // Lock Resource
-                this.lockResource(new LockInfo()
-                        .setxLock(true)
-                        .setKeyValue(tableRecord.getFieldCluster().getPrimaryKeys().toString())
-                        .setGroupId(updateImageParams.getGroupId())
-                        .setUnitId(updateImageParams.getUnitId())
-                        .setTableName(tableRecord.getTableName()), updateImageParams.getRollbackInfo());
+                lockIdSet.add(hex(tableRecord.getFieldCluster().getPrimaryKeys().toString()));
             }
         }
 
+        String groupId = DTXLocalContext.cur().getGroupId();
+        String unitId = DTXLocalContext.cur().getUnitId();
+
+        // lock
+        lockDataLine(groupId, unitId, lockIdSet, true);
+
         // save to h2db
-        UndoLogDO undoLogDO = new UndoLogDO();
-        undoLogDO.setGroupId(updateImageParams.getGroupId());
-        undoLogDO.setUnitId(updateImageParams.getUnitId());
-        undoLogDO.setRollbackInfo(SqlUtils.objectToBlob(tableRecords));
-        undoLogDO.setSqlType(SqlUtils.SQL_TYPE_UPDATE);
-        try {
-            txcLogHelper.saveUndoLog(undoLogDO);
-        } catch (SQLException e) {
-            throw new TxcLogicException(e);
-        }
+        saveUndoLog(groupId, unitId, SqlUtils.SQL_TYPE_UPDATE, tableRecords);
     }
 
     @Override
     public void resolveDeleteImage(DeleteImageParams deleteImageParams) throws TxcLogicException {
-
         // 前置数据
         List<ModifiedRecord> modifiedRecords;
         Connection connection = (Connection) DTXLocalContext.cur().getResource();
@@ -159,6 +189,7 @@ public class TxcServiceImpl implements TxcService {
         }
 
         TableRecordList tableRecords = new TableRecordList();
+        Set<String> lockIdSet = new HashSet<>();
 
         // rollback sql
         for (ModifiedRecord modifiedRecord : modifiedRecords) {
@@ -166,29 +197,20 @@ public class TxcServiceImpl implements TxcService {
                 TableRecord tableRecord = new TableRecord();
                 tableRecord.setTableName(entry.getKey());
                 tableRecord.setFieldCluster(entry.getValue());
-                tableRecords.getTableRecords().add(tableRecord);
 
-                // Lock Resource
-                this.lockResource(new LockInfo()
-                        .setxLock(true)
-                        .setGroupId(deleteImageParams.getGroupId())
-                        .setUnitId(deleteImageParams.getUnitId())
-                        .setKeyValue(tableRecord.getFieldCluster().getPrimaryKeys().toString())
-                        .setTableName(tableRecord.getTableName()), deleteImageParams.getRollbackInfo());
+                lockIdSet.add(hex(tableRecord.getFieldCluster().getPrimaryKeys().toString()));
+                tableRecords.getTableRecords().add(tableRecord);
             }
         }
 
+        String groupId = DTXLocalContext.cur().getGroupId();
+        String unitId = DTXLocalContext.cur().getUnitId();
+
+        // Lock Resource
+        lockDataLine(groupId, unitId, lockIdSet, true);
+
         // save to db
-        UndoLogDO undoLogDO = new UndoLogDO();
-        undoLogDO.setRollbackInfo(SqlUtils.objectToBlob(tableRecords));
-        undoLogDO.setGroupId(deleteImageParams.getGroupId());
-        undoLogDO.setUnitId(deleteImageParams.getUnitId());
-        undoLogDO.setSqlType(SqlUtils.SQL_TYPE_DELETE);
-        try {
-            txcLogHelper.saveUndoLog(undoLogDO);
-        } catch (SQLException e) {
-            throw new TxcLogicException(e);
-        }
+        saveUndoLog(groupId, unitId, SqlUtils.SQL_TYPE_DELETE, tableRecords);
     }
 
     @Override
@@ -223,30 +245,25 @@ public class TxcServiceImpl implements TxcService {
         // save to db
         TableRecordList tableRecords = new TableRecordList();
         tableRecords.getTableRecords().add(new TableRecord(insertImageParams.getTableName(), fieldCluster));
-
-        UndoLogDO undoLogDO = new UndoLogDO();
-        undoLogDO.setRollbackInfo(SqlUtils.objectToBlob(tableRecords));
-        undoLogDO.setUnitId(insertImageParams.getUnitId());
-        undoLogDO.setGroupId(insertImageParams.getGroupId());
-        undoLogDO.setSqlType(SqlUtils.SQL_TYPE_INSERT);
-        try {
-            txcLogHelper.saveUndoLog(undoLogDO);
-        } catch (SQLException e) {
-            throw new TxcLogicException(e);
-        }
+        saveUndoLog(insertImageParams.getGroupId(), insertImageParams.getUnitId(), SqlUtils.SQL_TYPE_INSERT, tableRecords);
     }
 
     @Override
     public void cleanTxc(String groupId, String unitId) throws TxcLogicException {
         // 清理事务单元相关锁
-//            reliableMessenger.releaseLock(groupId, )
-        // todo RELEASE
+        try {
+            reliableMessenger.releaseLocks(globalContext.findTxcLockSet(groupId, unitId));
+        } catch (RpcException e) {
+            throw new TxcLogicException(e);
+        } catch (TCGlobalContextException e) {
+            // ignored, if non lock to release.
+        }
 
         // 清理事务单元相关undo_log
         try {
             txcLogHelper.deleteUndoLog(groupId, unitId);
         } catch (SQLException e) {
-            log.error(" error {}-----------------{}", e.getErrorCode(), e.getMessage());
+            throw new TxcLogicException(e);
         }
     }
 

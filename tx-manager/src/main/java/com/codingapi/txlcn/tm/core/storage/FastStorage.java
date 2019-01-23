@@ -1,6 +1,9 @@
 package com.codingapi.txlcn.tm.core.storage;
 
+import com.codingapi.txlcn.commons.exception.FastStorageException;
+
 import java.util.List;
+import java.util.Set;
 
 /**
  * Description: Manager缓存使用规范
@@ -86,20 +89,20 @@ public interface FastStorage {
      * 保存锁
      *
      * @param contextId contextId
-     * @param lockId    lockId
-     * @param type      type
+     * @param locks     locks
+     * @param lockValue lockValue
      * @throws FastStorageException fastStorageException
      */
-    void acquireLock(String contextId, String lockId, int type) throws FastStorageException;
+    void acquireLocks(String contextId, Set<String> locks, LockValue lockValue) throws FastStorageException;
 
     /**
      * 释放锁
      *
      * @param contextId contextId
-     * @param lockId    lockId
+     * @param locks     locks
      * @throws FastStorageException fastStorageException
      */
-    void releaseLock(String contextId, String lockId) throws FastStorageException;
+    void releaseLocks(String contextId, Set<String> locks) throws FastStorageException;
 
 
 

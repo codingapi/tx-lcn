@@ -71,8 +71,8 @@ public interface TransactionManager {
     /**
      * 获取事务状态（补偿机制）。出错返回-1
      *
-     * @param dtxContext groupTransaction
+     * @param groupId groupId
      * @return transactionState
      */
-    int transactionState(DTXContext dtxContext);
+    int transactionState(String groupId);
 }

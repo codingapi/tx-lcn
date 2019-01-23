@@ -1,12 +1,17 @@
 package com.codingapi.txlcn.tc.message.helper;
 
+import com.codingapi.txlcn.commons.exception.LcnBusinessException;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
+import com.codingapi.txlcn.spi.message.params.JoinGroupParams;
+import com.codingapi.txlcn.spi.message.params.NotifyGroupParams;
 import com.codingapi.txlcn.spi.message.util.MessageUtils;
 import com.codingapi.txlcn.tc.message.ReliableMessenger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 /**
  * Description:
@@ -24,18 +29,77 @@ public class LoopMessenger implements ReliableMessenger {
         this.rpcClient = rpcClient;
     }
 
-
     @Override
-    public boolean acquireLock(String groupId, String lockId, int type) throws RpcException {
-        MessageDto messageDto = TxMangerReporter.requestUntilNonManager(rpcClient,
-                MessageCreator.acquireLock(groupId, lockId, type), "acquire lock fail.");
+    public boolean acquireLocks(Set<String> lockIdSet, int type) throws RpcException {
+        MessageDto messageDto = request(MessageCreator.acquireLock(lockIdSet, type), "release lock fail");
         return MessageUtils.statusOk(messageDto);
     }
 
     @Override
-    public boolean releaseLock(String groupId, String lockId) throws RpcException {
-        MessageDto messageDto = TxMangerReporter.requestUntilNonManager(rpcClient,
-                MessageCreator.releaseLock(groupId, lockId), "release lock fail.");
-        return MessageUtils.statusOk(messageDto);
+    public void releaseLocks(Set<String> lockIdList) throws RpcException {
+        MessageDto messageDto = rpcClient.request(rpcClient.loadRemoteKey(), MessageCreator.releaseLock(lockIdList));
+        if (!MessageUtils.statusOk(messageDto)) {
+            throw new RpcException("release locks fail.");
+        }
+    }
+
+    @Override
+    public void notifyGroup(String groupId, int transactionState) throws RpcException, LcnBusinessException {
+        NotifyGroupParams notifyGroupParams = new NotifyGroupParams();
+        notifyGroupParams.setGroupId(groupId);
+        notifyGroupParams.setState(transactionState);
+        MessageDto messageDto = request(MessageCreator.notifyGroup(notifyGroupParams));
+        // 成功清理发起方事务
+        if (!MessageUtils.statusOk(messageDto)) {
+            throw new LcnBusinessException(messageDto.loadBean(Throwable.class));
+        }
+    }
+
+    @Override
+    public void joinGroup(String groupId, String unitId, String unitType, int transactionState) throws RpcException, LcnBusinessException {
+        JoinGroupParams joinGroupParams = new JoinGroupParams();
+        joinGroupParams.setGroupId(groupId);
+        joinGroupParams.setUnitId(unitId);
+        joinGroupParams.setUnitType(unitType);
+        joinGroupParams.setTransactionState(transactionState);
+        MessageDto messageDto = request(MessageCreator.joinGroup(joinGroupParams));
+        if (!MessageUtils.statusOk(messageDto)) {
+            throw new LcnBusinessException(messageDto.loadBean(Throwable.class));
+        }
+    }
+
+    @Override
+    public void createGroup(String groupId) throws RpcException, LcnBusinessException {
+        // TxManager创建事务组
+        MessageDto messageDto = request(MessageCreator.createGroup(groupId));
+        if (!MessageUtils.statusOk(messageDto)) {
+            throw new LcnBusinessException(messageDto.loadBean(Throwable.class));
+        }
+    }
+
+    @Override
+    public MessageDto request(MessageDto messageDto) throws RpcException {
+        return request(messageDto, "request fail");
+    }
+
+
+    /**
+     * 强通讯
+     *
+     * @param messageDto            通讯数据
+     * @param whenNonManagerMessage 异常提示
+     * @return MessageDto
+     * @throws RpcException RpcException
+     */
+    private MessageDto request(MessageDto messageDto, String whenNonManagerMessage) throws RpcException {
+        while (true) {
+            try {
+                return rpcClient.request(rpcClient.loadRemoteKey(), messageDto);
+            } catch (RpcException e) {
+                if (e.getCode() == RpcException.NON_TX_MANAGER) {
+                    throw new RpcException(whenNonManagerMessage + ". non tx-manager is alive.");
+                }
+            }
+        }
     }
 }

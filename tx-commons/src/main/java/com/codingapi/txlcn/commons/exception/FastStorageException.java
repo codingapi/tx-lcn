@@ -1,4 +1,4 @@
-package com.codingapi.txlcn.tm.core.storage;
+package com.codingapi.txlcn.commons.exception;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

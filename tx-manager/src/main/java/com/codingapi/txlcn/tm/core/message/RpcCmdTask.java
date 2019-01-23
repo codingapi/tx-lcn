@@ -59,11 +59,11 @@ public class RpcCmdTask implements Runnable {
         MessageDto messageDto = null;
         try {
             Serializable message = rpcExecuteService.execute(transactionCmd);
-            messageDto = MessageCreator.notifyGroupOkResponse(message,action);
-        } catch(Throwable e) {
+            messageDto = MessageCreator.notifyGroupOkResponse(message, action);
+        } catch (Throwable e) {
             log.error(e.getMessage(), e);
-            messageDto = MessageCreator.notifyGroupFailResponse(e,action);
-            txLogger.trace(transactionCmd.getGroupId(),"","rpccmd","error->"+messageDto.getAction());
+            messageDto = MessageCreator.notifyGroupFailResponse(e, action);
+            txLogger.trace(transactionCmd.getGroupId(), "", "rpccmd", "error->" + messageDto.getAction());
         } finally {
             // 对需要响应信息的请求做出响应
             if (rpcCmd.getKey() != null) {
@@ -72,7 +72,7 @@ public class RpcCmdTask implements Runnable {
                     messageDto.setGroupId(rpcCmd.getMsg().getGroupId());
                     rpcCmd.setMsg(messageDto);
                     rpcClient.send(rpcCmd);
-                    txLogger.trace(transactionCmd.getGroupId(),"","rpccmd","success->"+messageDto.getAction());
+                    txLogger.trace(transactionCmd.getGroupId(), "", "rpccmd", "success->" + messageDto.getAction());
                 } catch (RpcException ignored) {
                 }
             }

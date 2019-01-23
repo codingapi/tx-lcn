@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.core.txc.resource.rs;
+package com.codingapi.txlcn.tc.core.txc.resource;
 
 import com.codingapi.txlcn.tc.core.txc.resource.def.bean.FieldValue;
 import com.codingapi.txlcn.tc.core.txc.resource.def.bean.ModifiedRecord;
@@ -32,12 +32,12 @@ import java.util.List;
  *
  * @author ujued
  */
-public class UpdateSqlPreDataHandler implements ResultSetHandler<List<ModifiedRecord>> {
+public class TxcModifiedRecordListHandler implements ResultSetHandler<List<ModifiedRecord>> {
 
     private final List<String> columns;
     private final List<String> primaryKeys;
 
-    public UpdateSqlPreDataHandler(List<String> primaryKeys, List<String> columns) {
+    public TxcModifiedRecordListHandler(List<String> primaryKeys, List<String> columns) {
         this.columns = columns;
         this.primaryKeys = primaryKeys;
     }

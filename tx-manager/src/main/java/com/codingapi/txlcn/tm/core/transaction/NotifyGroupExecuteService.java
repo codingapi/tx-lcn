@@ -67,7 +67,7 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
 
             int commitState = notifyGroupParams.getState();
             //获取事务状态（当手动回滚时会先设置状态）
-            int transactionState = transactionManager.transactionState(dtxContext);
+            int transactionState = transactionManager.transactionState(transactionCmd.getGroupId());
             boolean hasThrow = false;
             if (transactionState == 0) {
                 commitState = 0;

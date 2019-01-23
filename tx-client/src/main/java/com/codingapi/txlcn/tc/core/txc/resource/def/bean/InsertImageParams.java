@@ -20,7 +20,12 @@ import java.util.Map;
 public class InsertImageParams {
     private String groupId;
     private String unitId;
+
+    /**
+     * Table Name
+     */
     private String tableName;
+
     /**
      * Auto Increment PK Values
      */

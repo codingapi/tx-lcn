@@ -38,21 +38,14 @@ public class AskTransactionStateExecuteService implements RpcExecuteService {
 
     private final TransactionManager transactionManager;
 
-    private final DTXContextRegistry dtxContextRegistry;
-
     @Autowired
-    public AskTransactionStateExecuteService(TransactionManager transactionManager, DTXContextRegistry dtxContextRegistry) {
+    public AskTransactionStateExecuteService(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
-        this.dtxContextRegistry = dtxContextRegistry;
     }
 
     @Override
     public Serializable execute(TransactionCmd transactionCmd) {
-        try {
-            int state = transactionManager.transactionState(dtxContextRegistry.get(transactionCmd.getGroupId()));
-            return state == -1 ? 0 : state;
-        } catch (TransactionException e) {
-            return 0;
-        }
+        int state = transactionManager.transactionState(transactionCmd.getGroupId());
+        return state == -1 ? 0 : state;
     }
 }

@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core.lcn.resource;
 
+import com.codingapi.txlcn.commons.exception.TCGlobalContextException;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.support.resouce.TransactionResourceExecutor;
@@ -32,19 +33,23 @@ import java.util.function.Supplier;
 @Slf4j
 public class LcnTransactionResourceExecutor implements TransactionResourceExecutor {
 
-    private final TCGlobalContext context;
+    private final TCGlobalContext globalContext;
 
     @Autowired
-    public LcnTransactionResourceExecutor(TCGlobalContext context) {
-        this.context = context;
+    public LcnTransactionResourceExecutor(TCGlobalContext globalContext) {
+        this.globalContext = globalContext;
     }
 
     @Override
     public Connection proxyConnection(Supplier<Connection> connectionSupplier) throws Throwable {
         String groupId = DTXLocalContext.cur().getGroupId();
-        String unitId = DTXLocalContext.cur().getUnitId();
-        Connection connection = context.lcnConnection(groupId, unitId, connectionSupplier);
-        connection.setAutoCommit(false);
-        return connection;
+        try {
+            return globalContext.getLcnConnection(groupId);
+        } catch (TCGlobalContextException e) {
+            LcnConnectionProxy lcnConnectionProxy = new LcnConnectionProxy(connectionSupplier.get());
+            globalContext.setLcnConnection(groupId, lcnConnectionProxy);
+            lcnConnectionProxy.setAutoCommit(false);
+            return lcnConnectionProxy;
+        }
     }
 }

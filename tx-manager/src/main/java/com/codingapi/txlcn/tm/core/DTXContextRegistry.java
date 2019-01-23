@@ -9,7 +9,7 @@ import com.codingapi.txlcn.commons.exception.TransactionException;
  * @author ujued
  */
 public interface DTXContextRegistry {
-    
+
     /**
      * 创建事务组上下文
      *
@@ -18,7 +18,7 @@ public interface DTXContextRegistry {
      * @throws TransactionException TransactionException
      */
     DTXContext create(String groupId) throws TransactionException;
-    
+
     /**
      * 获取事务组上下文
      *
@@ -27,11 +27,19 @@ public interface DTXContextRegistry {
      * @throws TransactionException TransactionException
      */
     DTXContext get(String groupId) throws TransactionException;
-    
+
     /**
      * 销毁上下文
      *
      * @param groupId groupId
      */
     void destroyContext(String groupId);
+
+    /**
+     * 事务状态
+     *
+     * @param groupId groupId
+     * @return state
+     */
+    int transactionState(String groupId);
 }

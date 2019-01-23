@@ -36,7 +36,7 @@ import org.springframework.util.StringUtils;
  * @author codingapi
  */
 @Component
-public class TCInitialization implements TxLcnInitializer {
+public class TCAutoInitialization implements TxLcnInitializer {
 
     private final AspectLogHelper aspectLogHelper;
 
@@ -51,11 +51,11 @@ public class TCInitialization implements TxLcnInitializer {
     private final ConfigurableEnvironment environment;
 
     @Autowired
-    public TCInitialization(AspectLogHelper aspectLogHelper,
-                            TXLCNClientMessageServer txLcnClientMessageServer,
-                            DTXChecking dtxChecking,
-                            TransactionCleanTemplate transactionCleanTemplate, TxcLogHelper txcLogHelper,
-                            ConfigurableEnvironment environment) {
+    public TCAutoInitialization(AspectLogHelper aspectLogHelper,
+                                TXLCNClientMessageServer txLcnClientMessageServer,
+                                DTXChecking dtxChecking,
+                                TransactionCleanTemplate transactionCleanTemplate, TxcLogHelper txcLogHelper,
+                                ConfigurableEnvironment environment) {
         this.aspectLogHelper = aspectLogHelper;
         this.txLcnClientMessageServer = txLcnClientMessageServer;
         this.dtxChecking = dtxChecking;
@@ -66,10 +66,13 @@ public class TCInitialization implements TxLcnInitializer {
 
     @Override
     public void init() throws Exception {
+        // aspect log init (H2db).
         aspectLogHelper.init();
 
+        // txc undo log init (H2db).
         txcLogHelper.init();
 
+        // rpc client init.
         txLcnClientMessageServer.init();
 
         // aware the transaction clean template to the simpleDtxChecking

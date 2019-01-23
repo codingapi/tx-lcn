@@ -4,7 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.commons.lock.DTXLocks;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
-import com.codingapi.txlcn.tm.core.storage.FastStorageException;
+import com.codingapi.txlcn.commons.exception.FastStorageException;
+import com.codingapi.txlcn.tm.core.storage.LockValue;
 import com.codingapi.txlcn.tm.core.storage.TransactionUnit;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +65,6 @@ public class RedisStorage implements FastStorage {
     @Override
     public List<TransactionUnit> findTransactionUnitsFromGroup(String groupId) throws FastStorageException {
         Map<Object, Object> units = redisTemplate.opsForHash().entries(REDIS_PREFIX + groupId);
-        log.debug("transaction units: {}", units);
         return units.entrySet().stream()
                 .filter(objectObjectEntry -> !objectObjectEntry.getKey().equals("root"))
                 .map(objectObjectEntry -> (TransactionUnit) objectObjectEntry.getValue()).collect(Collectors.toList());
@@ -102,35 +102,38 @@ public class RedisStorage implements FastStorage {
         try {
             return Integer.valueOf(state.toString());
         } catch (Exception e) {
-            return 0;
+            return -1;
         }
     }
 
     @Override
-    public void acquireLock(String contextId, String lockId, int lockType) throws FastStorageException {
-        String globalLockId = contextId + lockId;
-        redisTemplate.setEnableTransactionSupport(true);
+    public void acquireLocks(String contextId, Set<String> locks, LockValue lockValue) throws FastStorageException {
+        Set<String> successLocks = new HashSet<>();
         try {
-            redisTemplate.multi();
-            Object type = redisTemplate.opsForValue().get(globalLockId);
-            if (Objects.nonNull(type)) {
-                if (type.equals(DTXLocks.X_LOCK) || lockType != DTXLocks.S_LOCK) {
-                    // repeat x_lock exception
-                    throw new FastStorageException("repeat x_lock", FastStorageException.EX_CODE_REPEAT_LOCK);
+            for (String lockId : locks) {
+                String globalLockId = contextId + lockId;
+                LockValue lock = (LockValue) redisTemplate.opsForValue().get(globalLockId);
+                if (Objects.nonNull(lock)) {
+                    // 不在同一个DTX下，已存在的锁是排它锁 或者 新请求的不是共享锁时， 获取锁失败
+                    if (!lockValue.getGroupId().equals(lock.getGroupId()) &&
+                            (lock.getLockType() == DTXLocks.X_LOCK || lockValue.getLockType() != DTXLocks.S_LOCK)) {
+                        throw new FastStorageException("repeat x_lock", FastStorageException.EX_CODE_REPEAT_LOCK);
+                    }
+                    // 直接成功
+                    return;
                 }
+                redisTemplate.opsForValue().set(globalLockId, lockValue, managerConfig.getDtxLockTime(), TimeUnit.MILLISECONDS);
+                successLocks.add(globalLockId);
             }
-            redisTemplate.opsForValue().set(globalLockId, lockType, managerConfig.getDtxLockTime(), TimeUnit.MILLISECONDS);
-            redisTemplate.exec();
-        } catch (Exception e) {
-            redisTemplate.discard();
-        } finally {
-            redisTemplate.setEnableTransactionSupport(false);
+        } catch (FastStorageException e) {
+            redisTemplate.delete(successLocks);
+            throw e;
         }
     }
 
     @Override
-    public void releaseLock(String cate, String key) {
-        redisTemplate.delete(cate + key);
+    public void releaseLocks(String cate, Set<String> locks) {
+        redisTemplate.delete(locks.stream().map(lock -> (cate + lock)).collect(Collectors.toSet()));
     }
 
     @Override

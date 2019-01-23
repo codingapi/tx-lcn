@@ -15,17 +15,14 @@
  */
 package com.codingapi.txlcn.tc.core.txc.control;
 
-import com.codingapi.txlcn.tc.core.DTXLocalContext;
-import com.codingapi.txlcn.tc.core.TxTransactionInfo;
-import com.codingapi.txlcn.tc.core.txc.resource.def.bean.RollbackInfo;
-import com.codingapi.txlcn.tc.support.template.TransactionControlTemplate;
-import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
+import com.codingapi.txlcn.tc.core.DTXLocalControl;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
+import com.codingapi.txlcn.tc.support.template.TransactionControlTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
 
 /**
  * Description:
@@ -53,8 +50,6 @@ public class TxcStartingTransaction implements DTXLocalControl {
         } catch (Exception e) {
             throw new BeforeBusinessException(e);
         }
-        // 准备回滚信息容器
-        DTXLocalContext.cur().setAttachment(new RollbackInfo());
 
         // TXC 类型事务需要代理资源
         DTXLocalContext.makeProxy();
@@ -75,13 +70,7 @@ public class TxcStartingTransaction implements DTXLocalControl {
 
     @Override
     public void postBusinessCode(TxTransactionInfo info) {
-        RollbackInfo rollbackInfo = (RollbackInfo) DTXLocalContext.cur().getAttachment();
         int state = DTXLocalContext.transactionState();
-
-        // 非成功状态。（事务导致）{#link TxcServiceImpl.lockResource}
-        if (Objects.nonNull(rollbackInfo) && rollbackInfo.getStatus() < 0) {
-            state = -1;
-        }
 
         // 关闭事务组
         transactionControlTemplate.notifyGroup(info.getGroupId(), info.getUnitId(), info.getTransactionType(), state);

@@ -26,6 +26,7 @@
         <module>tx-client-dubbo</module>
         <module>tx-manager</module>
         <module>tx-logger</module>
+        <module>tx-test</module>
     </modules>
 
     <properties>

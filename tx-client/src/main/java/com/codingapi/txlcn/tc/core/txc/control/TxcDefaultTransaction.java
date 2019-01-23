@@ -16,9 +16,8 @@
 package com.codingapi.txlcn.tc.core.txc.control;
 
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
-import com.codingapi.txlcn.tc.core.TxTransactionInfo;
-import com.codingapi.txlcn.tc.core.txc.resource.def.bean.RollbackInfo;
 import com.codingapi.txlcn.tc.core.DTXLocalControl;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
 import org.springframework.stereotype.Component;
 
 /**
@@ -32,8 +31,6 @@ public class TxcDefaultTransaction implements DTXLocalControl {
 
     @Override
     public void preBusinessCode(TxTransactionInfo info) {
-        // 准备回滚信息容器
-        DTXLocalContext.cur().setAttachment(new RollbackInfo());
         // TXC 类型事务需要代理资源
         DTXLocalContext.makeProxy();
     }

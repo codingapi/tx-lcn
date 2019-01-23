@@ -18,12 +18,11 @@ package com.codingapi.txlcn.logger;
 import com.codingapi.txlcn.logger.db.DefaultTxLogger;
 import com.codingapi.txlcn.logger.db.LogDbHelper;
 import com.codingapi.txlcn.logger.db.LogDbProperties;
-import com.codingapi.txlcn.logger.helper.MysqlLoggerHelper;
 import com.codingapi.txlcn.logger.exception.TxLoggerException;
+import com.codingapi.txlcn.logger.helper.MysqlLoggerHelper;
 import com.codingapi.txlcn.logger.helper.TxLcnLogDbHelper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -41,12 +40,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 @ComponentScan
 @Configuration
 public class TxLoggerConfiguration {
-
-    @Bean
-    @ConfigurationProperties(prefix = "tx-lcn.logger")
-    public LogDbProperties logDbProperties(DataSourceProperties dataSourceProperties) {
-        return new LogDbProperties(dataSourceProperties);
-    }
 
     @Configuration
     @ConditionalOnProperty(name = "tx-lcn.logger.enabled", havingValue = "true")

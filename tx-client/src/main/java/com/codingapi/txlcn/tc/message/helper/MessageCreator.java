@@ -21,6 +21,7 @@ import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.params.*;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * @author lorne
@@ -71,38 +72,34 @@ public class MessageCreator {
     /**
      * 申请锁消息
      *
-     * @param groupId  groupId
-     * @param lockId   lockId
+     * @param locks    locks
      * @param lockType lockType
      * @return message
      */
-    public static MessageDto acquireLock(String groupId, String lockId, int lockType) {
+    public static MessageDto acquireLock(Set<String> locks, int lockType) {
         DTXLockParams dtxLockParams = new DTXLockParams();
         dtxLockParams.setContextId(Transactions.APPLICATION_ID_WHEN_RUNNING);
-        dtxLockParams.setLockId(lockId);
+        dtxLockParams.setLocks(locks);
         dtxLockParams.setLockType(lockType);
         MessageDto messageDto = new MessageDto();
         messageDto.setAction(MessageConstants.ACTION_ACQUIRE_DTX_LOCK);
         messageDto.setData(dtxLockParams);
-        messageDto.setGroupId(groupId);
         return messageDto;
     }
 
     /**
      * 释放锁消息
      *
-     * @param groupId groupId
-     * @param lockId  lockId
+     * @param locks locks
      * @return message
      */
-    public static MessageDto releaseLock(String groupId, String lockId) {
+    public static MessageDto releaseLock(Set<String> locks) {
         DTXLockParams dtxLockParams = new DTXLockParams();
         dtxLockParams.setContextId(Transactions.APPLICATION_ID_WHEN_RUNNING);
-        dtxLockParams.setLockId(lockId);
+        dtxLockParams.setLocks(locks);
         MessageDto messageDto = new MessageDto();
         messageDto.setAction(MessageConstants.ACTION_RELEASE_DTX_LOCK);
         messageDto.setData(dtxLockParams);
-        messageDto.setGroupId(groupId);
         return messageDto;
     }
 

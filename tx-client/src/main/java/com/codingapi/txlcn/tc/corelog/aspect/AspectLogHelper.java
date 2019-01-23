@@ -59,7 +59,7 @@ public class AspectLogHelper implements LogHelper {
                 "UNIT_ID_HASH BIGINT NOT NULL," +
                 "TIME BIGINT NOT NULL, " +
                 "PRIMARY KEY(ID) )");
-        log.info("Aspect table TXLCN_LOG finished.");
+        log.info("Aspect log table finished (H2 DATABASE)");
     }
 
 

@@ -83,9 +83,14 @@ public class MessageConstants {
     public static final String ACTION_ACQUIRE_DTX_LOCK = "qdtxl";
 
     /**
-     *
+     * 释放分布式事务锁
      */
     public static final String ACTION_RELEASE_DTX_LOCK = "rdtxl";
+
+
+    public static final String SYS_GROUP_INIT = "";
+
+    public static final String SYS_GROUP_NON_REMOTE = "NON_REMOTE_CALL";
 
     /**
      * 发起请求状态

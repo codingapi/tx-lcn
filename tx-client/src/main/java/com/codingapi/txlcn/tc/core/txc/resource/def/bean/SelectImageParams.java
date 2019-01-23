@@ -31,9 +31,6 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class SelectImageParams {
-    private String groupId;
-    private String unitId;
-    private RollbackInfo rollbackInfo;
     private List<String> primaryKeys;
     private String sql;
 }

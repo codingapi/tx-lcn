@@ -19,7 +19,7 @@ import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
 import com.codingapi.txlcn.tm.cluster.TxManagerAutoCluster;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
-import com.codingapi.txlcn.tm.core.storage.FastStorageException;
+import com.codingapi.txlcn.commons.exception.FastStorageException;
 import com.codingapi.txlcn.tm.support.message.TxLcnManagerServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

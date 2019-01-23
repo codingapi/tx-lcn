@@ -36,12 +36,11 @@ public class Transactions {
     public static final String TXC = "txc";
 
     /////////// 常量 //////////////////////
+    public static final String TE = "tx_ex";
 
-    public static final String TAG_TRANSACTION = "transaction";
+    public static final String TAG_TRANSACTION = "tx";
 
-    public static final String TAG_TASK = "task";
-
-    public static final String TAG_COMPENSATION = "compensation";
+    public static final String TAG_TASK = "tx_task";
 
     /////////// 工具方法  ////////////////////////////////////////////
 

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.support.cache;
+package com.codingapi.txlcn.tc.support.context;
 
-import com.codingapi.txlcn.tc.support.context.DTXContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -66,6 +65,10 @@ public class MapBasedTransactionAttachmentCache implements TransactionAttachment
     public <T> void attach(String groupId, String unitId, T attachment) {
         if (Objects.isNull(groupId)) {
             log.warn("GroupId is null!");
+            return;
+        }
+        if (Objects.isNull(attachment)) {
+            log.error("null attachment.");
             return;
         }
         if (transactionInfoMap.containsKey(groupId)) {

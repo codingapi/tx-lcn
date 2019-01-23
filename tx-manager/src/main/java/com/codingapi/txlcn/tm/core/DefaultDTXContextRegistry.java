@@ -2,7 +2,7 @@ package com.codingapi.txlcn.tm.core;
 
 import com.codingapi.txlcn.commons.exception.TransactionException;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
-import com.codingapi.txlcn.tm.core.storage.FastStorageException;
+import com.codingapi.txlcn.commons.exception.FastStorageException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -58,6 +58,15 @@ public class DefaultDTXContextRegistry implements DTXContextRegistry {
             } catch (FastStorageException e1) {
                 throw new IllegalStateException(e1);
             }
+        }
+    }
+
+    @Override
+    public int transactionState(String groupId) {
+        try {
+            return fastStorage.getTransactionState(groupId);
+        } catch (FastStorageException e) {
+            return -1;
         }
     }
 }

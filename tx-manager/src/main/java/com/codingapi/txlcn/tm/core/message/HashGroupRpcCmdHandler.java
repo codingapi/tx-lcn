@@ -19,6 +19,7 @@ import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.support.ManagerRpcBeanHelper;
 import com.codingapi.txlcn.spi.message.dto.RpcCmd;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Component
-public class HashGroupRpcCmdHandler {
+public class HashGroupRpcCmdHandler implements DisposableBean {
     private final List<ExecutorService> executors;
     private final int concurrentLevel;
     private final ManagerRpcBeanHelper beanHelper;
@@ -52,32 +53,36 @@ public class HashGroupRpcCmdHandler {
         for (int i = 0; i < this.concurrentLevel; i++) {
             this.executors.add(Executors.newSingleThreadExecutor(r -> new Thread(r, "tx-cmd-executor")));
         }
-
-        // 等待线程池任务完成
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            for (ExecutorService executorService : executors) {
-                executorService.shutdown();
-            }
-            for (ExecutorService executorService : executors) {
-                try {
-                    executorService.awaitTermination(10, TimeUnit.MINUTES);
-                } catch (InterruptedException ignored) {
-                }
-            }
-        }));
-
     }
 
     void handleMessage(RpcCmd rpcCmd) {
-        // 按事务组hash值从有限的线程池中做出选择
         String groupId = rpcCmd.getMsg().getGroupId();
+
+        // 不需要排队的消息
         if (Objects.isNull(groupId)) {
-            throw new IllegalStateException("bad request! message's groupId not nullable!");
+            log.debug("non fell in message.");
+            new RpcCmdTask(beanHelper, rpcCmd).run();
+            return;
         }
+
+        // 按事务组hash值从有限的线程池中做出选择
         int index = Math.abs(rpcCmd.getMsg().getGroupId().hashCode() % this.concurrentLevel);
         log.debug("group:{}'s message dispatched executor index: {}", rpcCmd.getMsg().getGroupId(), index);
 
         // 提交事务消息，处理
         executors.get(index).submit(new RpcCmdTask(beanHelper, rpcCmd));
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        for (ExecutorService executorService : executors) {
+            executorService.shutdown();
+        }
+        for (ExecutorService executorService : executors) {
+            try {
+                executorService.awaitTermination(6, TimeUnit.SECONDS);
+            } catch (InterruptedException ignored) {
+            }
+        }
     }
 }

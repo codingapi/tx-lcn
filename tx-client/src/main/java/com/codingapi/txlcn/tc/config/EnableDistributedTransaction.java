@@ -1,8 +1,6 @@
 package com.codingapi.txlcn.tc.config;
 
-import com.codingapi.txlcn.tc.TCConfiguration;
-import com.codingapi.txlcn.logger.TxLoggerConfiguration;
-import com.codingapi.txlcn.spi.sleuth.TxSleuthApiConfiguration;
+import com.codingapi.txlcn.tc.TCAutoConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -16,10 +14,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@Import({TCConfiguration.class,
-        TxLoggerConfiguration.class,
-        TxSleuthApiConfiguration.class,
-        DependenciesImportSelector.class})
+@Import(TCAutoConfiguration.class)
 public @interface EnableDistributedTransaction {
 
 }

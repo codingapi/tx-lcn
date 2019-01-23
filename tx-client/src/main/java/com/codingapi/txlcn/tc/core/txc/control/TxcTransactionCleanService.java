@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 public class TxcTransactionCleanService implements TransactionCleanService {
 
     private final TxcService txcService;
-    
+
     @Autowired
     public TxcTransactionCleanService(TxcService txcService) {
         this.txcService = txcService;
@@ -44,7 +44,7 @@ public class TxcTransactionCleanService implements TransactionCleanService {
     public void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException {
         try {
             // 若需要回滚读undo_log，进行回滚
-            if (state != 1 && state != -1) {
+            if (state == 0) {
                 txcService.undo(groupId, unitId);
             }
 

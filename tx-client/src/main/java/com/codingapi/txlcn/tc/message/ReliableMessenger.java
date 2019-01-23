@@ -1,6 +1,10 @@
 package com.codingapi.txlcn.tc.message;
 
+import com.codingapi.txlcn.commons.exception.LcnBusinessException;
+import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
+
+import java.util.Set;
 
 /**
  * Description:
@@ -9,8 +13,15 @@ import com.codingapi.txlcn.spi.message.exception.RpcException;
  * @author ujued
  */
 public interface ReliableMessenger {
+    boolean acquireLocks(Set<String> lockIdSet, int type) throws RpcException;
 
-    boolean acquireLock(String groupId, String lockId, int type) throws RpcException;
+    void releaseLocks(Set<String> lockIdList) throws RpcException;
 
-    boolean releaseLock(String groupId, String lockId) throws RpcException;
+    void notifyGroup(String groupId, int transactionState) throws RpcException, LcnBusinessException;
+
+    void joinGroup(String groupId, String unitId, String unitType, int transactionState) throws RpcException, LcnBusinessException;
+
+    void createGroup(String groupId) throws RpcException, LcnBusinessException;
+
+    MessageDto request(MessageDto messageDto) throws RpcException;
 }

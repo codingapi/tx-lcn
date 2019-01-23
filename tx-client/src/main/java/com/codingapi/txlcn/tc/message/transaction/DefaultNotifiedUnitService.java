@@ -69,7 +69,7 @@ public class DefaultNotifiedUnitService implements RpcExecuteService {
                     notifyUnitParams.getUnitId(),
                     notifyUnitParams.getUnitType(),
                     notifyUnitParams.getState());
-            return null;
+            return true;
         } catch (TransactionClearException | InterruptedException e) {
             throw new TxClientException(e);
         }

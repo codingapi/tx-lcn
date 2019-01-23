@@ -50,7 +50,7 @@ public class SocketManager {
 
     private static SocketManager manager = null;
 
-    private long attrDelayTime = 1000*60;
+    private long attrDelayTime = 1000 * 60;
 
     private SocketManager() {
         channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
@@ -117,11 +117,11 @@ public class SocketManager {
         NettyRpcCmd nettyRpcCmd = (NettyRpcCmd) cmd;
         log.debug("get channel, key:{}", key);
         Channel channel = getChannel(key);
-        log.debug("write and flush sync");
         channel.writeAndFlush(nettyRpcCmd);
         log.debug("await response");
         nettyRpcCmd.await();
         MessageDto res = cmd.loadResult();
+        log.debug("response is: {}", res);
         nettyRpcCmd.loadRpcContent().clear();
         return res;
     }
@@ -155,7 +155,8 @@ public class SocketManager {
 
     /**
      * 获取模块的远程标识keys
-     * @param moduleName  模块名称
+     *
+     * @param moduleName 模块名称
      * @return remoteKeys
      */
     public List<String> removeKeys(String moduleName) {
@@ -171,8 +172,9 @@ public class SocketManager {
 
     /**
      * 绑定连接数据
-     * @param remoteKey     远程标识
-     * @param moduleName    模块名称
+     *
+     * @param remoteKey  远程标识
+     * @param moduleName 模块名称
      */
     public void bindModuleName(String remoteKey, String moduleName) {
         AppInfo appInfo = new AppInfo();
@@ -187,8 +189,9 @@ public class SocketManager {
 
     /**
      * 获取模块名称
+     *
      * @param channel 管道信息
-     * @return  模块名称
+     * @return 模块名称
      */
     public String getModuleName(Channel channel) {
         String key = channel.remoteAddress().toString();
@@ -197,12 +200,13 @@ public class SocketManager {
 
     /**
      * 获取模块名称
+     *
      * @param remoteKey 远程唯一标识
-     * @return  模块名称
+     * @return 模块名称
      */
     public String getModuleName(String remoteKey) {
-        AppInfo appInfo =  appNames.get(remoteKey);
-        return appInfo==null?null:appInfo.getName();
+        AppInfo appInfo = appNames.get(remoteKey);
+        return appInfo == null ? null : appInfo.getName();
     }
 
     public List<AppInfo> appInfos() {

@@ -29,17 +29,6 @@ import java.util.List;
  */
 public interface TxcSqlExecutor {
 
-
-    /**
-     * 创建锁表
-     */
-    void createLockTable();
-
-    /**
-     * 创建撤销信息表
-     */
-    void createUndoLogTable();
-
     /**
      * update sql 执行前受影响数据
      *
@@ -71,28 +60,10 @@ public interface TxcSqlExecutor {
     List<ModifiedRecord> selectSqlPreviousPrimaryKeys(Connection connection, SelectImageParams selectImageParams) throws SQLException;
 
     /**
-     * 尝试写入锁信息到数据库
-     *
-     * @param connection Connection
-     * @param lockInfo   lockInfo
-     * @throws SQLException 获取锁失败时抛出
-     */
-    void tryLock(Connection connection, LockInfo lockInfo) throws SQLException;
-
-    /**
-     * 清除锁信息
-     *
-     * @param groupId groupId
-     * @param unitId  事务单元
-     * @throws SQLException SQLException
-     */
-    void clearLock(String groupId, String unitId) throws SQLException;
-
-    /**
      * 回滚undo_log
      *
-     * @param statementInfoList
-     * @throws SQLException
+     * @param statementInfoList undo sql statements
+     * @throws SQLException execute error
      */
     void applyUndoLog(List<StatementInfo> statementInfoList) throws SQLException;
 }

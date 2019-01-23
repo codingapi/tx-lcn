@@ -55,7 +55,7 @@ public class TxException {
     private Integer transactionState;
 
     /**
-     * 上报方 0 TxManager 1 TxClient
+     * 上报方 -1 未知 0 Manager 通知事务失败， 1 client询问事务状态失败2 事务发起方关闭事务组失败
      */
     private short registrar;
 

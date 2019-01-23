@@ -104,13 +104,13 @@ public class SimpleTransactionManager implements TransactionManager {
     }
 
     @Override
-    public int transactionState(DTXContext dtxContext) {
-        int state = exceptionService.transactionState(dtxContext.groupId());
+    public int transactionState(String groupId) {
+        int state = exceptionService.transactionState(groupId);
         //存在数据时返回数据状态
         if (state != -1) {
             return state;
         }
-        return dtxContext.transactionState();
+        return dtxContextRegistry.transactionState(groupId);
     }
 
     private void notifyTransaction(DTXContext dtxContext, int transactionState) throws TransactionException {
@@ -120,11 +120,11 @@ public class SimpleTransactionManager implements TransactionManager {
             notifyUnitParams.setUnitId(transUnit.getUnitId());
             notifyUnitParams.setUnitType(transUnit.getUnitType());
             notifyUnitParams.setState(transactionState);
+            log.debug("notify unit: {}", transUnit.getRemoteKey());
             txLogger.trace(dtxContext.groupId(), notifyUnitParams.getUnitId(), Transactions.TAG_TRANSACTION, "notify unit");
             try {
                 MessageDto respMsg =
                         rpcClient.request(transUnit.getRemoteKey(), MessageCreator.notifyUnit(notifyUnitParams));
-                log.debug("notify unit: {}", transUnit.getRemoteKey());
                 if (!MessageUtils.statusOk(respMsg)) {
                     // 提交/回滚失败的消息处理
                     List<Object> params = Arrays.asList(notifyUnitParams, transUnit.getRemoteKey());

@@ -58,7 +58,7 @@ public class RpcCmdDecoder extends SimpleChannelInboundHandler<NettyRpcCmd> {
         if (!StringUtils.isEmpty(key)) {
             RpcContent rpcContent = cmd.loadRpcContent();
             if (rpcContent != null) {
-                log.debug("got response message");
+                log.debug("got response message[Netty Handler]");
                 rpcContent.setRes(cmd.getMsg());
                 rpcContent.signal();
             } else {

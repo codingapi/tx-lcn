@@ -25,14 +25,6 @@ import com.codingapi.txlcn.tc.core.txc.resource.def.bean.*;
  * @author ujued
  */
 public interface TxcService {
-    /**
-     * 锁定资源。{@code update} {@code delete} 被调用
-     *
-     * @param lockInfo     lockInfo
-     * @param rollbackInfo rollbackInfo
-     * @throws TxcLogicException TxcLogicException
-     */
-    void lockResource(LockInfo lockInfo, RollbackInfo rollbackInfo) throws TxcLogicException;
 
     /**
      * 锁定资源。{@code select} 被调用
@@ -60,7 +52,7 @@ public interface TxcService {
     void resolveDeleteImage(DeleteImageParams deleteImageParams) throws TxcLogicException;
 
     /**
-     * 插入SQL撤销SQL
+     * {@code insert} 前置镜像
      *
      * @param insertImageParams insertImageParams
      * @throws TxcLogicException TxcLogicException
