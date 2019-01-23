@@ -1,4 +1,4 @@
-txlcn_random=TXLCNRandomLoadBalance
-txlcn_roundrobin=TXLCNRoundRobinLoadBalance
-txlcn_leastactive=TXLCNLeastActiveLoadBalance
-txlcn_consistenthash=TXLCNConsistentHashLoadBalance
+txlcn_random=com.codingapi.txlcn.tc.spi.sleuth.dubbo.loadbalance.TXLCNRandomLoadBalance
+txlcn_roundrobin=com.codingapi.txlcn.tc.spi.sleuth.dubbo.loadbalance.TXLCNRoundRobinLoadBalance
+txlcn_leastactive=com.codingapi.txlcn.tc.spi.sleuth.dubbo.loadbalance.TXLCNLeastActiveLoadBalance
+txlcn_consistenthash=com.codingapi.txlcn.tc.spi.sleuth.dubbo.loadbalance.TXLCNConsistentHashLoadBalance
