@@ -95,7 +95,6 @@ public class DTXLogicWeaver {
             }
             context.destroyDTXContext(info.getGroupId());
             DTXLocalContext.makeNeverAppeared();
-            tracerHelper.createGroupId(null);
             log.debug("tx-unit end------>");
         }
     }
