@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.spi.sleuth.springcloud.ribbon.loadbalance;
+package com.codingapi.txlcn.tc.spi.sleuth.springcloud.ribbon.loadbalance;
 
 import com.codingapi.txlcn.spi.sleuth.listener.SleuthParamListener;
 import com.netflix.loadbalancer.Server;

@@ -29,9 +29,6 @@ import java.io.Serializable;
  */
 public class MessageCreator {
 
-
-
-
     /**
      * 通知TxClient连接
      *

@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.spi.sleuth.dubbo.loadbalance;
+package com.codingapi.txlcn.tc.spi.sleuth.dubbo.loadbalance;
 
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
-import com.alibaba.dubbo.rpc.cluster.loadbalance.RoundRobinLoadBalance;
+import com.alibaba.dubbo.rpc.cluster.loadbalance.ConsistentHashLoadBalance;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author ujued
  */
-public class TXLCNRoundRobinLoadBalance extends RoundRobinLoadBalance {
+public class TXLCNConsistentHashLoadBalance extends ConsistentHashLoadBalance {
 
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) {
@@ -39,6 +39,5 @@ public class TXLCNRoundRobinLoadBalance extends RoundRobinLoadBalance {
     public <T> Invoker<T> loadSelect(List<Invoker<T>> invokers, URL url, Invocation invocation){
         return super.select(invokers, url, invocation);
     }
-
 
 }
