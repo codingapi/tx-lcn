@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tm.core.storage.redis;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -15,8 +16,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  */
 @Configuration
 public class RedisConfiguration {
-
+    
+    //default configuration redis template when have RedisConnectionFactory
+    
     @Bean
+    @ConditionalOnClass(name = "org.springframework.data.redis.connection.RedisConnectionFactory")
     public RedisTemplate<String, Object> functionDomainRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         JdkSerializationRedisSerializer serializationRedisSerializer = new JdkSerializationRedisSerializer();
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
