@@ -6,87 +6,87 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Description: Manager缓存使用规范
+ * Description: Manager cache
  * Date: 19-1-21 下午2:53
  *
  * @author ujued
  */
 public interface FastStorage {
-
-
-    /*-----------------------以下为事务组相关------------------------------*/
-
+    
+    
+    /*-----------------------DTX group------------------------------*/
+    
     /**
-     * 初始化事务组
+     * init DTX group
      *
-     * @param groupId 事务组id
+     * @param groupId groupId
      * @throws FastStorageException fastStorageException
      */
     void initGroup(String groupId) throws FastStorageException;
-
+    
     /**
-     * 某个事务组是否存在某个单元信息
+     * DTX group has unit
      *
-     * @param groupId         事务组id
-     * @param transactionUnit 事务单元信息
+     * @param groupId         groupId
+     * @param transactionUnit transactionUnit
      * @return bool
      */
     boolean containsTransactionUnit(String groupId, TransactionUnit transactionUnit);
-
+    
     /**
-     * 是否存在事务组
+     * has group
      *
-     * @param groupId 事务组id
+     * @param groupId groupId
      * @return bool
      */
     boolean containsGroup(String groupId);
-
+    
     /**
-     * 获取同一事务组的所有单元信息
+     * get group all unit
      *
-     * @param groupId 事务组id
+     * @param groupId groupId
      * @return list
      * @throws FastStorageException fastStorageException
      */
     List<TransactionUnit> findTransactionUnitsFromGroup(String groupId) throws FastStorageException;
-
+    
     /**
-     * 事务组加入新事物单元
+     * group join unit
      *
-     * @param groupId         事务组id
-     * @param transactionUnit 事务单元信息
+     * @param groupId         groupId
+     * @param transactionUnit transactionUnit
      * @throws FastStorageException fastStorageException
      */
     void saveTransactionUnitToGroup(String groupId, TransactionUnit transactionUnit) throws FastStorageException;
-
+    
     /**
-     * 创建事务组
+     * clear group
      *
-     * @param groupId 事务组id
+     * @param groupId groupId
      * @throws FastStorageException fastStorageException
      */
     void clearGroup(String groupId) throws FastStorageException;
-
+    
     /**
-     * 保存事务状态
+     * save DTX state
      *
-     * @param groupId 事务组id
-     * @param state   状态 1 commit 0 rollback
+     * @param groupId groupId
+     * @param state   status 1 commit 0 rollback
      * @throws FastStorageException fastStorageException
      */
     void saveTransactionState(String groupId, int state) throws FastStorageException;
-
+    
     /**
-     * 获取事务组状态
+     * get DTC state
      *
-     * @param groupId 事务组id
+     * @param groupId groupId
      * @return int
      * @throws FastStorageException fastStorageException
      */
     int getTransactionState(String groupId) throws FastStorageException;
-
+    
     /**
-     * 保存锁
+     * get lock
      *
      * @param contextId contextId
      * @param locks     locks
@@ -94,70 +94,70 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void acquireLocks(String contextId, Set<String> locks, LockValue lockValue) throws FastStorageException;
-
+    
     /**
-     * 释放锁
+     * unlock
      *
      * @param contextId contextId
      * @param locks     locks
      * @throws FastStorageException fastStorageException
      */
     void releaseLocks(String contextId, Set<String> locks) throws FastStorageException;
-
-
-
-    /*-----------------------以下为Manager后台token相关------------------------------*/
-
+    
+    
+    
+    /*-----------------------admin token------------------------------*/
+    
     /**
-     * 保存token
+     * save token
      *
      * @param token token
      * @throws FastStorageException fastStorageException
      */
     void saveToken(String token) throws FastStorageException;
-
+    
     /**
-     * 查找所有的token
+     * find all token
      *
      * @return list
      * @throws FastStorageException fastStorageException
      */
     List<String> findTokens() throws FastStorageException;
-
+    
     /**
-     * 移除token
+     * delete token
      *
      * @param token token
      * @throws FastStorageException fastStorageException
      */
     void removeToken(String token) throws FastStorageException;
-
-
-
-    /*-----------------------以下为Manager注册管理相关------------------------------*/
-
+    
+    
+    
+    /*-----------------------Manager------------------------------*/
+    
     /**
-     * 保存Manager地址 ip:port
+     * save Manager address is ip:port
      *
      * @param address ip:port
      * @throws FastStorageException fastStorageException
      */
     void saveTMAddress(String address) throws FastStorageException;
-
+    
     /**
-     * 查询所有Manager地址
+     * find all Manager
      *
      * @return list
      * @throws FastStorageException fastStorageException
      */
     List<String> findTMAddresses() throws FastStorageException;
-
+    
     /**
-     * 移除Manager地址
+     * delete Manager address
      *
      * @param address ip:port
      * @throws FastStorageException fastStorageException
      */
     void removeTMAddress(String address) throws FastStorageException;
-
+    
 }

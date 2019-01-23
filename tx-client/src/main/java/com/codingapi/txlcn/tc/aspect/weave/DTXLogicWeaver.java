@@ -40,50 +40,50 @@ import java.util.Objects;
 @Component
 @Slf4j
 public class DTXLogicWeaver {
-
+    
     private final TracerHelper tracerHelper;
-
+    
     private final DTXServiceExecutor transactionServiceExecutor;
-
+    
     private final TCGlobalContext context;
-
+    
     @Autowired
     public DTXLogicWeaver(TracerHelper tracerHelper, DTXServiceExecutor transactionServiceExecutor, TCGlobalContext context) {
         this.tracerHelper = tracerHelper;
         this.transactionServiceExecutor = transactionServiceExecutor;
         this.context = context;
     }
-
+    
     public Object runTransaction(DTXInfo dtxInfo, BusinessCallback business) throws Throwable {
-
+        
         if (Objects.isNull(DTXLocalContext.cur())) {
             DTXLocalContext.getOrNew();
         } else {
             return business.call();
         }
-
+        
         log.debug("tx-unit start---->");
-
+        
         // 事务发起方判断
         boolean isTransactionStart = tracerHelper.getGroupId() == null;
-
+        
         // 该线程事务
         String groupId = isTransactionStart ? RandomUtils.randomKey() : tracerHelper.getGroupId();
         String unitId = dtxInfo.getUnitId();
         DTXLocalContext dtxLocalContext = DTXLocalContext.getOrNew();
         if (dtxLocalContext.getUnitId() != null) {
             dtxLocalContext.setInUnit(true);
-            log.info("tx > unit[{}] in unit: {}", unitId, dtxLocalContext.getUnitId());
+            log.info("tx > unit[{}] in unit: {}" , unitId, dtxLocalContext.getUnitId());
         }
         dtxLocalContext.setUnitId(unitId);
         dtxLocalContext.setGroupId(groupId);
         dtxLocalContext.setTransactionType(dtxInfo.getTransactionType());
-
+        
         // 事务参数
         TxTransactionInfo info = new TxTransactionInfo(dtxInfo.getTransactionType(), isTransactionStart,
                 groupId, unitId, dtxInfo.getTransactionInfo(), business,
                 dtxInfo.getBusinessMethod(), dtxInfo.getTransactionPropagation());
-
+        
         //LCN事务处理器
         try {
             context.newDTXContext(groupId);
@@ -95,6 +95,7 @@ public class DTXLogicWeaver {
             }
             context.destroyDTXContext(info.getGroupId());
             DTXLocalContext.makeNeverAppeared();
+            tracerHelper.createGroupId(null);
             log.debug("tx-unit end------>");
         }
     }
