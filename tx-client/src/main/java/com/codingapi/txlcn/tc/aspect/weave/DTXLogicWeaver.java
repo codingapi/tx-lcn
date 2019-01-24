@@ -76,7 +76,7 @@ public class DTXLogicWeaver {
         DTXLocalContext dtxLocalContext = DTXLocalContext.getOrNew();
         if (dtxLocalContext.getUnitId() != null) {
             dtxLocalContext.setInUnit(true);
-            log.info("tx > unit[{}] in unit: {}", unitId, dtxLocalContext.getUnitId());
+            log.info("tx > unit[{}] in unit: {}" , unitId, dtxLocalContext.getUnitId());
         }
         dtxLocalContext.setUnitId(unitId);
         dtxLocalContext.setGroupId(groupId);

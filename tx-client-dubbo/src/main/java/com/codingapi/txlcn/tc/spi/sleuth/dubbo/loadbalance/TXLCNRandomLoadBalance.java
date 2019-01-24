@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.spi.sleuth.dubbo.loadbalance;
+package com.codingapi.txlcn.tc.spi.sleuth.dubbo.loadbalance;
 
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
-import com.alibaba.dubbo.rpc.cluster.loadbalance.LeastActiveLoadBalance;
+import com.alibaba.dubbo.rpc.cluster.loadbalance.RandomLoadBalance;
 
 import java.util.List;
 
@@ -29,7 +29,8 @@ import java.util.List;
  *
  * @author ujued
  */
-public class TXLCNLeastActiveLoadBalance extends LeastActiveLoadBalance {
+public class TXLCNRandomLoadBalance extends RandomLoadBalance {
+
 
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) {

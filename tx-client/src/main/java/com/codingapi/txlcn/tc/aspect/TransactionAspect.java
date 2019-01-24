@@ -47,28 +47,28 @@ public class TransactionAspect implements Ordered {
     }
 
     /**
-     * 分布式事务切点描述
+     * DTC Aspect Common type() can lcn,tcc,txc and custom DTX type
      */
     @Pointcut("@annotation(com.codingapi.txlcn.commons.annotation.TxTransaction)")
     public void txTransactionPointcut() {
     }
 
     /**
-     * 分布式事务切点描述 (Type of LCN)
+     * DTC Aspect (Type of LCN)
      */
     @Pointcut("@annotation(com.codingapi.txlcn.commons.annotation.LcnTransaction)")
     public void lcnTransactionPointcut() {
     }
 
     /**
-     * 分布式事务切点描述 (Type of TXC)
+     * DTC Aspect (Type of TXC)
      */
     @Pointcut("@annotation(com.codingapi.txlcn.commons.annotation.TxcTransaction)")
     public void txcTransactionPointcut() {
     }
 
     /**
-     * 分布式事务切点描述 (Type of TCC)
+     * DTC Aspect (Type of TCC)
      */
     @Pointcut("@annotation(com.codingapi.txlcn.commons.annotation.TccTransaction)")
     public void tccTransactionPointcut() {

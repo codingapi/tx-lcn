@@ -15,20 +15,18 @@
  */
 package com.codingapi.txlcn.tc.core.lcn.control;
 
-import com.codingapi.txlcn.tc.core.DTXLocalContext;
-import com.codingapi.txlcn.tc.core.TxTransactionInfo;
-import com.codingapi.txlcn.tc.core.DTXLocalControl;
-import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
-import com.codingapi.txlcn.tc.support.template.TransactionControlTemplate;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.spi.sleuth.TracerHelper;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
+import com.codingapi.txlcn.tc.core.DTXLocalControl;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
+import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
+import com.codingapi.txlcn.tc.support.template.TransactionControlTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 /**
  * Description:
@@ -39,13 +37,13 @@ import java.util.Optional;
 @Component("control_lcn_running")
 @Slf4j
 public class LcnRunningTransaction implements DTXLocalControl {
-
+    
     private final TracerHelper tracerHelper;
-
+    
     private final TransactionCleanTemplate transactionCleanTemplate;
-
+    
     private final TransactionControlTemplate transactionControlTemplate;
-
+    
     @Autowired
     public LcnRunningTransaction(TracerHelper tracerHelper,
                                  TransactionCleanTemplate transactionCleanTemplate,
@@ -54,34 +52,33 @@ public class LcnRunningTransaction implements DTXLocalControl {
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.transactionControlTemplate = transactionControlTemplate;
     }
-
-
+    
+    
     @Override
     public void preBusinessCode(TxTransactionInfo info) {
         // LCN 类型事务需要代理资源
         DTXLocalContext.makeProxy();
     }
-
-
+    
+    
     @Override
     public void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) {
         try {
             transactionCleanTemplate.clean(info.getGroupId(), info.getUnitId(), info.getTransactionType(), 0);
         } catch (TransactionClearException e) {
-            log.error("{} > clean transaction error.", Transactions.LCN);
+            log.error("{} > clean transaction error." , Transactions.LCN);
         }
     }
-
-
+    
+    
     @Override
     public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) throws TxClientException {
-        log.debug("join group: [GroupId: {}, TxManager:{}, Method: {}]", info.getGroupId(),
-                Optional.ofNullable(tracerHelper.getTxManagerKey()).orElseThrow(() -> new RuntimeException("sleuth pass error.")),
+        log.debug("join group: [GroupId: {},Method: {}]" , info.getGroupId(),
                 info.getTransactionInfo().getMethodStr());
-
+        
         // 加入事务组
         transactionControlTemplate.joinGroup(info.getGroupId(), info.getUnitId(), info.getTransactionType(),
                 info.getTransactionInfo());
     }
-
+    
 }

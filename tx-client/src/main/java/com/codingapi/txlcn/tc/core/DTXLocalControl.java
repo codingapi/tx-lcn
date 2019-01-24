@@ -15,7 +15,6 @@
  */
 package com.codingapi.txlcn.tc.core;
 
-import com.codingapi.txlcn.tc.core.TxTransactionInfo;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
 

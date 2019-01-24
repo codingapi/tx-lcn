@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.spi;
+package com.codingapi.txlcn.tc.spi;
 
 import com.codingapi.txlcn.spi.sleuth.listener.SleuthParamListener;
-import com.codingapi.txlcn.client.spi.sleuth.springcloud.ribbon.loadbalance.TXLCNZoneAvoidanceRule;
+import com.codingapi.txlcn.tc.spi.sleuth.springcloud.ribbon.loadbalance.TXLCNZoneAvoidanceRule;
 import com.netflix.loadbalancer.IRule;
 import lombok.Data;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

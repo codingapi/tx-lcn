@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.spi.sleuth.springcloud.ribbon.customizer;
+package com.codingapi.txlcn.tc.spi.sleuth.springcloud.ribbon.customizer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor;

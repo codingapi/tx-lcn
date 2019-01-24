@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.client.spi.sleuth.dubbo;
+package com.codingapi.txlcn.tc.spi;
 
-import com.codingapi.txlcn.client.spi.sleuth.dubbo.loadbalance.TXLCNLoadBalance;
-import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
+import com.codingapi.txlcn.tc.spi.sleuth.dubbo.TxLcnDubboInitializer;
 import com.codingapi.txlcn.spi.sleuth.listener.SleuthParamListener;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Description:
@@ -27,19 +28,18 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author ujued
  */
-@Slf4j
-public class TxLcnDubboInitializer implements TxLcnInitializer {
+@Configuration
+@ComponentScan
+public class SleuthConfiguration {
     
-
-    private SleuthParamListener sleuthParamListener;
-
-    public TxLcnDubboInitializer(SleuthParamListener sleuthParamListener){
-        this.sleuthParamListener=sleuthParamListener;
+    static {
+        System.setProperty("dubbo.provider.filter","tracing");
+        System.setProperty("dubbo.consumer.filter","tracing");
     }
     
-    @Override
-    public void init() throws Exception{
-        TXLCNLoadBalance.sleuthParamListener = sleuthParamListener;
-        log.info("init sleuthParamListener->{}",sleuthParamListener);
+    @Bean
+    public TxLcnDubboInitializer txLcnDubboInitializer(SleuthParamListener sleuthParamListener) {
+        return new TxLcnDubboInitializer(sleuthParamListener);
     }
+    
 }

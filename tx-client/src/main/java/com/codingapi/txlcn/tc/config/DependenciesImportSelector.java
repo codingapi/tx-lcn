@@ -38,7 +38,7 @@ public class DependenciesImportSelector implements ImportSelector {
     public String[] selectImports(@NonNull AnnotationMetadata importingClassMetadata) {
         return new String[]{
                 "com.codingapi.txlcn.spi.MessageConfiguration",
-                "com.codingapi.txlcn.client.spi.SleuthConfiguration"
+                "com.codingapi.txlcn.tc.spi.SleuthConfiguration"
         };
     }
 }
