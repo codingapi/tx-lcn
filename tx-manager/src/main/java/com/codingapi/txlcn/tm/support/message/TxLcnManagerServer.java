@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tm.support.message;
 
+import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.spi.message.RpcServerInitializer;
 import com.codingapi.txlcn.spi.message.dto.ManagerProperties;
@@ -29,7 +30,7 @@ import org.springframework.stereotype.Component;
  * @author lorne
  */
 @Component
-public class TxLcnManagerServer {
+public class TxLcnManagerServer implements TxLcnInitializer {
 
     private final TxManagerConfig txManagerConfig;
 
@@ -41,7 +42,7 @@ public class TxLcnManagerServer {
         this.rpcServerInitializer = rpcServerInitializer;
     }
 
-
+    @Override
     public void init() {
         ManagerProperties managerProperties = new ManagerProperties();
         managerProperties.setCheckTime(txManagerConfig.getHeartTime());

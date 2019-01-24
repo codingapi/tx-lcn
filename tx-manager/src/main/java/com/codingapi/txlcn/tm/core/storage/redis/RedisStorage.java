@@ -32,8 +32,6 @@ public class RedisStorage implements FastStorage {
 
     private static final String REDIS_TM_LIST = "tm.instances";
 
-    private static final String TM_TC_CONNECTION = "tm.tc.connection";
-
     private RedisTemplate<String, Object> redisTemplate;
 
     private TxManagerConfig managerConfig;
@@ -189,22 +187,5 @@ public class RedisStorage implements FastStorage {
         Objects.requireNonNull(address);
         redisTemplate.opsForHash().delete(REDIS_TM_LIST, address);
     }
-
-    @Override
-    public void saveModIdAndTM(String modId, String tmRpcKey) throws FastStorageException {
-        redisTemplate.opsForHash().put(TM_TC_CONNECTION + modId, tmRpcKey, "");
-    }
-
-    @Override
-    public void deleteModIdAndTM(String modId, String tmRpcKey) throws FastStorageException {
-        redisTemplate.opsForHash().delete(TM_TC_CONNECTION + modId, tmRpcKey);
-    }
-
-    @Override
-    public List<String> findTMsByModId(String modId) throws FastStorageException {
-        return redisTemplate.opsForHash().entries(TM_TC_CONNECTION + modId).entrySet().stream()
-                .map(entry -> entry.getValue().toString()).collect(Collectors.toList());
-    }
-
 
 }

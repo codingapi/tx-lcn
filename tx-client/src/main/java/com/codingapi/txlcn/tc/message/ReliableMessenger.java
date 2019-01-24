@@ -4,6 +4,7 @@ import com.codingapi.txlcn.commons.exception.LcnBusinessException;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -13,15 +14,85 @@ import java.util.Set;
  * @author ujued
  */
 public interface ReliableMessenger {
+    /**
+     * 申请锁
+     *
+     * @param groupId   groupId
+     * @param lockIdSet 锁集合
+     * @param type      锁类型
+     * @return 申请结果
+     * @throws RpcException Non TM
+     */
     boolean acquireLocks(String groupId, Set<String> lockIdSet, int type) throws RpcException;
 
+    /**
+     * 释放锁
+     *
+     * @param lockIdList 锁集合
+     * @throws RpcException Non TM
+     */
     void releaseLocks(Set<String> lockIdList) throws RpcException;
 
+    /**
+     * 通知事务组
+     *
+     * @param groupId          groupId
+     * @param transactionState 分布式事务状态
+     * @throws RpcException         Non TM
+     * @throws LcnBusinessException TM Business Err
+     */
     void notifyGroup(String groupId, int transactionState) throws RpcException, LcnBusinessException;
 
+    /**
+     * 加入事务组
+     *
+     * @param groupId          groupId
+     * @param unitId           事务单元标识
+     * @param unitType         事务类型
+     * @param transactionState 用户事务状态
+     * @throws RpcException         Non TM
+     * @throws LcnBusinessException TM Business Err
+     */
     void joinGroup(String groupId, String unitId, String unitType, int transactionState) throws RpcException, LcnBusinessException;
 
+    /**
+     * 创建事务组
+     *
+     * @param groupId groupId
+     * @throws RpcException         Non TM
+     * @throws LcnBusinessException TM Business Err
+     */
     void createGroup(String groupId) throws RpcException, LcnBusinessException;
 
+    /**
+     * 报告失效的TM
+     *
+     * @param invalidTMSet 失效的TM集合
+     * @throws RpcException Non TM
+     */
+    void reportInvalidTM(HashSet<String> invalidTMSet) throws RpcException;
+
+    /**
+     * 查询集群的其他TM实例
+     *
+     * @return 其他实例集合
+     * @throws RpcException Non TM
+     */
+    HashSet<String> queryTMCluster() throws RpcException;
+
+    /**
+     * 发起一个请求
+     *
+     * @param messageDto 消息
+     * @return 响应
+     * @throws RpcException Non TM
+     */
     MessageDto request(MessageDto messageDto) throws RpcException;
+
+    /**
+     * TM集群大小
+     *
+     * @return size
+     */
+    int clusterSize();
 }

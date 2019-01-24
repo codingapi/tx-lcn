@@ -23,7 +23,6 @@ import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
 import com.codingapi.txlcn.spi.message.params.NotifyUnitParams;
 import com.codingapi.txlcn.spi.message.util.MessageUtils;
-import com.codingapi.txlcn.tm.cluster.ClusterMessenger;
 import com.codingapi.txlcn.tm.core.message.MessageCreator;
 import com.codingapi.txlcn.tm.core.message.RpcExceptionHandler;
 import com.codingapi.txlcn.tm.core.storage.TransactionUnit;
@@ -55,19 +54,15 @@ public class SimpleTransactionManager implements TransactionManager {
 
     private final DTXContextRegistry dtxContextRegistry;
 
-    private final ClusterMessenger clusterMessenger;
-
     @Autowired
     public SimpleTransactionManager(RpcExceptionHandler rpcExceptionHandler,
                                     RpcClient rpcClient, TxLogger txLogger,
-                                    TxExceptionService exceptionService, DTXContextRegistry dtxContextRegistry,
-                                    ClusterMessenger clusterMessenger) {
+                                    TxExceptionService exceptionService, DTXContextRegistry dtxContextRegistry) {
         this.rpcExceptionHandler = rpcExceptionHandler;
         this.exceptionService = exceptionService;
         this.rpcClient = rpcClient;
         this.txLogger = txLogger;
         this.dtxContextRegistry = dtxContextRegistry;
-        this.clusterMessenger = clusterMessenger;
     }
 
     @Override
@@ -128,16 +123,13 @@ public class SimpleTransactionManager implements TransactionManager {
             log.debug("notify {}'s unit: {}", transUnit.getModId(), transUnit.getUnitId());
             txLogger.trace(dtxContext.groupId(), notifyUnitParams.getUnitId(), Transactions.TAG_TRANSACTION, "notify unit");
             try {
-                String transactionUnitModRpcKey;
                 List<String> modChannelKeys = rpcClient.remoteKeys(transUnit.getModId());
                 if (modChannelKeys.isEmpty()) {
-                    transactionUnitModRpcKey = clusterMessenger.tmRpcKeyByModId(transUnit.getModId());
-                } else {
-                    transactionUnitModRpcKey = modChannelKeys.get(0);
+                    // record exception
+                    throw new RpcException("offline mod.");
                 }
-
                 MessageDto respMsg =
-                        rpcClient.request(transactionUnitModRpcKey, MessageCreator.notifyUnit(notifyUnitParams));
+                        rpcClient.request(modChannelKeys.get(0), MessageCreator.notifyUnit(notifyUnitParams));
                 if (!MessageUtils.statusOk(respMsg)) {
                     // 提交/回滚失败的消息处理
                     List<Object> params = Arrays.asList(notifyUnitParams, transUnit.getModId());

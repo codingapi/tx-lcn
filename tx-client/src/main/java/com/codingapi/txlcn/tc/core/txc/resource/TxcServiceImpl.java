@@ -30,7 +30,6 @@ import com.codingapi.txlcn.tc.core.txc.resource.util.SqlUtils;
 import com.codingapi.txlcn.tc.corelog.txc.TxcLogHelper;
 import com.codingapi.txlcn.tc.message.ReliableMessenger;
 import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.DbUtils;
 import org.springframework.beans.factory.annotation.Autowired;

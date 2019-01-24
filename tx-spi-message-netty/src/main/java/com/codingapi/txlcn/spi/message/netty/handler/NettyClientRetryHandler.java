@@ -69,8 +69,7 @@ public class NettyClientRetryHandler extends ChannelInboundHandlerAdapter {
         super.channelActive(ctx);
         keepSize = NettyContext.currentParam(List.class).size();
 
-        clientInitCallBack.connected(ctx.channel().remoteAddress().toString(),
-                SocketManager.getInstance().currentSize());
+        clientInitCallBack.connected(ctx.channel().remoteAddress().toString());
     }
 
     @Override

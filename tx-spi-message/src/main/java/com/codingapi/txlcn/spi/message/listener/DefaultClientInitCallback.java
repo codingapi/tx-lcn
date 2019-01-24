@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DefaultClientInitCallback implements ClientInitCallBack {
 
     @Override
-    public void connected(String remoteKey, int clusterSize) {
+    public void connected(String remoteKey) {
         log.info("client {} connected", remoteKey);
     }
 

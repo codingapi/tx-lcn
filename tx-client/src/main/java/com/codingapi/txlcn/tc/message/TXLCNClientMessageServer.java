@@ -21,6 +21,8 @@ import com.codingapi.txlcn.spi.message.dto.TxManagerHost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * Description:
  * Company: CodingApi
@@ -42,6 +44,6 @@ public class TXLCNClientMessageServer {
     }
 
     public void init() throws Exception {
-        rpcClientInitializer.init(TxManagerHost.parserList(txClientConfig.getManagerAddress()));
+        rpcClientInitializer.init(TxManagerHost.parserList(txClientConfig.getManagerAddress()), new CountDownLatch(0));
     }
 }

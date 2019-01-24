@@ -19,6 +19,7 @@ import com.codingapi.txlcn.spi.message.dto.TxManagerHost;
 
 import java.net.SocketAddress;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Description:
@@ -32,12 +33,15 @@ public interface RpcClientInitializer {
 
     /**
      * message client init
+     *
      * @param hosts manager host list
+     * @param latch latch
      */
-    void init(List<TxManagerHost> hosts);
+    void init(List<TxManagerHost> hosts, CountDownLatch latch);
 
     /**
      * 建立连接
+     *
      * @param socketAddress 远程连接对象
      */
     void connect(SocketAddress socketAddress);

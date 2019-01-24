@@ -18,6 +18,7 @@ package com.codingapi.txlcn.spi.message.params;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * Description:
@@ -38,7 +39,4 @@ public class InitClientParams implements Serializable {
      * 分布式事务执行最大时间
      */
     private long dtxTime;
-
-
-
 }

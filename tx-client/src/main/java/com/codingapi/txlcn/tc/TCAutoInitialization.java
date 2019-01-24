@@ -20,6 +20,7 @@ import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogHelper;
 import com.codingapi.txlcn.tc.corelog.txc.TxcLogHelper;
+import com.codingapi.txlcn.tc.message.ReliableMessenger;
 import com.codingapi.txlcn.tc.message.TMSearcher;
 import com.codingapi.txlcn.tc.message.TXLCNClientMessageServer;
 import com.codingapi.txlcn.tc.support.checking.DTXChecking;
@@ -56,9 +57,9 @@ public class TCAutoInitialization implements TxLcnInitializer {
 
     private final RpcClientInitializer rpcClientInitializer;
 
-    private final TxClientConfig clientConfig;
-
     private final RpcConfig rpcConfig;
+
+    private final ReliableMessenger reliableMessenger;
 
     @Autowired
     public TCAutoInitialization(AspectLogHelper aspectLogHelper,
@@ -67,7 +68,7 @@ public class TCAutoInitialization implements TxLcnInitializer {
                                 TransactionCleanTemplate transactionCleanTemplate, TxcLogHelper txcLogHelper,
                                 ConfigurableEnvironment environment,
                                 RpcClientInitializer rpcClientInitializer,
-                                TxClientConfig clientConfig, RpcConfig rpcConfig) {
+                                RpcConfig rpcConfig, ReliableMessenger reliableMessenger) {
         this.aspectLogHelper = aspectLogHelper;
         this.txLcnClientMessageServer = txLcnClientMessageServer;
         this.dtxChecking = dtxChecking;
@@ -75,8 +76,8 @@ public class TCAutoInitialization implements TxLcnInitializer {
         this.txcLogHelper = txcLogHelper;
         this.environment = environment;
         this.rpcClientInitializer = rpcClientInitializer;
-        this.clientConfig = clientConfig;
         this.rpcConfig = rpcConfig;
+        this.reliableMessenger = reliableMessenger;
     }
 
     @Override
@@ -109,7 +110,7 @@ public class TCAutoInitialization implements TxLcnInitializer {
         String port = environment.getProperty("server.port");
         Transactions.setApplicationIdWhenRunning(String.format("%s:%s", application, port));
 
-        TMSearcher.init(rpcClientInitializer, clientConfig);
+        TMSearcher.init(rpcClientInitializer, reliableMessenger);
     }
 
     private void rpcEnvInit() throws Exception {

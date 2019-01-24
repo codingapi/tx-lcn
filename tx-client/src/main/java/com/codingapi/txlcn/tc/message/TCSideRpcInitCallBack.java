@@ -63,7 +63,7 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
             try {
                 clusterCountLatch.await(20, TimeUnit.SECONDS);
                 log.info("TC[{}] established TM Cluster successfully!", modId);
-                log.info("TM cluster size:{}", txClientConfig.getManagerAddress().size() - clusterCountLatch.getCount());
+                TMSearcher.search();
             } catch (InterruptedException e) {
                 throw new IllegalStateException(e);
             }
@@ -71,7 +71,7 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
     }
 
     @Override
-    public void connected(String remoteKey, int clusterSize) {
+    public void connected(String remoteKey) {
         new Thread(() -> {
             try {
                 log.info("Send init message to TM[{}]", remoteKey);
@@ -81,7 +81,6 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
                     InitClientParams resParams = msg.loadBean(InitClientParams.class);
                     long dtxTime = resParams.getDtxTime();
                     txClientConfig.setDtxTime(dtxTime);
-                    rpcClient.bindAppName(remoteKey, resParams.getAppName());
                     log.info("Finally, determined dtx time is {}ms.", dtxTime);
                     clusterCountLatch.countDown();
                     return;

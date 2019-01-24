@@ -21,6 +21,8 @@ import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.params.*;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 /**

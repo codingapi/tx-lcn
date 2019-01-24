@@ -29,9 +29,8 @@ public interface ClientInitCallBack {
      * 初始化连接成功回调
      *
      * @param remoteKey   远程调用唯一key
-     * @param clusterSize 当前TM集群大小
      */
-    void connected(String remoteKey, int clusterSize);
+    void connected(String remoteKey);
 
     /**
      * 连接丢失回调

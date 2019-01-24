@@ -159,12 +159,4 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void removeTMAddress(String address) throws FastStorageException;
-
-
-    void saveModIdAndTM(String modId, String tmRpcKey) throws FastStorageException;
-
-    void deleteModIdAndTM(String modId, String tmRpcKey) throws FastStorageException;
-
-    List<String> findTMsByModId(String modId) throws FastStorageException;
-
 }

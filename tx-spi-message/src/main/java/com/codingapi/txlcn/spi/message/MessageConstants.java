@@ -116,4 +116,14 @@ public class MessageConstants {
      * 通知事务单元中继
      */
     public static final String ACTION_RELAY_NOTIFY_UNIT = "rnu";
+
+    /**
+     * 清理失效的TM
+     */
+    public static final String ACTION_CLEAN_INVALID_TM = "citm";
+
+    /**
+     * 查询Cluster中其他TM实例
+     */
+    public static final String ACTION_REMAIN_TM = "rtm";
 }

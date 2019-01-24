@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.tc.message.helper;
 
 import com.codingapi.txlcn.commons.exception.LcnBusinessException;
+import com.codingapi.txlcn.spi.message.MessageConstants;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -81,8 +83,36 @@ public class LoopMessenger implements ReliableMessenger {
     }
 
     @Override
+    public void reportInvalidTM(HashSet<String> invalidTMSet) throws RpcException {
+        MessageDto messageDto = new MessageDto();
+        messageDto.setAction(MessageConstants.ACTION_CLEAN_INVALID_TM);
+        messageDto.setData(invalidTMSet);
+        messageDto = request(messageDto);
+        if (!MessageUtils.statusOk(messageDto)) {
+            throw new RpcException(messageDto.loadBean(Throwable.class));
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public HashSet<String> queryTMCluster() throws RpcException {
+        MessageDto messageDto = new MessageDto();
+        messageDto.setAction(MessageConstants.ACTION_REMAIN_TM);
+        messageDto = request(messageDto);
+        if (MessageUtils.statusOk(messageDto)) {
+            return messageDto.loadBean(HashSet.class);
+        }
+        throw new RpcException(messageDto.loadBean(Throwable.class));
+    }
+
+    @Override
     public MessageDto request(MessageDto messageDto) throws RpcException {
         return request(messageDto, "request fail");
+    }
+
+    @Override
+    public int clusterSize() {
+        return rpcClient.loadAllRemoteKey().size();
     }
 
 

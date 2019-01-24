@@ -20,7 +20,6 @@ import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
 import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
-import com.codingapi.txlcn.tm.support.message.TxLcnManagerServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,21 +33,17 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class TMAutoInitialization implements TxLcnInitializer {
+public class UtilsInitialization implements TxLcnInitializer {
 
     private final FastStorage fastStorage;
-
-    private final TxLcnManagerServer txLcnManagerServer;
 
     private final TxManagerConfig managerConfig;
 
     private final RpcConfig rpcConfig;
 
     @Autowired
-    public TMAutoInitialization(FastStorage fastStorage, TxLcnManagerServer txLcnManagerServer, TxManagerConfig managerConfig,
-                                RpcConfig rpcConfig) {
+    public UtilsInitialization(FastStorage fastStorage, TxManagerConfig managerConfig, RpcConfig rpcConfig) {
         this.fastStorage = fastStorage;
-        this.txLcnManagerServer = txLcnManagerServer;
         this.managerConfig = managerConfig;
         this.rpcConfig = rpcConfig;
     }
@@ -66,11 +61,9 @@ public class TMAutoInitialization implements TxLcnInitializer {
         fastStorage.saveTMAddress(managerConfig.getHost() + ":" + managerConfig.getPort());
     }
 
-    private void rpcEnvInit() throws Exception {
+    private void rpcEnvInit() {
         if (rpcConfig.getWaitTime() == -1) {
             rpcConfig.setWaitTime(5000);
         }
-        // init TM RPC Component
-        txLcnManagerServer.init();
     }
 }

@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Description:
@@ -57,12 +58,15 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
     @Autowired
     private ClientInitCallBack clientInitCallBack;
 
+    private CountDownLatch latch;
+
     private EventLoopGroup workerGroup;
 
     @Override
-    public void init(List<TxManagerHost> hosts) {
+    public void init(List<TxManagerHost> hosts, CountDownLatch latch) {
         NettyContext.type = NettyType.client;
         NettyContext.params = hosts;
+        this.latch = latch;
         workerGroup = new NioEventLoopGroup();
         for (TxManagerHost host : hosts) {
             connect(new InetSocketAddress(host.getHost(), host.getPort()));
@@ -84,7 +88,7 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
                     b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
                     b.handler(nettyRpcClientHandlerInitHandler);
                     ChannelFuture channelFuture = b.connect(socketAddress).syncUninterruptibly();
-                    connected = true;
+                    channelFuture.addListener(future -> latch.countDown());
                     break;
                 } catch (Exception e) {
                     log.warn("Connect socket({}) fail. {}ms latter try again.", socketAddress, rpcConfig.getReconnectDelay());
@@ -98,12 +102,14 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
             }
 
             // 忽略已连接的连接
+            latch.countDown();
             log.info("Already connected socket({}).", socketAddress);
             connected = true;
             break;
         }
 
         if (!connected) {
+            latch.countDown();
             log.warn("Finally, netty connection fail , socket is {}", socketAddress);
             clientInitCallBack.disconnected(socketAddress.toString());
         }
