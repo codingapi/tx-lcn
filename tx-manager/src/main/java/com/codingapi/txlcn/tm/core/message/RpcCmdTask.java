@@ -15,13 +15,12 @@
  */
 package com.codingapi.txlcn.tm.core.message;
 
-import com.codingapi.txlcn.logger.TxLogger;
-import com.codingapi.txlcn.tm.support.ManagerRpcBeanHelper;
+import com.codingapi.txlcn.spi.message.LCNCmdType;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.dto.RpcCmd;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
-import com.codingapi.txlcn.spi.message.LCNCmdType;
+import com.codingapi.txlcn.tm.support.ManagerRpcBeanHelper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
@@ -42,13 +41,10 @@ public class RpcCmdTask implements Runnable {
 
     private final RpcClient rpcClient;
 
-    private final TxLogger txLogger;
-
-    public RpcCmdTask(ManagerRpcBeanHelper rpcBeanHelper, RpcCmd rpcCmd) {
+    RpcCmdTask(ManagerRpcBeanHelper rpcBeanHelper, RpcCmd rpcCmd) {
         this.rpcBeanHelper = rpcBeanHelper;
         this.rpcCmd = rpcCmd;
         this.rpcClient = rpcBeanHelper.getByType(RpcClient.class);
-        this.txLogger = rpcBeanHelper.getByType(TxLogger.class);
     }
 
     @Override
@@ -63,7 +59,6 @@ public class RpcCmdTask implements Runnable {
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
             messageDto = MessageCreator.notifyGroupFailResponse(e, action);
-            txLogger.trace(transactionCmd.getGroupId(), "", "rpccmd", "error->" + messageDto.getAction());
         } finally {
             // 对需要响应信息的请求做出响应
             if (rpcCmd.getKey() != null) {
@@ -72,7 +67,6 @@ public class RpcCmdTask implements Runnable {
                     messageDto.setGroupId(rpcCmd.getMsg().getGroupId());
                     rpcCmd.setMsg(messageDto);
                     rpcClient.send(rpcCmd);
-                    txLogger.trace(transactionCmd.getGroupId(), "", "rpccmd", "success->" + messageDto.getAction());
                 } catch (RpcException ignored) {
                 }
             }

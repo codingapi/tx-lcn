@@ -107,4 +107,13 @@ public class MessageConstants {
      */
     public static final int STATE_EXCEPTION = 500;
 
+    /**
+     * 自动集群
+     */
+    public static final String ACTION_AUTO_CLUSTER = "acl";
+
+    /**
+     * 通知事务单元中继
+     */
+    public static final String ACTION_RELAY_NOTIFY_UNIT = "rnu";
 }

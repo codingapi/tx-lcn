@@ -141,16 +141,18 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
         Insert insert = (Insert) statementInformation.getAttachment();
         TableStruct tableStruct = tableStructAnalyser.analyse(connection, insert.getTable().getName());
 
-        // 解决主键
+        // 非自增主键值
         PrimaryKeyListVisitor primaryKeyListVisitor = new PrimaryKeyListVisitor(insert.getTable(),
                 insert.getColumns(), tableStruct.getFullyQualifiedPrimaryKeys());
         insert.getItemsList().accept(primaryKeyListVisitor);
 
-        // 自增主键
         try {
-            txcService.resolveInsertImage(new InsertImageParams(groupId, unitId, tableStruct.getTableName(),
-                    statementInformation.getStatement().getGeneratedKeys(), primaryKeyListVisitor.getPrimaryKeyValuesList(),
-                    tableStruct.getFullyQualifiedPrimaryKeys()));
+            InsertImageParams insertImageParams = new InsertImageParams();
+            insertImageParams.setTableName(tableStruct.getTableName());
+            insertImageParams.setStatement(statementInformation.getStatement());
+            insertImageParams.setFullyQualifiedPrimaryKeys(tableStruct.getFullyQualifiedPrimaryKeys());
+            insertImageParams.setPrimaryKeyValuesList(primaryKeyListVisitor.getPrimaryKeyValuesList());
+            txcService.resolveInsertImage(insertImageParams);
         } catch (TxcLogicException e) {
             throw new SQLException(e);
         }

@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.spi.message.netty.impl;
 
+import com.codingapi.txlcn.spi.message.listener.ClientInitCallBack;
 import com.codingapi.txlcn.spi.message.RpcClientInitializer;
 import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.spi.message.dto.TxManagerHost;
@@ -35,7 +36,6 @@ import org.springframework.stereotype.Service;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Description:
@@ -54,30 +54,18 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
     @Autowired
     private RpcConfig rpcConfig;
 
-    private EventLoopGroup workerGroup;
+    @Autowired
+    private ClientInitCallBack clientInitCallBack;
 
-    /**
-     * 统计TM 数量
-     */
-    private CountDownLatch countDownLatch;
+    private EventLoopGroup workerGroup;
 
     @Override
     public void init(List<TxManagerHost> hosts) {
         NettyContext.type = NettyType.client;
         NettyContext.params = hosts;
         workerGroup = new NioEventLoopGroup();
-        this.countDownLatch = new CountDownLatch(hosts.size());
         for (TxManagerHost host : hosts) {
             connect(new InetSocketAddress(host.getHost(), host.getPort()));
-        }
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            throw new IllegalStateException(e);
-        }
-        log.info("TM cluster size:{}", SocketManager.getInstance().currentSize());
-        if (SocketManager.getInstance().currentSize() == 0) {
-            throw new IllegalStateException("Can not connect any TM, DTX disabled.");
         }
     }
 
@@ -88,7 +76,7 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
         for (int i = 0; i < rpcConfig.getReconnectCount(); i++) {
             if (SocketManager.getInstance().noConnect(socketAddress)) {
                 try {
-                    log.info("Try connect TM[{}] - count {}", socketAddress, i + 1);
+                    log.info("Try connect socket({}) - count {}", socketAddress, i + 1);
                     Bootstrap b = new Bootstrap();
                     b.group(workerGroup);
                     b.channel(NioSocketChannel.class);
@@ -96,13 +84,10 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
                     b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
                     b.handler(nettyRpcClientHandlerInitHandler);
                     ChannelFuture channelFuture = b.connect(socketAddress).syncUninterruptibly();
-
-                    // 连接成功释放计数器
-                    channelFuture.addListener(future -> countDownLatch.countDown());
                     connected = true;
                     break;
                 } catch (Exception e) {
-                    log.warn("Connect TM[{}] fail. {}ms latter try again.", socketAddress, rpcConfig.getReconnectDelay());
+                    log.warn("Connect socket({}) fail. {}ms latter try again.", socketAddress, rpcConfig.getReconnectDelay());
                     try {
                         Thread.sleep(rpcConfig.getReconnectDelay());
                     } catch (InterruptedException e1) {
@@ -113,22 +98,20 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
             }
 
             // 忽略已连接的连接
-            countDownLatch.countDown();
+            log.info("Already connected socket({}).", socketAddress);
             connected = true;
             break;
         }
 
         if (!connected) {
-            // 未连接也释放计数器
-            countDownLatch.countDown();
-            log.warn("Finally, netty connection fail , TM is {}", socketAddress);
+            log.warn("Finally, netty connection fail , socket is {}", socketAddress);
+            clientInitCallBack.disconnected(socketAddress.toString());
         }
     }
-
 
     @Override
     public void destroy() {
         workerGroup.shutdownGracefully();
-        log.info("TC was down.");
+        log.info("RPC client was down.");
     }
 }

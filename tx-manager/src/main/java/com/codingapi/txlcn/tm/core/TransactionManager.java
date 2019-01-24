@@ -24,7 +24,7 @@ import com.codingapi.txlcn.commons.exception.TransactionException;
  * @author ujued
  */
 public interface TransactionManager {
-    
+
     /**
      * 开始分布式事务
      *
@@ -32,19 +32,19 @@ public interface TransactionManager {
      * @throws TransactionException TransactionException
      */
     void begin(String groupId) throws TransactionException;
-    
+
     /**
      * 分布式事务成员加入
      *
      * @param dtxContext       dtxTransaction
      * @param unitId           unitId
      * @param unitType         unitType
-     * @param remoteKey        remoteKey
+     * @param modId            modId
      * @param transactionState transactionState
      * @throws TransactionException TransactionException
      */
-    void join(DTXContext dtxContext, String unitId, String unitType, String remoteKey, int transactionState) throws TransactionException;
-    
+    void join(DTXContext dtxContext, String unitId, String unitType, String modId, int transactionState) throws TransactionException;
+
     /**
      * 提交分布式事务。出错会记录异常记录
      *
@@ -52,7 +52,7 @@ public interface TransactionManager {
      * @throws TransactionException TransactionException
      */
     void commit(DTXContext dtxContext) throws TransactionException;
-    
+
     /**
      * 回滚分布式事务。出错会记录异常记录
      *
@@ -60,14 +60,14 @@ public interface TransactionManager {
      * @throws TransactionException TransactionException
      */
     void rollback(DTXContext dtxContext) throws TransactionException;
-    
+
     /**
      * 关闭分布式事务。出错会记录异常记录
      *
      * @param groupId groupId
      */
     void close(String groupId);
-    
+
     /**
      * 获取事务状态（补偿机制）。出错返回-1
      *

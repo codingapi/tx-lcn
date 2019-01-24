@@ -69,7 +69,7 @@ public class NettyRpcServerInitializer implements RpcServerInitializer, Disposab
 
             // Start the server.
             b.bind(port);
-            log.info("Socket started on port(s):{}(socket)",port);
+            log.info("Socket started on port(s): {}(socket)",port);
 
         } catch (Exception e) {
             // Shut down all event loops to terminate all threads.

@@ -55,7 +55,7 @@ public class ManagerRpcExceptionHandler implements RpcExceptionHandler {
     public void handleNotifyUnitMessageException(Object params, Throwable e) {
         // notify unit message error, write txEx
         List paramList = ((List) params);
-        String modName = rpcClient.getAppName((String) paramList.get(1));
+        String modName = (String) paramList.get(1);
 
         NotifyUnitParams notifyUnitParams = (NotifyUnitParams) paramList.get(0);
         WriteTxExceptionDTO writeTxExceptionReq = new WriteTxExceptionDTO(notifyUnitParams.getGroupId(),

@@ -1,10 +1,8 @@
 package com.codingapi.txlcn.tc.core.txc.resource.def.bean;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 
@@ -15,21 +13,17 @@ import java.util.Map;
  * @author ujued
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class InsertImageParams {
-    private String groupId;
-    private String unitId;
+
+    /**
+     * Auto Increment PK Values
+     */
+    private Statement statement;
 
     /**
      * Table Name
      */
     private String tableName;
-
-    /**
-     * Auto Increment PK Values
-     */
-    private ResultSet resultSet;
 
     private List<Map<String, Object>> primaryKeyValuesList;
 

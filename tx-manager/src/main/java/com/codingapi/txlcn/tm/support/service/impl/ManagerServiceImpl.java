@@ -35,16 +35,19 @@ import java.util.List;
 @Service
 public class ManagerServiceImpl implements ManagerService {
 
+    private final RpcClient rpcClient;
 
     @Autowired
-    private RpcClient rpcClient;
+    public ManagerServiceImpl(RpcClient rpcClient) {
+        this.rpcClient = rpcClient;
+    }
 
 
     @Override
-    public boolean refresh( NotifyConnectParams notifyConnectParams) throws RpcException {
-        List<String> keys =  rpcClient.loadAllRemoteKey();
-        if(keys!=null&&keys.size()>0){
-            for(String key:keys){
+    public boolean refresh(NotifyConnectParams notifyConnectParams) throws RpcException {
+        List<String> keys = rpcClient.loadAllRemoteKey();
+        if (keys != null && keys.size() > 0) {
+            for (String key : keys) {
                 rpcClient.send(key, MessageCreator.newTxManager(notifyConnectParams));
             }
         }

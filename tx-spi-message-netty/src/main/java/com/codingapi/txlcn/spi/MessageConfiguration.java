@@ -15,9 +15,12 @@
  */
 package com.codingapi.txlcn.spi;
 
-import com.codingapi.txlcn.spi.message.ClientInitCallBack;
+import com.codingapi.txlcn.spi.message.listener.ClientInitCallBack;
 import com.codingapi.txlcn.spi.message.RpcAnswer;
 import com.codingapi.txlcn.spi.message.RpcConfig;
+import com.codingapi.txlcn.spi.message.listener.DefaultClientInitCallback;
+import com.codingapi.txlcn.spi.message.listener.DefaultTCRegisterListener;
+import com.codingapi.txlcn.spi.message.listener.TCRegisterListener;
 import com.codingapi.txlcn.spi.message.loadbalance.RpcLoadBalance;
 import com.codingapi.txlcn.spi.message.netty.loadbalance.RandomLoadBalance;
 import lombok.Data;
@@ -65,9 +68,12 @@ public class MessageConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ClientInitCallBack clientInitCallBack() {
-        return remoteKey -> log.info("connected->{}", remoteKey);
+        return new DefaultClientInitCallback();
     }
 
-
-
+    @Bean
+    @ConditionalOnMissingBean
+    public TCRegisterListener tcRegisterListener() {
+        return new DefaultTCRegisterListener();
+    }
 }

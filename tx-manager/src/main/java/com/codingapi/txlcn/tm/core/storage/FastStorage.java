@@ -12,10 +12,10 @@ import java.util.Set;
  * @author ujued
  */
 public interface FastStorage {
-    
-    
+
+
     /*-----------------------DTX group------------------------------*/
-    
+
     /**
      * init DTX group
      *
@@ -23,7 +23,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void initGroup(String groupId) throws FastStorageException;
-    
+
     /**
      * DTX group has unit
      *
@@ -32,7 +32,7 @@ public interface FastStorage {
      * @return bool
      */
     boolean containsTransactionUnit(String groupId, TransactionUnit transactionUnit);
-    
+
     /**
      * has group
      *
@@ -40,7 +40,7 @@ public interface FastStorage {
      * @return bool
      */
     boolean containsGroup(String groupId);
-    
+
     /**
      * get group all unit
      *
@@ -49,7 +49,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     List<TransactionUnit> findTransactionUnitsFromGroup(String groupId) throws FastStorageException;
-    
+
     /**
      * group join unit
      *
@@ -58,7 +58,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void saveTransactionUnitToGroup(String groupId, TransactionUnit transactionUnit) throws FastStorageException;
-    
+
     /**
      * clear group
      *
@@ -66,7 +66,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void clearGroup(String groupId) throws FastStorageException;
-    
+
     /**
      * save DTX state
      *
@@ -75,7 +75,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void saveTransactionState(String groupId, int state) throws FastStorageException;
-    
+
     /**
      * get DTC state
      *
@@ -84,7 +84,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     int getTransactionState(String groupId) throws FastStorageException;
-    
+
     /**
      * get lock
      *
@@ -94,7 +94,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void acquireLocks(String contextId, Set<String> locks, LockValue lockValue) throws FastStorageException;
-    
+
     /**
      * unlock
      *
@@ -103,11 +103,11 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void releaseLocks(String contextId, Set<String> locks) throws FastStorageException;
-    
-    
-    
+
+
+
     /*-----------------------admin token------------------------------*/
-    
+
     /**
      * save token
      *
@@ -115,7 +115,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void saveToken(String token) throws FastStorageException;
-    
+
     /**
      * find all token
      *
@@ -123,7 +123,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     List<String> findTokens() throws FastStorageException;
-    
+
     /**
      * delete token
      *
@@ -131,11 +131,11 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void removeToken(String token) throws FastStorageException;
-    
-    
-    
+
+
+
     /*-----------------------Manager------------------------------*/
-    
+
     /**
      * save Manager address is ip:port
      *
@@ -143,7 +143,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void saveTMAddress(String address) throws FastStorageException;
-    
+
     /**
      * find all Manager
      *
@@ -151,7 +151,7 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     List<String> findTMAddresses() throws FastStorageException;
-    
+
     /**
      * delete Manager address
      *
@@ -159,5 +159,12 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void removeTMAddress(String address) throws FastStorageException;
-    
+
+
+    void saveModIdAndTM(String modId, String tmRpcKey) throws FastStorageException;
+
+    void deleteModIdAndTM(String modId, String tmRpcKey) throws FastStorageException;
+
+    List<String> findTMsByModId(String modId) throws FastStorageException;
+
 }

@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public enum LCNCmdType {
 
     /**
-     * 事务提交
+     * 通知事务单元
      */
     notifyUnit("notify-unit", MessageConstants.ACTION_NOTIFY_UNIT),
 
@@ -48,6 +48,11 @@ public enum LCNCmdType {
      * 简写 clg
      */
     notifyGroup("notify-group", MessageConstants.ACTION_NOTIFY_GROUP),
+
+    /**
+     * 中继通知事务单元
+     */
+    relayNotifyUnit("", MessageConstants.ACTION_RELAY_NOTIFY_UNIT),
 
     /**
      * 响应事务状态
@@ -74,6 +79,11 @@ public enum LCNCmdType {
      * 简写 ic
      */
     initClient("init-client", MessageConstants.ACTION_INIT_CLIENT),
+
+    /**
+     * 刷新集群
+     */
+    refreshTMCluster("refresh-tm-cluster", MessageConstants.ACTION_AUTO_CLUSTER),
 
     /**
      * 获取切面日志
@@ -121,6 +131,8 @@ public enum LCNCmdType {
                 return notifyUnit;
             case MessageConstants.ACTION_JOIN_GROUP:
                 return joinGroup;
+            case MessageConstants.ACTION_RELAY_NOTIFY_UNIT:
+                return relayNotifyUnit;
             case MessageConstants.ACTION_ACQUIRE_DTX_LOCK:
                 return acquireDTXLock;
             case MessageConstants.ACTION_RELEASE_DTX_LOCK:
@@ -135,6 +147,8 @@ public enum LCNCmdType {
                 return getAspectLog;
             case MessageConstants.ACTION_INIT_CLIENT:
                 return initClient;
+            case MessageConstants.ACTION_AUTO_CLUSTER:
+                return refreshTMCluster;
             default:
                 throw new IllegalStateException("unsupported cmd.");
         }

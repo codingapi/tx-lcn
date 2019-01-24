@@ -16,6 +16,8 @@
 package com.codingapi.txlcn.tm.core.transaction;
 
 import com.codingapi.txlcn.commons.exception.TxManagerException;
+import com.codingapi.txlcn.commons.util.ApplicationInformation;
+import com.codingapi.txlcn.spi.message.TMCluster;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.message.RpcExecuteService;
 import com.codingapi.txlcn.tm.core.message.TransactionCmd;
@@ -23,6 +25,8 @@ import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.params.InitClientParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -38,21 +42,42 @@ import java.io.Serializable;
 @Slf4j
 public class InitClientService implements RpcExecuteService {
 
+    private final RpcClient rpcClient;
 
+    private final TxManagerConfig txManagerConfig;
+
+    private final ConfigurableEnvironment environment;
+
+    private final ServerProperties serverProperties;
+
+    private final TMCluster tmCluster;
 
     @Autowired
-    private RpcClient rpcClient;
-
-    @Autowired
-    private TxManagerConfig txManagerConfig;
+    public InitClientService(RpcClient rpcClient, TxManagerConfig txManagerConfig, ConfigurableEnvironment environment,
+                             @Autowired(required = false) ServerProperties serverProperties, TMCluster tmCluster) {
+        this.rpcClient = rpcClient;
+        this.txManagerConfig = txManagerConfig;
+        this.environment = environment;
+        this.serverProperties = serverProperties;
+        this.tmCluster = tmCluster;
+    }
 
 
     @Override
     public Serializable execute(TransactionCmd transactionCmd) throws TxManagerException {
-        log.info("init client - >{}",transactionCmd);
+        log.info("init client - >{}", transactionCmd);
         InitClientParams initClientParams = transactionCmd.getMsg().loadBean(InitClientParams.class);
-        rpcClient.bindAppName(transactionCmd.getRemoteKey(),initClientParams.getAppName());
+        rpcClient.bindAppName(transactionCmd.getRemoteKey(), initClientParams.getAppName());
+
+        // DTX Time
         initClientParams.setDtxTime(txManagerConfig.getDtxTime());
+
+        // Auto Cluster Relation
+        tmCluster.toCluster(initClientParams.getAppName(), transactionCmd.getRemoteKey());
+
+        // TM Name (for AutoCluster)
+        initClientParams.setAppName(ApplicationInformation.modId(environment, serverProperties));
+
         return initClientParams;
     }
 }

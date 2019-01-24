@@ -16,13 +16,23 @@
 package com.codingapi.txlcn.tm.support.restapi;
 
 import com.alibaba.fastjson.JSONObject;
+import com.codingapi.txlcn.commons.exception.FastStorageException;
 import com.codingapi.txlcn.commons.exception.TransactionStateException;
 import com.codingapi.txlcn.commons.exception.TxManagerException;
+import com.codingapi.txlcn.spi.message.TMCluster;
+import com.codingapi.txlcn.tm.banner.TxLcnManagerBanner;
+import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.tm.support.restapi.model.*;
 import com.codingapi.txlcn.tm.support.service.AdminService;
 import com.codingapi.txlcn.tm.support.service.TxExceptionService;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.xml.crypto.Data;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Description:
@@ -39,9 +49,10 @@ public class AdminController {
     private final TxExceptionService txExceptionService;
 
     @Autowired
-    public AdminController(AdminService adminService, TxExceptionService txExceptionService) {
+    public AdminController(AdminService adminService, TxExceptionService txExceptionService, TMCluster tmCluster) {
         this.adminService = adminService;
         this.txExceptionService = txExceptionService;
+        this.tmCluster = tmCluster;
     }
 
     @PostMapping("/login")
@@ -52,9 +63,9 @@ public class AdminController {
     /**
      * 获取补偿信息
      *
-     * @param page  页码
-     * @param limit 记录数
-     * @param extState extState
+     * @param page      页码
+     * @param limit     记录数
+     * @param extState  extState
      * @param registrar registrar
      * @return ExceptionList
      */
@@ -106,8 +117,8 @@ public class AdminController {
      * @param limit     记录数
      * @param groupId   groupId
      * @param tag       tag
-     * @param lTime lTime
-     * @param rTime rtime
+     * @param lTime     lTime
+     * @param rTime     rtime
      * @param timeOrder timeOrder
      * @return TxLogList
      * @throws TxManagerException TxManagerException
@@ -152,5 +163,25 @@ public class AdminController {
     @GetMapping("/tx-manager")
     public TxManagerInfo getTxManagerInfo() {
         return adminService.getTxManagerInfo();
+    }
+
+    @GetMapping("/tm-version")
+    public Map<String, String> tmVersion() {
+        return Maps.asMap(Sets.newHashSet("version"), k -> TxLcnManagerBanner.VERSION);
+    }
+
+    private final TMCluster tmCluster;
+
+    @GetMapping("/tm-cluster")
+    public Map<String, String> tmCluster() {
+        return tmCluster.relation();
+    }
+
+    @Autowired
+    private FastStorage fastStorage;
+
+    @GetMapping("/tm-list")
+    public List<String> tmList() throws FastStorageException {
+        return fastStorage.findTMAddresses();
     }
 }

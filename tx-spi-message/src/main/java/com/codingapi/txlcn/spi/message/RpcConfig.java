@@ -30,7 +30,7 @@ public class RpcConfig {
     /**
      * 最大等待时间 单位:(ms)
      */
-    private long waitTime = 5000;
+    private long waitTime = -1;
 
     /**
      * 最大缓存锁的数量

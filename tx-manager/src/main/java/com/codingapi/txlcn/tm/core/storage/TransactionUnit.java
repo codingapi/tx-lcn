@@ -15,9 +15,9 @@ import java.util.Objects;
 public class TransactionUnit implements Serializable {
 
     /**
-     * 事务单元标识
+     * 事务单元所在模块标识
      */
-    private String remoteKey;
+    private String modId;
 
     /**
      * 事务类型

@@ -15,20 +15,22 @@
  */
 package com.codingapi.txlcn.tc.message;
 
-import com.codingapi.txlcn.tc.config.TxClientConfig;
-import com.codingapi.txlcn.tc.message.helper.MessageCreator;
-import com.codingapi.txlcn.spi.message.ClientInitCallBack;
+import com.codingapi.txlcn.commons.util.ApplicationInformation;
+import com.codingapi.txlcn.spi.message.listener.ClientInitCallBack;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
 import com.codingapi.txlcn.spi.message.params.InitClientParams;
+import com.codingapi.txlcn.tc.config.TxClientConfig;
+import com.codingapi.txlcn.tc.message.helper.MessageCreator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Description:
@@ -45,24 +47,32 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
 
     private final TxClientConfig txClientConfig;
 
-    private ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+    private final String modId;
 
-    @Value("${spring.application.name}")
-    private String appName;
-
-    @Value("${server.port}")
-    private Integer port;
+    private CountDownLatch clusterCountLatch;
 
     @Autowired
-    public TCSideRpcInitCallBack(RpcClient rpcClient, TxClientConfig txClientConfig) {
+    public TCSideRpcInitCallBack(RpcClient rpcClient, TxClientConfig txClientConfig, ConfigurableEnvironment environment,
+                                 @Autowired(required = false) ServerProperties serverProperties) {
         this.rpcClient = rpcClient;
         this.txClientConfig = txClientConfig;
+        this.clusterCountLatch = new CountDownLatch(txClientConfig.getManagerAddress().size());
+        this.modId = ApplicationInformation.modId(environment, serverProperties);
+
+        new Thread(() -> {
+            try {
+                clusterCountLatch.await(20, TimeUnit.SECONDS);
+                log.info("TC[{}] established TM Cluster successfully!", modId);
+                log.info("TM cluster size:{}", txClientConfig.getManagerAddress().size() - clusterCountLatch.getCount());
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            }
+        }).start();
     }
 
     @Override
-    public void connected(String remoteKey) {
-        String modId = appName + ":" + port;
-        singleThreadExecutor.submit(() -> {
+    public void connected(String remoteKey, int clusterSize) {
+        new Thread(() -> {
             try {
                 log.info("Send init message to TM[{}]", remoteKey);
                 MessageDto msg = rpcClient.request(remoteKey, MessageCreator.initClient(modId));
@@ -71,14 +81,20 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
                     InitClientParams resParams = msg.loadBean(InitClientParams.class);
                     long dtxTime = resParams.getDtxTime();
                     txClientConfig.setDtxTime(dtxTime);
+                    rpcClient.bindAppName(remoteKey, resParams.getAppName());
                     log.info("Finally, determined dtx time is {}ms.", dtxTime);
-                    log.info("TC[{}] established TM[{}] successfully!", modId, remoteKey);
+                    clusterCountLatch.countDown();
                     return;
                 }
                 log.error("TM[{}] exception. connect fail!", remoteKey);
             } catch (RpcException e) {
                 log.error("Send init message exception: {}. connect fail!", e.getMessage());
             }
-        });
+        }).start();
+    }
+
+    @Override
+    public void disconnected(String remoteKey) {
+        // nothing to do
     }
 }

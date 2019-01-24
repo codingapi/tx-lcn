@@ -16,6 +16,7 @@
 package com.codingapi.txlcn.tc;
 
 import com.codingapi.txlcn.spi.message.RpcClientInitializer;
+import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogHelper;
 import com.codingapi.txlcn.tc.corelog.txc.TxcLogHelper;
@@ -57,13 +58,16 @@ public class TCAutoInitialization implements TxLcnInitializer {
 
     private final TxClientConfig clientConfig;
 
+    private final RpcConfig rpcConfig;
+
     @Autowired
     public TCAutoInitialization(AspectLogHelper aspectLogHelper,
                                 TXLCNClientMessageServer txLcnClientMessageServer,
                                 DTXChecking dtxChecking,
                                 TransactionCleanTemplate transactionCleanTemplate, TxcLogHelper txcLogHelper,
                                 ConfigurableEnvironment environment,
-                                RpcClientInitializer rpcClientInitializer, TxClientConfig clientConfig) {
+                                RpcClientInitializer rpcClientInitializer,
+                                TxClientConfig clientConfig, RpcConfig rpcConfig) {
         this.aspectLogHelper = aspectLogHelper;
         this.txLcnClientMessageServer = txLcnClientMessageServer;
         this.dtxChecking = dtxChecking;
@@ -72,6 +76,7 @@ public class TCAutoInitialization implements TxLcnInitializer {
         this.environment = environment;
         this.rpcClientInitializer = rpcClientInitializer;
         this.clientConfig = clientConfig;
+        this.rpcConfig = rpcConfig;
     }
 
     @Override
@@ -82,8 +87,8 @@ public class TCAutoInitialization implements TxLcnInitializer {
         // txc undo log init (H2db).
         txcLogHelper.init();
 
-        // rpc client init.
-        txLcnClientMessageServer.init();
+        // rpc env init
+        rpcEnvInit();
 
         // aware the transaction clean template to the simpleDtxChecking
         dtxCheckingTransactionCleanTemplateAdapt();
@@ -105,5 +110,14 @@ public class TCAutoInitialization implements TxLcnInitializer {
         Transactions.setApplicationIdWhenRunning(String.format("%s:%s", application, port));
 
         TMSearcher.init(rpcClientInitializer, clientConfig);
+    }
+
+    private void rpcEnvInit() throws Exception {
+        if (rpcConfig.getWaitTime() == -1) {
+            rpcConfig.setWaitTime(500);
+        }
+
+        // rpc client init.
+        txLcnClientMessageServer.init();
     }
 }

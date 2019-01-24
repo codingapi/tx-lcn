@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.tc;
 
 import com.codingapi.txlcn.commons.lock.DTXLocks;
+import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
 import com.codingapi.txlcn.tc.message.ReliableMessenger;
 import com.codingapi.txlcn.tc.message.TMSearcher;
@@ -70,6 +71,11 @@ public class RpcTest {
             System.out.println(countDownLatch.getCount());
             countDownLatch.countDown();
         }
+    }
+
+    @Test
+    public void testCluster() throws RpcException {
+        messenger.request(new MessageDto());
     }
 
 }

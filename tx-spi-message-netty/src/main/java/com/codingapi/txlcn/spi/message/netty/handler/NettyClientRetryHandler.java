@@ -17,7 +17,7 @@ package com.codingapi.txlcn.spi.message.netty.handler;
 
 import com.codingapi.txlcn.spi.message.MessageConstants;
 import com.codingapi.txlcn.commons.util.RandomUtils;
-import com.codingapi.txlcn.spi.message.ClientInitCallBack;
+import com.codingapi.txlcn.spi.message.listener.ClientInitCallBack;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.netty.bean.SocketManager;
 import com.codingapi.txlcn.spi.message.netty.bean.NettyRpcCmd;
@@ -69,15 +69,16 @@ public class NettyClientRetryHandler extends ChannelInboundHandlerAdapter {
         super.channelActive(ctx);
         keepSize = NettyContext.currentParam(List.class).size();
 
-        clientInitCallBack.connected(ctx.channel().remoteAddress().toString());
+        clientInitCallBack.connected(ctx.channel().remoteAddress().toString(),
+                SocketManager.getInstance().currentSize());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
-        log.error("keepSize:{},nowSize:{}",keepSize,SocketManager.getInstance().currentSize());
+        log.error("keepSize:{},nowSize:{}", keepSize, SocketManager.getInstance().currentSize());
 
-        SocketAddress socketAddress =  ctx.channel().remoteAddress();
+        SocketAddress socketAddress = ctx.channel().remoteAddress();
         log.error("socketAddress:{} ", socketAddress);
         nettyRpcClientInitializer.connect(socketAddress);
     }
@@ -85,13 +86,13 @@ public class NettyClientRetryHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.error("NettyClientRetryHandler - exception . ",cause);
+        log.error("NettyClientRetryHandler - exception . ", cause);
 
-        if(cause instanceof ConnectException){
+        if (cause instanceof ConnectException) {
             int size = SocketManager.getInstance().currentSize();
-            Thread.sleep(1000*15);
-            log.error("current size:{}  ",size);
-            log.error("try connect tx-manager:{} ",ctx.channel().remoteAddress());
+            Thread.sleep(1000 * 15);
+            log.error("current size:{}  ", size);
+            log.error("try connect tx-manager:{} ", ctx.channel().remoteAddress());
             nettyRpcClientInitializer.connect(ctx.channel().remoteAddress());
         }
         //发送数据包检测是否断开连接.

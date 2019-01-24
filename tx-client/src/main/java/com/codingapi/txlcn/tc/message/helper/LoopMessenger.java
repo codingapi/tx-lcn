@@ -9,6 +9,7 @@ import com.codingapi.txlcn.spi.message.params.NotifyGroupParams;
 import com.codingapi.txlcn.spi.message.util.MessageUtils;
 import com.codingapi.txlcn.tc.message.ReliableMessenger;
 import com.codingapi.txlcn.tc.message.TMSearcher;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ import java.util.Set;
  * @author ujued
  */
 @Component
+@Slf4j
 public class LoopMessenger implements ReliableMessenger {
 
     private final RpcClient rpcClient;
@@ -95,7 +97,10 @@ public class LoopMessenger implements ReliableMessenger {
     private MessageDto request(MessageDto messageDto, String whenNonManagerMessage) throws RpcException {
         while (true) {
             try {
-                return rpcClient.request(rpcClient.loadRemoteKey(), messageDto);
+                String remoteKey = rpcClient.loadRemoteKey();
+                MessageDto result = rpcClient.request(remoteKey, messageDto);
+                log.debug("request action: {}. TM[{}]", messageDto.getAction(), remoteKey);
+                return result;
             } catch (RpcException e) {
                 if (e.getCode() == RpcException.NON_TX_MANAGER) {
                     TMSearcher.search();

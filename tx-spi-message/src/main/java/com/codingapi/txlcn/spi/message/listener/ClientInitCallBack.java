@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.spi.message;
+package com.codingapi.txlcn.spi.message.listener;
 
 /**
  * Description:
@@ -27,9 +27,16 @@ public interface ClientInitCallBack {
 
     /**
      * 初始化连接成功回调
-     * @param remoteKey 远程调用唯一key
+     *
+     * @param remoteKey   远程调用唯一key
+     * @param clusterSize 当前TM集群大小
      */
-    void connected(String remoteKey);
+    void connected(String remoteKey, int clusterSize);
 
-
+    /**
+     * 连接丢失回调
+     *
+     * @param remoteKey
+     */
+    void disconnected(String remoteKey);
 }

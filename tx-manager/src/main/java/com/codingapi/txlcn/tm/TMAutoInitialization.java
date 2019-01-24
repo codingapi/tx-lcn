@@ -15,11 +15,11 @@
  */
 package com.codingapi.txlcn.tm;
 
+import com.codingapi.txlcn.commons.exception.FastStorageException;
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
-import com.codingapi.txlcn.tm.cluster.TxManagerAutoCluster;
+import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
-import com.codingapi.txlcn.commons.exception.FastStorageException;
 import com.codingapi.txlcn.tm.support.message.TxLcnManagerServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +34,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class TMInitialization implements TxLcnInitializer {
-
-    private final TxManagerAutoCluster managerAutoCluster;
+public class TMAutoInitialization implements TxLcnInitializer {
 
     private final FastStorage fastStorage;
 
@@ -44,29 +42,35 @@ public class TMInitialization implements TxLcnInitializer {
 
     private final TxManagerConfig managerConfig;
 
+    private final RpcConfig rpcConfig;
+
     @Autowired
-    public TMInitialization(TxManagerAutoCluster managerAutoCluster, FastStorage fastStorage,
-                            TxLcnManagerServer txLcnManagerServer, TxManagerConfig managerConfig) {
-        this.managerAutoCluster = managerAutoCluster;
+    public TMAutoInitialization(FastStorage fastStorage, TxLcnManagerServer txLcnManagerServer, TxManagerConfig managerConfig,
+                                RpcConfig rpcConfig) {
         this.fastStorage = fastStorage;
         this.txLcnManagerServer = txLcnManagerServer;
         this.managerConfig = managerConfig;
+        this.rpcConfig = rpcConfig;
     }
 
     @Override
     public void init() throws Exception {
-
-        // init TM RPC Component
-        txLcnManagerServer.init();
+        // init rpc env
+        rpcEnvInit();
 
         // Init TM instance list
         initTMList();
-
-        // auto cluster
-        managerAutoCluster.refresh();
     }
 
     private void initTMList() throws FastStorageException {
         fastStorage.saveTMAddress(managerConfig.getHost() + ":" + managerConfig.getPort());
+    }
+
+    private void rpcEnvInit() throws Exception {
+        if (rpcConfig.getWaitTime() == -1) {
+            rpcConfig.setWaitTime(5000);
+        }
+        // init TM RPC Component
+        txLcnManagerServer.init();
     }
 }

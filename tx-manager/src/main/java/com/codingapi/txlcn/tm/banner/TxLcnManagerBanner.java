@@ -32,15 +32,17 @@ import java.io.PrintStream;
  */
 public class TxLcnManagerBanner implements Banner {
 
-    private static final String BANNER =
-                    "          _______   __      _     _____  _   _          \n" +
-                    "         |_   _\\ \\ / /     | |   /  __ \\| \\ | |     \n" +
-                    "           | |  \\ V /______| |   | /  \\/|  \\| |      \n" +
-                    "           | |  /   \\______| |   | |    | . ` |        \n" +
-                    "           | | / /^\\ \\     | |___| \\__/\\| |\\  |    \n" +
-                    "           \\_/ \\/   \\/     \\_____/\\____/\\_| \\_/  \n";
+    public static final String VERSION = "5.0.0.RC2";
 
-    private static final String SERVER_INFO = "   Tx-Manager-5.0.0.RC2 HTTP port:%s  DTX port:%s";
+    private static final String BANNER =
+            "          _______   __      _     _____  _   _          \n" +
+            "         |_   _\\ \\ / /     | |   /  __ \\| \\ | |     \n" +
+            "           | |  \\ V /______| |   | /  \\/|  \\| |      \n" +
+            "           | |  /   \\______| |   | |    | . ` |        \n" +
+            "           | | / /^\\ \\     | |___| \\__/\\| |\\  |    \n" +
+            "           \\_/ \\/   \\/     \\_____/\\____/\\_| \\_/  \n";
+
+    private static final String SERVER_INFO = "   Tx-Manager-%s HTTP port:%s  DTX port:%s";
 
     @Override
     public void printBanner(Environment environment, Class<?> sourceClass, PrintStream printStream) {
@@ -48,19 +50,19 @@ public class TxLcnManagerBanner implements Banner {
         String managerPortProperty = environment.getProperty("tx-lcn.manager.port");
         int managerPort;
         int httpPort = 8080;
-        if(serverPortProperty!=null){
+        if (serverPortProperty != null) {
             httpPort = Integer.parseInt(serverPortProperty);
         }
-        if(managerPortProperty!=null){
+        if (managerPortProperty != null) {
             managerPort = Integer.parseInt(managerPortProperty);
-        }else{
-            managerPort = httpPort+TxManagerConfig.PORT_CHANGE_VALUE;
+        } else {
+            managerPort = httpPort + TxManagerConfig.PORT_CHANGE_VALUE;
         }
-        String string = String.format(SERVER_INFO,httpPort,managerPort);
+        String string = String.format(SERVER_INFO, VERSION, httpPort, managerPort);
         printStream.println();
-        printStream.println(AnsiOutput.toString(AnsiColor.GREEN,BANNER));
+        printStream.println(AnsiOutput.toString(AnsiColor.GREEN, BANNER));
         printStream.println();
-        printStream.println(AnsiOutput.toString(AnsiColor.GREEN,string));
+        printStream.println(AnsiOutput.toString(AnsiColor.GREEN, string));
         printStream.println();
     }
 }

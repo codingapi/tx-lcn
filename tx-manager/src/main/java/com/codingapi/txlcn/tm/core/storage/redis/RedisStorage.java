@@ -1,10 +1,9 @@
 package com.codingapi.txlcn.tm.core.storage.redis;
 
-import com.alibaba.fastjson.JSON;
-import com.codingapi.txlcn.tm.config.TxManagerConfig;
-import com.codingapi.txlcn.commons.lock.DTXLocks;
-import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.commons.exception.FastStorageException;
+import com.codingapi.txlcn.commons.lock.DTXLocks;
+import com.codingapi.txlcn.tm.config.TxManagerConfig;
+import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.tm.core.storage.LockValue;
 import com.codingapi.txlcn.tm.core.storage.TransactionUnit;
 import lombok.Data;
@@ -32,6 +31,8 @@ public class RedisStorage implements FastStorage {
     private static final String REDIS_TOKEN_PREFIX = "tm.token";
 
     private static final String REDIS_TM_LIST = "tm.instances";
+
+    private static final String TM_TC_CONNECTION = "tm.tc.connection";
 
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -108,6 +109,12 @@ public class RedisStorage implements FastStorage {
 
     @Override
     public void acquireLocks(String contextId, Set<String> locks, LockValue lockValue) throws FastStorageException {
+
+        // 未申请锁则为申请正常
+        if (Objects.isNull(locks)) {
+            return;
+        }
+
         Set<String> successLocks = new HashSet<>();
         try {
             for (String lockId : locks) {
@@ -167,38 +174,37 @@ public class RedisStorage implements FastStorage {
     @Override
     public void saveTMAddress(String address) {
         Objects.requireNonNull(address);
-        doInTransaction(address, ((key, list) -> list.add(key)));
+        redisTemplate.opsForHash().put(REDIS_TM_LIST, address, "");
     }
 
     @Override
     public List<String> findTMAddresses() {
-        return JSON.parseArray(Optional.ofNullable(redisTemplate.opsForValue().get(REDIS_TM_LIST)).orElse("[]").toString()).stream()
-                .filter(address -> !address.equals(managerConfig.getHost() + ":" + managerConfig.getPort()))
-                .map(Object::toString).collect(Collectors.toList());
+        return redisTemplate.opsForHash().entries(REDIS_TM_LIST).entrySet().stream()
+                .filter(entry -> !entry.getKey().equals(managerConfig.getHost() + ":" + managerConfig.getPort()))
+                .map(entry -> entry.getKey().toString()).collect(Collectors.toList());
     }
 
     @Override
     public void removeTMAddress(String address) {
         Objects.requireNonNull(address);
-        doInTransaction(address, ((key, list) -> list.remove(key)));
+        redisTemplate.opsForHash().delete(REDIS_TM_LIST, address);
     }
 
-    private void doInTransaction(String address, ListOperation operation) {
-        redisTemplate.setEnableTransactionSupport(true);
-        try {
-            redisTemplate.multi();
-            List<String> addressList = findTMAddresses();
-            operation.exec(address, addressList);
-            redisTemplate.opsForValue().set(REDIS_TM_LIST, JSON.toJSONString(addressList));
-            redisTemplate.exec();
-        } catch (Exception e) {
-            redisTemplate.discard();
-        } finally {
-            redisTemplate.setEnableTransactionSupport(false);
-        }
+    @Override
+    public void saveModIdAndTM(String modId, String tmRpcKey) throws FastStorageException {
+        redisTemplate.opsForHash().put(TM_TC_CONNECTION + modId, tmRpcKey, "");
     }
 
-    public interface ListOperation {
-        void exec(String key, List<String> list);
+    @Override
+    public void deleteModIdAndTM(String modId, String tmRpcKey) throws FastStorageException {
+        redisTemplate.opsForHash().delete(TM_TC_CONNECTION + modId, tmRpcKey);
     }
+
+    @Override
+    public List<String> findTMsByModId(String modId) throws FastStorageException {
+        return redisTemplate.opsForHash().entries(TM_TC_CONNECTION + modId).entrySet().stream()
+                .map(entry -> entry.getValue().toString()).collect(Collectors.toList());
+    }
+
+
 }

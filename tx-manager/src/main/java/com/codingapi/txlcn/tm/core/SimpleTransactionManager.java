@@ -18,15 +18,16 @@ package com.codingapi.txlcn.tm.core;
 import com.codingapi.txlcn.commons.exception.TransactionException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
-import com.codingapi.txlcn.tm.core.message.MessageCreator;
-import com.codingapi.txlcn.tm.core.message.RpcExceptionHandler;
-import com.codingapi.txlcn.tm.core.storage.TransactionUnit;
-import com.codingapi.txlcn.tm.support.service.TxExceptionService;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
 import com.codingapi.txlcn.spi.message.params.NotifyUnitParams;
 import com.codingapi.txlcn.spi.message.util.MessageUtils;
+import com.codingapi.txlcn.tm.cluster.ClusterMessenger;
+import com.codingapi.txlcn.tm.core.message.MessageCreator;
+import com.codingapi.txlcn.tm.core.message.RpcExceptionHandler;
+import com.codingapi.txlcn.tm.core.storage.TransactionUnit;
+import com.codingapi.txlcn.tm.support.service.TxExceptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -54,15 +55,19 @@ public class SimpleTransactionManager implements TransactionManager {
 
     private final DTXContextRegistry dtxContextRegistry;
 
+    private final ClusterMessenger clusterMessenger;
+
     @Autowired
     public SimpleTransactionManager(RpcExceptionHandler rpcExceptionHandler,
                                     RpcClient rpcClient, TxLogger txLogger,
-                                    TxExceptionService exceptionService, DTXContextRegistry dtxContextRegistry) {
+                                    TxExceptionService exceptionService, DTXContextRegistry dtxContextRegistry,
+                                    ClusterMessenger clusterMessenger) {
         this.rpcExceptionHandler = rpcExceptionHandler;
         this.exceptionService = exceptionService;
         this.rpcClient = rpcClient;
         this.txLogger = txLogger;
         this.dtxContextRegistry = dtxContextRegistry;
+        this.clusterMessenger = clusterMessenger;
     }
 
     @Override
@@ -75,14 +80,14 @@ public class SimpleTransactionManager implements TransactionManager {
     }
 
     @Override
-    public void join(DTXContext dtxContext, String unitId, String unitType, String remoteKey, int userState) throws TransactionException {
+    public void join(DTXContext dtxContext, String unitId, String unitType, String modId, int userState) throws TransactionException {
         log.debug("unit:{} joined group:{}", unitId, dtxContext.groupId());
         //手动回滚时设置状态为回滚状态 0
         if (userState == 0) {
             dtxContext.resetTransactionState(0);
         }
         TransactionUnit transactionUnit = new TransactionUnit();
-        transactionUnit.setRemoteKey(remoteKey);
+        transactionUnit.setModId(modId);
         transactionUnit.setUnitId(unitId);
         transactionUnit.setUnitType(unitType);
         dtxContext.join(transactionUnit);
@@ -120,19 +125,27 @@ public class SimpleTransactionManager implements TransactionManager {
             notifyUnitParams.setUnitId(transUnit.getUnitId());
             notifyUnitParams.setUnitType(transUnit.getUnitType());
             notifyUnitParams.setState(transactionState);
-            log.debug("notify unit: {}", transUnit.getRemoteKey());
+            log.debug("notify {}'s unit: {}", transUnit.getModId(), transUnit.getUnitId());
             txLogger.trace(dtxContext.groupId(), notifyUnitParams.getUnitId(), Transactions.TAG_TRANSACTION, "notify unit");
             try {
+                String transactionUnitModRpcKey;
+                List<String> modChannelKeys = rpcClient.remoteKeys(transUnit.getModId());
+                if (modChannelKeys.isEmpty()) {
+                    transactionUnitModRpcKey = clusterMessenger.tmRpcKeyByModId(transUnit.getModId());
+                } else {
+                    transactionUnitModRpcKey = modChannelKeys.get(0);
+                }
+
                 MessageDto respMsg =
-                        rpcClient.request(transUnit.getRemoteKey(), MessageCreator.notifyUnit(notifyUnitParams));
+                        rpcClient.request(transactionUnitModRpcKey, MessageCreator.notifyUnit(notifyUnitParams));
                 if (!MessageUtils.statusOk(respMsg)) {
                     // 提交/回滚失败的消息处理
-                    List<Object> params = Arrays.asList(notifyUnitParams, transUnit.getRemoteKey());
+                    List<Object> params = Arrays.asList(notifyUnitParams, transUnit.getModId());
                     rpcExceptionHandler.handleNotifyUnitBusinessException(params, respMsg.loadBean(Throwable.class));
                 }
             } catch (RpcException e) {
                 // 提交/回滚通讯失败
-                List<Object> params = Arrays.asList(notifyUnitParams, transUnit.getRemoteKey());
+                List<Object> params = Arrays.asList(notifyUnitParams, transUnit.getModId());
                 rpcExceptionHandler.handleNotifyUnitMessageException(params, e);
             } finally {
                 txLogger.trace(dtxContext.groupId(), notifyUnitParams.getUnitId(), Transactions.TAG_TRANSACTION, "notify unit over");

@@ -145,7 +145,6 @@ public class TransactionControlTemplate {
         try {
             reliableMessenger.notifyGroup(groupId, state);
             transactionCleanTemplate.clean(groupId, unitId, transactionType, state);
-            tracerHelper.createGroupId(null);
             log.debug("{} > close transaction group.", transactionType);
         } catch (TransactionClearException e) {
             log.error("clear exception", e);
