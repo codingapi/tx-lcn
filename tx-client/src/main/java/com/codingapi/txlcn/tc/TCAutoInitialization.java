@@ -15,8 +15,11 @@
  */
 package com.codingapi.txlcn.tc;
 
+import com.codingapi.txlcn.spi.message.RpcClientInitializer;
+import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogHelper;
 import com.codingapi.txlcn.tc.corelog.txc.TxcLogHelper;
+import com.codingapi.txlcn.tc.message.TMSearcher;
 import com.codingapi.txlcn.tc.message.TXLCNClientMessageServer;
 import com.codingapi.txlcn.tc.support.checking.DTXChecking;
 import com.codingapi.txlcn.tc.support.checking.SimpleDTXChecking;
@@ -50,18 +53,25 @@ public class TCAutoInitialization implements TxLcnInitializer {
 
     private final ConfigurableEnvironment environment;
 
+    private final RpcClientInitializer rpcClientInitializer;
+
+    private final TxClientConfig clientConfig;
+
     @Autowired
     public TCAutoInitialization(AspectLogHelper aspectLogHelper,
                                 TXLCNClientMessageServer txLcnClientMessageServer,
                                 DTXChecking dtxChecking,
                                 TransactionCleanTemplate transactionCleanTemplate, TxcLogHelper txcLogHelper,
-                                ConfigurableEnvironment environment) {
+                                ConfigurableEnvironment environment,
+                                RpcClientInitializer rpcClientInitializer, TxClientConfig clientConfig) {
         this.aspectLogHelper = aspectLogHelper;
         this.txLcnClientMessageServer = txLcnClientMessageServer;
         this.dtxChecking = dtxChecking;
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.txcLogHelper = txcLogHelper;
         this.environment = environment;
+        this.rpcClientInitializer = rpcClientInitializer;
+        this.clientConfig = clientConfig;
     }
 
     @Override
@@ -93,5 +103,7 @@ public class TCAutoInitialization implements TxLcnInitializer {
         String application = StringUtils.hasText(name) ? name : "application";
         String port = environment.getProperty("server.port");
         Transactions.setApplicationIdWhenRunning(String.format("%s:%s", application, port));
+
+        TMSearcher.init(rpcClientInitializer, clientConfig);
     }
 }

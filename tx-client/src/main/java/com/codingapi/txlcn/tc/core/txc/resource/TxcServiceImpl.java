@@ -80,7 +80,7 @@ public class TxcServiceImpl implements TxcService {
      */
     private void lockDataLine(String groupId, String unitId, Set<String> lockIdSet, boolean isXLock) throws TxcLogicException {
         try {
-            if (!reliableMessenger.acquireLocks(lockIdSet, isXLock ? DTXLocks.X_LOCK : DTXLocks.S_LOCK)) {
+            if (!reliableMessenger.acquireLocks(groupId, lockIdSet, isXLock ? DTXLocks.X_LOCK : DTXLocks.S_LOCK)) {
                 throw new TxcLogicException("resource is locked! place try again later.");
             }
             globalContext.addTxcLockId(groupId, unitId, lockIdSet);

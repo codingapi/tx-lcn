@@ -13,7 +13,7 @@ import java.util.Set;
  * @author ujued
  */
 public interface ReliableMessenger {
-    boolean acquireLocks(Set<String> lockIdSet, int type) throws RpcException;
+    boolean acquireLocks(String groupId, Set<String> lockIdSet, int type) throws RpcException;
 
     void releaseLocks(Set<String> lockIdList) throws RpcException;
 

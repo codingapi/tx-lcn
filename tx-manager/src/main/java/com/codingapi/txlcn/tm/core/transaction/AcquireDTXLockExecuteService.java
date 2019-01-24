@@ -33,7 +33,7 @@ public class AcquireDTXLockExecuteService implements RpcExecuteService {
         DTXLockParams dtxLockParams = transactionCmd.getMsg().loadBean(DTXLockParams.class);
         try {
             LockValue lockValue = new LockValue();
-            lockValue.setGroupId(transactionCmd.getGroupId());
+            lockValue.setGroupId(dtxLockParams.getGroupId());
             lockValue.setLockType(dtxLockParams.getLockType());
             fastStorage.acquireLocks(dtxLockParams.getContextId(), dtxLockParams.getLocks(), lockValue);
             return true;

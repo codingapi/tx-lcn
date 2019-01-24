@@ -8,6 +8,7 @@ import com.codingapi.txlcn.spi.message.params.JoinGroupParams;
 import com.codingapi.txlcn.spi.message.params.NotifyGroupParams;
 import com.codingapi.txlcn.spi.message.util.MessageUtils;
 import com.codingapi.txlcn.tc.message.ReliableMessenger;
+import com.codingapi.txlcn.tc.message.TMSearcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,14 +31,14 @@ public class LoopMessenger implements ReliableMessenger {
     }
 
     @Override
-    public boolean acquireLocks(Set<String> lockIdSet, int type) throws RpcException {
-        MessageDto messageDto = request(MessageCreator.acquireLock(lockIdSet, type), "release lock fail");
+    public boolean acquireLocks(String groupId, Set<String> lockIdSet, int type) throws RpcException {
+        MessageDto messageDto = request(MessageCreator.acquireLocks(groupId, lockIdSet, type), "release lock fail");
         return MessageUtils.statusOk(messageDto);
     }
 
     @Override
     public void releaseLocks(Set<String> lockIdList) throws RpcException {
-        MessageDto messageDto = rpcClient.request(rpcClient.loadRemoteKey(), MessageCreator.releaseLock(lockIdList));
+        MessageDto messageDto = rpcClient.request(rpcClient.loadRemoteKey(), MessageCreator.releaseLocks(lockIdList));
         if (!MessageUtils.statusOk(messageDto)) {
             throw new RpcException("release locks fail.");
         }
@@ -97,7 +98,8 @@ public class LoopMessenger implements ReliableMessenger {
                 return rpcClient.request(rpcClient.loadRemoteKey(), messageDto);
             } catch (RpcException e) {
                 if (e.getCode() == RpcException.NON_TX_MANAGER) {
-                    throw new RpcException(whenNonManagerMessage + ". non tx-manager is alive.");
+                    TMSearcher.search();
+                    throw new RpcException(e.getCode(), whenNonManagerMessage + ". non tx-manager is alive.");
                 }
             }
         }

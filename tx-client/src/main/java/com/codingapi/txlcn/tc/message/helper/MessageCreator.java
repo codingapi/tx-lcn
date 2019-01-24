@@ -76,8 +76,9 @@ public class MessageCreator {
      * @param lockType lockType
      * @return message
      */
-    public static MessageDto acquireLock(Set<String> locks, int lockType) {
+    public static MessageDto acquireLocks(String groupId, Set<String> locks, int lockType) {
         DTXLockParams dtxLockParams = new DTXLockParams();
+        dtxLockParams.setGroupId(groupId);
         dtxLockParams.setContextId(Transactions.APPLICATION_ID_WHEN_RUNNING);
         dtxLockParams.setLocks(locks);
         dtxLockParams.setLockType(lockType);
@@ -93,7 +94,7 @@ public class MessageCreator {
      * @param locks locks
      * @return message
      */
-    public static MessageDto releaseLock(Set<String> locks) {
+    public static MessageDto releaseLocks(Set<String> locks) {
         DTXLockParams dtxLockParams = new DTXLockParams();
         dtxLockParams.setContextId(Transactions.APPLICATION_ID_WHEN_RUNNING);
         dtxLockParams.setLocks(locks);

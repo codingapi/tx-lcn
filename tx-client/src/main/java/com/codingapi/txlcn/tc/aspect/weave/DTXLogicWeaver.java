@@ -27,6 +27,7 @@ import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
@@ -65,10 +66,12 @@ public class DTXLogicWeaver {
         log.debug("tx-unit start---->");
 
         // 事务发起方判断
-        boolean isTransactionStart = tracerHelper.getGroupId() == null;
-
+        boolean isTransactionStart = StringUtils.isEmpty(tracerHelper.getGroupId());
+        if (isTransactionStart) {
+            tracerHelper.createGroupId(RandomUtils.randomKey());
+        }
         // 该线程事务
-        String groupId = isTransactionStart ? RandomUtils.randomKey() : tracerHelper.getGroupId();
+        String groupId = tracerHelper.getGroupId();
         String unitId = dtxInfo.getUnitId();
         DTXLocalContext dtxLocalContext = DTXLocalContext.getOrNew();
         if (dtxLocalContext.getUnitId() != null) {
@@ -95,6 +98,7 @@ public class DTXLogicWeaver {
             }
             context.destroyDTXContext(info.getGroupId());
             DTXLocalContext.makeNeverAppeared();
+            tracerHelper.createGroupId("");
             log.debug("tx-unit end------>");
         }
     }

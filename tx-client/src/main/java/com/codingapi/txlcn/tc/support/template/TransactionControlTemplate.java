@@ -23,11 +23,9 @@ import com.codingapi.txlcn.commons.exception.TxClientException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
-import com.codingapi.txlcn.spi.sleuth.TracerHelper;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
 import com.codingapi.txlcn.tc.message.ReliableMessenger;
-import com.codingapi.txlcn.tc.message.TMSearcher;
 import com.codingapi.txlcn.tc.support.checking.DTXChecking;
 import com.codingapi.txlcn.tc.support.checking.DTXExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -46,8 +44,6 @@ import java.util.Arrays;
 @Slf4j
 public class TransactionControlTemplate {
 
-    private final TracerHelper tracerHelper;
-
     private final AspectLogger aspectLogger;
 
     private final DTXChecking dtxChecking;
@@ -61,11 +57,10 @@ public class TransactionControlTemplate {
     private final ReliableMessenger reliableMessenger;
 
     @Autowired
-    public TransactionControlTemplate(TracerHelper tracerHelper, AspectLogger aspectLogger,
-                                      DTXChecking dtxChecking, DTXExceptionHandler dtxExceptionHandler,
+    public TransactionControlTemplate(AspectLogger aspectLogger, DTXChecking dtxChecking,
+                                      DTXExceptionHandler dtxExceptionHandler,
                                       TransactionCleanTemplate transactionCleanTemplate,
                                       TxLogger txLogger, ReliableMessenger reliableMessenger) {
-        this.tracerHelper = tracerHelper;
         this.aspectLogger = aspectLogger;
         this.dtxChecking = dtxChecking;
         this.dtxExceptionHandler = dtxExceptionHandler;
@@ -88,9 +83,6 @@ public class TransactionControlTemplate {
         //创建事务组
         txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "create group");
         try {
-            // groupId传递
-            tracerHelper.createGroupId(groupId);
-
             // 日志
             log.debug("transaction type[{}] > create group > groupId: {}, unitId: {}", transactionType, groupId, unitId);
             reliableMessenger.createGroup(groupId);
@@ -98,9 +90,6 @@ public class TransactionControlTemplate {
             // 缓存发起方切面信息
             aspectLogger.trace(groupId, unitId, transactionInfo);
         } catch (RpcException e) {
-            if (e.getCode() == RpcException.NON_TX_MANAGER) {
-                TMSearcher.search();
-            }
             // 通讯异常
             dtxExceptionHandler.handleCreateGroupMessageException(groupId, e);
         } catch (LcnBusinessException e) {
@@ -135,9 +124,6 @@ public class TransactionControlTemplate {
             // 缓存参与方切面信息
             aspectLogger.trace(groupId, unitId, transactionInfo);
         } catch (RpcException e) {
-            if (e.getCode() == RpcException.NON_TX_MANAGER) {
-                TMSearcher.search();
-            }
             dtxExceptionHandler.handleJoinGroupMessageException(Arrays.asList(groupId, unitId, transactionType), e);
         } catch (LcnBusinessException e) {
             dtxExceptionHandler.handleJoinGroupBusinessException(Arrays.asList(groupId, unitId, transactionType), e.getCause());
@@ -164,9 +150,6 @@ public class TransactionControlTemplate {
             log.error("clear exception", e);
             txLogger.trace(groupId, unitId, Transactions.TE, "clean transaction fail.");
         } catch (RpcException e) {
-            if (e.getCode() == RpcException.NON_TX_MANAGER) {
-                TMSearcher.search();
-            }
             dtxExceptionHandler.handleNotifyGroupMessageException(Arrays.asList(groupId, state, unitId, transactionType), e);
         } catch (LcnBusinessException e) {
             // 关闭事务组失败

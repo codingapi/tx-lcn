@@ -76,6 +76,9 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
             throw new IllegalStateException(e);
         }
         log.info("TM cluster size:{}", SocketManager.getInstance().currentSize());
+        if (SocketManager.getInstance().currentSize() == 0) {
+            throw new IllegalStateException("Can not connect any TM, DTX disabled.");
+        }
     }
 
 
@@ -93,33 +96,38 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
                     b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
                     b.handler(nettyRpcClientHandlerInitHandler);
                     ChannelFuture channelFuture = b.connect(socketAddress).syncUninterruptibly();
+
+                    // 连接成功释放计数器
                     channelFuture.addListener(future -> countDownLatch.countDown());
                     connected = true;
                     break;
-
                 } catch (Exception e) {
-                    countDownLatch.countDown();
                     log.warn("Connect TM[{}] fail. {}ms latter try again.", socketAddress, rpcConfig.getReconnectDelay());
                     try {
                         Thread.sleep(rpcConfig.getReconnectDelay());
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }
+                    continue;
                 }
             }
+
+            // 忽略已连接的连接
+            countDownLatch.countDown();
+            connected = true;
+            break;
         }
 
         if (!connected) {
-            log.warn("Finally, netty connection fail , address is {}", socketAddress);
-            if (SocketManager.getInstance().currentSize() == 0) {
-                throw new IllegalStateException("Can not connect any TM, DTX disabled.");
-            }
+            // 未连接也释放计数器
+            countDownLatch.countDown();
+            log.warn("Finally, netty connection fail , TM is {}", socketAddress);
         }
     }
 
 
     @Override
-    public void destroy() throws Exception {
+    public void destroy() {
         workerGroup.shutdownGracefully();
         log.info("TC was down.");
     }
