@@ -35,15 +35,15 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class TMAutoInitialization implements TxLcnInitializer {
-
+    
     private final FastStorage fastStorage;
-
+    
     private final TxLcnManagerServer txLcnManagerServer;
-
+    
     private final TxManagerConfig managerConfig;
-
+    
     private final RpcConfig rpcConfig;
-
+    
     @Autowired
     public TMAutoInitialization(FastStorage fastStorage, TxLcnManagerServer txLcnManagerServer, TxManagerConfig managerConfig,
                                 RpcConfig rpcConfig) {
@@ -52,25 +52,30 @@ public class TMAutoInitialization implements TxLcnInitializer {
         this.managerConfig = managerConfig;
         this.rpcConfig = rpcConfig;
     }
-
+    
     @Override
     public void init() throws Exception {
         // init rpc env
         rpcEnvInit();
-
+        
         // Init TM instance list
         initTMList();
     }
-
+    
     private void initTMList() throws FastStorageException {
         fastStorage.saveTMAddress(managerConfig.getHost() + ":" + managerConfig.getPort());
     }
-
+    
     private void rpcEnvInit() throws Exception {
         if (rpcConfig.getWaitTime() == -1) {
             rpcConfig.setWaitTime(5000);
         }
         // init TM RPC Component
         txLcnManagerServer.init();
+    }
+    
+    @Override
+    public int order() {
+        return -1;
     }
 }

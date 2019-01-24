@@ -41,25 +41,25 @@ import org.springframework.util.StringUtils;
  */
 @Component
 public class TCAutoInitialization implements TxLcnInitializer {
-
+    
     private final AspectLogHelper aspectLogHelper;
-
+    
     private final TxcLogHelper txcLogHelper;
-
+    
     private final TXLCNClientMessageServer txLcnClientMessageServer;
-
+    
     private final DTXChecking dtxChecking;
-
+    
     private final TransactionCleanTemplate transactionCleanTemplate;
-
+    
     private final ConfigurableEnvironment environment;
-
+    
     private final RpcClientInitializer rpcClientInitializer;
-
+    
     private final TxClientConfig clientConfig;
-
+    
     private final RpcConfig rpcConfig;
-
+    
     @Autowired
     public TCAutoInitialization(AspectLogHelper aspectLogHelper,
                                 TXLCNClientMessageServer txLcnClientMessageServer,
@@ -78,45 +78,50 @@ public class TCAutoInitialization implements TxLcnInitializer {
         this.clientConfig = clientConfig;
         this.rpcConfig = rpcConfig;
     }
-
+    
     @Override
     public void init() throws Exception {
         // aspect log init (H2db).
         aspectLogHelper.init();
-
+        
         // txc undo log init (H2db).
         txcLogHelper.init();
-
+        
         // rpc env init
         rpcEnvInit();
-
+        
         // aware the transaction clean template to the simpleDtxChecking
         dtxCheckingTransactionCleanTemplateAdapt();
-
+        
         // init util classes
         utilClassesInit();
     }
-
+    
+    @Override
+    public int order() {
+        return -1;
+    }
+    
     private void dtxCheckingTransactionCleanTemplateAdapt() {
         if (dtxChecking instanceof SimpleDTXChecking) {
             ((SimpleDTXChecking) dtxChecking).setTransactionCleanTemplate(transactionCleanTemplate);
         }
     }
-
+    
     private void utilClassesInit() {
         String name = environment.getProperty("spring.application.name");
         String application = StringUtils.hasText(name) ? name : "application";
         String port = environment.getProperty("server.port");
         Transactions.setApplicationIdWhenRunning(String.format("%s:%s", application, port));
-
+        
         TMSearcher.init(rpcClientInitializer, clientConfig);
     }
-
+    
     private void rpcEnvInit() throws Exception {
         if (rpcConfig.getWaitTime() == -1) {
             rpcConfig.setWaitTime(500);
         }
-
+        
         // rpc client init.
         txLcnClientMessageServer.init();
     }
