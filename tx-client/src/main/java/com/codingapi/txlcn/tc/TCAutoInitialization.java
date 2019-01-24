@@ -98,6 +98,11 @@ public class TCAutoInitialization implements TxLcnInitializer {
         utilClassesInit();
     }
 
+    @Override
+    public int order() {
+        return -1;
+    }
+
     private void dtxCheckingTransactionCleanTemplateAdapt() {
         if (dtxChecking instanceof SimpleDTXChecking) {
             ((SimpleDTXChecking) dtxChecking).setTransactionCleanTemplate(transactionCleanTemplate);

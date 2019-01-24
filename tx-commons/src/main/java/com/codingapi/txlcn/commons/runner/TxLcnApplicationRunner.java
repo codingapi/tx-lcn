@@ -21,7 +21,10 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Description: LCN统一初始化入口
@@ -34,6 +37,8 @@ public class TxLcnApplicationRunner implements ApplicationRunner, DisposableBean
     
     private final ApplicationContext applicationContext;
     
+    private List<TxLcnInitializer> initializers;
+    
     @Autowired
     public TxLcnApplicationRunner(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -41,18 +46,20 @@ public class TxLcnApplicationRunner implements ApplicationRunner, DisposableBean
     
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        // 取消缓存Runner对象 使用时获取即可
         Map<String, TxLcnInitializer> runnerMap = applicationContext.getBeansOfType(TxLcnInitializer.class);
-        for (TxLcnInitializer txLcnInitializer : runnerMap.values()) {
+        initializers = runnerMap.values().stream().sorted(Comparator.comparing(TxLcnInitializer::order))
+                .collect(Collectors.toList());
+        
+        for (TxLcnInitializer txLcnInitializer : initializers) {
             txLcnInitializer.init();
         }
     }
     
     @Override
     public void destroy() throws Exception {
-        Map<String, TxLcnInitializer> runnerMap = applicationContext.getBeansOfType(TxLcnInitializer.class);
-        for (TxLcnInitializer txLcnInitializer : runnerMap.values()) {
+        for (TxLcnInitializer txLcnInitializer : initializers) {
             txLcnInitializer.destroy();
         }
     }
+    
 }

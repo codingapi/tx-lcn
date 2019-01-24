@@ -16,23 +16,36 @@
 package com.codingapi.txlcn.commons.runner;
 
 /**
- * Description: 初始化Runner
+ * Description: TxLcn run control
  * Company: CodingApi
  * Date: 2019/1/16
  *
  * @author codingapi meetzy
  */
 public interface TxLcnInitializer {
-
+    
     /**
-     * 初始化执行方法
+     * init
+     *
      * @throws Exception Throwable
      */
-    default void init() throws Exception{}
-
+    default void init() throws Exception {
+    }
+    
     /**
-     * 销毁对象
+     * destroy
+     *
      * @throws Exception Throwable
      */
-    default void destroy() throws Exception{}
+    default void destroy() throws Exception {
+    }
+    
+    /**
+     * order
+     *
+     * @return int
+     */
+    default int order() {
+        return 0;
+    }
 }

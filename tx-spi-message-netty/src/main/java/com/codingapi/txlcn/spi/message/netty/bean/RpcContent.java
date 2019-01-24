@@ -32,8 +32,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class RpcContent {
 
 
-    //默认值3秒
-    private int seconds;
+    private long milliseconds;
 
     private volatile MessageDto res;
 
@@ -58,8 +57,8 @@ public class RpcContent {
         return used;
     }
 
-    public RpcContent(int seconds) {
-        this.seconds = seconds;
+    public RpcContent(long milliseconds) {
+        this.milliseconds = milliseconds;
         lock = new ReentrantLock(true);
         condition = lock.newCondition();
     }
@@ -68,7 +67,7 @@ public class RpcContent {
         try {
             lock.lock();
             try {
-                condition.await(seconds, TimeUnit.SECONDS);
+                condition.await(milliseconds, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -99,7 +98,7 @@ public class RpcContent {
         }
     }
 
-    public void setSeconds(int seconds) {
-        this.seconds = seconds;
+    public void setMilliseconds(int milliseconds) {
+        this.milliseconds = milliseconds;
     }
 }

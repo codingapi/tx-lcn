@@ -66,4 +66,9 @@ public class UtilsInitialization implements TxLcnInitializer {
             rpcConfig.setWaitTime(5000);
         }
     }
+
+    @Override
+    public int order() {
+        return -1;
+    }
 }
