@@ -53,7 +53,7 @@ public class TccRunningTransaction implements DTXLocalControl {
     @Override
     public void preBusinessCode(TxTransactionInfo info) throws BeforeBusinessException {
 
-        // 缓存TCC事务信息，如果有必要
+        // cache tcc info
         if (tccTransactionInfoCache.get(info.getUnitId()) == null) {
             tccTransactionInfoCache.putIfAbsent(info.getUnitId(), TccStartingTransaction.prepareTccInfo(info));
         }

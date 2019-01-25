@@ -41,11 +41,11 @@ public class LcnStartingTransaction implements DTXLocalControl {
 
     @Override
     public void preBusinessCode(TxTransactionInfo info) throws BeforeBusinessException {
-        // 创建事务组
+        // create DTX group
         transactionControlTemplate.createGroup(
                 info.getGroupId(), info.getUnitId(), info.getTransactionInfo(), info.getTransactionType());
 
-        // LCN 类型事务需要代理资源
+        // lcn type need connection proxy
         DTXLocalContext.makeProxy();
     }
 
@@ -61,7 +61,7 @@ public class LcnStartingTransaction implements DTXLocalControl {
 
     @Override
     public void postBusinessCode(TxTransactionInfo info) {
-        // RPC 关闭事务组
+        // RPC close DTX group
         transactionControlTemplate.notifyGroup(
                 info.getGroupId(), info.getUnitId(), info.getTransactionType(), DTXLocalContext.transactionState());
     }

@@ -79,7 +79,7 @@ public class TccStartingTransaction implements DTXLocalControl {
 
     @Override
     public void preBusinessCode(TxTransactionInfo info) throws BeforeBusinessException {
-        // 缓存TCC事务信息，如果有必要
+        // cache tcc info
         try {
             context.tccTransactionInfo(info.getUnitId(), () -> prepareTccInfo(info))
                     .setMethodParameter(info.getTransactionInfo().getArgumentValues());
@@ -87,7 +87,7 @@ public class TccStartingTransaction implements DTXLocalControl {
             throw new BeforeBusinessException(throwable);
         }
 
-        // 创建事务组
+        // create DTX group
         transactionControlTemplate.createGroup(
                 info.getGroupId(), info.getUnitId(), info.getTransactionInfo(), info.getTransactionType());
     }

@@ -44,7 +44,7 @@ public class LcnTypeTransactionSeparator extends CustomizableTransactionSeparato
 
     @Override
     public DTXState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException {
-        // 一个模块存在多个LCN类型的事务单元在一个事务内走DEFAULT
+        // if has more one lcn type use default
         if (globalContext.dtxContext(txTransactionInfo.getGroupId()).getTransactionTypes().contains(Transactions.LCN)) {
             log.info("Default by LCN assert !");
             return DTXState.DEFAULT;

@@ -41,7 +41,7 @@ public class TxClientConfig {
     }
 
     /**
-     * 分布式事务切面顺序
+     * aspect order
      */
     private Integer dtxAspectOrder;
 

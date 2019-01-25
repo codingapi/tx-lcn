@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 public class LcnDefaultTransaction implements DTXLocalControl {
     @Override
     public void preBusinessCode(TxTransactionInfo info) {
-        // LCN 需要代理资源
+        // lcn type need connection proxy
         DTXLocalContext.makeProxy();
     }
 }

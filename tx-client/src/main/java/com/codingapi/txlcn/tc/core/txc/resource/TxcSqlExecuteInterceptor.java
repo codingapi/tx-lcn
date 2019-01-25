@@ -135,8 +135,6 @@ public class TxcSqlExecuteInterceptor implements SqlExecuteInterceptor {
 
     @Override
     public void postInsert(StatementInformation statementInformation) throws SQLException {
-        String groupId = DTXLocalContext.cur().getGroupId();
-        String unitId = DTXLocalContext.cur().getUnitId();
         Connection connection = (Connection) DTXLocalContext.cur().getResource();
         Insert insert = (Insert) statementInformation.getAttachment();
         TableStruct tableStruct = tableStructAnalyser.analyse(connection, insert.getTable().getName());

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * Description: 允许分布式事务的注解
+ * Description: use TxLcn
  * Date: 1/19/19
  *
  * @author ujued

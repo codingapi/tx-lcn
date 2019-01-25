@@ -56,7 +56,7 @@ public class LcnRunningTransaction implements DTXLocalControl {
     
     @Override
     public void preBusinessCode(TxTransactionInfo info) {
-        // LCN 类型事务需要代理资源
+        // lcn type need connection proxy
         DTXLocalContext.makeProxy();
     }
     
@@ -76,7 +76,7 @@ public class LcnRunningTransaction implements DTXLocalControl {
         log.debug("join group: [GroupId: {},Method: {}]" , info.getGroupId(),
                 info.getTransactionInfo().getMethodStr());
         
-        // 加入事务组
+        // join DTX group
         transactionControlTemplate.joinGroup(info.getGroupId(), info.getUnitId(), info.getTransactionType(),
                 info.getTransactionInfo());
     }
