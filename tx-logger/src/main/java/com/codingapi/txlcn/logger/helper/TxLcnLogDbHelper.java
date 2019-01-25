@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.logger.helper;
 
+import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
 import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.exception.TxLoggerException;
 import com.codingapi.txlcn.logger.model.Field;
@@ -29,7 +30,7 @@ import java.util.List;
  *
  * @author codingapi
  */
-public interface TxLcnLogDbHelper {
+public interface TxLcnLogDbHelper extends TxLcnInitializer {
 
     /**
      * 数据库初始化操作.
@@ -41,91 +42,10 @@ public interface TxLcnLogDbHelper {
     /**
      * 插入数据
      *
-     * @param txLoggerInfo logbean
+     * @param txLoggerInfo log bean
      * @return rs
      */
     int insert(TxLog txLoggerInfo);
-
-    /**
-     * 分页获取记录
-     *
-     * @param left      分页开始
-     * @param right     分页结束
-     * @param timeOrder 时间排序SQL
-     * @return 结果集
-     */
-    List<TxLog> findByLimit(int left, int right, int timeOrder);
-
-
-    /**
-     * GroupID 和 Tag 查询
-     *
-     * @param left      分页左侧
-     * @param right     分页右侧
-     * @param groupId   groupId
-     * @param tag       标签
-     * @param timeOrder timeOrder
-     * @return 数据集
-     */
-    List<TxLog> findByGroupAndTag(int left, int right, String groupId, String tag, int timeOrder);
-
-
-    /**
-     * ag 查询
-     *
-     * @param left      分页左侧
-     * @param right     分页右侧
-     * @param tag       标签
-     * @param timeOrder timeOrder
-     * @return 数据集
-     */
-    List<TxLog> findByTag(int left, int right, String tag, int timeOrder);
-
-
-    /**
-     * GroupId 查询
-     *
-     * @param left      分页左侧
-     * @param right     分页右侧
-     * @param groupId   标签
-     * @param timeOrder timeOrder
-     * @return 数据集
-     */
-    List<TxLog> findByGroupId(int left, int right, String groupId, int timeOrder);
-
-
-    /**
-     * 分页获取记录所有记录数
-     *
-     * @return 总数
-     */
-    long findByLimitTotal();
-
-    /**
-     * GroupId 和 Tag 查询记录数
-     *
-     * @param groupId groupId
-     * @param tag     标示
-     * @return 数量
-     */
-    long findByGroupAndTagTotal(String groupId, String tag);
-
-
-    /**
-     * Tag 查询记录数
-     *
-     * @param tag 标示
-     * @return 数量
-     */
-    long findByTagTotal(String tag);
-
-    /**
-     * GroupId 查询记录数
-     *
-     * @param groupId GroupId
-     * @return 总数
-     */
-    long findByGroupIdTotal(String groupId);
 
     /**
      * 按字段删除日志

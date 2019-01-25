@@ -21,7 +21,7 @@ import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import com.codingapi.txlcn.tc.core.TccTransactionInfo;
 import com.codingapi.txlcn.tc.core.TxTransactionInfo;
-import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
+import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.support.template.TransactionControlTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -15,13 +15,11 @@
  */
 package com.codingapi.txlcn.tc.message;
 
-import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.spi.message.RpcClientInitializer;
 import com.codingapi.txlcn.spi.message.dto.TxManagerHost;
+import com.codingapi.txlcn.tc.config.TxClientConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Description:
@@ -44,6 +42,6 @@ public class TXLCNClientMessageServer {
     }
 
     public void init() throws Exception {
-        rpcClientInitializer.init(TxManagerHost.parserList(txClientConfig.getManagerAddress()), new CountDownLatch(0));
+        rpcClientInitializer.init(TxManagerHost.parserList(txClientConfig.getManagerAddress()), false);
     }
 }

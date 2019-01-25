@@ -15,7 +15,6 @@
  */
 package com.codingapi.txlcn.logger;
 
-import com.codingapi.txlcn.logger.db.DefaultTxLogger;
 import com.codingapi.txlcn.logger.db.LogDbHelper;
 import com.codingapi.txlcn.logger.db.LogDbProperties;
 import com.codingapi.txlcn.logger.exception.TxLoggerException;
@@ -23,12 +22,9 @@ import com.codingapi.txlcn.logger.helper.MysqlLoggerHelper;
 import com.codingapi.txlcn.logger.helper.TxLcnLogDbHelper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
  * Description:
@@ -46,9 +42,9 @@ public class TxLoggerConfiguration {
     class LoggerEnabledTrueConfig {
 
         @Bean
-        public TxLogger txLogger(LogDbProperties logDbProperties, TxLcnLogDbHelper txlcnLogDbHelper,
-                                 ConfigurableEnvironment environment, ServerProperties serverProperties) {
-            return new DefaultTxLogger(logDbProperties, txlcnLogDbHelper, environment, serverProperties);
+        @ConditionalOnMissingBean
+        public TxLogger txLogger(TxLcnLogDbHelper txlcnLogDbHelper) {
+            return new DefaultTxLogger(txlcnLogDbHelper);
         }
 
         @Bean
@@ -64,15 +60,9 @@ public class TxLoggerConfiguration {
     }
 
     @Bean
-    public TxLoggerInitializer txLoggerInitializer(TxLcnLogDbHelper txlcnLogDbHelper) {
-        return new TxLoggerInitializer(txlcnLogDbHelper);
-    }
-
-    @Bean
     @ConditionalOnMissingBean
     public TxLcnLogDbHelper txLcnLoggerHelper() {
         return new MysqlLoggerHelper();
     }
-
 
 }

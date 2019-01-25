@@ -1,12 +1,11 @@
 package com.codingapi.txlcn.tc.message;
 
-import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
-import com.codingapi.txlcn.commons.runner.TxLcnRunnerOrders;
 import com.codingapi.txlcn.commons.util.ApplicationInformation;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.spi.message.RpcClientInitializer;
 import com.codingapi.txlcn.spi.message.dto.TxManagerHost;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
+import com.codingapi.txlcn.tc.config.TxClientConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -27,41 +26,27 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 @Slf4j
-public class TMSearcher implements TxLcnInitializer {
+public class TMSearcher {
 
     private static RpcClientInitializer RPC_CLIENT_INITIALIZER;
 
     private static ReliableMessenger RELIABLE_MESSENGER;
 
-    private final RpcClientInitializer rpcClientInitializer;
+    private static volatile CountDownLatch clusterCountLatch;
 
-    private final ReliableMessenger reliableMessenger;
-
-    @Autowired
-    private ConfigurableEnvironment environment;
+    private static int knownTMClusterSize = 1;
 
     @Autowired
-    private ServerProperties serverProperties;
-
-    @Autowired
-    public TMSearcher(RpcClientInitializer rpcClientInitializer, ReliableMessenger reliableMessenger) {
-        this.rpcClientInitializer = rpcClientInitializer;
-        this.reliableMessenger = reliableMessenger;
-    }
-
-    @Override
-    public void init() {
+    public TMSearcher(RpcClientInitializer rpcClientInitializer, TxClientConfig clientConfig,
+                      ReliableMessenger reliableMessenger, ConfigurableEnvironment environment,
+                      @Autowired(required = false) ServerProperties serverProperties) {
         // 1. util class init
         Transactions.setApplicationIdWhenRunning(ApplicationInformation.modId(environment, serverProperties));
 
         // 2. TMSearcher init
         RPC_CLIENT_INITIALIZER = rpcClientInitializer;
         RELIABLE_MESSENGER = reliableMessenger;
-    }
-
-    @Override
-    public int order() {
-        return TxLcnRunnerOrders.MAX;
+        knownTMClusterSize = clientConfig.getManagerAddress().size();
     }
 
     /**
@@ -74,19 +59,28 @@ public class TMSearcher implements TxLcnInitializer {
             HashSet<String> cluster = RELIABLE_MESSENGER.queryTMCluster();
             if (cluster.isEmpty()) {
                 log.info("No more TM.");
-                echoSuccessful();
+                echoTMClusterSuccessful();
                 return;
             }
-            CountDownLatch clusterCountLatch = new CountDownLatch(cluster.size());
-            RPC_CLIENT_INITIALIZER.init(TxManagerHost.parserList(new ArrayList<>(cluster)), clusterCountLatch);
+            clusterCountLatch = new CountDownLatch(cluster.size() - knownTMClusterSize);
+            RPC_CLIENT_INITIALIZER.init(TxManagerHost.parserList(new ArrayList<>(cluster)), true);
             clusterCountLatch.await(10, TimeUnit.SECONDS);
-            echoSuccessful();
+            echoTMClusterSuccessful();
         } catch (RpcException | InterruptedException e) {
             throw new IllegalStateException("There is no normal TM.");
         }
     }
 
-    private static void echoSuccessful() {
+    /**
+     * 搜索到一个
+     */
+    public static void searchedOne() {
+        if (Objects.nonNull(clusterCountLatch)) {
+            clusterCountLatch.countDown();
+        }
+    }
+
+    private static void echoTMClusterSuccessful() {
         log.info("TC[{}] established TM Cluster successfully!", Transactions.APPLICATION_ID_WHEN_RUNNING);
         log.info("TM cluster's size: {}", RELIABLE_MESSENGER.clusterSize());
     }

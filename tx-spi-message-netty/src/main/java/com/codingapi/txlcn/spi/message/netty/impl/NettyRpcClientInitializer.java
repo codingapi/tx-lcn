@@ -15,15 +15,14 @@
  */
 package com.codingapi.txlcn.spi.message.netty.impl;
 
-import com.codingapi.txlcn.spi.message.listener.ClientInitCallBack;
 import com.codingapi.txlcn.spi.message.RpcClientInitializer;
 import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.spi.message.dto.TxManagerHost;
+import com.codingapi.txlcn.spi.message.listener.ClientInitCallBack;
 import com.codingapi.txlcn.spi.message.netty.bean.SocketManager;
 import com.codingapi.txlcn.spi.message.netty.em.NettyType;
 import com.codingapi.txlcn.spi.message.netty.handler.NettyRpcClientHandlerInitHandler;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -36,7 +35,8 @@ import org.springframework.stereotype.Service;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
+import java.util.Optional;
+import java.util.concurrent.*;
 
 /**
  * Description:
@@ -58,25 +58,28 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
     @Autowired
     private ClientInitCallBack clientInitCallBack;
 
-    private CountDownLatch latch;
-
     private EventLoopGroup workerGroup;
 
     @Override
-    public void init(List<TxManagerHost> hosts, CountDownLatch latch) {
+    public void init(List<TxManagerHost> hosts, boolean sync) {
         NettyContext.type = NettyType.client;
         NettyContext.params = hosts;
-        this.latch = latch;
         workerGroup = new NioEventLoopGroup();
         for (TxManagerHost host : hosts) {
-            connect(new InetSocketAddress(host.getHost(), host.getPort()));
+            Optional<Future> future = connect(new InetSocketAddress(host.getHost(), host.getPort()));
+            if (sync && future.isPresent()) {
+                try {
+                    future.get().get(10, TimeUnit.SECONDS);
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
         }
     }
 
 
     @Override
-    public synchronized void connect(SocketAddress socketAddress) {
-        boolean connected = false;
+    public synchronized Optional<Future> connect(SocketAddress socketAddress) {
         for (int i = 0; i < rpcConfig.getReconnectCount(); i++) {
             if (SocketManager.getInstance().noConnect(socketAddress)) {
                 try {
@@ -87,10 +90,7 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
                     b.option(ChannelOption.SO_KEEPALIVE, true);
                     b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
                     b.handler(nettyRpcClientHandlerInitHandler);
-                    ChannelFuture channelFuture = b.connect(socketAddress).syncUninterruptibly();
-                    channelFuture.addListener(future -> latch.countDown());
-                    connected = true;
-                    break;
+                    return Optional.of(b.connect(socketAddress).syncUninterruptibly());
                 } catch (Exception e) {
                     log.warn("Connect socket({}) fail. {}ms latter try again.", socketAddress, rpcConfig.getReconnectDelay());
                     try {
@@ -101,19 +101,14 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
                     continue;
                 }
             }
-
             // 忽略已连接的连接
-            latch.countDown();
             log.info("Already connected socket({}).", socketAddress);
-            connected = true;
-            break;
+            return Optional.empty();
         }
 
-        if (!connected) {
-            latch.countDown();
-            log.warn("Finally, netty connection fail , socket is {}", socketAddress);
-            clientInitCallBack.disconnected(socketAddress.toString());
-        }
+        log.warn("Finally, netty connection fail , socket is {}", socketAddress);
+        clientInitCallBack.disconnected(socketAddress.toString());
+        return Optional.empty();
     }
 
     @Override

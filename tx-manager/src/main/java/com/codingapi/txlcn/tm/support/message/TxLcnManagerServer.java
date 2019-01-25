@@ -51,7 +51,7 @@ public class TxLcnManagerServer implements TxLcnInitializer {
     public void init() {
         // 1. 配置
         if (rpcConfig.getWaitTime() == -1) {
-            rpcConfig.setWaitTime(5000);
+            rpcConfig.setWaitTime(3000);
         }
 
         // 2. 初始化RPC Server

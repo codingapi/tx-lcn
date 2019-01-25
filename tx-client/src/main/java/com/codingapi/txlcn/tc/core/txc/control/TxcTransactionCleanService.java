@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core.txc.control;
 
-import com.codingapi.txlcn.tc.core.txc.resource.def.TxcService;
+import com.codingapi.txlcn.tc.core.txc.analy.def.TxcService;
 import com.codingapi.txlcn.tc.core.TransactionCleanService;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.exception.TxcLogicException;

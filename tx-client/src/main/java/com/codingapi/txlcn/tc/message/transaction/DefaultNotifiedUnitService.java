@@ -22,8 +22,8 @@ import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.spi.message.params.NotifyUnitParams;
 import com.codingapi.txlcn.tc.message.helper.RpcExecuteService;
 import com.codingapi.txlcn.tc.message.helper.TransactionCmd;
-import com.codingapi.txlcn.tc.support.context.DTXContext;
-import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
+import com.codingapi.txlcn.tc.core.context.TxContext;
+import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
 
 import java.io.Serializable;
@@ -41,13 +41,13 @@ public class DefaultNotifiedUnitService implements RpcExecuteService {
 
     private final TxLogger txLogger;
 
-    private TCGlobalContext context;
+    private TCGlobalContext globalContext;
 
     public DefaultNotifiedUnitService(TransactionCleanTemplate transactionCleanTemplate,
-                                      TxLogger txLogger, TCGlobalContext context) {
+                                      TxLogger txLogger, TCGlobalContext globalContext) {
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.txLogger = txLogger;
-        this.context = context;
+        this.globalContext = globalContext;
     }
 
     @Override
@@ -55,12 +55,12 @@ public class DefaultNotifiedUnitService implements RpcExecuteService {
         try {
             NotifyUnitParams notifyUnitParams = transactionCmd.getMsg().loadBean(NotifyUnitParams.class);
             // 保证业务线程执行完毕后执行事务清理操作
-            DTXContext dtxContext = context.dtxContext(transactionCmd.getGroupId());
-            if (Objects.nonNull(dtxContext)) {
-                synchronized (dtxContext.getLock()) {
+            TxContext txContext = globalContext.txContext(transactionCmd.getGroupId());
+            if (Objects.nonNull(txContext)) {
+                synchronized (txContext.getLock()) {
                     txLogger.trace(transactionCmd.getGroupId(), notifyUnitParams.getUnitId(), Transactions.TAG_TRANSACTION,
                             "clean transaction cmd waiting for business code finish.");
-                    dtxContext.getLock().wait();
+                    txContext.getLock().wait();
                 }
             }
             // 事务清理操作

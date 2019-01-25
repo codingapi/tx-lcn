@@ -19,7 +19,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.codingapi.txlcn.commons.exception.FastStorageException;
 import com.codingapi.txlcn.commons.exception.TransactionStateException;
 import com.codingapi.txlcn.commons.exception.TxManagerException;
-import com.codingapi.txlcn.spi.message.TMCluster;
 import com.codingapi.txlcn.tm.banner.TxLcnManagerBanner;
 import com.codingapi.txlcn.tm.cluster.TMProperties;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
@@ -49,10 +48,10 @@ public class AdminController {
     private final TxExceptionService txExceptionService;
 
     @Autowired
-    public AdminController(AdminService adminService, TxExceptionService txExceptionService, TMCluster tmCluster) {
+    public AdminController(AdminService adminService, TxExceptionService txExceptionService, FastStorage fastStorage) {
         this.adminService = adminService;
         this.txExceptionService = txExceptionService;
-        this.tmCluster = tmCluster;
+        this.fastStorage = fastStorage;
     }
 
     @PostMapping("/login")
@@ -170,17 +169,9 @@ public class AdminController {
         return Maps.asMap(Sets.newHashSet("version"), k -> TxLcnManagerBanner.VERSION);
     }
 
-    private final TMCluster tmCluster;
+    private final FastStorage fastStorage;
 
     @GetMapping("/tm-cluster")
-    public Map<String, String> tmCluster() {
-        return tmCluster.relation();
-    }
-
-    @Autowired
-    private FastStorage fastStorage;
-
-    @GetMapping("/tm-list")
     public List<TMProperties> tmList() throws FastStorageException {
         return fastStorage.findTMProperties();
     }

@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tc.corelog.txc;
 
-import com.codingapi.txlcn.tc.core.txc.resource.def.bean.UndoLogDO;
+import com.codingapi.txlcn.tc.core.txc.analy.def.bean.UndoLogDO;
 import com.codingapi.txlcn.tc.corelog.H2DbHelper;
 import com.codingapi.txlcn.tc.corelog.LogHelper;
 import lombok.extern.slf4j.Slf4j;

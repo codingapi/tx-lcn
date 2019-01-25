@@ -26,8 +26,8 @@ import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
 import com.codingapi.txlcn.tc.message.helper.MessageCreator;
 import com.codingapi.txlcn.tc.message.helper.TxMangerReporter;
-import com.codingapi.txlcn.tc.support.context.DTXContext;
-import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
+import com.codingapi.txlcn.tc.core.context.TxContext;
+import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
@@ -65,17 +65,17 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
 
     private final TxMangerReporter txMangerReporter;
 
-    private final TCGlobalContext context;
+    private final TCGlobalContext globalContext;
 
     @Autowired
     public SimpleDTXChecking(RpcClient rpcClient, TxClientConfig clientConfig, AspectLogger aspectLogger,
-                             TxLogger txLogger, TxMangerReporter txMangerReporter, TCGlobalContext context) {
+                             TxLogger txLogger, TxMangerReporter txMangerReporter, TCGlobalContext globalContext) {
         this.rpcClient = rpcClient;
         this.clientConfig = clientConfig;
         this.aspectLogger = aspectLogger;
         this.txLogger = txLogger;
         this.txMangerReporter = txMangerReporter;
-        this.context = context;
+        this.globalContext = globalContext;
     }
 
     public void setTransactionCleanTemplate(TransactionCleanTemplate transactionCleanTemplate) {
@@ -87,12 +87,12 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
         txLogger.trace(groupId, unitId, Transactions.TAG_TASK, "start delay checking task");
         ScheduledFuture scheduledFuture = scheduledExecutorService.schedule(() -> {
             try {
-                DTXContext dtxContext = context.dtxContext(groupId);
-                if (Objects.nonNull(dtxContext)) {
-                    synchronized (dtxContext.getLock()) {
+                TxContext txContext = globalContext.txContext(groupId);
+                if (Objects.nonNull(txContext)) {
+                    synchronized (txContext.getLock()) {
                         txLogger.trace(groupId, unitId, Transactions.TAG_TASK,
                                 "checking waiting for business code finish.");
-                        dtxContext.getLock().wait();
+                        txContext.getLock().wait();
                     }
                 }
                 MessageDto messageDto = TxMangerReporter.requestUntilNonManager(rpcClient,

@@ -181,7 +181,6 @@ public class RedisStorage implements FastStorage {
     @Override
     public List<TMProperties> findTMProperties() {
         return redisTemplate.opsForHash().entries(REDIS_TM_LIST).entrySet().stream()
-                .filter(entry -> !entry.getKey().equals(managerConfig.getHost() + ":" + managerConfig.getPort()))
                 .map(entry -> {
                     String[] args = ApplicationInformation.splitAddress(entry.getKey().toString());
                     TMProperties tmProperties = new TMProperties();
