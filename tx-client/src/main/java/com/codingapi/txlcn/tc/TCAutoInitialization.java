@@ -16,6 +16,7 @@
 package com.codingapi.txlcn.tc;
 
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
+import com.codingapi.txlcn.commons.runner.TxLcnRunnerOrders;
 import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogHelper;
 import com.codingapi.txlcn.tc.corelog.txc.TxcLogHelper;
@@ -35,19 +36,19 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class TCAutoInitialization implements TxLcnInitializer {
-
+    
     private final AspectLogHelper aspectLogHelper;
-
+    
     private final TxcLogHelper txcLogHelper;
-
+    
     private final TXLCNClientMessageServer txLcnClientMessageServer;
-
+    
     private final DTXChecking dtxChecking;
-
+    
     private final TransactionCleanTemplate transactionCleanTemplate;
-
+    
     private final RpcConfig rpcConfig;
-
+    
     @Autowired
     public TCAutoInitialization(AspectLogHelper aspectLogHelper,
                                 TXLCNClientMessageServer txLcnClientMessageServer,
@@ -61,38 +62,38 @@ public class TCAutoInitialization implements TxLcnInitializer {
         this.txcLogHelper = txcLogHelper;
         this.rpcConfig = rpcConfig;
     }
-
+    
     @Override
     public void init() throws Exception {
         // aspect log init (H2db).
         aspectLogHelper.init();
-
+        
         // txc undo log init (H2db).
         txcLogHelper.init();
-
+        
         // rpc env init
         rpcEnvInit();
-
+        
         // aware the transaction clean template to the simpleDtxChecking
         dtxCheckingTransactionCleanTemplateAdapt();
     }
-
+    
     @Override
     public int order() {
-        return -1;
+        return TxLcnRunnerOrders.BEFORE_MIDDLE;
     }
-
+    
     private void dtxCheckingTransactionCleanTemplateAdapt() {
         if (dtxChecking instanceof SimpleDTXChecking) {
             ((SimpleDTXChecking) dtxChecking).setTransactionCleanTemplate(transactionCleanTemplate);
         }
     }
-
+    
     private void rpcEnvInit() throws Exception {
         if (rpcConfig.getWaitTime() == -1) {
             rpcConfig.setWaitTime(2000);
         }
-
+        
         // rpc client init.
         txLcnClientMessageServer.init();
     }

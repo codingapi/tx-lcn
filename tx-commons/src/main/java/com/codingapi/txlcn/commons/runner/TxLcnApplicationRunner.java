@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Description: LCN统一初始化入口
+ * Description: TxLcn Runner
  * Company: CodingApi
  * Date: 2019/1/16
  *
