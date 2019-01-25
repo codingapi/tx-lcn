@@ -28,5 +28,4 @@ public class InsertImageParams {
     private List<Map<String, Object>> primaryKeyValuesList;
 
     private List<String> fullyQualifiedPrimaryKeys;
-
 }
