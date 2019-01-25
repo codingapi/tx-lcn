@@ -16,6 +16,8 @@
 package com.codingapi.txlcn.tm.support.message;
 
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
+import com.codingapi.txlcn.commons.runner.TxlcnRunnerOrders;
+import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.spi.message.RpcServerInitializer;
 import com.codingapi.txlcn.spi.message.dto.ManagerProperties;
@@ -36,17 +38,31 @@ public class TxLcnManagerServer implements TxLcnInitializer {
 
     private final RpcServerInitializer rpcServerInitializer;
 
+    private final RpcConfig rpcConfig;
+
     @Autowired
-    public TxLcnManagerServer(TxManagerConfig txManagerConfig, RpcServerInitializer rpcServerInitializer) {
+    public TxLcnManagerServer(TxManagerConfig txManagerConfig, RpcServerInitializer rpcServerInitializer, RpcConfig rpcConfig) {
         this.txManagerConfig = txManagerConfig;
         this.rpcServerInitializer = rpcServerInitializer;
+        this.rpcConfig = rpcConfig;
     }
 
     @Override
     public void init() {
+        // 1. 配置
+        if (rpcConfig.getWaitTime() == -1) {
+            rpcConfig.setWaitTime(5000);
+        }
+
+        // 2. 初始化RPC Server
         ManagerProperties managerProperties = new ManagerProperties();
         managerProperties.setCheckTime(txManagerConfig.getHeartTime());
         managerProperties.setRpcPort(txManagerConfig.getPort());
         rpcServerInitializer.init(managerProperties);
+    }
+
+    @Override
+    public int order() {
+        return TxlcnRunnerOrders.MAX;
     }
 }

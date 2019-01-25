@@ -89,6 +89,7 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
                     b.handler(nettyRpcClientHandlerInitHandler);
                     ChannelFuture channelFuture = b.connect(socketAddress).syncUninterruptibly();
                     channelFuture.addListener(future -> latch.countDown());
+                    connected = true;
                     break;
                 } catch (Exception e) {
                     log.warn("Connect socket({}) fail. {}ms latter try again.", socketAddress, rpcConfig.getReconnectDelay());

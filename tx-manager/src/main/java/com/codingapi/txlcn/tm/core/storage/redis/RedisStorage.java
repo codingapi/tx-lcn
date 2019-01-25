@@ -2,6 +2,8 @@ package com.codingapi.txlcn.tm.core.storage.redis;
 
 import com.codingapi.txlcn.commons.exception.FastStorageException;
 import com.codingapi.txlcn.commons.lock.DTXLocks;
+import com.codingapi.txlcn.commons.util.ApplicationInformation;
+import com.codingapi.txlcn.tm.cluster.TMProperties;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.tm.core.storage.LockValue;
@@ -170,22 +172,30 @@ public class RedisStorage implements FastStorage {
     }
 
     @Override
-    public void saveTMAddress(String address) {
-        Objects.requireNonNull(address);
-        redisTemplate.opsForHash().put(REDIS_TM_LIST, address, "");
+    public void saveTMProperties(TMProperties tmProperties) {
+        Objects.requireNonNull(tmProperties);
+        redisTemplate.opsForHash().put(REDIS_TM_LIST,
+                tmProperties.getHost() + ":" + tmProperties.getTransactionPort(), tmProperties.getHttpPort());
     }
 
     @Override
-    public List<String> findTMAddresses() {
+    public List<TMProperties> findTMProperties() {
         return redisTemplate.opsForHash().entries(REDIS_TM_LIST).entrySet().stream()
                 .filter(entry -> !entry.getKey().equals(managerConfig.getHost() + ":" + managerConfig.getPort()))
-                .map(entry -> entry.getKey().toString()).collect(Collectors.toList());
+                .map(entry -> {
+                    String[] args = ApplicationInformation.splitAddress(entry.getKey().toString());
+                    TMProperties tmProperties = new TMProperties();
+                    tmProperties.setHost(args[0]);
+                    tmProperties.setTransactionPort(Integer.valueOf(args[1]));
+                    tmProperties.setHttpPort(Integer.parseInt(entry.getValue().toString()));
+                    return tmProperties;
+                }).collect(Collectors.toList());
     }
 
     @Override
-    public void removeTMAddress(String address) {
-        Objects.requireNonNull(address);
-        redisTemplate.opsForHash().delete(REDIS_TM_LIST, address);
+    public void removeTMProperties(String host, int transactionPort) {
+        Objects.requireNonNull(host);
+        redisTemplate.opsForHash().delete(REDIS_TM_LIST, host + ":" + transactionPort);
     }
 
 }

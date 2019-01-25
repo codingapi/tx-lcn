@@ -62,7 +62,6 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
         new Thread(() -> {
             try {
                 clusterCountLatch.await(20, TimeUnit.SECONDS);
-                log.info("TC[{}] established TM Cluster successfully!", modId);
                 TMSearcher.search();
             } catch (InterruptedException e) {
                 throw new IllegalStateException(e);

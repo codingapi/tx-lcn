@@ -15,23 +15,16 @@
  */
 package com.codingapi.txlcn.tc;
 
-import com.codingapi.txlcn.spi.message.RpcClientInitializer;
+import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
 import com.codingapi.txlcn.spi.message.RpcConfig;
-import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogHelper;
 import com.codingapi.txlcn.tc.corelog.txc.TxcLogHelper;
-import com.codingapi.txlcn.tc.message.ReliableMessenger;
-import com.codingapi.txlcn.tc.message.TMSearcher;
 import com.codingapi.txlcn.tc.message.TXLCNClientMessageServer;
 import com.codingapi.txlcn.tc.support.checking.DTXChecking;
 import com.codingapi.txlcn.tc.support.checking.SimpleDTXChecking;
 import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
-import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
-import com.codingapi.txlcn.commons.util.Transactions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 /**
  * Description:
@@ -53,31 +46,20 @@ public class TCAutoInitialization implements TxLcnInitializer {
 
     private final TransactionCleanTemplate transactionCleanTemplate;
 
-    private final ConfigurableEnvironment environment;
-
-    private final RpcClientInitializer rpcClientInitializer;
-
     private final RpcConfig rpcConfig;
-
-    private final ReliableMessenger reliableMessenger;
 
     @Autowired
     public TCAutoInitialization(AspectLogHelper aspectLogHelper,
                                 TXLCNClientMessageServer txLcnClientMessageServer,
                                 DTXChecking dtxChecking,
                                 TransactionCleanTemplate transactionCleanTemplate, TxcLogHelper txcLogHelper,
-                                ConfigurableEnvironment environment,
-                                RpcClientInitializer rpcClientInitializer,
-                                RpcConfig rpcConfig, ReliableMessenger reliableMessenger) {
+                                RpcConfig rpcConfig) {
         this.aspectLogHelper = aspectLogHelper;
         this.txLcnClientMessageServer = txLcnClientMessageServer;
         this.dtxChecking = dtxChecking;
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.txcLogHelper = txcLogHelper;
-        this.environment = environment;
-        this.rpcClientInitializer = rpcClientInitializer;
         this.rpcConfig = rpcConfig;
-        this.reliableMessenger = reliableMessenger;
     }
 
     @Override
@@ -93,9 +75,6 @@ public class TCAutoInitialization implements TxLcnInitializer {
 
         // aware the transaction clean template to the simpleDtxChecking
         dtxCheckingTransactionCleanTemplateAdapt();
-
-        // init util classes
-        utilClassesInit();
     }
 
     @Override
@@ -109,18 +88,9 @@ public class TCAutoInitialization implements TxLcnInitializer {
         }
     }
 
-    private void utilClassesInit() {
-        String name = environment.getProperty("spring.application.name");
-        String application = StringUtils.hasText(name) ? name : "application";
-        String port = environment.getProperty("server.port");
-        Transactions.setApplicationIdWhenRunning(String.format("%s:%s", application, port));
-
-        TMSearcher.init(rpcClientInitializer, reliableMessenger);
-    }
-
     private void rpcEnvInit() throws Exception {
         if (rpcConfig.getWaitTime() == -1) {
-            rpcConfig.setWaitTime(500);
+            rpcConfig.setWaitTime(1000);
         }
 
         // rpc client init.

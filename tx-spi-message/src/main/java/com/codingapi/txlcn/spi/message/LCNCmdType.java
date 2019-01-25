@@ -50,9 +50,15 @@ public enum LCNCmdType {
     notifyGroup("notify-group", MessageConstants.ACTION_NOTIFY_GROUP),
 
     /**
-     * 中继通知事务单元
+     * 查询分布式事务锁
+     * 简写 qdtxl
      */
-    relayNotifyUnit("", MessageConstants.ACTION_RELAY_NOTIFY_UNIT),
+    acquireDTXLock("acquire-dtx-lock", MessageConstants.ACTION_ACQUIRE_DTX_LOCK),
+
+    /**
+     * 释放分布式事务锁
+     */
+    releaseDTXLock("release-dtx-lock", MessageConstants.ACTION_RELEASE_DTX_LOCK),
 
     /**
      * 响应事务状态
@@ -81,26 +87,20 @@ public enum LCNCmdType {
     initClient("init-client", MessageConstants.ACTION_INIT_CLIENT),
 
     /**
-     * 刷新集群
-     */
-    refreshTMCluster("refresh-tm-cluster", MessageConstants.ACTION_AUTO_CLUSTER),
-
-    /**
      * 获取切面日志
      * 简写 gal
      */
     getAspectLog("get-aspect-log", MessageConstants.ACTION_GET_ASPECT_LOG),
 
     /**
-     * 查询分布式事务锁
-     * 简写 qdtxl
+     * 查询tm 集群
      */
-    acquireDTXLock("acquire-dtx-lock", MessageConstants.ACTION_ACQUIRE_DTX_LOCK),
+    queryTMCluster("query-tm-cluster", MessageConstants.ACTION_QUERY_TM_CLUSTER),
 
     /**
-     * 释放分布式事务锁
+     * 清理失效的TM
      */
-    releaseDTXLock("release-dtx-lock", MessageConstants.ACTION_RELEASE_DTX_LOCK);
+    cleanInvalidTM("clean-invalid-tm", MessageConstants.ACTION_CLEAN_INVALID_TM);
 
 
     private String code;
@@ -131,8 +131,6 @@ public enum LCNCmdType {
                 return notifyUnit;
             case MessageConstants.ACTION_JOIN_GROUP:
                 return joinGroup;
-            case MessageConstants.ACTION_RELAY_NOTIFY_UNIT:
-                return relayNotifyUnit;
             case MessageConstants.ACTION_ACQUIRE_DTX_LOCK:
                 return acquireDTXLock;
             case MessageConstants.ACTION_RELEASE_DTX_LOCK:
@@ -147,8 +145,10 @@ public enum LCNCmdType {
                 return getAspectLog;
             case MessageConstants.ACTION_INIT_CLIENT:
                 return initClient;
-            case MessageConstants.ACTION_AUTO_CLUSTER:
-                return refreshTMCluster;
+            case MessageConstants.ACTION_QUERY_TM_CLUSTER:
+                return queryTMCluster;
+            case MessageConstants.ACTION_CLEAN_INVALID_TM:
+                return cleanInvalidTM;
             default:
                 throw new IllegalStateException("unsupported cmd.");
         }

@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.tm.core.storage;
 
 import com.codingapi.txlcn.commons.exception.FastStorageException;
+import com.codingapi.txlcn.tm.cluster.TMProperties;
 
 import java.util.List;
 import java.util.Set;
@@ -139,10 +140,10 @@ public interface FastStorage {
     /**
      * save Manager address is ip:port
      *
-     * @param address ip:port
+     * @param tmProperties ip:port
      * @throws FastStorageException fastStorageException
      */
-    void saveTMAddress(String address) throws FastStorageException;
+    void saveTMProperties(TMProperties tmProperties) throws FastStorageException;
 
     /**
      * find all Manager
@@ -150,13 +151,14 @@ public interface FastStorage {
      * @return list
      * @throws FastStorageException fastStorageException
      */
-    List<String> findTMAddresses() throws FastStorageException;
+    List<TMProperties> findTMProperties() throws FastStorageException;
 
     /**
      * delete Manager address
      *
-     * @param address ip:port
+     * @param host            host
+     * @param transactionPort transactionPort
      * @throws FastStorageException fastStorageException
      */
-    void removeTMAddress(String address) throws FastStorageException;
+    void removeTMProperties(String host, int transactionPort) throws FastStorageException;
 }

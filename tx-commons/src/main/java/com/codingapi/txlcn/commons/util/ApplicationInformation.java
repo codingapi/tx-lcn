@@ -22,10 +22,33 @@ public abstract class ApplicationInformation {
      * @return 标识
      */
     public static String modId(ConfigurableEnvironment environment, ServerProperties serverProperties) {
-        int port = Objects.isNull(serverProperties) ? 0 : (Objects.isNull(serverProperties.getPort()) ? 8080 :
-                serverProperties.getPort());
+
         String applicationName = environment.getProperty("spring.application.name");
         applicationName = StringUtils.hasText(applicationName) ? applicationName : "application";
-        return applicationName + ":" + port;
+        return applicationName + ":" + serverPort(serverProperties);
+    }
+
+    /**
+     * 拆分网络地址为host and port
+     *
+     * @param hostAndPort 主机和端口
+     * @return 主机端口数组
+     */
+    public static String[] splitAddress(String hostAndPort) {
+        if (hostAndPort.indexOf(':') == -1) {
+            throw new IllegalStateException("non exists port");
+        }
+        return hostAndPort.split(":");
+    }
+
+    /**
+     * 模块HTTP端口号
+     *
+     * @param serverProperties
+     * @return
+     */
+    public static int serverPort(ServerProperties serverProperties) {
+        return Objects.isNull(serverProperties) ? 0 : (Objects.isNull(serverProperties.getPort()) ? 8080 :
+                serverProperties.getPort());
     }
 }

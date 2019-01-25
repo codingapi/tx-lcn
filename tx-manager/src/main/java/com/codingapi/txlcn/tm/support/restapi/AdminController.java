@@ -21,6 +21,7 @@ import com.codingapi.txlcn.commons.exception.TransactionStateException;
 import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.spi.message.TMCluster;
 import com.codingapi.txlcn.tm.banner.TxLcnManagerBanner;
+import com.codingapi.txlcn.tm.cluster.TMProperties;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.tm.support.restapi.model.*;
 import com.codingapi.txlcn.tm.support.service.AdminService;
@@ -30,7 +31,6 @@ import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.Map;
 
@@ -181,7 +181,7 @@ public class AdminController {
     private FastStorage fastStorage;
 
     @GetMapping("/tm-list")
-    public List<String> tmList() throws FastStorageException {
-        return fastStorage.findTMAddresses();
+    public List<TMProperties> tmList() throws FastStorageException {
+        return fastStorage.findTMProperties();
     }
 }

@@ -88,10 +88,6 @@ public class MessageConstants {
     public static final String ACTION_RELEASE_DTX_LOCK = "rdtxl";
 
 
-    public static final String SYS_GROUP_INIT = "";
-
-    public static final String SYS_GROUP_NON_REMOTE = "NON_REMOTE_CALL";
-
     /**
      * 发起请求状态
      */
@@ -108,22 +104,12 @@ public class MessageConstants {
     public static final int STATE_EXCEPTION = 500;
 
     /**
-     * 自动集群
-     */
-    public static final String ACTION_AUTO_CLUSTER = "acl";
-
-    /**
-     * 通知事务单元中继
-     */
-    public static final String ACTION_RELAY_NOTIFY_UNIT = "rnu";
-
-    /**
      * 清理失效的TM
      */
     public static final String ACTION_CLEAN_INVALID_TM = "citm";
 
     /**
-     * 查询Cluster中其他TM实例
+     * 查询TM Cluster
      */
-    public static final String ACTION_REMAIN_TM = "rtm";
+    public static final String ACTION_QUERY_TM_CLUSTER = "qtmc";
 }
