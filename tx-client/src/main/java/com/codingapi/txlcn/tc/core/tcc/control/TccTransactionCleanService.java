@@ -19,7 +19,7 @@ import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.TccTransactionInfo;
 import com.codingapi.txlcn.tc.core.TransactionCleanService;
-import com.codingapi.txlcn.tc.core.tcc.TccTransactionInfoCache;
+import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.message.helper.TxMangerReporter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,27 +41,24 @@ public class TccTransactionCleanService implements TransactionCleanService {
 
     private final ApplicationContext applicationContext;
 
-    private final TccTransactionInfoCache tccTransactionInfoCache;
-
     private final TxMangerReporter txMangerReporter;
+
+    private final TCGlobalContext globalContext;
 
     @Autowired
     public TccTransactionCleanService(ApplicationContext applicationContext,
-                                      TccTransactionInfoCache tccTransactionInfoCache,
-                                      TxMangerReporter txMangerReporter) {
+                                      TxMangerReporter txMangerReporter, TCGlobalContext globalContext) {
         this.applicationContext = applicationContext;
-        this.tccTransactionInfoCache = tccTransactionInfoCache;
         this.txMangerReporter = txMangerReporter;
+        this.globalContext = globalContext;
     }
 
     @Override
     public void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException {
-        TccTransactionInfo tccInfo = tccTransactionInfoCache.get(unitId);
-
-        Object object = applicationContext.getBean(tccInfo.getExecuteClass());
-        Method exeMethod = null;
-
+        Method exeMethod;
         try {
+            TccTransactionInfo tccInfo = globalContext.tccTransactionInfo(unitId, null);
+            Object object = applicationContext.getBean(tccInfo.getExecuteClass());
             // 用户的 confirm or cancel method 可以用到这个
             if (Objects.isNull(DTXLocalContext.cur())) {
                 DTXLocalContext.getOrNew().setJustNow(true);
@@ -73,12 +70,12 @@ public class TccTransactionCleanService implements TransactionCleanService {
                     tccInfo.getMethodTypeParameter());
             try {
                 exeMethod.invoke(object, tccInfo.getMethodParameter());
+                log.debug("User confirm/cancel logic over.");
             } catch (Throwable e) {
-                log.error("tcc clean error.", e);
+                log.error("Tcc clean error.", e);
                 txMangerReporter.reportTccCleanException(groupId, unitId, state);
             }
-        } catch (Exception e) {
-            log.error(" rpc_tcc_" + exeMethod + e.getMessage());
+        } catch (Throwable e) {
             throw new TransactionClearException(e.getMessage());
         } finally {
             if (DTXLocalContext.cur().isJustNow()) {

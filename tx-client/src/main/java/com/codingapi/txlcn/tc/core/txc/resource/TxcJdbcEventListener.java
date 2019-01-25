@@ -16,8 +16,8 @@
 package com.codingapi.txlcn.tc.core.txc.resource;
 
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
-import com.codingapi.txlcn.tc.core.txc.resource.def.SqlExecuteInterceptor;
-import com.codingapi.txlcn.tc.core.txc.resource.def.bean.LockableSelect;
+import com.codingapi.txlcn.tc.core.txc.analy.def.SqlExecuteInterceptor;
+import com.codingapi.txlcn.tc.core.txc.analy.def.bean.LockableSelect;
 import com.codingapi.txlcn.jdbcproxy.p6spy.common.PreparedStatementInformation;
 import com.codingapi.txlcn.jdbcproxy.p6spy.common.StatementInformation;
 import com.codingapi.txlcn.jdbcproxy.p6spy.event.P6spyJdbcEventListener;

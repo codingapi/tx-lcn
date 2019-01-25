@@ -29,6 +29,7 @@ import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -38,6 +39,7 @@ import java.util.concurrent.TimeUnit;
  * Date: 2018/12/29
  *
  * @author codingapi
+ * @see TMSearcher
  */
 @Component
 @Slf4j
@@ -51,9 +53,13 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
 
     private CountDownLatch clusterCountLatch;
 
+    private final ReliableMessenger reliableMessenger;
+
     @Autowired
-    public TCSideRpcInitCallBack(RpcClient rpcClient, TxClientConfig txClientConfig, ConfigurableEnvironment environment,
-                                 @Autowired(required = false) ServerProperties serverProperties) {
+    public TCSideRpcInitCallBack(RpcClient rpcClient, TxClientConfig txClientConfig,
+                                 ConfigurableEnvironment environment,
+                                 @Autowired(required = false) ServerProperties serverProperties,
+                                 ReliableMessenger reliableMessenger) {
         this.rpcClient = rpcClient;
         this.txClientConfig = txClientConfig;
         this.clusterCountLatch = new CountDownLatch(txClientConfig.getManagerAddress().size());
@@ -62,11 +68,13 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
         new Thread(() -> {
             try {
                 clusterCountLatch.await(20, TimeUnit.SECONDS);
+                // TC指定的TM列表连接完毕，开始搜索其它的TM节点
                 TMSearcher.search();
             } catch (InterruptedException e) {
                 throw new IllegalStateException(e);
             }
         }).start();
+        this.reliableMessenger = reliableMessenger;
     }
 
     @Override
@@ -81,6 +89,9 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
                     long dtxTime = resParams.getDtxTime();
                     txClientConfig.setDtxTime(dtxTime);
                     log.info("Finally, determined dtx time is {}ms.", dtxTime);
+                    if (clusterCountLatch.getCount() == 0) {
+                        TMSearcher.searchedOne();
+                    }
                     clusterCountLatch.countDown();
                     return;
                 }
@@ -93,6 +104,5 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
 
     @Override
     public void disconnected(String remoteKey) {
-        // nothing to do
     }
 }

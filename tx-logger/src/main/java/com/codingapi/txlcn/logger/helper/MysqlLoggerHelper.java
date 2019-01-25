@@ -29,10 +29,8 @@ import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -54,9 +52,8 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
 
     private RowProcessor processor = new BasicRowProcessor(new GenerousBeanProcessor());
 
-
     @Override
-    public void init() throws Exception {
+    public void init() {
         if (logDbProperties.isEnabled()) {
             String sql = "CREATE TABLE IF NOT EXISTS `t_logger`  (\n" +
                     "  `id` bigint(20) NOT NULL AUTO_INCREMENT,\n" +
@@ -73,7 +70,6 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
 
     }
 
-
     @Override
     public int insert(TxLog txLoggerInfo) {
         if (logDbProperties.isEnabled()) {
@@ -83,87 +79,6 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
             throw new NotEnableLogException("not enable logger");
         }
     }
-
-    /**
-     * 分页获取记录
-     *
-     * @param left      分页开始
-     * @param right     分页结束
-     * @param timeOrder 时间排序SQL
-     * @return 结果集
-     */
-    @Override
-    public List<TxLog> findByLimit(int left, int right, int timeOrder) {
-        if (logDbProperties.isEnabled()) {
-            String sql = "select * from t_logger " + timeOrderSql(timeOrder) + " limit " + left + ", " + right;
-            return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor));
-        } else {
-            throw new NotEnableLogException("not enable logger");
-        }
-    }
-
-
-    /**
-     * GroupID 和 Tag 查询
-     *
-     * @param left      分页左侧
-     * @param right     分页右侧
-     * @param groupId   groupId
-     * @param tag       标签
-     * @param timeOrder timeOrder
-     * @return 数据集
-     */
-    @Override
-    public List<TxLog> findByGroupAndTag(int left, int right, String groupId, String tag, int timeOrder) {
-        if (logDbProperties.isEnabled()) {
-            String sql = "select * from t_logger where group_id=? and tag=? " + timeOrderSql(timeOrder) + " limit "
-                    + left + ", " + right;
-            return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor), groupId, tag);
-        } else {
-            throw new NotEnableLogException("not enable logger");
-        }
-    }
-
-
-    /**
-     * ag 查询
-     *
-     * @param left      分页左侧
-     * @param right     分页右侧
-     * @param tag       标签
-     * @param timeOrder timeOrder
-     * @return 数据集
-     */
-    @Override
-    public List<TxLog> findByTag(int left, int right, String tag, int timeOrder) {
-        if (logDbProperties.isEnabled()) {
-            String sql = "select * from t_logger where tag =? " + timeOrderSql(timeOrder) + " limit " + left + ", " + right;
-            return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor), tag);
-        } else {
-            throw new NotEnableLogException("not enable logger");
-        }
-    }
-
-
-    /**
-     * GroupId 查询
-     *
-     * @param left      分页左侧
-     * @param right     分页右侧
-     * @param groupId   标签
-     * @param timeOrder timeOrder
-     * @return 数据集
-     */
-    @Override
-    public List<TxLog> findByGroupId(int left, int right, String groupId, int timeOrder) {
-        if (logDbProperties.isEnabled()) {
-            String sql = "select * from t_logger where group_id=? " + timeOrderSql(timeOrder) + " limit " + left + ", " + right;
-            return dbHelper.query(sql, new BeanListHandler<>(TxLog.class, processor), groupId);
-        } else {
-            throw new NotEnableLogException("not enable logger");
-        }
-    }
-
 
     /**
      * 按筛选条件获取记录数
@@ -190,49 +105,6 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
         return "order by create_time " + (timeOrder == 1 ? "asc" : "desc");
     }
 
-    /**
-     * 分页获取记录所有记录数
-     *
-     * @return 总数
-     */
-    @Override
-    public long findByLimitTotal() {
-        return total("1=1");
-    }
-
-    /**
-     * GroupId 和 Tag 查询记录数
-     *
-     * @param groupId groupId
-     * @param tag     标示
-     * @return 数量
-     */
-    @Override
-    public long findByGroupAndTagTotal(String groupId, String tag) {
-        return total("group_id=? and tag=?", groupId, tag);
-    }
-
-    /**
-     * Tag 查询记录数
-     *
-     * @param tag 标示
-     * @return 数量
-     */
-    @Override
-    public long findByTagTotal(String tag) {
-        return total("tag=?", tag);
-    }
-
-    /**
-     * GroupId 查询记录数
-     *
-     * @param groupId GroupId
-     * @return 总数
-     */
-    @Override
-    public long findByGroupIdTotal(String groupId) {
-        return total("group_id=?", groupId);
-    }
 
     @Override
     public void deleteByFields(List<Field> fields) throws TxLoggerException {

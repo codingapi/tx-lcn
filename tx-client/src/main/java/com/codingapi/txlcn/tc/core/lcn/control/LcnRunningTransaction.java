@@ -18,7 +18,6 @@ package com.codingapi.txlcn.tc.core.lcn.control;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
 import com.codingapi.txlcn.commons.util.Transactions;
-import com.codingapi.txlcn.spi.sleuth.TracerHelper;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import com.codingapi.txlcn.tc.core.TxTransactionInfo;
@@ -38,17 +37,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LcnRunningTransaction implements DTXLocalControl {
     
-    private final TracerHelper tracerHelper;
-    
     private final TransactionCleanTemplate transactionCleanTemplate;
     
     private final TransactionControlTemplate transactionControlTemplate;
     
     @Autowired
-    public LcnRunningTransaction(TracerHelper tracerHelper,
-                                 TransactionCleanTemplate transactionCleanTemplate,
+    public LcnRunningTransaction(TransactionCleanTemplate transactionCleanTemplate,
                                  TransactionControlTemplate transactionControlTemplate) {
-        this.tracerHelper = tracerHelper;
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.transactionControlTemplate = transactionControlTemplate;
     }

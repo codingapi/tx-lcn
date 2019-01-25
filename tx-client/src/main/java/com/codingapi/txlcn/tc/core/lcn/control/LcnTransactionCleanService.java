@@ -19,7 +19,7 @@ import com.codingapi.txlcn.commons.exception.TCGlobalContextException;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.tc.core.TransactionCleanService;
 import com.codingapi.txlcn.tc.core.lcn.resource.LcnConnectionProxy;
-import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
+import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,8 +48,7 @@ public class LcnTransactionCleanService implements TransactionCleanService {
             connectionProxy.notify(state);
             // todo notify exception
         } catch (TCGlobalContextException e) {
-            log.error("local non transaction, but notified. probably net message timeout . groupId: {}, transactionState: {}", groupId, state);
-            throw new TransactionClearException("local non transaction, but notified. probably net message timeout .");
+            log.warn("Non lcn connection when clear transaction.");
         }
     }
 }

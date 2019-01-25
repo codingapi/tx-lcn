@@ -15,19 +15,16 @@
  */
 package com.codingapi.txlcn.tc.aspect.weave;
 
-import com.codingapi.txlcn.commons.util.RandomUtils;
-import com.codingapi.txlcn.spi.sleuth.TracerHelper;
 import com.codingapi.txlcn.tc.aspect.BusinessCallback;
 import com.codingapi.txlcn.tc.core.DTXInfo;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.DTXServiceExecutor;
+import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
+import com.codingapi.txlcn.tc.core.context.TxContext;
 import com.codingapi.txlcn.tc.core.TxTransactionInfo;
-import com.codingapi.txlcn.tc.support.context.DTXContext;
-import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
@@ -42,17 +39,14 @@ import java.util.Objects;
 @Slf4j
 public class DTXLogicWeaver {
 
-    private final TracerHelper tracerHelper;
-
     private final DTXServiceExecutor transactionServiceExecutor;
 
-    private final TCGlobalContext context;
+    private final TCGlobalContext globalContext;
 
     @Autowired
-    public DTXLogicWeaver(TracerHelper tracerHelper, DTXServiceExecutor transactionServiceExecutor, TCGlobalContext context) {
-        this.tracerHelper = tracerHelper;
+    public DTXLogicWeaver(DTXServiceExecutor transactionServiceExecutor, TCGlobalContext globalContext) {
         this.transactionServiceExecutor = transactionServiceExecutor;
-        this.context = context;
+        this.globalContext = globalContext;
     }
 
     public Object runTransaction(DTXInfo dtxInfo, BusinessCallback business) throws Throwable {
@@ -63,43 +57,49 @@ public class DTXLogicWeaver {
             return business.call();
         }
 
-        log.debug("tx-unit start---->");
-
-        // 事务发起方判断
-        boolean isTransactionStart = StringUtils.isEmpty(tracerHelper.getGroupId());
-        if (isTransactionStart) {
-            tracerHelper.createGroupId(RandomUtils.randomKey());
-        }
-        // 该线程事务
-        String groupId = tracerHelper.getGroupId();
-        String unitId = dtxInfo.getUnitId();
+        log.debug("TX-unit start---->");
         DTXLocalContext dtxLocalContext = DTXLocalContext.getOrNew();
-        if (dtxLocalContext.getUnitId() != null) {
+        TxContext txContext;
+        if (Objects.isNull(dtxLocalContext.getGroupId())) {
+            // 非子Unit开启本地事务上下文
+            log.debug("Unit start TxContext.");
+            txContext = globalContext.startTx();
+            dtxLocalContext.setUnitId(dtxInfo.getUnitId());
+            dtxLocalContext.setGroupId(txContext.getGroupId());
+            dtxLocalContext.setTransactionType(dtxInfo.getTransactionType());
+        } else {
+            // 子Unit获取父上下文
+            log.debug("Unit[{}] in unit: {}, use parent's TxContext.", dtxInfo.getUnitId(), dtxLocalContext.getUnitId());
+            txContext = globalContext.txContext(dtxLocalContext.getGroupId());
             dtxLocalContext.setInUnit(true);
-            log.info("tx > unit[{}] in unit: {}" , unitId, dtxLocalContext.getUnitId());
         }
-        dtxLocalContext.setUnitId(unitId);
-        dtxLocalContext.setGroupId(groupId);
-        dtxLocalContext.setTransactionType(dtxInfo.getTransactionType());
 
         // 事务参数
-        TxTransactionInfo info = new TxTransactionInfo(dtxInfo.getTransactionType(), isTransactionStart,
-                groupId, unitId, dtxInfo.getTransactionInfo(), business,
-                dtxInfo.getBusinessMethod(), dtxInfo.getTransactionPropagation());
+        TxTransactionInfo info = new TxTransactionInfo();
+        info.setBusinessCallback(business);
+        info.setGroupId(txContext.getGroupId());
+        info.setUnitId(dtxInfo.getUnitId());
+        info.setPointMethod(dtxInfo.getBusinessMethod());
+        info.setPropagation(dtxInfo.getTransactionPropagation());
+        info.setTransactionInfo(dtxInfo.getTransactionInfo());
+        info.setTransactionType(dtxInfo.getTransactionType());
+        info.setTransactionStart(txContext.isDtxStart());
 
         //LCN事务处理器
         try {
-            context.newDTXContext(groupId);
             return transactionServiceExecutor.transactionRunning(info);
         } finally {
-            DTXContext dtxContext = context.dtxContext(info.getGroupId());
-            synchronized (dtxContext.getLock()) {
-                dtxContext.getLock().notifyAll();
+            if (!dtxLocalContext.isInUnit()) {
+                log.debug("Destroy TxContext[{}]", info.getGroupId());
+                // 获取事务上下文通知事务执行完毕
+                synchronized (txContext.getLock()) {
+                    txContext.getLock().notifyAll();
+                }
+                // 销毁事务
+                globalContext.destroyTx(info.getGroupId());
+                DTXLocalContext.makeNeverAppeared();
             }
-            context.destroyDTXContext(info.getGroupId());
-            DTXLocalContext.makeNeverAppeared();
-            tracerHelper.createGroupId("");
-            log.debug("tx-unit end------>");
+            log.debug("TX-unit end------>");
         }
     }
 }

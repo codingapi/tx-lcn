@@ -5,12 +5,12 @@ import com.codingapi.txlcn.logger.TxLoggerConfiguration;
 import com.codingapi.txlcn.spi.sleuth.TxSleuthApiConfiguration;
 import com.codingapi.txlcn.tc.config.DependenciesImportSelector;
 import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
-import org.apache.commons.dbutils.QueryRunner;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.*;
-
-import javax.sql.DataSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * Description:
@@ -33,17 +33,5 @@ public class TCAutoConfiguration {
     @Bean
     public ApplicationRunner txLcnApplicationRunner(ApplicationContext applicationContext) {
         return new TxLcnApplicationRunner(applicationContext);
-    }
-
-    /**
-     * Spring ApplicationContext at least one Primary java.sql.DataSource.
-     *
-     * @param dataSource java.sql.DataSource
-     * @return apache jdbc runner
-     */
-    @Bean
-    @Primary
-    public QueryRunner queryRunner(DataSource dataSource) {
-        return new QueryRunner(dataSource);
     }
 }

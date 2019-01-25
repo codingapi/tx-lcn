@@ -9,7 +9,6 @@ import com.codingapi.txlcn.spi.message.params.JoinGroupParams;
 import com.codingapi.txlcn.spi.message.params.NotifyGroupParams;
 import com.codingapi.txlcn.spi.message.util.MessageUtils;
 import com.codingapi.txlcn.tc.message.ReliableMessenger;
-import com.codingapi.txlcn.tc.message.TMSearcher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -125,7 +124,7 @@ public class LoopMessenger implements ReliableMessenger {
      * @throws RpcException RpcException
      */
     private MessageDto request(MessageDto messageDto, String whenNonManagerMessage) throws RpcException {
-        while (true) {
+        for (int i = 0; i < rpcClient.loadAllRemoteKey().size(); i++) {
             try {
                 String remoteKey = rpcClient.loadRemoteKey();
                 MessageDto result = rpcClient.request(remoteKey, messageDto);
@@ -133,10 +132,10 @@ public class LoopMessenger implements ReliableMessenger {
                 return result;
             } catch (RpcException e) {
                 if (e.getCode() == RpcException.NON_TX_MANAGER) {
-                    TMSearcher.search();
                     throw new RpcException(e.getCode(), whenNonManagerMessage + ". non tx-manager is alive.");
                 }
             }
         }
+        throw new RpcException(RpcException.NON_TX_MANAGER, whenNonManagerMessage + ". non tx-manager is alive.");
     }
 }

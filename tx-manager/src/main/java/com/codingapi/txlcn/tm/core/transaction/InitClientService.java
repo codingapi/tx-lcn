@@ -17,12 +17,11 @@ package com.codingapi.txlcn.tm.core.transaction;
 
 import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.commons.util.ApplicationInformation;
-import com.codingapi.txlcn.spi.message.TMCluster;
+import com.codingapi.txlcn.spi.message.RpcClient;
+import com.codingapi.txlcn.spi.message.params.InitClientParams;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.message.RpcExecuteService;
 import com.codingapi.txlcn.tm.core.message.TransactionCmd;
-import com.codingapi.txlcn.spi.message.RpcClient;
-import com.codingapi.txlcn.spi.message.params.InitClientParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -50,16 +49,13 @@ public class InitClientService implements RpcExecuteService {
 
     private final ServerProperties serverProperties;
 
-    private final TMCluster tmCluster;
-
     @Autowired
     public InitClientService(RpcClient rpcClient, TxManagerConfig txManagerConfig, ConfigurableEnvironment environment,
-                             @Autowired(required = false) ServerProperties serverProperties, TMCluster tmCluster) {
+                             @Autowired(required = false) ServerProperties serverProperties) {
         this.rpcClient = rpcClient;
         this.txManagerConfig = txManagerConfig;
         this.environment = environment;
         this.serverProperties = serverProperties;
-        this.tmCluster = tmCluster;
     }
 
 
@@ -68,16 +64,10 @@ public class InitClientService implements RpcExecuteService {
         log.info("init client - >{}", transactionCmd);
         InitClientParams initClientParams = transactionCmd.getMsg().loadBean(InitClientParams.class);
         rpcClient.bindAppName(transactionCmd.getRemoteKey(), initClientParams.getAppName());
-
         // DTX Time
         initClientParams.setDtxTime(txManagerConfig.getDtxTime());
-
-        // Auto Cluster Relation
-        tmCluster.toCluster(initClientParams.getAppName(), transactionCmd.getRemoteKey());
-
-        // TM Name (for AutoCluster)
+        // TM Name
         initClientParams.setAppName(ApplicationInformation.modId(environment, serverProperties));
-
         return initClientParams;
     }
 }

@@ -20,7 +20,7 @@ import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.tc.support.TXLCNTransactionBeanHelper;
-import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
+import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.support.propagation.TXLCNTransactionSeparator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +78,7 @@ public class DTXServiceExecutor {
         // 5. 织入事务操作
         try {
             // 5.1 记录事务类型到事务上下文
-            globalContext.dtxContext(info.getGroupId()).getTransactionTypes().add(transactionType);
+            globalContext.txContext(info.getGroupId()).getTransactionTypes().add(transactionType);
 
             // 5.2 业务执行前
             txLogger.trace(info.getGroupId(), info.getUnitId(), Transactions.TAG_TRANSACTION, "pre service business code");

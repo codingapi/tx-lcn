@@ -28,8 +28,12 @@ import java.sql.Connection;
 @Component
 public class ConnectionHelper {
 
+    private final CompoundJdbcEventListener compoundJdbcEventListener;
+
     @Autowired
-    private CompoundJdbcEventListener compoundJdbcEventListener;
+    public ConnectionHelper(CompoundJdbcEventListener compoundJdbcEventListener) {
+        this.compoundJdbcEventListener = compoundJdbcEventListener;
+    }
 
     public Connection proxy(Connection connection){
         return ConnectionWrapper.wrap(connection,

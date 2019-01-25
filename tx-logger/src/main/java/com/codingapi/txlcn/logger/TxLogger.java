@@ -24,7 +24,14 @@ package com.codingapi.txlcn.logger;
  */
 public interface TxLogger {
 
-
-    void trace(String groupId,String unitId,String tag, String content);
+    /**
+     * trace log
+     *
+     * @param groupId groupId
+     * @param unitId  unitId
+     * @param tag     tag
+     * @param content content
+     */
+    void trace(String groupId, String unitId, String tag, String content);
 
 }

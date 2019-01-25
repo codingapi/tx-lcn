@@ -46,7 +46,8 @@ public class DTXResourceWeaver {
         DTXLocalContext dtxLocalContext = DTXLocalContext.cur();
         if (Objects.nonNull(dtxLocalContext) && dtxLocalContext.isProxy()) {
             String transactionType = dtxLocalContext.getTransactionType();
-            TransactionResourceExecutor transactionResourceExecutor = transactionBeanHelper.loadTransactionResourceExecuter(transactionType);
+            TransactionResourceExecutor transactionResourceExecutor =
+                    transactionBeanHelper.loadTransactionResourceExecuter(transactionType);
             Connection connection = transactionResourceExecutor.proxyConnection(() -> {
                 try {
                     return (Connection) point.proceed();

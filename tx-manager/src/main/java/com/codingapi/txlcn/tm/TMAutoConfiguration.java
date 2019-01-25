@@ -3,7 +3,6 @@ package com.codingapi.txlcn.tm;
 import com.codingapi.txlcn.commons.runner.TxLcnApplicationRunner;
 import com.codingapi.txlcn.logger.TxLoggerConfiguration;
 import com.codingapi.txlcn.spi.MessageConfiguration;
-import com.codingapi.txlcn.spi.message.TMCluster;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.tm.core.storage.FastStorageProvider;
@@ -67,10 +66,5 @@ public class TMAutoConfiguration {
     @Bean
     public TxLcnApplicationRunner txLcnApplicationRunner(ApplicationContext applicationContext) {
         return new TxLcnApplicationRunner(applicationContext);
-    }
-
-    @Bean
-    public TMCluster tmCluster() {
-        return new TMCluster();
     }
 }

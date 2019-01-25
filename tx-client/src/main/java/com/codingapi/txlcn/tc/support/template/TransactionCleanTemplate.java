@@ -21,7 +21,7 @@ import com.codingapi.txlcn.tc.support.checking.DTXChecking;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
-import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
+import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

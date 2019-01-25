@@ -15,15 +15,15 @@
  */
 package com.codingapi.txlcn.tc.core.tcc.control;
 
-import com.codingapi.txlcn.tc.core.DTXLocalContext;
-import com.codingapi.txlcn.tc.core.TxTransactionInfo;
-import com.codingapi.txlcn.tc.core.tcc.TccTransactionInfoCache;
-import com.codingapi.txlcn.tc.core.DTXLocalControl;
-import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
-import com.codingapi.txlcn.tc.support.template.TransactionControlTemplate;
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.exception.TxClientException;
+import com.codingapi.txlcn.tc.core.DTXLocalContext;
+import com.codingapi.txlcn.tc.core.DTXLocalControl;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
+import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
+import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
+import com.codingapi.txlcn.tc.support.template.TransactionControlTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class TccRunningTransaction implements DTXLocalControl {
 
-    private final TccTransactionInfoCache tccTransactionInfoCache;
+    private final TCGlobalContext globalContext;
 
     private final TransactionCleanTemplate transactionCleanTemplate;
 
@@ -44,21 +44,22 @@ public class TccRunningTransaction implements DTXLocalControl {
     @Autowired
     public TccRunningTransaction(TransactionCleanTemplate transactionCleanTemplate,
                                  TransactionControlTemplate transactionControlTemplate,
-                                 TccTransactionInfoCache tccTransactionInfoCache) {
+                                 TCGlobalContext globalContext) {
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.transactionControlTemplate = transactionControlTemplate;
-        this.tccTransactionInfoCache = tccTransactionInfoCache;
+        this.globalContext = globalContext;
     }
 
     @Override
     public void preBusinessCode(TxTransactionInfo info) throws BeforeBusinessException {
 
         // 缓存TCC事务信息，如果有必要
-        if (tccTransactionInfoCache.get(info.getUnitId()) == null) {
-            tccTransactionInfoCache.putIfAbsent(info.getUnitId(), TccStartingTransaction.prepareTccInfo(info));
+        try {
+            globalContext.tccTransactionInfo(info.getUnitId(), () -> TccStartingTransaction.prepareTccInfo(info))
+                    .setMethodParameter(info.getTransactionInfo().getArgumentValues());
+        } catch (Throwable throwable) {
+            throw new BeforeBusinessException(throwable);
         }
-
-        tccTransactionInfoCache.get(info.getUnitId()).setMethodParameter(info.getTransactionInfo().getArgumentValues());
     }
 
     @Override

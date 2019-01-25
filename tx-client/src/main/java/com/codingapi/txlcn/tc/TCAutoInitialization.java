@@ -90,7 +90,7 @@ public class TCAutoInitialization implements TxLcnInitializer {
 
     private void rpcEnvInit() throws Exception {
         if (rpcConfig.getWaitTime() == -1) {
-            rpcConfig.setWaitTime(1000);
+            rpcConfig.setWaitTime(2000);
         }
 
         // rpc client init.

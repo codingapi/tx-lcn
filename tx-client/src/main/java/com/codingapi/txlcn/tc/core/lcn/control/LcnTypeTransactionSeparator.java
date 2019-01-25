@@ -19,7 +19,7 @@ import com.codingapi.txlcn.commons.exception.TransactionException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.tc.core.DTXState;
 import com.codingapi.txlcn.tc.core.TxTransactionInfo;
-import com.codingapi.txlcn.tc.support.context.TCGlobalContext;
+import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.support.propagation.CustomizableTransactionSeparator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public class LcnTypeTransactionSeparator extends CustomizableTransactionSeparato
     @Override
     public DTXState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException {
         // 一个模块存在多个LCN类型的事务单元在一个事务内走DEFAULT
-        if (globalContext.dtxContext(txTransactionInfo.getGroupId()).getTransactionTypes().contains(Transactions.LCN)) {
+        if (globalContext.txContext(txTransactionInfo.getGroupId()).getTransactionTypes().contains(Transactions.LCN)) {
             log.info("Default by LCN assert !");
             return DTXState.DEFAULT;
         }
