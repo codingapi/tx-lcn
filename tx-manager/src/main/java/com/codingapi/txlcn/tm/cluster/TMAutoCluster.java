@@ -1,7 +1,7 @@
 package com.codingapi.txlcn.tm.cluster;
 
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
-import com.codingapi.txlcn.commons.runner.TxlcnRunnerOrders;
+import com.codingapi.txlcn.commons.runner.TxLcnRunnerOrders;
 import com.codingapi.txlcn.commons.util.ApplicationInformation;
 import com.codingapi.txlcn.spi.message.params.NotifyConnectParams;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
@@ -88,6 +88,6 @@ public class TMAutoCluster implements TxLcnInitializer {
 
     @Override
     public int order() {
-        return TxlcnRunnerOrders.MIN;
+        return TxLcnRunnerOrders.MIN;
     }
 }

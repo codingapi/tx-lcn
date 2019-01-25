@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.tm.support.message;
 
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
-import com.codingapi.txlcn.commons.runner.TxlcnRunnerOrders;
+import com.codingapi.txlcn.commons.runner.TxLcnRunnerOrders;
 import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.spi.message.RpcServerInitializer;
@@ -63,6 +63,6 @@ public class TxLcnManagerServer implements TxLcnInitializer {
 
     @Override
     public int order() {
-        return TxlcnRunnerOrders.MAX;
+        return TxLcnRunnerOrders.MAX;
     }
 }

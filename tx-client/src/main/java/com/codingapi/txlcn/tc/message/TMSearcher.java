@@ -1,7 +1,7 @@
 package com.codingapi.txlcn.tc.message;
 
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
-import com.codingapi.txlcn.commons.runner.TxlcnRunnerOrders;
+import com.codingapi.txlcn.commons.runner.TxLcnRunnerOrders;
 import com.codingapi.txlcn.commons.util.ApplicationInformation;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.spi.message.RpcClientInitializer;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -62,7 +61,7 @@ public class TMSearcher implements TxLcnInitializer {
 
     @Override
     public int order() {
-        return TxlcnRunnerOrders.MAX;
+        return TxLcnRunnerOrders.MAX;
     }
 
     /**
