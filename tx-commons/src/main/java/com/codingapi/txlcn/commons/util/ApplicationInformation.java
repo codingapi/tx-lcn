@@ -12,8 +12,8 @@ import java.util.Objects;
  *
  * @author ujued
  */
-public abstract class ApplicationInformation {
-
+public class ApplicationInformation {
+    
     /**
      * 模块标识
      *
@@ -22,12 +22,12 @@ public abstract class ApplicationInformation {
      * @return 标识
      */
     public static String modId(ConfigurableEnvironment environment, ServerProperties serverProperties) {
-
+        
         String applicationName = environment.getProperty("spring.application.name");
-        applicationName = StringUtils.hasText(applicationName) ? applicationName : "application";
+        applicationName = StringUtils.hasText(applicationName) ? applicationName : "application" ;
         return applicationName + ":" + serverPort(serverProperties);
     }
-
+    
     /**
      * 拆分网络地址为host and port
      *
@@ -40,12 +40,12 @@ public abstract class ApplicationInformation {
         }
         return hostAndPort.split(":");
     }
-
+    
     /**
      * 模块HTTP端口号
      *
-     * @param serverProperties
-     * @return
+     * @param serverProperties serverProperties
+     * @return int
      */
     public static int serverPort(ServerProperties serverProperties) {
         return Objects.isNull(serverProperties) ? 0 : (Objects.isNull(serverProperties.getPort()) ? 8080 :

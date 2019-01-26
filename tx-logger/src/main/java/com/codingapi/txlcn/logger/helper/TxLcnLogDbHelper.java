@@ -31,14 +31,7 @@ import java.util.List;
  * @author codingapi
  */
 public interface TxLcnLogDbHelper extends TxLcnInitializer {
-
-    /**
-     * 数据库初始化操作.
-     *
-     * @throws Exception 初始化失败
-     */
-    void init() throws Exception;
-
+    
     /**
      * 插入数据
      *
