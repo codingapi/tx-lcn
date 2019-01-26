@@ -85,7 +85,7 @@ public class UndoLogAnalyser {
                 continue;
             }
             sqlBuilder.append(fieldValue.getFieldName()).append("=?").append(SqlUtils.AND);
-            params[j] = fieldValue.getValue();
+            params[j++] = fieldValue.getValue();
         }
         return j;
     }
