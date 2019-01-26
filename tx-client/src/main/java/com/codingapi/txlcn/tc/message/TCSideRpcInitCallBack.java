@@ -16,10 +16,10 @@
 package com.codingapi.txlcn.tc.message;
 
 import com.codingapi.txlcn.commons.util.ApplicationInformation;
-import com.codingapi.txlcn.spi.message.listener.ClientInitCallBack;
 import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
+import com.codingapi.txlcn.spi.message.listener.ClientInitCallBack;
 import com.codingapi.txlcn.spi.message.params.InitClientParams;
 import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.tc.message.helper.MessageCreator;
@@ -29,7 +29,6 @@ import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -53,13 +52,10 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
 
     private CountDownLatch clusterCountLatch;
 
-    private final ReliableMessenger reliableMessenger;
-
     @Autowired
     public TCSideRpcInitCallBack(RpcClient rpcClient, TxClientConfig txClientConfig,
                                  ConfigurableEnvironment environment,
-                                 @Autowired(required = false) ServerProperties serverProperties,
-                                 ReliableMessenger reliableMessenger) {
+                                 @Autowired(required = false) ServerProperties serverProperties) {
         this.rpcClient = rpcClient;
         this.txClientConfig = txClientConfig;
         this.clusterCountLatch = new CountDownLatch(txClientConfig.getManagerAddress().size());
@@ -74,7 +70,6 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
                 throw new IllegalStateException(e);
             }
         }).start();
-        this.reliableMessenger = reliableMessenger;
     }
 
     @Override

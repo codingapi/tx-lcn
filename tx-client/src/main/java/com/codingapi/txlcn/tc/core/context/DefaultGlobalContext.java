@@ -121,7 +121,9 @@ public class DefaultGlobalContext implements TCGlobalContext {
             List<String> users = primaryKeysProvider.provide().get(table);
             if (Objects.nonNull(users)) {
                 List<String> primaryKes = tableStruct.getPrimaryKeys();
-                primaryKes.addAll(users.stream().filter(key -> !primaryKes.contains(key)).collect(Collectors.toList()));
+                primaryKes.addAll(users.stream()
+                        .filter(key -> !primaryKes.contains(key))
+                        .filter(key -> tableStruct.getColumns().keySet().contains(key)).collect(Collectors.toList()));
                 tableStruct.setPrimaryKeys(primaryKes);
             }
         }

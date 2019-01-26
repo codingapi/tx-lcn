@@ -228,19 +228,16 @@ public class TxcServiceImpl implements TxcService {
                     fieldValue.setFieldName(key);
                     if (pks.containsKey(key)) {
                         fieldValue.setValue(pks.get(key));
-                    } else {
-                        if (Objects.nonNull(resultSet)) {
+                    } else if (Objects.nonNull(resultSet)) {
+                        try {
                             resultSet.next();
                             fieldValue.setValue(resultSet.getObject(1));
-                        } else {
-                            fieldValue.setValue(null);
+                        } catch (SQLException ignored) {
                         }
                     }
                     primaryKeys.add(fieldValue);
                 }
             }
-        } catch (SQLException e) {
-            throw new TxcLogicException(e);
         } finally {
             try {
                 DbUtils.close(resultSet);
