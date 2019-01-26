@@ -5,6 +5,10 @@ import com.codingapi.txlcn.tc.core.txc.analy.def.bean.FieldValue;
 import com.codingapi.txlcn.tc.core.txc.analy.def.bean.StatementInfo;
 import com.codingapi.txlcn.tc.core.txc.analy.util.SqlUtils;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
 /**
  * Description:
  * Date: 19-1-21 上午10:07
@@ -32,17 +36,9 @@ public class UndoLogAnalyser {
         }
         SqlUtils.cutSuffix(SqlUtils.SQL_COMMA_SEPARATOR, rollbackSql);
         rollbackSql.append(SqlUtils.WHERE);
-
-        for (int i = 0; i < v.getPrimaryKeys().size(); i++, index++) {
-            FieldValue fieldValue = v.getPrimaryKeys().get(i);
-            rollbackSql.append(fieldValue.getFieldName())
-                    .append("=?")
-                    .append(SqlUtils.AND);
-            params[index] = fieldValue.getValue();
-        }
+        int j = whereBuilder(v.getPrimaryKeys(), rollbackSql, params);
         SqlUtils.cutSuffix(SqlUtils.AND, rollbackSql);
-
-        return new StatementInfo(rollbackSql.toString(), params);
+        return new StatementInfo(rollbackSql.toString(), Arrays.copyOf(params, j + 1));
     }
 
 
@@ -53,16 +49,21 @@ public class UndoLogAnalyser {
         StringBuilder rollbackSql = new StringBuilder(SqlUtils.INSERT).append(k).append('(');
         StringBuilder values = new StringBuilder();
         Object[] params = new Object[v.getFields().size()];
-        for (int i = 0; i < v.getFields().size(); i++) {
+        int j = 0;
+        for (int i = 0; i < v.getFields().size(); i++, j++) {
             FieldValue fieldValue = v.getFields().get(i);
+            if (Objects.isNull(fieldValue.getValue())) {
+                j--;
+                continue;
+            }
+            params[i] = fieldValue.getValue();
             rollbackSql.append(fieldValue.getFieldName()).append(SqlUtils.SQL_COMMA_SEPARATOR);
             values.append("?, ");
-            params[i] = fieldValue.getValue();
         }
         SqlUtils.cutSuffix(SqlUtils.SQL_COMMA_SEPARATOR, rollbackSql);
         SqlUtils.cutSuffix(SqlUtils.SQL_COMMA_SEPARATOR, values);
         rollbackSql.append(") values(").append(values).append(')');
-        return new StatementInfo(rollbackSql.toString(), params);
+        return new StatementInfo(rollbackSql.toString(), Arrays.copyOf(params, j + 1));
     }
 
     public static StatementInfo insert(TableRecord tableRecord) {
@@ -70,14 +71,22 @@ public class UndoLogAnalyser {
                 .append(SqlUtils.FROM)
                 .append(tableRecord.getTableName())
                 .append(SqlUtils.WHERE);
-
         Object[] paramArray = new Object[tableRecord.getFieldCluster().getPrimaryKeys().size()];
-        for (int i = 0; i < tableRecord.getFieldCluster().getPrimaryKeys().size(); i++) {
-            FieldValue fieldValue = tableRecord.getFieldCluster().getPrimaryKeys().get(i);
-            rollbackSql.append(fieldValue.getFieldName()).append("=?").append(SqlUtils.AND);
-            paramArray[i] = fieldValue.getValue();
-        }
+        int j = whereBuilder(tableRecord.getFieldCluster().getPrimaryKeys(), rollbackSql, paramArray);
         SqlUtils.cutSuffix(SqlUtils.AND, rollbackSql);
-        return new StatementInfo(rollbackSql.toString(), paramArray);
+        return new StatementInfo(rollbackSql.toString(), Arrays.copyOf(paramArray, j + 1));
+    }
+
+    private static int whereBuilder(List<FieldValue> primaryKeys, StringBuilder sqlBuilder, Object[] params) {
+        int j = 0;
+        for (FieldValue fieldValue : primaryKeys) {
+            if (Objects.isNull(fieldValue.getValue())) {
+                j--;
+                continue;
+            }
+            sqlBuilder.append(fieldValue.getFieldName()).append("=?").append(SqlUtils.AND);
+            params[j] = fieldValue.getValue();
+        }
+        return j;
     }
 }

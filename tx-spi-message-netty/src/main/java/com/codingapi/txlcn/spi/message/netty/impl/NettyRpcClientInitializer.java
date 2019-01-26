@@ -102,7 +102,6 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
                 }
             }
             // 忽略已连接的连接
-            log.info("Already connected socket({}).", socketAddress);
             return Optional.empty();
         }
 
