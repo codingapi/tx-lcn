@@ -50,14 +50,14 @@ public class DefaultGlobalContext implements TCGlobalContext {
 
     private final TracerHelper tracerHelper;
 
-    private final PrimaryKeysProvider primaryKeysProvider;
+    private final List<PrimaryKeysProvider> primaryKeysProviders;
 
     @Autowired
     public DefaultGlobalContext(AttachmentCache attachmentCache, TracerHelper tracerHelper,
-                                @Autowired(required = false) PrimaryKeysProvider primaryKeysProvider) {
+                                @Autowired(required = false) List<PrimaryKeysProvider> primaryKeysProviders) {
         this.attachmentCache = attachmentCache;
         this.tracerHelper = tracerHelper;
-        this.primaryKeysProvider = primaryKeysProvider;
+        this.primaryKeysProviders = primaryKeysProviders;
     }
 
     @Override
@@ -117,15 +117,17 @@ public class DefaultGlobalContext implements TCGlobalContext {
             return attachmentCache.attachment("sql.table." + table, TableStruct.class.getName());
         }
         TableStruct tableStruct = structSupplier.get();
-        if (Objects.nonNull(primaryKeysProvider)) {
-            List<String> users = primaryKeysProvider.provide().get(table);
-            if (Objects.nonNull(users)) {
-                List<String> primaryKes = tableStruct.getPrimaryKeys();
-                primaryKes.addAll(users.stream()
-                        .filter(key -> !primaryKes.contains(key))
-                        .filter(key -> tableStruct.getColumns().keySet().contains(key)).collect(Collectors.toList()));
-                tableStruct.setPrimaryKeys(primaryKes);
-            }
+        if (Objects.nonNull(primaryKeysProviders)) {
+            primaryKeysProviders.forEach(primaryKeysProvider -> {
+                List<String> users = primaryKeysProvider.provide().get(table);
+                if (Objects.nonNull(users)) {
+                    List<String> primaryKes = tableStruct.getPrimaryKeys();
+                    primaryKes.addAll(users.stream()
+                            .filter(key -> !primaryKes.contains(key))
+                            .filter(key -> tableStruct.getColumns().keySet().contains(key)).collect(Collectors.toList()));
+                    tableStruct.setPrimaryKeys(primaryKes);
+                }
+            });
         }
         attachmentCache.attach("sql.table." + table, TableStruct.class.getName(), tableStruct);
         return tableStruct;

@@ -17,7 +17,7 @@ package com.codingapi.txlcn.tc.support.template;
 
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
 import com.codingapi.txlcn.tc.support.TXLCNTransactionBeanHelper;
-import com.codingapi.txlcn.tc.support.checking.DTXChecking;
+import com.codingapi.txlcn.tc.core.checking.DTXChecking;
 import com.codingapi.txlcn.commons.exception.TransactionClearException;
 import com.codingapi.txlcn.commons.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;

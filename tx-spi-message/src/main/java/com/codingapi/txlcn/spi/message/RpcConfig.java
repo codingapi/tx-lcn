@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class RpcConfig {
     /**
-     * 最大等待时间 单位:(ms)
+     * 最大等待时间 (ms)
      */
     private long waitTime = -1;
 
@@ -38,7 +38,7 @@ public class RpcConfig {
     private int cacheSize = 1024;
 
     /**
-     * appName 参数延迟删除时间 单位：(s)
+     * appName 参数延迟删除时间(ms)
      */
     private long attrDelayTime = 36 * 1000;
 
@@ -48,7 +48,7 @@ public class RpcConfig {
     private int reconnectCount = 5;
 
     /**
-     * 重连延迟时间 （s）
+     * 重连延迟时间(ms)
      */
     private long reconnectDelay = 10000;
 

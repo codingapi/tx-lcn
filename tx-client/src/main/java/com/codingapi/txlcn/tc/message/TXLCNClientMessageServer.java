@@ -15,7 +15,9 @@
  */
 package com.codingapi.txlcn.tc.message;
 
+import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
 import com.codingapi.txlcn.spi.message.RpcClientInitializer;
+import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.spi.message.dto.TxManagerHost;
 import com.codingapi.txlcn.tc.config.TxClientConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,19 +31,30 @@ import org.springframework.stereotype.Component;
  * @author lorne
  */
 @Component
-public class TXLCNClientMessageServer {
+public class TXLCNClientMessageServer implements TxLcnInitializer {
 
     private final RpcClientInitializer rpcClientInitializer;
 
     private final TxClientConfig txClientConfig;
 
+    private final RpcConfig rpcConfig;
+
     @Autowired
-    public TXLCNClientMessageServer(RpcClientInitializer rpcClientInitializer, TxClientConfig txClientConfig) {
+    public TXLCNClientMessageServer(RpcClientInitializer rpcClientInitializer,
+                                    TxClientConfig txClientConfig, RpcConfig rpcConfig) {
         this.rpcClientInitializer = rpcClientInitializer;
         this.txClientConfig = txClientConfig;
+        this.rpcConfig = rpcConfig;
     }
 
+    @Override
     public void init() throws Exception {
+        // rpc timeout (ms)
+        if (rpcConfig.getWaitTime() <= 5) {
+            rpcConfig.setWaitTime(1000);
+        }
+
+        // rpc client init.
         rpcClientInitializer.init(TxManagerHost.parserList(txClientConfig.getManagerAddress()), false);
     }
 }
