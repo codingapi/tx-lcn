@@ -23,14 +23,14 @@ import com.codingapi.txlcn.spi.message.listener.ClientInitCallBack;
 import com.codingapi.txlcn.spi.message.params.InitClientParams;
 import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.tc.message.helper.MessageCreator;
+import com.codingapi.txlcn.tc.support.listener.RpcEnvStatusListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 /**
  * Description:
@@ -50,30 +50,22 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
 
     private final String modId;
 
-    private CountDownLatch clusterCountLatch;
+    private final List<RpcEnvStatusListener> rpcEnvStatusListeners;
 
     @Autowired
     public TCSideRpcInitCallBack(RpcClient rpcClient, TxClientConfig txClientConfig,
                                  ConfigurableEnvironment environment,
-                                 @Autowired(required = false) ServerProperties serverProperties) {
+                                 @Autowired(required = false) ServerProperties serverProperties,
+                                 List<RpcEnvStatusListener> rpcEnvStatusListeners) {
         this.rpcClient = rpcClient;
         this.txClientConfig = txClientConfig;
-        this.clusterCountLatch = new CountDownLatch(txClientConfig.getManagerAddress().size());
         this.modId = ApplicationInformation.modId(environment, serverProperties);
-
-        new Thread(() -> {
-            try {
-                clusterCountLatch.await(20, TimeUnit.SECONDS);
-                // TC指定的TM列表连接完毕，开始搜索其它的TM节点
-                TMSearcher.search();
-            } catch (InterruptedException e) {
-                throw new IllegalStateException(e);
-            }
-        }).start();
+        this.rpcEnvStatusListeners = rpcEnvStatusListeners;
     }
 
     @Override
     public void connected(String remoteKey) {
+        rpcEnvStatusListeners.forEach(rpcEnvStatusListener -> rpcEnvStatusListener.onConnected(remoteKey));
         new Thread(() -> {
             try {
                 log.info("Send init message to TM[{}]", remoteKey);
@@ -84,10 +76,7 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
                     long dtxTime = resParams.getDtxTime();
                     txClientConfig.setDtxTime(dtxTime);
                     log.info("Finally, determined dtx time is {}ms.", dtxTime);
-                    if (clusterCountLatch.getCount() == 0) {
-                        TMSearcher.searchedOne();
-                    }
-                    clusterCountLatch.countDown();
+                    rpcEnvStatusListeners.forEach(rpcEnvStatusListener -> rpcEnvStatusListener.onInitialized(remoteKey));
                     return;
                 }
                 log.error("TM[{}] exception. connect fail!", remoteKey);
@@ -98,6 +87,7 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
     }
 
     @Override
-    public void disconnected(String remoteKey) {
+    public void connectFail(String remoteKey) {
+        rpcEnvStatusListeners.forEach(rpcEnvStatusListener -> rpcEnvStatusListener.onConnectFail(remoteKey));
     }
 }

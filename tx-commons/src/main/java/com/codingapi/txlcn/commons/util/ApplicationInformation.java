@@ -13,7 +13,7 @@ import java.util.Objects;
  * @author ujued
  */
 public class ApplicationInformation {
-    
+
     /**
      * 模块标识
      *
@@ -22,12 +22,12 @@ public class ApplicationInformation {
      * @return 标识
      */
     public static String modId(ConfigurableEnvironment environment, ServerProperties serverProperties) {
-        
+
         String applicationName = environment.getProperty("spring.application.name");
-        applicationName = StringUtils.hasText(applicationName) ? applicationName : "application" ;
+        applicationName = StringUtils.hasText(applicationName) ? applicationName : "application";
         return applicationName + ":" + serverPort(serverProperties);
     }
-    
+
     /**
      * 拆分网络地址为host and port
      *
@@ -38,9 +38,13 @@ public class ApplicationInformation {
         if (hostAndPort.indexOf(':') == -1) {
             throw new IllegalStateException("non exists port");
         }
-        return hostAndPort.split(":");
+        String[] result = hostAndPort.split(":");
+        if (result[0].charAt(0) == '/') {
+            result[0] = result[0].substring(1);
+        }
+        return result;
     }
-    
+
     /**
      * 模块HTTP端口号
      *

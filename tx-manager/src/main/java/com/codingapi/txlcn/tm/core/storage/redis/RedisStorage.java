@@ -195,6 +195,7 @@ public class RedisStorage implements FastStorage {
     public void removeTMProperties(String host, int transactionPort) {
         Objects.requireNonNull(host);
         redisTemplate.opsForHash().delete(REDIS_TM_LIST, host + ":" + transactionPort);
+        log.debug("removed TM {}:{}", host, transactionPort);
     }
 
 }

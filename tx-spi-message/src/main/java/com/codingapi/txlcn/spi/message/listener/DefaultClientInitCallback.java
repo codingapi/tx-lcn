@@ -17,7 +17,7 @@ public class DefaultClientInitCallback implements ClientInitCallBack {
     }
 
     @Override
-    public void disconnected(String remoteKey) {
+    public void connectFail(String remoteKey) {
         log.info("client {} disconnected", remoteKey);
     }
 }

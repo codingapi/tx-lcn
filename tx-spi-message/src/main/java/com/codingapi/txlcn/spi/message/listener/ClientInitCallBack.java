@@ -28,14 +28,14 @@ public interface ClientInitCallBack {
     /**
      * 初始化连接成功回调
      *
-     * @param remoteKey   远程调用唯一key
+     * @param remoteKey 远程调用唯一key
      */
     void connected(String remoteKey);
 
     /**
-     * 连接丢失回调
+     * 连接失败回调
      *
      * @param remoteKey
      */
-    void disconnected(String remoteKey);
+    void connectFail(String remoteKey);
 }

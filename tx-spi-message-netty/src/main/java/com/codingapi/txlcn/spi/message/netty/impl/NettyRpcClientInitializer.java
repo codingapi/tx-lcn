@@ -106,7 +106,7 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
         }
 
         log.warn("Finally, netty connection fail , socket is {}", socketAddress);
-        clientInitCallBack.disconnected(socketAddress.toString());
+        clientInitCallBack.connectFail(socketAddress.toString());
         return Optional.empty();
     }
 
