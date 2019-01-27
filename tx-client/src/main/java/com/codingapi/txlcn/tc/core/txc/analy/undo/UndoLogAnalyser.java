@@ -38,7 +38,7 @@ public class UndoLogAnalyser {
         rollbackSql.append(SqlUtils.WHERE);
         int j = whereBuilder(v.getPrimaryKeys(), rollbackSql, params);
         SqlUtils.cutSuffix(SqlUtils.AND, rollbackSql);
-        return new StatementInfo(rollbackSql.toString(), Arrays.copyOf(params, j + 1));
+        return new StatementInfo(rollbackSql.toString(), Arrays.copyOf(params, j));
     }
 
 
@@ -74,19 +74,20 @@ public class UndoLogAnalyser {
         Object[] paramArray = new Object[tableRecord.getFieldCluster().getPrimaryKeys().size()];
         int j = whereBuilder(tableRecord.getFieldCluster().getPrimaryKeys(), rollbackSql, paramArray);
         SqlUtils.cutSuffix(SqlUtils.AND, rollbackSql);
-        return new StatementInfo(rollbackSql.toString(), Arrays.copyOf(paramArray, j + 1));
+        return new StatementInfo(rollbackSql.toString(), Arrays.copyOf(paramArray, j));
     }
 
     private static int whereBuilder(List<FieldValue> primaryKeys, StringBuilder sqlBuilder, Object[] params) {
-        int j = 0;
+        int j = -1;
         for (FieldValue fieldValue : primaryKeys) {
+            j++;
             if (Objects.isNull(fieldValue.getValue())) {
                 j--;
                 continue;
             }
             sqlBuilder.append(fieldValue.getFieldName()).append("=?").append(SqlUtils.AND);
-            params[j++] = fieldValue.getValue();
+            params[j] = fieldValue.getValue();
         }
-        return j;
+        return j + 1;
     }
 }
