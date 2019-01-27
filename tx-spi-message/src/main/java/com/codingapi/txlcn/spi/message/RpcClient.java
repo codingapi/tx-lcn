@@ -59,24 +59,35 @@ public abstract class RpcClient {
 
 
     /**
-     * 发送请求并相应
+     * 发送请求并获取响应
      *
      * @param rpcCmd 指令内容
-     * @return 相应指令数据
+     * @return 响应指令数据
      * @throws RpcException 远程调用请求异常
      */
     public abstract MessageDto request(RpcCmd rpcCmd) throws RpcException;
 
 
     /**
-     * 发送请求并相应
+     * 发送请求并响应
      *
      * @param remoteKey 远程标识关键字
-     * @param msg       指令内容
+     * @param msg       请求内容
      * @return 相应指令数据
      * @throws RpcException 远程调用请求异常
      */
     public abstract MessageDto request(String remoteKey, MessageDto msg) throws RpcException;
+
+    /**
+     * 发送请求并获取响应
+     *
+     * @param remoteKey 远程标识关键字
+     * @param msg       请求内容
+     * @param timeout   超时时间
+     * @return 响应消息
+     * @throws RpcException 远程调用请求异常
+     */
+    public abstract MessageDto request(String remoteKey, MessageDto msg, long timeout) throws RpcException;
 
 
     /**

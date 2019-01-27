@@ -113,17 +113,25 @@ public class SocketManager {
         return future.isSuccess() ? RpcResponseState.success : RpcResponseState.fail;
     }
 
-    public MessageDto request(String key, RpcCmd cmd) throws RpcException {
+    public MessageDto request(String key, RpcCmd cmd, long timeout) throws RpcException {
         NettyRpcCmd nettyRpcCmd = (NettyRpcCmd) cmd;
         log.debug("get channel, key:{}", key);
         Channel channel = getChannel(key);
         channel.writeAndFlush(nettyRpcCmd);
         log.debug("await response");
-        nettyRpcCmd.await();
+        if (timeout < 0) {
+            nettyRpcCmd.await();
+        } else {
+            nettyRpcCmd.await(timeout);
+        }
         MessageDto res = cmd.loadResult();
         log.debug("response is: {}", res);
         nettyRpcCmd.loadRpcContent().clear();
         return res;
+    }
+
+    public MessageDto request(String key, RpcCmd cmd) throws RpcException {
+        return request(key, cmd, -1);
     }
 
 

@@ -69,4 +69,11 @@ public class NettyRpcCmd extends RpcCmd {
         rpcContent.await();
     }
 
+    public void await(long timeout) {
+        if (Objects.nonNull(rpcContent.getRes())) {
+            return;
+        }
+        rpcContent.await(timeout);
+    }
+
 }

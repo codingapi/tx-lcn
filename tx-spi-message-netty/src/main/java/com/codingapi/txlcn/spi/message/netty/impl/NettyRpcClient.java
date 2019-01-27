@@ -56,21 +56,30 @@ public class NettyRpcClient extends RpcClient {
 
     @Override
     public MessageDto request(RpcCmd rpcCmd) throws RpcException {
+        return request0(rpcCmd, -1);
+    }
+
+    private MessageDto request0(RpcCmd rpcCmd, long timeout) throws RpcException {
         if (rpcCmd.getKey() == null) {
-            throw new RpcException("key not null.");
+            throw new RpcException("key must be not null.");
         }
-        return SocketManager.getInstance().request(rpcCmd.getRemoteKey(), rpcCmd);
+        return SocketManager.getInstance().request(rpcCmd.getRemoteKey(), rpcCmd, timeout);
     }
 
     @Override
     public MessageDto request(String remoteKey, MessageDto msg) throws RpcException {
+        return request(remoteKey, msg, -1);
+    }
+
+    @Override
+    public MessageDto request(String remoteKey, MessageDto msg, long timeout) throws RpcException {
         long startTime = System.currentTimeMillis();
         NettyRpcCmd rpcCmd = new NettyRpcCmd();
         rpcCmd.setMsg(msg);
         String key = rpcCmd.randomKey();
         rpcCmd.setKey(key);
         rpcCmd.setRemoteKey(remoteKey);
-        MessageDto result = request(rpcCmd);
+        MessageDto result = request0(rpcCmd, timeout);
         log.debug("cmd request used time: {} ms", System.currentTimeMillis() - startTime);
         return result;
     }
@@ -89,13 +98,13 @@ public class NettyRpcClient extends RpcClient {
 
 
     @Override
-    public void bindAppName(String remoteKey, String appName)   {
-        SocketManager.getInstance().bindModuleName(remoteKey,appName);
+    public void bindAppName(String remoteKey, String appName) {
+        SocketManager.getInstance().bindModuleName(remoteKey, appName);
     }
 
     @Override
-    public String getAppName(String remoteKey)  {
-        return  SocketManager.getInstance().getModuleName(remoteKey);
+    public String getAppName(String remoteKey) {
+        return SocketManager.getInstance().getModuleName(remoteKey);
     }
 
     @Override

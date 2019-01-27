@@ -43,11 +43,11 @@ public class RpcContent {
     private volatile boolean used = false;
 
 
-    public void init(){
+    public void init() {
         used = true;
     }
 
-    public  void clear(){
+    public void clear() {
         used = false;
         res = null;
     }
@@ -63,11 +63,15 @@ public class RpcContent {
         condition = lock.newCondition();
     }
 
-    public void await(){
+    public void await() {
+        await(milliseconds);
+    }
+
+    public void await(long timeout) {
         try {
             lock.lock();
             try {
-                condition.await(milliseconds, TimeUnit.MILLISECONDS);
+                condition.await(timeout, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -76,7 +80,7 @@ public class RpcContent {
         }
     }
 
-    public void signal(){
+    public void signal() {
         try {
             lock.lock();
             condition.signal();

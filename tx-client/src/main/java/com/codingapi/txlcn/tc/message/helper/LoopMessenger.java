@@ -35,13 +35,13 @@ public class LoopMessenger implements ReliableMessenger {
 
     @Override
     public boolean acquireLocks(String groupId, Set<String> lockIdSet, int type) throws RpcException {
-        MessageDto messageDto = request(MessageCreator.acquireLocks(groupId, lockIdSet, type), "release lock fail");
+        MessageDto messageDto = request(MessageCreator.acquireLocks(groupId, lockIdSet, type));
         return MessageUtils.statusOk(messageDto);
     }
 
     @Override
     public void releaseLocks(Set<String> lockIdList) throws RpcException {
-        MessageDto messageDto = rpcClient.request(rpcClient.loadRemoteKey(), MessageCreator.releaseLocks(lockIdList));
+        MessageDto messageDto = request(MessageCreator.releaseLocks(lockIdList));
         if (!MessageUtils.statusOk(messageDto)) {
             throw new RpcException("release locks fail.");
         }
@@ -52,7 +52,7 @@ public class LoopMessenger implements ReliableMessenger {
         NotifyGroupParams notifyGroupParams = new NotifyGroupParams();
         notifyGroupParams.setGroupId(groupId);
         notifyGroupParams.setState(transactionState);
-        MessageDto messageDto = request(MessageCreator.notifyGroup(notifyGroupParams));
+        MessageDto messageDto = request0(MessageCreator.notifyGroup(notifyGroupParams), 5000);
         // 成功清理发起方事务
         if (!MessageUtils.statusOk(messageDto)) {
             throw new LcnBusinessException(messageDto.loadBean(Throwable.class));
@@ -106,7 +106,11 @@ public class LoopMessenger implements ReliableMessenger {
 
     @Override
     public MessageDto request(MessageDto messageDto) throws RpcException {
-        return request(messageDto, "request fail");
+        return request0(messageDto, -1);
+    }
+
+    private MessageDto request0(MessageDto messageDto, long timeout) throws RpcException {
+        return request(messageDto, timeout, "request fail");
     }
 
     @Override
@@ -123,11 +127,11 @@ public class LoopMessenger implements ReliableMessenger {
      * @return MessageDto
      * @throws RpcException RpcException
      */
-    private MessageDto request(MessageDto messageDto, String whenNonManagerMessage) throws RpcException {
+    private MessageDto request(MessageDto messageDto, long timeout, String whenNonManagerMessage) throws RpcException {
         for (int i = 0; i < rpcClient.loadAllRemoteKey().size(); i++) {
             try {
                 String remoteKey = rpcClient.loadRemoteKey();
-                MessageDto result = rpcClient.request(remoteKey, messageDto);
+                MessageDto result = rpcClient.request(remoteKey, messageDto, timeout);
                 log.debug("request action: {}. TM[{}]", messageDto.getAction(), remoteKey);
                 return result;
             } catch (RpcException e) {
