@@ -75,6 +75,8 @@ public class ClientRpcAnswer implements RpcAnswer, DisposableBean {
             } catch (TxClientException e) {
                 log.error("message > execute error.", e);
                 messageDto = MessageCreator.notifyUnitFailResponse(e, action);
+            } catch (Throwable e) {
+                e.printStackTrace();
             } finally {
                 if (Objects.nonNull(rpcCmd.getKey())) {
                     try {

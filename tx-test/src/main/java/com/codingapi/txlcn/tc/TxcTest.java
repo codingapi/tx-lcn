@@ -25,6 +25,15 @@ public class TxcTest {
 
     @Test
     public void testQueryRunner() throws SQLException {
-        queryRunner.update("update t_demo set demo_field=? where id=4", Arrays.copyOf(new Object[]{"aaa","bbb"}, 1));
+        queryRunner.update("update t_demo set demo_field=? where id=4", Arrays.copyOf(new Object[]{"aaa", "bbb"}, 1));
+    }
+
+    @Test
+    public void testDelete() throws SQLException {
+        long start = System.currentTimeMillis();
+        queryRunner.update("INSERT INTO t_demo (kid, demo_field, group_id, unit_id, create_time, app_name) VALUES ('50777998410975159', 'ujued', '50777347808454984', '3426b848138c45c6bf50b99db3b69439', '2019-01-28 10:20:54.593', 'spring-demo-d:12002')");
+        long second = System.currentTimeMillis();
+        queryRunner.update("DELETE  FROM t_demo WHERE t_demo.kid=?", "50777998410975159");
+        System.out.printf("1: %d, 2: %d", second - start, System.currentTimeMillis() - second);
     }
 }

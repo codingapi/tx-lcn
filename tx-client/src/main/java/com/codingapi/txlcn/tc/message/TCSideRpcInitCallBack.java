@@ -69,7 +69,7 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
         new Thread(() -> {
             try {
                 log.info("Send init message to TM[{}]", remoteKey);
-                MessageDto msg = rpcClient.request(remoteKey, MessageCreator.initClient(modId));
+                MessageDto msg = rpcClient.request(remoteKey, MessageCreator.initClient(modId), 5000);
                 if (msg.getData() != null) {
                     //每一次建立连接时将会获取最新的时间
                     InitClientParams resParams = msg.loadBean(InitClientParams.class);
