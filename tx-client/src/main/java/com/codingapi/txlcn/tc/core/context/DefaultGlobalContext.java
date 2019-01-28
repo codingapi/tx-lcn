@@ -30,10 +30,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -141,7 +138,8 @@ public class DefaultGlobalContext implements TCGlobalContext {
         if (txContext.isDtxStart()) {
             tracerHelper.createGroupId(RandomUtils.randomKey());
         }
-        txContext.setGroupId(tracerHelper.getGroupId());
+        txContext.setGroupId(Optional.ofNullable(tracerHelper.getGroupId()).orElseThrow(() ->
+                new IllegalStateException("sleuth error.")));
         attachmentCache.attach(txContext.getGroupId() + ".dtx", "dtx.context", txContext);
         return txContext;
     }

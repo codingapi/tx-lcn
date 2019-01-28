@@ -27,6 +27,7 @@
         <module>tx-manager</module>
         <module>tx-logger</module>
         <module>tx-test</module>
+        <module>tx-tracing</module>
     </modules>
 
     <properties>
