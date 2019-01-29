@@ -18,12 +18,8 @@
     <modules>
         <module>tx-client</module>
         <module>tx-commons</module>
-        <module>tx-jdbcproxy-p6spy</module>
         <module>tx-spi-message</module>
         <module>tx-spi-message-netty</module>
-        <module>tx-spi-sleuth</module>
-        <module>tx-client-springcloud</module>
-        <module>tx-client-dubbo</module>
         <module>tx-manager</module>
         <module>tx-logger</module>
         <module>tx-test</module>

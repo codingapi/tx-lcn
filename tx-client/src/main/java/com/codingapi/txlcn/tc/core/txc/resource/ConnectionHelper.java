@@ -15,8 +15,8 @@
  */
 package com.codingapi.txlcn.tc.core.txc.resource;
 
-import com.codingapi.txlcn.jdbcproxy.p6spy.common.ConnectionInformation;
-import com.codingapi.txlcn.jdbcproxy.p6spy.wrapper.ConnectionWrapper;
+import com.codingapi.txlcn.tc.support.p6spy.common.ConnectionInformation;
+import com.codingapi.txlcn.tc.support.p6spy.wrapper.ConnectionWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

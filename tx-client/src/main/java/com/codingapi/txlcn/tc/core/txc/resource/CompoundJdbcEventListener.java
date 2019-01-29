@@ -18,10 +18,10 @@
 package com.codingapi.txlcn.tc.core.txc.resource;
 
 
-import com.codingapi.txlcn.jdbcproxy.p6spy.common.*;
-import com.codingapi.txlcn.jdbcproxy.p6spy.event.DefaultEventListener;
-import com.codingapi.txlcn.jdbcproxy.p6spy.event.JdbcEventListener;
-import com.codingapi.txlcn.jdbcproxy.p6spy.event.P6spyJdbcEventListener;
+import com.codingapi.txlcn.tc.support.p6spy.common.*;
+import com.codingapi.txlcn.tc.support.p6spy.event.DefaultEventListener;
+import com.codingapi.txlcn.tc.support.p6spy.event.JdbcEventListener;
+import com.codingapi.txlcn.tc.support.p6spy.event.P6spyJdbcEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

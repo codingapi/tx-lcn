@@ -28,18 +28,7 @@
 
         <dependency>
             <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>tx-spi-message</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>tx-jdbcproxy-p6spy</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codingapi.txlcn</groupId>
             <artifactId>tx-tracing</artifactId>
-            <version>5.0.0.RC2</version>
         </dependency>
 
         <dependency>
@@ -56,6 +45,10 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>tx-spi-message</artifactId>
         </dependency>
 
     </dependencies>

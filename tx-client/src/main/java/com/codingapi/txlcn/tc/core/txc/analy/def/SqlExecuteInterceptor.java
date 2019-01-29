@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.tc.core.txc.analy.def;
 
 import com.codingapi.txlcn.tc.core.txc.analy.def.bean.LockableSelect;
-import com.codingapi.txlcn.jdbcproxy.p6spy.common.StatementInformation;
+import com.codingapi.txlcn.tc.support.p6spy.common.StatementInformation;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.update.Update;
