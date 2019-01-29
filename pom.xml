@@ -23,7 +23,6 @@
         <module>txlcn-tracing</module>
         <module>txlcn-txmsg</module>
         <module>txlcn-txmsg-netty</module>
-        <module>txlcn-test</module>
     </modules>
 
     <properties>
