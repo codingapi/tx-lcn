@@ -38,7 +38,8 @@
 
         <dependency>
             <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>tx-spi-sleuth</artifactId>
+            <artifactId>tx-tracing</artifactId>
+            <version>5.0.0.RC2</version>
         </dependency>
 
         <dependency>

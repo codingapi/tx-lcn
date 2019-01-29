@@ -39,5 +39,10 @@
             <artifactId>spring-cloud-starter-sleuth</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>tx-spi-sleuth</artifactId>
+        </dependency>
+
     </dependencies>
 </project>

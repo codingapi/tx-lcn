@@ -17,20 +17,21 @@ package com.codingapi.txlcn.tc.core.context;
 
 import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
 import com.codingapi.txlcn.commons.exception.TCGlobalContextException;
-import com.codingapi.txlcn.commons.util.RandomUtils;
 import com.codingapi.txlcn.commons.util.function.Supplier;
-import com.codingapi.txlcn.spi.sleuth.TracerHelper;
 import com.codingapi.txlcn.tc.core.TccTransactionInfo;
 import com.codingapi.txlcn.tc.core.lcn.resource.LcnConnectionProxy;
 import com.codingapi.txlcn.tc.core.txc.analy.def.PrimaryKeysProvider;
 import com.codingapi.txlcn.tc.core.txc.analy.def.bean.TableStruct;
+import com.codingapi.txlcn.tracing.TracingContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -45,15 +46,12 @@ public class DefaultGlobalContext implements TCGlobalContext {
 
     private final AttachmentCache attachmentCache;
 
-    private final TracerHelper tracerHelper;
-
     private final List<PrimaryKeysProvider> primaryKeysProviders;
 
     @Autowired
-    public DefaultGlobalContext(AttachmentCache attachmentCache, TracerHelper tracerHelper,
+    public DefaultGlobalContext(AttachmentCache attachmentCache,
                                 @Autowired(required = false) List<PrimaryKeysProvider> primaryKeysProviders) {
         this.attachmentCache = attachmentCache;
-        this.tracerHelper = tracerHelper;
         this.primaryKeysProviders = primaryKeysProviders;
     }
 
@@ -134,12 +132,11 @@ public class DefaultGlobalContext implements TCGlobalContext {
     public TxContext startTx() {
         TxContext txContext = new TxContext();
         // 事务发起方判断
-        txContext.setDtxStart(StringUtils.isEmpty(tracerHelper.getGroupId()));
+        txContext.setDtxStart(!TracingContext.tracingContext().hasGroup());
         if (txContext.isDtxStart()) {
-            tracerHelper.createGroupId(RandomUtils.randomKey());
+            TracingContext.tracingContext().beginTransactionGroup();
         }
-        txContext.setGroupId(Optional.ofNullable(tracerHelper.getGroupId()).orElseThrow(() ->
-                new IllegalStateException("sleuth error.")));
+        txContext.setGroupId(TracingContext.tracingContext().groupId());
         attachmentCache.attach(txContext.getGroupId() + ".dtx", "dtx.context", txContext);
         return txContext;
     }
@@ -168,6 +165,6 @@ public class DefaultGlobalContext implements TCGlobalContext {
     public void clearGroup(String groupId) {
         this.attachmentCache.remove(groupId);
         // 销毁GroupId
-        tracerHelper.createGroupId("");
+        TracingContext.tracingContext().destroy();
     }
 }

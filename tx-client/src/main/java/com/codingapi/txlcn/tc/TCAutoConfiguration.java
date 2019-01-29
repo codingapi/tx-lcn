@@ -17,9 +17,9 @@ package com.codingapi.txlcn.tc;
 
 import com.codingapi.txlcn.commons.runner.TxLcnApplicationRunner;
 import com.codingapi.txlcn.logger.TxLoggerConfiguration;
-import com.codingapi.txlcn.spi.sleuth.TxSleuthApiConfiguration;
 import com.codingapi.txlcn.tc.config.DependenciesImportSelector;
 import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
+import com.codingapi.txlcn.tracing.TracingAutoConfiguration;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @ComponentScan
-@Import({TxLoggerConfiguration.class, TxSleuthApiConfiguration.class, DependenciesImportSelector.class})
+@Import({TxLoggerConfiguration.class, TracingAutoConfiguration.class, DependenciesImportSelector.class})
 public class TCAutoConfiguration {
 
     /**

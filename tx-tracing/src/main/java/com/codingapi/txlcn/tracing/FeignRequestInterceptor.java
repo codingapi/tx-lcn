@@ -4,6 +4,7 @@ import feign.Feign;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,11 +15,12 @@ import org.springframework.stereotype.Component;
  */
 @ConditionalOnClass(Feign.class)
 @Component
+@Order
 public class FeignRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
         requestTemplate.header(TracingConstants.HEADER_KEY_GROUP_ID, TracingContext.tracingContext().groupId());
-        requestTemplate.header(TracingConstants.HEADER_KEY_APP_LIST, TracingContext.tracingContext().appList());
+        requestTemplate.header(TracingConstants.HEADER_KEY_APP_LIST, TracingContext.tracingContext().appListString());
     }
 }

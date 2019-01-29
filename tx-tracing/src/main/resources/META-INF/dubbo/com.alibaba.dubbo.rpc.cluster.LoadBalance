@@ -1,0 +1,4 @@
+txlcn_random=com.codingapi.txlcn.tracing.loadbalance.dubbo.TXLCNRandomLoadBalance
+txlcn_roundrobin=com.codingapi.txlcn.tracing.loadbalance.dubbo.TXLCNRoundRobinLoadBalance
+txlcn_leastactive=com.codingapi.txlcn.tracing.loadbalance.dubbo.TXLCNLeastActiveLoadBalance
+txlcn_consistenthash=com.codingapi.txlcn.tracing.loadbalance.dubbo.TXLCNConsistentHashLoadBalance

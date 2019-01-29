@@ -19,7 +19,7 @@ public class DubboRequestInterceptor implements Filter {
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         RpcContext.getContext().setAttachment(TracingConstants.HEADER_KEY_GROUP_ID, TracingContext.tracingContext().groupId());
-        RpcContext.getContext().setAttachment(TracingConstants.HEADER_KEY_APP_LIST, TracingContext.tracingContext().appList());
+        RpcContext.getContext().setAttachment(TracingConstants.HEADER_KEY_APP_LIST, TracingContext.tracingContext().appListString());
         return invoker.invoke(invocation);
     }
 }

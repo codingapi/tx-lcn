@@ -4,8 +4,8 @@ import com.codingapi.txlcn.commons.util.Maps;
 import com.codingapi.txlcn.commons.util.RandomUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -28,22 +28,24 @@ public class TracingContext {
         return tracingContextThreadLocal.get();
     }
 
-    private Map<String, String> fields = new HashMap<>();
+    private Map<String, String> fields;
 
-    public String beginTransactionGroup() {
+    public void beginTransactionGroup() {
         if (hasGroup()) {
-            return groupId();
+            return;
         }
         init(Maps.newHashMap(TracingConstants.GROUP_ID, RandomUtils.randomKey(), TracingConstants.APP_LIST, ""));
-        return fields.get(TracingConstants.GROUP_ID);
     }
 
     public void init(Map<String, String> initFields) {
+        if (Objects.isNull(fields)) {
+            this.fields = new HashMap<>();
+        }
         this.fields.putAll(initFields);
     }
 
     public boolean hasGroup() {
-        return fields.containsKey(TracingConstants.GROUP_ID) &&
+        return Objects.nonNull(fields) && fields.containsKey(TracingConstants.GROUP_ID) &&
                 StringUtils.hasText(fields.get(TracingConstants.GROUP_ID));
     }
 
@@ -62,10 +64,21 @@ public class TracingContext {
         throw new IllegalStateException("non group id.");
     }
 
-    public String appList() {
+    public String appListString() {
         if (hasGroup()) {
             return this.fields.get(TracingConstants.APP_LIST);
         }
         throw new IllegalStateException("non group id.");
+    }
+
+    public List<String> appList() {
+        if (hasGroup()) {
+            return Arrays.stream(this.fields.get(TracingConstants.APP_LIST).split(",")).collect(Collectors.toList());
+        }
+        throw new IllegalStateException("non group id.");
+    }
+
+    public void destroy() {
+        this.fields = null;
     }
 }

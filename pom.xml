@@ -195,6 +195,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.codingapi.txlcn</groupId>
+                <artifactId>tx-tracing</artifactId>
+                <version>${codingapi.txlcn.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
                 <version>${txlcn-com.github.pagehelper.version}</version>

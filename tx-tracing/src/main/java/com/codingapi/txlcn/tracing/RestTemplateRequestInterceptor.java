@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.tracing;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -19,6 +20,7 @@ import java.io.IOException;
  */
 @ConditionalOnClass(RestTemplate.class)
 @Component
+@Order
 public class RestTemplateRequestInterceptor implements ClientHttpRequestInterceptor {
 
     @Override
@@ -27,7 +29,7 @@ public class RestTemplateRequestInterceptor implements ClientHttpRequestIntercep
             @NonNull HttpRequest httpRequest, @NonNull byte[] bytes,
             @NonNull ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
         httpRequest.getHeaders().add(TracingConstants.HEADER_KEY_GROUP_ID, TracingContext.tracingContext().groupId());
-        httpRequest.getHeaders().add(TracingConstants.HEADER_KEY_APP_LIST, TracingContext.tracingContext().appList());
+        httpRequest.getHeaders().add(TracingConstants.HEADER_KEY_APP_LIST, TracingContext.tracingContext().appListString());
         return clientHttpRequestExecution.execute(httpRequest, bytes);
     }
 }

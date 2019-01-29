@@ -13,31 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.config;
+package com.codingapi.txlcn.tracing.loadbalance.dubbo;
 
-import org.springframework.context.annotation.ImportSelector;
-import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.lang.NonNull;
+import com.alibaba.dubbo.common.URL;
+import com.alibaba.dubbo.rpc.Invocation;
+import com.alibaba.dubbo.rpc.Invoker;
+import com.alibaba.dubbo.rpc.cluster.loadbalance.RoundRobinLoadBalance;
+
+import java.util.List;
 
 /**
  * Description:
- * Date: 1/19/19
+ * Company: CodingApi
+ * Date: 2018/12/14
  *
  * @author ujued
  */
-public class DependenciesImportSelector implements ImportSelector {
+public class TXLCNRoundRobinLoadBalance extends RoundRobinLoadBalance {
 
-    /**
-     * resolve the spi classes
-     *
-     * @param importingClassMetadata importingClassMetadata
-     * @return spi classes
-     */
     @Override
-    @NonNull
-    public String[] selectImports(@NonNull AnnotationMetadata importingClassMetadata) {
-        return new String[]{
-                "com.codingapi.txlcn.spi.MessageConfiguration"
-        };
+    public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) {
+        return DubboTXLCNLoadBalance.chooseInvoker(invokers, url, invocation, super::select);
     }
 }

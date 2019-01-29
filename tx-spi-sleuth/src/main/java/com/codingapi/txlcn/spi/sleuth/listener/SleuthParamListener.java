@@ -25,7 +25,7 @@ import java.util.List;
  * @author ujued
  */
 public interface SleuthParamListener {
-    
+
     List<String> beforeBalance(String localKey);
 
 
