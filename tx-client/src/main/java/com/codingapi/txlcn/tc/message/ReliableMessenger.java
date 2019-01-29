@@ -80,6 +80,16 @@ public interface ReliableMessenger {
     void createGroup(String groupId) throws RpcException, LcnBusinessException;
 
     /**
+     * 询问事务状态
+     *
+     * @param groupId groupId
+     * @param unitId  unitId
+     * @return 事务无状态 （0,1,-1）
+     * @throws RpcException Non TM
+     */
+    int askTransactionState(String groupId, String unitId) throws RpcException;
+
+    /**
      * 报告失效的TM
      *
      * @param invalidTMSet 失效的TM集合

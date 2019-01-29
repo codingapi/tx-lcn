@@ -82,6 +82,15 @@ public class LoopMessenger implements ReliableMessenger {
     }
 
     @Override
+    public int askTransactionState(String groupId, String unitId) throws RpcException {
+        MessageDto messageDto = request(MessageCreator.askTransactionState(groupId, unitId));
+        if (MessageUtils.statusOk(messageDto)) {
+            return messageDto.loadBean(Integer.class);
+        }
+        return -1;
+    }
+
+    @Override
     public void reportInvalidTM(HashSet<String> invalidTMSet) throws RpcException {
         MessageDto messageDto = new MessageDto();
         messageDto.setAction(MessageConstants.ACTION_CLEAN_INVALID_TM);
@@ -128,7 +137,7 @@ public class LoopMessenger implements ReliableMessenger {
      * @throws RpcException RpcException
      */
     private MessageDto request(MessageDto messageDto, long timeout, String whenNonManagerMessage) throws RpcException {
-        for (int i = 0; i < rpcClient.loadAllRemoteKey().size(); i++) {
+        for (int i = 0; i < rpcClient.loadAllRemoteKey().size() + 1; i++) {
             try {
                 String remoteKey = rpcClient.loadRemoteKey();
                 MessageDto result = rpcClient.request(remoteKey, messageDto, timeout);

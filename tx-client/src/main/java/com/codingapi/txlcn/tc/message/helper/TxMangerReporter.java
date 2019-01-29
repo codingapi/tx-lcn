@@ -15,10 +15,11 @@
  */
 package com.codingapi.txlcn.tc.message.helper;
 
-import com.codingapi.txlcn.spi.message.dto.MessageDto;
-import com.codingapi.txlcn.spi.message.params.TxExceptionParams;
-import com.codingapi.txlcn.spi.message.RpcClient;
+import com.codingapi.txlcn.commons.util.Transactions;
+import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
+import com.codingapi.txlcn.spi.message.params.TxExceptionParams;
+import com.codingapi.txlcn.tc.message.ReliableMessenger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,13 +34,16 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TxMangerReporter {
 
-    private final RpcClient rpcClient;
+    private final ReliableMessenger reliableMessenger;
+
+    private final TxLogger txLogger;
 
     private static final String REPORT_ERROR_MESSAGE = "report transaction transactionState error";
 
     @Autowired
-    public TxMangerReporter(RpcClient rpcClient) {
-        this.rpcClient = rpcClient;
+    public TxMangerReporter(ReliableMessenger reliableMessenger, TxLogger txLogger) {
+        this.reliableMessenger = reliableMessenger;
+        this.txLogger = txLogger;
     }
 
     /**
@@ -64,7 +68,7 @@ public class TxMangerReporter {
      *
      * @param groupId groupId
      * @param unitId  unitId
-     * @param state state
+     * @param state   state
      */
     public void reportTccCleanException(String groupId, String unitId, int state) {
         TxExceptionParams txExceptionParams = new TxExceptionParams();
@@ -76,48 +80,10 @@ public class TxMangerReporter {
     }
 
     private void report(TxExceptionParams exceptionParams) {
-        sendUntilNonManager(rpcClient, MessageCreator.writeTxException(exceptionParams), REPORT_ERROR_MESSAGE);
-    }
-
-    /**
-     * 强通讯
-     *
-     * @param rpcClient      通讯客户端
-     * @param messageDto     通讯数据
-     * @param whenNonManager 异常提示
-     */
-    public static void sendUntilNonManager(RpcClient rpcClient, MessageDto messageDto, String whenNonManager) {
-        while (true) {
-            try {
-                rpcClient.send(rpcClient.loadRemoteKey(), messageDto);
-                break;
-            } catch (RpcException e) {
-                if (e.getCode() == RpcException.NON_TX_MANAGER) {
-                    log.error(whenNonManager + ". non tx-manager is alive.");
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
-     * 强通讯
-     *
-     * @param rpcClient      通讯客户端
-     * @param messageDto     通讯数据
-     * @param whenNonManager 异常提示
-     * @throws RpcException  RpcException
-     * @return MessageDto
-     */
-    public static MessageDto requestUntilNonManager(RpcClient rpcClient, MessageDto messageDto, String whenNonManager) throws RpcException {
-        while (true) {
-            try {
-                return rpcClient.request(rpcClient.loadRemoteKey(), messageDto);
-            } catch (RpcException e) {
-                if (e.getCode() == RpcException.NON_TX_MANAGER) {
-                    throw new RpcException(whenNonManager + ". non tx-manager is alive.");
-                }
-            }
+        try {
+            reliableMessenger.request(MessageCreator.writeTxException(exceptionParams));
+        } catch (RpcException e) {
+            txLogger.trace(exceptionParams.getGroupId(), exceptionParams.getUnitId(), Transactions.TE, REPORT_ERROR_MESSAGE);
         }
     }
 }
