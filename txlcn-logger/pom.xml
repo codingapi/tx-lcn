@@ -9,13 +9,27 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>tx-spi-message</artifactId>
-
+    <artifactId>txlcn-logger</artifactId>
 
     <dependencies>
+
         <dependency>
             <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>tx-commons</artifactId>
+            <artifactId>txlcn-common</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+        </dependency>
+
     </dependencies>
+
+
+
 </project>

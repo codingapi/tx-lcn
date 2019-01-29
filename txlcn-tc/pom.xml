@@ -2,33 +2,35 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>tx-client</artifactId>
-    <name>tx-client</name>
-    <description>LCN project for Spring Boot</description>
-
     <parent>
         <groupId>com.codingapi.txlcn</groupId>
         <artifactId>tx-lcn</artifactId>
         <version>5.0.0.RC2</version>
     </parent>
 
+    <artifactId>txlcn-tc</artifactId>
+    <name>txlcn-tc</name>
+    <description>LCN project for Spring Boot</description>
 
     <dependencies>
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>txlcn-logger</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>txlcn-tracing</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>txlcn-txmsg</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>tx-logger</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>tx-tracing</artifactId>
         </dependency>
 
         <dependency>
@@ -46,10 +48,7 @@
             <artifactId>spring-tx</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>tx-spi-message</artifactId>
-        </dependency>
+
 
     </dependencies>
 

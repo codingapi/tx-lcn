@@ -9,20 +9,20 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>tx-spi-message-netty</artifactId>
+    <artifactId>txlcn-txmsg-netty</artifactId>
 
     <dependencies>
 
-
         <dependency>
             <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>tx-spi-message</artifactId>
+            <artifactId>txlcn-txmsg</artifactId>
         </dependency>
 
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
         </dependency>
+
     </dependencies>
 
 

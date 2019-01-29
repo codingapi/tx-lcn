@@ -9,14 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>tx-commons</artifactId>
-
+    <artifactId>txlcn-txmsg</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-            <scope>provided</scope>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>txlcn-common</artifactId>
         </dependency>
     </dependencies>
 </project>

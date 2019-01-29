@@ -7,19 +7,19 @@
         <groupId>com.codingapi.txlcn</groupId>
         <version>5.0.0.RC2</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>tx-test</artifactId>
-
+    <artifactId>txlcn-test</artifactId>
     <dependencies>
+
         <dependency>
             <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>tx-client</artifactId>
+            <artifactId>txlcn-tc</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>tx-client-springcloud</artifactId>
+            <artifactId>txlcn-txmsg-netty</artifactId>
         </dependency>
 
         <dependency>
