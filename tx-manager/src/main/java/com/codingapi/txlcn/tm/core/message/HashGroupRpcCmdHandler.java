@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.tm.core.message;
 
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
-import com.codingapi.txlcn.tm.support.ManagerRpcBeanHelper;
+import com.codingapi.txlcn.tm.support.TxlcnManagerRpcBeanHelper;
 import com.codingapi.txlcn.spi.message.dto.RpcCmd;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
@@ -41,10 +41,10 @@ import java.util.concurrent.TimeUnit;
 public class HashGroupRpcCmdHandler implements DisposableBean {
     private final List<ExecutorService> executors;
     private final int concurrentLevel;
-    private final ManagerRpcBeanHelper beanHelper;
+    private final TxlcnManagerRpcBeanHelper beanHelper;
 
     @Autowired
-    public HashGroupRpcCmdHandler(ManagerRpcBeanHelper beanHelper, TxManagerConfig managerConfig) {
+    public HashGroupRpcCmdHandler(TxlcnManagerRpcBeanHelper beanHelper, TxManagerConfig managerConfig) {
         this.concurrentLevel = Math.max(
                 (int) (Runtime.getRuntime().availableProcessors() / (1 - 0.8)), managerConfig.getConcurrentLevel());
         log.info("Transaction concurrent level is {}", this.concurrentLevel);

@@ -1,7 +1,10 @@
 package com.codingapi.txlcn.tracing;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.codingapi.txlcn.commons.util.Maps;
 import com.codingapi.txlcn.commons.util.RandomUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -9,10 +12,14 @@ import java.util.stream.Collectors;
 
 /**
  * Description:
+ * 1. {@code fields}为 {@code null}。发起方出现，未开始事务组
+ * 2. {@code fields}不为空，fields.get(TracingConstants.GROUP_ID) 是 {@code empty}。参与方出现，未开启事务组。
+ * 3.
  * Date: 19-1-28 下午4:21
  *
  * @author ujued
  */
+@Slf4j
 public class TracingContext {
 
     private static ThreadLocal<TracingContext> tracingContextThreadLocal = new ThreadLocal<>();
@@ -21,7 +28,7 @@ public class TracingContext {
 
     }
 
-    public static TracingContext tracingContext() {
+    public static TracingContext tracing() {
         if (tracingContextThreadLocal.get() == null) {
             tracingContextThreadLocal.set(new TracingContext());
         }
@@ -34,7 +41,7 @@ public class TracingContext {
         if (hasGroup()) {
             return;
         }
-        init(Maps.newHashMap(TracingConstants.GROUP_ID, RandomUtils.randomKey(), TracingConstants.APP_LIST, ""));
+        init(Maps.newHashMap(TracingConstants.GROUP_ID, RandomUtils.randomKey(), TracingConstants.APP_MAP, "{}"));
     }
 
     public void init(Map<String, String> initFields) {
@@ -53,32 +60,46 @@ public class TracingContext {
         if (hasGroup()) {
             return fields.get(TracingConstants.GROUP_ID);
         }
-        throw new IllegalStateException("non group id.");
+        raiseNonGroupException();
+        return "";
     }
 
-    public void addApp(String appId) {
+    public void addApp(String serviceId, String address) {
         if (hasGroup()) {
-            this.fields.put(TracingConstants.APP_LIST,
-                    String.join(",", this.fields.get(TracingConstants.APP_LIST), appId));
+            JSONObject map = JSON.parseObject(this.fields.get(TracingConstants.APP_MAP));
+            if (map.containsKey(serviceId)) {
+                return;
+            }
+            map.put(serviceId, address);
+            this.fields.put(TracingConstants.APP_MAP, JSON.toJSONString(map));
+            return;
         }
-        throw new IllegalStateException("non group id.");
+        raiseNonGroupException();
     }
 
     public String appListString() {
         if (hasGroup()) {
-            return this.fields.get(TracingConstants.APP_LIST);
+            return this.fields.get(TracingConstants.APP_MAP);
         }
-        throw new IllegalStateException("non group id.");
+        raiseNonGroupException();
+        return "";
     }
 
-    public List<String> appList() {
+    public JSONObject appMap() {
         if (hasGroup()) {
-            return Arrays.stream(this.fields.get(TracingConstants.APP_LIST).split(",")).collect(Collectors.toList());
+            String appMap = this.fields.get(TracingConstants.APP_MAP);
+            log.debug("App map: {}", appMap);
+            return JSON.parseObject(appMap);
         }
-        throw new IllegalStateException("non group id.");
+        raiseNonGroupException();
+        return JSON.parseObject("{}");
     }
 
     public void destroy() {
         this.fields = null;
+    }
+
+    private void raiseNonGroupException() {
+        throw new IllegalStateException("non group id.");
     }
 }

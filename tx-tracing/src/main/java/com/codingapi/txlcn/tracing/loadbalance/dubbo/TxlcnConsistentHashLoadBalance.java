@@ -18,7 +18,7 @@ package com.codingapi.txlcn.tracing.loadbalance.dubbo;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
-import com.alibaba.dubbo.rpc.cluster.loadbalance.LeastActiveLoadBalance;
+import com.alibaba.dubbo.rpc.cluster.loadbalance.ConsistentHashLoadBalance;
 
 import java.util.List;
 
@@ -29,10 +29,10 @@ import java.util.List;
  *
  * @author ujued
  */
-public class TXLCNLeastActiveLoadBalance extends LeastActiveLoadBalance {
+public class TxlcnConsistentHashLoadBalance extends ConsistentHashLoadBalance {
 
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) {
-        return DubboTXLCNLoadBalance.chooseInvoker(invokers, url, invocation, super::select);
+        return DubboTxlcnLoadBalance.chooseInvoker(invokers, url, invocation, super::select);
     }
 }

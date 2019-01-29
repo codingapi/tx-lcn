@@ -28,8 +28,8 @@ public class RestTemplateRequestInterceptor implements ClientHttpRequestIntercep
     public ClientHttpResponse intercept(
             @NonNull HttpRequest httpRequest, @NonNull byte[] bytes,
             @NonNull ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
-        httpRequest.getHeaders().add(TracingConstants.HEADER_KEY_GROUP_ID, TracingContext.tracingContext().groupId());
-        httpRequest.getHeaders().add(TracingConstants.HEADER_KEY_APP_LIST, TracingContext.tracingContext().appListString());
+        httpRequest.getHeaders().add(TracingConstants.HEADER_KEY_GROUP_ID, TracingContext.tracing().groupId());
+        httpRequest.getHeaders().add(TracingConstants.HEADER_KEY_APP_LIST, TracingContext.tracing().appListString());
         return clientHttpRequestExecution.execute(httpRequest, bytes);
     }
 }

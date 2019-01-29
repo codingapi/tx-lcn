@@ -89,14 +89,23 @@ public class TMSearcher {
     /**
      * 搜索到一个
      */
-    public static void searchedOne() {
+    public static boolean searchedOne() {
         if (Objects.nonNull(clusterCountLatch)) {
-            clusterCountLatch.countDown();
+            if (clusterCountLatch.getCount() == 0) {
+                clusterCountLatch.countDown();
+                return false;
+            }
+            return true;
         }
+        return false;
     }
 
     private static void echoTMClusterSuccessful() {
-        log.info("TC[{}] established TM Cluster successfully!", Transactions.APPLICATION_ID_WHEN_RUNNING);
+        log.info("TC[{}] established TM cluster successfully!", Transactions.APPLICATION_ID_WHEN_RUNNING);
+        echoTmClusterSize();
+    }
+
+    public static void echoTmClusterSize() {
         log.info("TM cluster's size: {}", RELIABLE_MESSENGER.clusterSize());
     }
 }

@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tracing.loadbalance.springcloud;
 
+import com.alibaba.fastjson.JSONObject;
 import com.codingapi.txlcn.tracing.TracingContext;
 import com.netflix.loadbalancer.Server;
 import com.netflix.loadbalancer.ZoneAvoidanceRule;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.serviceregistry.Registration;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Description:
@@ -31,47 +33,49 @@ import java.util.List;
  * @author ujued
  */
 @Slf4j
-public class TXLCNZoneAvoidanceRule extends ZoneAvoidanceRule {
+public class TxlcnZoneAvoidanceRule extends ZoneAvoidanceRule {
 
     private final Registration registration;
 
     /**
      * 无参构造器提供给Ribbon调用
      */
-    public TXLCNZoneAvoidanceRule() {
+    public TxlcnZoneAvoidanceRule() {
         this.registration = null;
     }
 
-    public TXLCNZoneAvoidanceRule(Registration registration) {
+    TxlcnZoneAvoidanceRule(Registration registration) {
         this.registration = registration;
     }
 
     @Override
     public Server choose(Object key) {
-        return getServer(key);
-    }
-
-    private Server getServer(Object key) {
+        // 1. 自己加入此事务组调用链
         assert registration != null;
-        List<String> appList = TracingContext.tracingContext().appList();
-        Server balanceServer = null;
+        TracingContext.tracing().addApp(registration.getServiceId(), registration.getHost() + ":" + registration.getPort());
+
+        // 2. 获取所有要访问服务的实例
         List<Server> servers = getLoadBalancer().getAllServers();
-        log.debug("load balanced rule servers: {}", servers);
-        for (Server server : servers) {
-            for (String appKey : appList) {
-                String serverKey = String.format("%s:%s", server.getMetaInfo().getAppName(), server.getHostPort());
-                if (serverKey.equals(appKey)) {
+        assert servers.size() > 0;
+
+        JSONObject appMap = TracingContext.tracing().appMap();
+        log.debug("load balanced rule servers: {}, txGroup[{}]'s server map:{}",
+                servers, TracingContext.tracing().groupId(), appMap);
+        Server balanceServer = null;
+        String serviceId = servers.get(0).getMetaInfo().getAppName();
+        if (appMap.containsKey(serviceId)) {
+            for (Server server : servers) {
+                if (server.getHostPort().equals(appMap.getString(serviceId))) {
+                    log.debug("txlcn choosed server [{}] in txGroup: {}", server, TracingContext.tracing().groupId());
                     balanceServer = server;
                 }
             }
         }
-        if (balanceServer == null) {
+        if (Objects.isNull(balanceServer)) {
             Server server = super.choose(key);
-            TracingContext.tracingContext().addApp(String.format("%s:%s", server.getMetaInfo().getAppName(), server.getHostPort()));
+            TracingContext.tracing().addApp(server.getMetaInfo().getAppName(), server.getHostPort());
             return server;
-        } else {
-            return balanceServer;
         }
+        return balanceServer;
     }
-
 }

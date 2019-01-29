@@ -18,6 +18,8 @@ package com.codingapi.txlcn.tracing.loadbalance.dubbo;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
+import com.alibaba.dubbo.rpc.RpcContext;
+import com.alibaba.fastjson.JSONObject;
 import com.codingapi.txlcn.tracing.TracingContext;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,27 +34,31 @@ import java.util.List;
  * @author ujued
  */
 @Slf4j
-public class DubboTXLCNLoadBalance {
+class DubboTxlcnLoadBalance {
 
     static <T> Invoker<T> chooseInvoker(List<Invoker<T>> invokers, URL url, Invocation invocation, TxLcnLoadBalance loadBalance) {
-        List<String> appList = TracingContext.tracingContext().appList();
+        TracingContext.tracing()
+                .addApp(RpcContext.getContext().getUrl().getPath(), RpcContext.getContext().getLocalAddressString());
+        assert invokers.size() > 0;
+        String path = invokers.get(0).getUrl().getPath();
+        JSONObject appMap = TracingContext.tracing().appMap();
+        log.debug("target[{}] invokers: {}", path, invokers);
         Invoker<T> chooseInvoker = null;
-        for (Invoker<T> tInvoker : invokers) {
-            String serverKey = tInvoker.getUrl().getAddress();
-            for (String appKey : appList) {
-                if (appKey.equals(serverKey)) {
+        if (appMap.containsKey(path)) {
+            for (Invoker<T> tInvoker : invokers) {
+                if (tInvoker.getUrl().getAddress().equals(appMap.getString(path))) {
                     chooseInvoker = tInvoker;
+                    log.debug("txlcn choosed server [{}] in txGroup: {}", tInvoker, TracingContext.tracing().groupId());
+                    break;
                 }
             }
         }
-
         if (chooseInvoker == null) {
             Invoker<T> invoker = loadBalance.select(invokers, url, invocation);
-            TracingContext.tracingContext().addApp(invoker.getUrl().getAddress());
+            TracingContext.tracing().addApp(invoker.getUrl().getPath(), invoker.getUrl().getAddress());
             return invoker;
-        } else {
-            return chooseInvoker;
         }
+        return chooseInvoker;
     }
 
     @FunctionalInterface

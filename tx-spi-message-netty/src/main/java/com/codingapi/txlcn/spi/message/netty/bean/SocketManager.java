@@ -85,9 +85,17 @@ public class SocketManager {
 
     public void removeChannel(Channel channel) {
         channels.remove(channel);
+        String key = channel.remoteAddress().toString();
+
+        // 未设置过期时间，立即过期
+        if (attrDelayTime < 0) {
+            appNames.remove(key);
+            return;
+        }
+
+        // 设置了过期时间，到时间后清除
         try {
             executorService.schedule(() -> {
-                String key = channel.remoteAddress().toString();
                 appNames.remove(key);
             }, attrDelayTime, TimeUnit.MILLISECONDS);
         } catch (RejectedExecutionException ignored) {

@@ -65,8 +65,31 @@ public class TxClientConfig {
     private List<String> managerAddress;
 
     /**
+     * 调用链长度等级
+     */
+    private int chainLevel = 3;
+
+    /**
      * Distributed Transaction Time
      */
     private long dtxTime;
+
+    private long tmRpcTimeout;
+
+    private void setDtxTime(long dtxTime) {
+        this.dtxTime = dtxTime;
+    }
+
+    private void setTmRpcTimeout(long timeout) {
+        this.tmRpcTimeout = timeout;
+    }
+
+    public void applyTmRpcTimeout(long timeout) {
+        setTmRpcTimeout(timeout);
+    }
+
+    public void applyDtxTime(long dtxTime) {
+        setDtxTime(dtxTime);
+    }
 
 }

@@ -20,7 +20,7 @@ public class FeignRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
-        requestTemplate.header(TracingConstants.HEADER_KEY_GROUP_ID, TracingContext.tracingContext().groupId());
-        requestTemplate.header(TracingConstants.HEADER_KEY_APP_LIST, TracingContext.tracingContext().appListString());
+        requestTemplate.header(TracingConstants.HEADER_KEY_GROUP_ID, TracingContext.tracing().groupId());
+        requestTemplate.header(TracingConstants.HEADER_KEY_APP_LIST, TracingContext.tracing().appListString());
     }
 }

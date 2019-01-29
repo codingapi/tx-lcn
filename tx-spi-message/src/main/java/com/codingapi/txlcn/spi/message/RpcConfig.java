@@ -40,7 +40,7 @@ public class RpcConfig {
     /**
      * appName 参数延迟删除时间(ms)
      */
-    private long attrDelayTime = 36 * 1000;
+    private long attrDelayTime = -1;
 
     /**
      * 断线重连次数

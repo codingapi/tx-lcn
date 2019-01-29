@@ -8,6 +8,7 @@ import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.tm.core.message.RpcExecuteService;
 import com.codingapi.txlcn.tm.core.message.TransactionCmd;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ import java.util.HashSet;
  * @author ujued
  */
 @Component("rpc_clean-invalid-tm")
+@Slf4j
 public class CleanInvalidTMExecuteService implements RpcExecuteService {
 
     private final FastStorage fastStorage;
@@ -44,6 +46,7 @@ public class CleanInvalidTMExecuteService implements RpcExecuteService {
                 txLogger.trace("", "", Transactions.TE, "remove TM " + address + " fail.");
             }
         }
+        log.info("Clean invalid TM: {}", hashSet);
         return null;
     }
 }

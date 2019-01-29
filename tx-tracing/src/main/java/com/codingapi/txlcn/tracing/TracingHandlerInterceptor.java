@@ -27,7 +27,7 @@ public class TracingHandlerInterceptor implements HandlerInterceptor, WebMvcConf
             @NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
         String groupId = Optional.ofNullable(request.getHeader(TracingConstants.HEADER_KEY_GROUP_ID)).orElse("");
         String appList = Optional.ofNullable(request.getHeader(TracingConstants.HEADER_KEY_APP_LIST)).orElse("");
-        TracingContext.tracingContext().init(Maps.newHashMap(TracingConstants.GROUP_ID, groupId, TracingConstants.APP_LIST, appList));
+        TracingContext.tracing().init(Maps.newHashMap(TracingConstants.GROUP_ID, groupId, TracingConstants.APP_MAP, appList));
         return true;
     }
 

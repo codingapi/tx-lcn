@@ -20,7 +20,7 @@ import com.codingapi.txlcn.spi.message.RpcClient;
 import com.codingapi.txlcn.spi.message.dto.MessageDto;
 import com.codingapi.txlcn.spi.message.dto.RpcCmd;
 import com.codingapi.txlcn.spi.message.exception.RpcException;
-import com.codingapi.txlcn.tm.support.ManagerRpcBeanHelper;
+import com.codingapi.txlcn.tm.support.TxlcnManagerRpcBeanHelper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
@@ -37,11 +37,11 @@ public class RpcCmdTask implements Runnable {
 
     private final RpcCmd rpcCmd;
 
-    private final ManagerRpcBeanHelper rpcBeanHelper;
+    private final TxlcnManagerRpcBeanHelper rpcBeanHelper;
 
     private final RpcClient rpcClient;
 
-    RpcCmdTask(ManagerRpcBeanHelper rpcBeanHelper, RpcCmd rpcCmd) {
+    RpcCmdTask(TxlcnManagerRpcBeanHelper rpcBeanHelper, RpcCmd rpcCmd) {
         this.rpcBeanHelper = rpcBeanHelper;
         this.rpcCmd = rpcCmd;
         this.rpcClient = rpcBeanHelper.getByType(RpcClient.class);

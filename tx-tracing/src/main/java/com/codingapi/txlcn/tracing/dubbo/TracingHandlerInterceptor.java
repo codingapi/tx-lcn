@@ -8,7 +8,7 @@ import com.codingapi.txlcn.tracing.TracingConstants;
 import com.codingapi.txlcn.tracing.TracingContext;
 
 /**
- * Description:
+ * Description: 接收Tracing需要的数据
  * Date: 19-1-28 下午5:08
  *
  * @author ujued
@@ -20,7 +20,7 @@ public class TracingHandlerInterceptor implements Filter {
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         String groupId = invocation.getAttachment(TracingConstants.HEADER_KEY_GROUP_ID, "");
         String appList = invocation.getAttachment(TracingConstants.HEADER_KEY_APP_LIST, "");
-        TracingContext.tracingContext().init(Maps.newHashMap(TracingConstants.GROUP_ID, groupId, TracingConstants.APP_LIST, appList));
+        TracingContext.tracing().init(Maps.newHashMap(TracingConstants.GROUP_ID, groupId, TracingConstants.APP_MAP, appList));
         return invoker.invoke(invocation);
     }
 }

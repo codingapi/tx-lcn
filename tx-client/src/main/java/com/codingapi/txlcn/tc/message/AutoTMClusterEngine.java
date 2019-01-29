@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class AutoTMClusterEngine implements RpcEnvStatusListener {
 
-    private AtomicInteger initCount = new AtomicInteger(0);
+    private AtomicInteger tryConnectCount = new AtomicInteger(0);
 
     private final TxClientConfig txClientConfig;
 
@@ -54,7 +54,9 @@ public class AutoTMClusterEngine implements RpcEnvStatusListener {
 
     @Override
     public void onInitialized(String remoteKey) {
-        prepareToResearchTMCluster();
+        if (prepareToResearchTMCluster()) {
+            TMSearcher.echoTmClusterSize();
+        }
     }
 
     @Override
@@ -64,17 +66,25 @@ public class AutoTMClusterEngine implements RpcEnvStatusListener {
         } catch (RpcException e) {
             log.error("{} on reportInvalidTM.", e.getMessage());
         }
-        prepareToResearchTMCluster();
+        if (prepareToResearchTMCluster()) {
+            TMSearcher.echoTmClusterSize();
+        }
     }
 
-
-    private void prepareToResearchTMCluster() {
-        int count = initCount.incrementAndGet();
+    /**
+     * 准备搜索TM
+     *
+     * @return true 搜索结束
+     */
+    private boolean prepareToResearchTMCluster() {
+        int count = tryConnectCount.incrementAndGet();
         int size = txClientConfig.getManagerAddress().size();
         if (count == size) {
             TMSearcher.search();
+            return false;
         } else if (count > size) {
-            TMSearcher.searchedOne();
+            return !TMSearcher.searchedOne();
         }
+        return true;
     }
 }

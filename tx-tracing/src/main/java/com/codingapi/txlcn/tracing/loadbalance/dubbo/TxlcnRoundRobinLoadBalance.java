@@ -18,7 +18,7 @@ package com.codingapi.txlcn.tracing.loadbalance.dubbo;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
-import com.alibaba.dubbo.rpc.cluster.loadbalance.RandomLoadBalance;
+import com.alibaba.dubbo.rpc.cluster.loadbalance.RoundRobinLoadBalance;
 
 import java.util.List;
 
@@ -29,11 +29,10 @@ import java.util.List;
  *
  * @author ujued
  */
-public class TXLCNRandomLoadBalance extends RandomLoadBalance {
+public class TxlcnRoundRobinLoadBalance extends RoundRobinLoadBalance {
 
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) {
-        return DubboTXLCNLoadBalance.chooseInvoker(invokers, url, invocation, super::select);
+        return DubboTxlcnLoadBalance.chooseInvoker(invokers, url, invocation, super::select);
     }
-
 }

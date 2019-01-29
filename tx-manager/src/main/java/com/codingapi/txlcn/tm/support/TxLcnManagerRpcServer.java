@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tm.support.message;
+package com.codingapi.txlcn.tm.support;
 
 import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
 import com.codingapi.txlcn.commons.runner.TxLcnRunnerOrders;
@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
  * @author lorne
  */
 @Component
-public class TxLcnManagerServer implements TxLcnInitializer {
+public class TxLcnManagerRpcServer implements TxLcnInitializer {
 
     private final TxManagerConfig txManagerConfig;
 
@@ -41,7 +41,7 @@ public class TxLcnManagerServer implements TxLcnInitializer {
     private final RpcConfig rpcConfig;
 
     @Autowired
-    public TxLcnManagerServer(TxManagerConfig txManagerConfig, RpcServerInitializer rpcServerInitializer, RpcConfig rpcConfig) {
+    public TxLcnManagerRpcServer(TxManagerConfig txManagerConfig, RpcServerInitializer rpcServerInitializer, RpcConfig rpcConfig) {
         this.txManagerConfig = txManagerConfig;
         this.rpcServerInitializer = rpcServerInitializer;
         this.rpcConfig = rpcConfig;
@@ -50,8 +50,11 @@ public class TxLcnManagerServer implements TxLcnInitializer {
     @Override
     public void init() {
         // 1. 配置
-        if (rpcConfig.getWaitTime() == -1) {
-            rpcConfig.setWaitTime(2000);
+        if (rpcConfig.getWaitTime() <= 5) {
+            rpcConfig.setWaitTime(1000);
+        }
+        if (rpcConfig.getAttrDelayTime() < 0) {
+            rpcConfig.setAttrDelayTime(txManagerConfig.getDtxTime());
         }
 
         // 2. 初始化RPC Server

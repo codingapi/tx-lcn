@@ -18,6 +18,7 @@ package com.codingapi.txlcn.tm.core.transaction;
 import com.codingapi.txlcn.commons.exception.TxManagerException;
 import com.codingapi.txlcn.commons.util.ApplicationInformation;
 import com.codingapi.txlcn.spi.message.RpcClient;
+import com.codingapi.txlcn.spi.message.RpcConfig;
 import com.codingapi.txlcn.spi.message.params.InitClientParams;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.message.RpcExecuteService;
@@ -49,13 +50,16 @@ public class InitClientService implements RpcExecuteService {
 
     private final ServerProperties serverProperties;
 
+    private final RpcConfig rpcConfig;
+
     @Autowired
     public InitClientService(RpcClient rpcClient, TxManagerConfig txManagerConfig, ConfigurableEnvironment environment,
-                             @Autowired(required = false) ServerProperties serverProperties) {
+                             @Autowired(required = false) ServerProperties serverProperties, RpcConfig rpcConfig) {
         this.rpcClient = rpcClient;
         this.txManagerConfig = txManagerConfig;
         this.environment = environment;
         this.serverProperties = serverProperties;
+        this.rpcConfig = rpcConfig;
     }
 
 
@@ -64,8 +68,9 @@ public class InitClientService implements RpcExecuteService {
         log.info("init client - >{}", transactionCmd);
         InitClientParams initClientParams = transactionCmd.getMsg().loadBean(InitClientParams.class);
         rpcClient.bindAppName(transactionCmd.getRemoteKey(), initClientParams.getAppName());
-        // DTX Time
+        // DTX Time and TM timeout.
         initClientParams.setDtxTime(txManagerConfig.getDtxTime());
+        initClientParams.setTmRpcTimeout(rpcConfig.getWaitTime());
         // TM Name
         initClientParams.setAppName(ApplicationInformation.modId(environment, serverProperties));
         return initClientParams;
