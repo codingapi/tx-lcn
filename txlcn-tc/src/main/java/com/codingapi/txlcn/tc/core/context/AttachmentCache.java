@@ -23,13 +23,19 @@ package com.codingapi.txlcn.tc.core.context;
  */
 public interface AttachmentCache {
 
-    void attach(String groupId, String key, Object attachment);
+    void attach(String mainKey, String key, Object attachment);
 
-    <T> T attachment(String groupId, String key);
+    void attach(String key, Object attachment);
 
-    void remove(String groupId, String key);
+    <T> T attachment(String mainKey, String key);
+
+    <T> T attachment(String key);
+
+    void remove(String mainKey, String key);
+
+    void removeAll(String mainKey);
+
+    void remove(String key);
 
     boolean containsKey(String groupId, String key);
-
-    void remove(String groupId);
 }

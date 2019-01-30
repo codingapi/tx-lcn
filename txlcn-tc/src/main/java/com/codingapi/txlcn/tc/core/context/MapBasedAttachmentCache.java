@@ -33,42 +33,60 @@ public class MapBasedAttachmentCache implements AttachmentCache {
 
     private Map<String, Map<String, Object>> cache = new ConcurrentHashMap<>(64);
 
+    private Map<String, Object> singlePropCache = new ConcurrentHashMap<>(64);
+
     @Override
-    public void attach(String groupId, String key, Object attachment) {
-        Objects.requireNonNull(groupId);
+    public void attach(String mainKey, String key, Object attachment) {
+        Objects.requireNonNull(mainKey);
         Objects.requireNonNull(key);
         Objects.requireNonNull(attachment);
 
-        if (cache.containsKey(groupId)) {
-            Map<String, Object> map = cache.get(groupId);
+        if (cache.containsKey(mainKey)) {
+            Map<String, Object> map = cache.get(mainKey);
             map.put(key, attachment);
             return;
         }
 
         Map<String, Object> map = new HashMap<>();
         map.put(key, attachment);
-        cache.put(groupId, map);
+        cache.put(mainKey, map);
+    }
+
+    @Override
+    public void attach(String key, Object attachment) {
+        this.singlePropCache.put(key, attachment);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T attachment(String groupId, String key) {
+    public <T> T attachment(String mainKey, String key) {
         Objects.requireNonNull(key);
-        Objects.requireNonNull(groupId);
+        Objects.requireNonNull(mainKey);
 
-        if (cache.containsKey(groupId)) {
-            if (cache.get(groupId).containsKey(key)) {
-                return (T) cache.get(groupId).get(key);
+        if (cache.containsKey(mainKey)) {
+            if (cache.get(mainKey).containsKey(key)) {
+                return (T) cache.get(mainKey).get(key);
             }
         }
         return null;
     }
 
     @Override
-    public void remove(String groupId, String key) {
-        if (cache.containsKey(groupId)) {
-            cache.get(groupId).remove(key);
+    @SuppressWarnings("unchecked")
+    public <T> T attachment(String key) {
+        return (T) this.singlePropCache.get(key);
+    }
+
+    @Override
+    public void remove(String mainKey, String key) {
+        if (cache.containsKey(mainKey)) {
+            cache.get(mainKey).remove(key);
         }
+    }
+
+    @Override
+    public void removeAll(String mainKey) {
+        this.cache.remove(mainKey);
     }
 
     @Override
@@ -77,7 +95,7 @@ public class MapBasedAttachmentCache implements AttachmentCache {
     }
 
     @Override
-    public void remove(String groupId) {
-        this.cache.remove(groupId);
+    public void remove(String key) {
+        this.singlePropCache.remove(key);
     }
 }

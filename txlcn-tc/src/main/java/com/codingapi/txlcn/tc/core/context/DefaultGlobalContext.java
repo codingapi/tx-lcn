@@ -137,7 +137,7 @@ public class DefaultGlobalContext implements TCGlobalContext {
             TracingContext.tracing().beginTransactionGroup();
         }
         txContext.setGroupId(TracingContext.tracing().groupId());
-        attachmentCache.attach(txContext.getGroupId() + ".dtx", "dtx.context", txContext);
+        attachmentCache.attach(txContext.getGroupId() + ".dtx", txContext);
         return txContext;
     }
 
@@ -153,7 +153,7 @@ public class DefaultGlobalContext implements TCGlobalContext {
 
     @Override
     public TxContext txContext(String groupId) {
-        return attachmentCache.attachment(groupId + ".dtx", "dtx.context");
+        return attachmentCache.attachment(groupId + ".dtx");
     }
 
     /**
@@ -163,7 +163,8 @@ public class DefaultGlobalContext implements TCGlobalContext {
      */
     @Override
     public void clearGroup(String groupId) {
-        this.attachmentCache.remove(groupId);
+        // 事务组相关的数据
+        this.attachmentCache.removeAll(groupId);
         // 销毁GroupId
         TracingContext.tracing().destroy();
     }
