@@ -24,8 +24,7 @@ import java.util.UUID;
 public class RandomUtils {
     
     private static Random random = new Random();
-    
-    
+
     public static String getUUID() {
         return UUID.randomUUID().toString().replace("-" , "");
     }
@@ -33,6 +32,5 @@ public class RandomUtils {
     public static String randomKey() {
         return System.nanoTime() + "" + random.nextInt(10000);
     }
-    
-    
+
 }
