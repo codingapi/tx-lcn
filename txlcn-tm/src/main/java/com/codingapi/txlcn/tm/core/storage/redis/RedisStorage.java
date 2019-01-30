@@ -1,11 +1,13 @@
 package com.codingapi.txlcn.tm.core.storage.redis;
 
+import com.alibaba.fastjson.JSON;
 import com.codingapi.txlcn.common.exception.FastStorageException;
 import com.codingapi.txlcn.common.lock.DTXLocks;
 import com.codingapi.txlcn.common.util.ApplicationInformation;
 import com.codingapi.txlcn.tm.cluster.TMProperties;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
+import com.codingapi.txlcn.tm.core.storage.GroupProps;
 import com.codingapi.txlcn.tm.core.storage.LockValue;
 import com.codingapi.txlcn.tm.core.storage.TransactionUnit;
 import lombok.Data;
@@ -26,9 +28,9 @@ import java.util.stream.Collectors;
 @Data
 public class RedisStorage implements FastStorage {
 
-    private static final String REDIS_PREFIX = "tm:group:";
+    private static final String REDIS_GROUP_PREFIX = "tm:group:";
 
-    private static final String REDIS_GROUP_STATE = REDIS_PREFIX + "transactionState:";
+    private static final String REDIS_GROUP_STATE = REDIS_GROUP_PREFIX + "transactionState:";
 
     private static final String REDIS_TOKEN_PREFIX = "tm.token";
 
@@ -47,25 +49,31 @@ public class RedisStorage implements FastStorage {
     }
 
     @Override
-    public void initGroup(String groupId) {
-        redisTemplate.opsForHash().put(REDIS_PREFIX + groupId, "root", "non");
-        redisTemplate.expire(REDIS_PREFIX + groupId, managerConfig.getDtxTime() + 10000, TimeUnit.MILLISECONDS);
+    public void initGroup(GroupProps groupProps) {
+        redisTemplate.opsForHash().put(REDIS_GROUP_PREFIX + groupProps.getGroupId(), "root", groupProps);
+        redisTemplate.expire(REDIS_GROUP_PREFIX + groupProps.getGroupId(),
+                managerConfig.getDtxTime() + 10000, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public GroupProps getGroupProps(String groupId) throws FastStorageException {
+        return (GroupProps) redisTemplate.opsForHash().get(REDIS_GROUP_PREFIX + groupId, "root");
     }
 
     @Override
     public boolean containsTransactionUnit(String groupId, TransactionUnit transactionUnit) {
-        Object unit = redisTemplate.opsForHash().get(REDIS_PREFIX + groupId, transactionUnit.getUnitId());
+        Object unit = redisTemplate.opsForHash().get(REDIS_GROUP_PREFIX + groupId, transactionUnit.getUnitId());
         return Objects.nonNull(unit);
     }
 
     @Override
     public boolean containsGroup(String groupId) {
-        return Optional.ofNullable(redisTemplate.hasKey(REDIS_PREFIX + groupId)).orElse(false);
+        return Optional.ofNullable(redisTemplate.hasKey(REDIS_GROUP_PREFIX + groupId)).orElse(false);
     }
 
     @Override
     public List<TransactionUnit> findTransactionUnitsFromGroup(String groupId) throws FastStorageException {
-        Map<Object, Object> units = redisTemplate.opsForHash().entries(REDIS_PREFIX + groupId);
+        Map<Object, Object> units = redisTemplate.opsForHash().entries(REDIS_GROUP_PREFIX + groupId);
         return units.entrySet().stream()
                 .filter(objectObjectEntry -> !objectObjectEntry.getKey().equals("root"))
                 .map(objectObjectEntry -> (TransactionUnit) objectObjectEntry.getValue()).collect(Collectors.toList());
@@ -73,8 +81,8 @@ public class RedisStorage implements FastStorage {
 
     @Override
     public void saveTransactionUnitToGroup(String groupId, TransactionUnit transactionUnit) throws FastStorageException {
-        if (Optional.ofNullable(redisTemplate.hasKey(REDIS_PREFIX + groupId)).orElse(false)) {
-            redisTemplate.opsForHash().put(REDIS_PREFIX + groupId, transactionUnit.getUnitId(), transactionUnit);
+        if (Optional.ofNullable(redisTemplate.hasKey(REDIS_GROUP_PREFIX + groupId)).orElse(false)) {
+            redisTemplate.opsForHash().put(REDIS_GROUP_PREFIX + groupId, transactionUnit.getUnitId(), transactionUnit);
             return;
         }
         throw new FastStorageException("attempts to the non-existent transaction group " + groupId,
@@ -84,7 +92,7 @@ public class RedisStorage implements FastStorage {
     @Override
     public void clearGroup(String groupId) {
         log.debug("remove group:{} from redis.", groupId);
-        redisTemplate.delete(REDIS_PREFIX + groupId);
+        redisTemplate.delete(REDIS_GROUP_PREFIX + groupId);
     }
 
     @Override

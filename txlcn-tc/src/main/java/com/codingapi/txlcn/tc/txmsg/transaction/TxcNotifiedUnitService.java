@@ -17,7 +17,7 @@ package com.codingapi.txlcn.tc.txmsg.transaction;
 
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
-import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
+import com.codingapi.txlcn.tc.core.template.TransactionCleanTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

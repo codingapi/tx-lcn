@@ -2,6 +2,7 @@ package com.codingapi.txlcn.tm.core;
 
 
 import com.codingapi.txlcn.common.exception.TransactionException;
+import com.codingapi.txlcn.tm.core.storage.GroupProps;
 import com.codingapi.txlcn.tm.core.storage.TransactionUnit;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * @author ujued
  */
 public interface DTXContext {
-    
+
     /**
      * 加入当前事务组
      *
@@ -21,7 +22,7 @@ public interface DTXContext {
      * @throws TransactionException TransactionException
      */
     void join(TransactionUnit transactionUnit) throws TransactionException;
-    
+
     /**
      * 设置事务组状态
      *
@@ -29,7 +30,7 @@ public interface DTXContext {
      * @throws TransactionException TransactionException
      */
     void resetTransactionState(int state) throws TransactionException;
-    
+
     /**
      * 获取该事务组事务单元列表
      *
@@ -37,14 +38,14 @@ public interface DTXContext {
      * @throws TransactionException TransactionException
      */
     List<TransactionUnit> transactionUnits() throws TransactionException;
-    
+
     /**
-     * 获取事务组id
+     * 获取事务组属性
      *
-     * @return string
+     * @return GroupProps
      */
-    String groupId();
-    
+    GroupProps groupProps() throws TransactionException;
+
     /**
      * 获取事务组状态
      *

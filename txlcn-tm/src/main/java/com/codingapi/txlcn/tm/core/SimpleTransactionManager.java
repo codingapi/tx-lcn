@@ -18,6 +18,7 @@ package com.codingapi.txlcn.tm.core;
 import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
+import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.dto.MessageDto;
 import com.codingapi.txlcn.txmsg.exception.RpcException;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Description: 默认事务管理器
@@ -54,15 +56,18 @@ public class SimpleTransactionManager implements TransactionManager {
 
     private final DTXContextRegistry dtxContextRegistry;
 
+    private final TxManagerConfig managerConfig;
+
     @Autowired
-    public SimpleTransactionManager(RpcExceptionHandler rpcExceptionHandler,
-                                    RpcClient rpcClient, TxLogger txLogger,
-                                    TxExceptionService exceptionService, DTXContextRegistry dtxContextRegistry) {
+    public SimpleTransactionManager(RpcExceptionHandler rpcExceptionHandler, RpcClient rpcClient, TxLogger txLogger,
+                                    TxExceptionService exceptionService, DTXContextRegistry dtxContextRegistry,
+                                    TxManagerConfig managerConfig) {
         this.rpcExceptionHandler = rpcExceptionHandler;
         this.exceptionService = exceptionService;
         this.rpcClient = rpcClient;
         this.txLogger = txLogger;
         this.dtxContextRegistry = dtxContextRegistry;
+        this.managerConfig = managerConfig;
     }
 
     @Override
@@ -76,7 +81,7 @@ public class SimpleTransactionManager implements TransactionManager {
 
     @Override
     public void join(DTXContext dtxContext, String unitId, String unitType, String modId, int userState) throws TransactionException {
-        log.debug("unit:{} joined group:{}", unitId, dtxContext.groupId());
+        log.debug("unit:{} joined group:{}", unitId, dtxContext.groupProps().getGroupId());
         //手动回滚时设置状态为回滚状态 0
         if (userState == 0) {
             dtxContext.resetTransactionState(0);
@@ -118,15 +123,26 @@ public class SimpleTransactionManager implements TransactionManager {
         return dtxContextRegistry.transactionState(groupId);
     }
 
+    @Override
+    public boolean isDTXTimeout(DTXContext dtxContext) {
+        Objects.requireNonNull(dtxContext);
+        try {
+            return (System.currentTimeMillis() - dtxContext.groupProps().getCreateTimeMillis()) > managerConfig.getDtxTime();
+        } catch (TransactionException e) {
+            return true;
+        }
+    }
+
     private void notifyTransaction(DTXContext dtxContext, int transactionState) throws TransactionException {
         for (TransactionUnit transUnit : dtxContext.transactionUnits()) {
             NotifyUnitParams notifyUnitParams = new NotifyUnitParams();
-            notifyUnitParams.setGroupId(dtxContext.groupId());
+            notifyUnitParams.setGroupId(dtxContext.groupProps().getGroupId());
             notifyUnitParams.setUnitId(transUnit.getUnitId());
             notifyUnitParams.setUnitType(transUnit.getUnitType());
             notifyUnitParams.setState(transactionState);
-            log.debug("notify {}'s unit: {}", transUnit.getModId(), transUnit.getUnitId());
-            txLogger.trace(dtxContext.groupId(), notifyUnitParams.getUnitId(), Transactions.TAG_TRANSACTION, "notify unit");
+            txLogger.info(dtxContext.groupProps().getGroupId(),
+                    notifyUnitParams.getUnitId(), Transactions.TAG_TRANSACTION, "notify %s's unit: %s",
+                    transUnit.getModId(), transUnit.getUnitId());
             try {
                 List<String> modChannelKeys = rpcClient.remoteKeys(transUnit.getModId());
                 if (modChannelKeys.isEmpty()) {
@@ -145,7 +161,8 @@ public class SimpleTransactionManager implements TransactionManager {
                 List<Object> params = Arrays.asList(notifyUnitParams, transUnit.getModId());
                 rpcExceptionHandler.handleNotifyUnitMessageException(params, e);
             } finally {
-                txLogger.trace(dtxContext.groupId(), notifyUnitParams.getUnitId(), Transactions.TAG_TRANSACTION, "notify unit over");
+                txLogger.info(dtxContext.groupProps().getGroupId(),
+                        notifyUnitParams.getUnitId(), Transactions.TAG_TRANSACTION, "notify unit over");
             }
         }
     }

@@ -24,7 +24,7 @@ import com.codingapi.txlcn.tc.txmsg.helper.RpcExecuteService;
 import com.codingapi.txlcn.tc.txmsg.helper.TransactionCmd;
 import com.codingapi.txlcn.tc.core.context.TxContext;
 import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
-import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
+import com.codingapi.txlcn.tc.core.template.TransactionCleanTemplate;
 
 import java.io.Serializable;
 import java.util.Objects;

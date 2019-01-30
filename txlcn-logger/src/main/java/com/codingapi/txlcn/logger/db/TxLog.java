@@ -46,6 +46,11 @@ public class TxLog {
     private String content;
 
     /**
+     * 日志内容占位参数
+     */
+    private Object[] args;
+
+    /**
      * 事务组Id
      */
     private String groupId;

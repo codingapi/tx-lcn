@@ -26,7 +26,7 @@ import com.codingapi.txlcn.tc.core.context.TxContext;
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
 import com.codingapi.txlcn.tc.txmsg.ReliableMessenger;
 import com.codingapi.txlcn.tc.txmsg.helper.TxMangerReporter;
-import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
+import com.codingapi.txlcn.tc.core.template.TransactionCleanTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +96,7 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
                 }
                 int state = reliableMessenger.askTransactionState(groupId, unitId);
                 log.debug("support > ask transaction transactionState:{}", state);
-                txLogger.trace(groupId, unitId, Transactions.TAG_TASK, "ask transaction state " + state);
+                txLogger.trace(groupId, unitId, Transactions.TAG_TASK, "ask transaction state %d", state);
                 if (state == -1) {
                     log.error("delay clean transaction error.");
                     onAskTransactionStateException(groupId, unitId, transactionType);

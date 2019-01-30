@@ -3,6 +3,7 @@ package com.codingapi.txlcn.tm.core;
 import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.common.exception.FastStorageException;
+import com.codingapi.txlcn.tm.core.storage.GroupProps;
 import com.codingapi.txlcn.tm.core.storage.TransactionUnit;
 
 import java.util.List;
@@ -56,8 +57,12 @@ public class DefaultDTXContext implements DTXContext {
     }
 
     @Override
-    public String groupId() {
-        return groupId;
+    public GroupProps groupProps() throws TransactionException {
+        try {
+            return fastStorage.getGroupProps(groupId);
+        } catch (FastStorageException e) {
+            throw new TransactionException(e);
+        }
     }
 
     @Override

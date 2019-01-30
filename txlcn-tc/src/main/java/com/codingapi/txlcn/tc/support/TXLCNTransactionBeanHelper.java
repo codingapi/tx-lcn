@@ -16,9 +16,9 @@
 package com.codingapi.txlcn.tc.support;
 
 import com.codingapi.txlcn.tc.core.DTXLocalControl;
-import com.codingapi.txlcn.tc.core.DTXState;
+import com.codingapi.txlcn.tc.core.DTXLogicState;
 import com.codingapi.txlcn.tc.core.TransactionCleanService;
-import com.codingapi.txlcn.tc.support.propagation.TXLCNTransactionSeparator;
+import com.codingapi.txlcn.tc.core.propagation.TXLCNTransactionSeparator;
 import com.codingapi.txlcn.tc.support.resouce.TransactionResourceExecutor;
 import com.codingapi.txlcn.tc.txmsg.helper.RpcExecuteService;
 import com.codingapi.txlcn.txmsg.LCNCmdType;
@@ -84,7 +84,7 @@ public class TXLCNTransactionBeanHelper {
     }
 
 
-    private String getControlBeanName(String transactionType, DTXState lcnTransactionState) {
+    private String getControlBeanName(String transactionType, DTXLogicState lcnTransactionState) {
         String name = String.format(CONTROL_BEAN_NAME_FORMAT, transactionType, lcnTransactionState.getCode());
         log.debug("getControlBeanName->{}", name);
         return name;
@@ -114,7 +114,7 @@ public class TXLCNTransactionBeanHelper {
         return spring.getBean(beanName, DTXLocalControl.class);
     }
 
-    public DTXLocalControl loadLCNTransactionControl(String transactionType, DTXState lcnTransactionState) {
+    public DTXLocalControl loadLCNTransactionControl(String transactionType, DTXLogicState lcnTransactionState) {
         return loadLCNTransactionControl(getControlBeanName(transactionType, lcnTransactionState));
     }
 

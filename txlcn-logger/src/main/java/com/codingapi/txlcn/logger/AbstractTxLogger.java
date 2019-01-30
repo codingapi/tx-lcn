@@ -41,9 +41,10 @@ public abstract class AbstractTxLogger implements TxLogger {
     }
 
     @Override
-    public void trace(String groupId, String unitId, String tag, String content) {
+    public void trace(String groupId, String unitId, String tag, String content, Object... args) {
         TxLog txLog = new TxLog();
         txLog.setContent(content);
+        txLog.setArgs(args);
         txLog.setGroupId(groupId);
         txLog.setTag(tag);
         txLog.setUnitId(Objects.isNull(unitId) ? "" : unitId);

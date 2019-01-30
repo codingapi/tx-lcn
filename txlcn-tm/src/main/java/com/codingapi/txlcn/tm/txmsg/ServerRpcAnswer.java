@@ -35,21 +35,18 @@ public class ServerRpcAnswer implements RpcAnswer {
 
     private final RpcClient rpcClient;
 
-    @Autowired
-    private TxLogger txLogger;
+    private final TxLogger txLogger;
 
     @Autowired
-    public ServerRpcAnswer(HashGroupRpcCmdHandler hashGroupRpcCmdHandler, RpcClient rpcClient) {
+    public ServerRpcAnswer(HashGroupRpcCmdHandler hashGroupRpcCmdHandler, RpcClient rpcClient, TxLogger txLogger) {
         this.hashGroupRpcCmdHandler = hashGroupRpcCmdHandler;
         this.rpcClient = rpcClient;
+        this.txLogger = txLogger;
     }
 
 
     @Override
     public void callback(RpcCmd rpcCmd) {
-
-        txLogger.trace(rpcCmd.getMsg().getGroupId(),"","rpccmd",rpcCmd.getMsg().getAction());
-
         try {
             hashGroupRpcCmdHandler.handleMessage(rpcCmd);
         } catch (Throwable e) {

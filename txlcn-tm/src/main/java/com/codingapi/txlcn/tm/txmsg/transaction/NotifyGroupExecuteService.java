@@ -59,8 +59,13 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
 
     @Override
     public Serializable execute(TransactionCmd transactionCmd) throws TxManagerException {
+        log.warn("repeat notify group, response ok caused idempotent processing.");
+
         try {
             DTXContext dtxContext = dtxContextRegistry.get(transactionCmd.getGroupId());
+            if (transactionManager.isDTXTimeout(dtxContext)) {
+                throw new TxManagerException("dtx timeout.");
+            }
             // 解析参数
             NotifyGroupParams notifyGroupParams = transactionCmd.getMsg().loadBean(NotifyGroupParams.class);
             log.debug("notify group params: {}", JSON.toJSONString(notifyGroupParams));

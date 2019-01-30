@@ -19,9 +19,9 @@ import com.codingapi.txlcn.common.exception.BeforeBusinessException;
 import com.codingapi.txlcn.common.exception.TCGlobalContextException;
 import com.codingapi.txlcn.common.util.function.Supplier;
 import com.codingapi.txlcn.tc.core.TccTransactionInfo;
-import com.codingapi.txlcn.tc.core.lcn.resource.LcnConnectionProxy;
-import com.codingapi.txlcn.tc.core.txc.analy.def.PrimaryKeysProvider;
-import com.codingapi.txlcn.tc.core.txc.analy.def.bean.TableStruct;
+import com.codingapi.txlcn.tc.core.transaction.lcn.resource.LcnConnectionProxy;
+import com.codingapi.txlcn.tc.core.transaction.txc.analy.def.PrimaryKeysProvider;
+import com.codingapi.txlcn.tc.core.transaction.txc.analy.def.bean.TableStruct;
 import com.codingapi.txlcn.tracing.TracingContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,6 +159,16 @@ public class DefaultGlobalContext implements TCGlobalContext {
     @Override
     public TxContext txContext(String groupId) {
         return attachmentCache.attachment(groupId + ".dtx");
+    }
+
+    @Override
+    public TxContext txContext() {
+        return txContext(TracingContext.tracing().groupId());
+    }
+
+    @Override
+    public boolean hasTxContext() {
+        return TracingContext.tracing().hasGroup() && txContext(TracingContext.tracing().groupId()) != null;
     }
 
     /**

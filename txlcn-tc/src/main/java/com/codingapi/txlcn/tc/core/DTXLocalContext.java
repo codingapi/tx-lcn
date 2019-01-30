@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.tc.core;
 
 
-import com.codingapi.txlcn.tc.core.tcc.control.TccTransactionCleanService;
+import com.codingapi.txlcn.tc.core.transaction.tcc.control.TccTransactionCleanService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 

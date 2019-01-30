@@ -18,12 +18,22 @@ public interface FastStorage {
     /*-----------------------DTX group------------------------------*/
 
     /**
-     * init DTX group
+     * init DTX group.
+     * note: group info should clean by self 10 seconds after DTX time.
      *
-     * @param groupId groupId
+     * @param groupProps groupProps
      * @throws FastStorageException fastStorageException
      */
-    void initGroup(String groupId) throws FastStorageException;
+    void initGroup(GroupProps groupProps) throws FastStorageException;
+
+    /**
+     * the group props.
+     *
+     * @param groupId groupId
+     * @return group props
+     * @throws FastStorageException FastStorageException
+     */
+    GroupProps getGroupProps(String groupId) throws FastStorageException;
 
     /**
      * DTX group has unit
@@ -70,6 +80,7 @@ public interface FastStorage {
 
     /**
      * save DTX state
+     * note: transaction state must clean by self 10 seconds after DTX time.
      *
      * @param groupId groupId
      * @param state   status 1 commit 0 rollback
@@ -88,6 +99,7 @@ public interface FastStorage {
 
     /**
      * get lock
+     * note: lock info should clean by self after DTX time
      *
      * @param contextId contextId
      * @param locks     locks

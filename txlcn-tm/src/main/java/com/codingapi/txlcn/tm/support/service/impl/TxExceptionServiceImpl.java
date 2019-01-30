@@ -148,7 +148,7 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         }
         try {
             for (String remoteKey : remoteKeys) {
-                MessageDto messageDto = rpcClient.request(remoteKey, MessageCreator.getAspectLog(groupId, unitId));
+                MessageDto messageDto = rpcClient.request(remoteKey, MessageCreator.getAspectLog(groupId, unitId), 5000);
                 if (MessageUtils.statusOk(messageDto)) {
                     return messageDto.loadBean(JSONObject.class);
                 }

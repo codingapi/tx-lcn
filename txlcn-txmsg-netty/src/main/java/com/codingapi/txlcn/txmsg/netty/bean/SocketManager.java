@@ -127,7 +127,7 @@ public class SocketManager {
         Channel channel = getChannel(key);
         channel.writeAndFlush(nettyRpcCmd);
         log.debug("await response");
-        if (timeout < 0) {
+        if (timeout < 1) {
             nettyRpcCmd.await();
         } else {
             nettyRpcCmd.await(timeout);

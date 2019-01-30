@@ -1,7 +1,7 @@
 package com.codingapi.txlcn.tc.core.checking;
 
 import com.codingapi.txlcn.common.runner.TxLcnInitializer;
-import com.codingapi.txlcn.tc.support.template.TransactionCleanTemplate;
+import com.codingapi.txlcn.tc.core.template.TransactionCleanTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -32,6 +32,30 @@ public interface TxLogger {
      * @param tag     tag
      * @param content content
      */
-    void trace(String groupId, String unitId, String tag, String content);
+    void trace(String groupId, String unitId, String tag, String content, Object... args);
+
+    /**
+     * info log. todo
+     *
+     * @param groupId groupId
+     * @param unitId  unitId
+     * @param tag     tag
+     * @param content content
+     */
+    default void info(String groupId, String unitId, String tag, String content, Object... args) {
+        trace(groupId, unitId, tag, content, args);
+    }
+
+    /**
+     * error log. todo
+     *
+     * @param groupId groupId
+     * @param unitId  unitId
+     * @param tag     tag
+     * @param content content
+     */
+    default void error(String groupId, String unitId, String tag, String content, String... args) {
+        trace(groupId, unitId, tag, content, args);
+    }
 
 }

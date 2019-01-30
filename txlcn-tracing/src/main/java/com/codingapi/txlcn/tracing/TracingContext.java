@@ -110,7 +110,9 @@ public class TracingContext {
     }
 
     public void destroy() {
-        this.fields = null;
+        if (Objects.nonNull(tracingContextThreadLocal.get())) {
+            tracingContextThreadLocal.set(null);
+        }
     }
 
     private void raiseNonGroupException() {

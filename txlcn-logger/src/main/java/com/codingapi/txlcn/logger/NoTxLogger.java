@@ -15,14 +15,18 @@
  */
 package com.codingapi.txlcn.logger;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 不开启日志输出的时候 空操作
  *
  * @author meetzy
  */
+@Slf4j
 public class NoTxLogger implements TxLogger {
+
     @Override
-    public void trace(String groupId, String unitId, String tag, String content) {
-    
+    public void trace(String groupId, String unitId, String tag, String content, Object... args) {
+        log.debug("{}-{}-{}: {} ({})", groupId, unitId, tag, content, args);
     }
 }
