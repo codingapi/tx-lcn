@@ -15,53 +15,104 @@
  */
 package com.codingapi.txlcn.tm.txmsg;
 
+import com.codingapi.txlcn.tm.support.TxLcnManagerRpcBeanHelper;
+import com.codingapi.txlcn.txmsg.LCNCmdType;
 import com.codingapi.txlcn.txmsg.RpcAnswer;
 import com.codingapi.txlcn.txmsg.RpcClient;
+import com.codingapi.txlcn.txmsg.dto.MessageDto;
 import com.codingapi.txlcn.txmsg.dto.RpcCmd;
 import com.codingapi.txlcn.txmsg.exception.RpcException;
-import com.codingapi.txlcn.logger.TxLogger;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author lorne
  */
 @Service
 @Slf4j
-public class ServerRpcAnswer implements RpcAnswer {
-
-    private final HashGroupRpcCmdHandler hashGroupRpcCmdHandler;
+public class ServerRpcAnswer implements RpcAnswer, DisposableBean {
 
     private final RpcClient rpcClient;
 
-    private final TxLogger txLogger;
+    private final ExecutorService executorService;
+
+    private final TxLcnManagerRpcBeanHelper rpcBeanHelper;
 
     @Autowired
-    public ServerRpcAnswer(HashGroupRpcCmdHandler hashGroupRpcCmdHandler, RpcClient rpcClient, TxLogger txLogger) {
-        this.hashGroupRpcCmdHandler = hashGroupRpcCmdHandler;
+    public ServerRpcAnswer(RpcClient rpcClient, TxLcnManagerRpcBeanHelper rpcBeanHelper) {
         this.rpcClient = rpcClient;
-        this.txLogger = txLogger;
+        this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 5,
+                new ThreadFactoryBuilder().setDaemon(false).setNameFormat("tm-rpc-service-%d").build());
+        this.rpcBeanHelper = rpcBeanHelper;
     }
 
 
     @Override
     public void callback(RpcCmd rpcCmd) {
-        try {
-            hashGroupRpcCmdHandler.handleMessage(rpcCmd);
-        } catch (Throwable e) {
-            if (rpcCmd.getKey() != null) {
-                log.info("send response.");
-                String action = rpcCmd.getMsg().getAction();
-                // 事务协调器业务未处理的异常响应服务器失败
-                rpcCmd.setMsg(MessageCreator.serverException(action));
+        executorService.submit(() -> {
+            try {
+                TransactionCmd transactionCmd = parser(rpcCmd);
+                String action = transactionCmd.getMsg().getAction();
+                RpcExecuteService rpcExecuteService = rpcBeanHelper.loadManagerService(transactionCmd.getType());
+                MessageDto messageDto = null;
                 try {
-                    rpcClient.send(rpcCmd);
-                    log.info("send response ok.");
-                } catch (RpcException ignored) {
-                    log.error("requester:{} dead.", rpcCmd.getRemoteKey());
+                    Serializable message = rpcExecuteService.execute(transactionCmd);
+                    messageDto = MessageCreator.notifyGroupOkResponse(message, action);
+                } catch (Throwable e) {
+                    log.error(e.getMessage(), e);
+                    messageDto = MessageCreator.notifyGroupFailResponse(e, action);
+                } finally {
+                    // 对需要响应信息的请求做出响应
+                    if (rpcCmd.getKey() != null) {
+                        assert Objects.nonNull(messageDto);
+                        try {
+                            messageDto.setGroupId(rpcCmd.getMsg().getGroupId());
+                            rpcCmd.setMsg(messageDto);
+                            rpcClient.send(rpcCmd);
+                        } catch (RpcException ignored) {
+                        }
+                    }
+                }
+            } catch (Throwable e) {
+                if (rpcCmd.getKey() != null) {
+                    log.info("send response.");
+                    String action = rpcCmd.getMsg().getAction();
+                    // 事务协调器业务未处理的异常响应服务器失败
+                    rpcCmd.setMsg(MessageCreator.serverException(action));
+                    try {
+                        rpcClient.send(rpcCmd);
+                        log.info("send response ok.");
+                    } catch (RpcException ignored) {
+                        log.error("requester:{} dead.", rpcCmd.getRemoteKey());
+                    }
                 }
             }
-        }
+        });
     }
+
+    @Override
+    public void destroy() throws Exception {
+        this.executorService.shutdown();
+        this.executorService.awaitTermination(6, TimeUnit.SECONDS);
+    }
+
+    private TransactionCmd parser(RpcCmd rpcCmd) {
+        TransactionCmd cmd = new TransactionCmd();
+        cmd.setRequestKey(rpcCmd.getKey());
+        cmd.setRemoteKey(rpcCmd.getRemoteKey());
+        cmd.setType(LCNCmdType.parserCmd(rpcCmd.getMsg().getAction()));
+        cmd.setGroupId(rpcCmd.getMsg().getGroupId());
+        cmd.setMsg(rpcCmd.getMsg());
+        return cmd;
+    }
+
 }

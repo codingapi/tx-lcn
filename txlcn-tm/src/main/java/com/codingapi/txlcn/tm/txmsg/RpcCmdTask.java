@@ -49,37 +49,8 @@ public class RpcCmdTask implements Runnable {
 
     @Override
     public void run() {
-        TransactionCmd transactionCmd = parser(rpcCmd);
-        String action = transactionCmd.getMsg().getAction();
-        RpcExecuteService rpcExecuteService = rpcBeanHelper.loadManagerService(transactionCmd.getType());
-        MessageDto messageDto = null;
-        try {
-            Serializable message = rpcExecuteService.execute(transactionCmd);
-            messageDto = MessageCreator.notifyGroupOkResponse(message, action);
-        } catch (Throwable e) {
-            log.error(e.getMessage(), e);
-            messageDto = MessageCreator.notifyGroupFailResponse(e, action);
-        } finally {
-            // 对需要响应信息的请求做出响应
-            if (rpcCmd.getKey() != null) {
-                assert Objects.nonNull(messageDto);
-                try {
-                    messageDto.setGroupId(rpcCmd.getMsg().getGroupId());
-                    rpcCmd.setMsg(messageDto);
-                    rpcClient.send(rpcCmd);
-                } catch (RpcException ignored) {
-                }
-            }
-        }
+
     }
 
-    private TransactionCmd parser(RpcCmd rpcCmd) {
-        TransactionCmd cmd = new TransactionCmd();
-        cmd.setRequestKey(rpcCmd.getKey());
-        cmd.setRemoteKey(rpcCmd.getRemoteKey());
-        cmd.setType(LCNCmdType.parserCmd(rpcCmd.getMsg().getAction()));
-        cmd.setGroupId(rpcCmd.getMsg().getGroupId());
-        cmd.setMsg(rpcCmd.getMsg());
-        return cmd;
-    }
+
 }
