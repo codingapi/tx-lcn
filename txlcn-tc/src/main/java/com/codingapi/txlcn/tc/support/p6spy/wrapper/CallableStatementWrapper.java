@@ -1,4 +1,4 @@
-/**
+/*
  * P6Spy
  *
  * Copyright (C) 2002 - 2018 P6Spy
