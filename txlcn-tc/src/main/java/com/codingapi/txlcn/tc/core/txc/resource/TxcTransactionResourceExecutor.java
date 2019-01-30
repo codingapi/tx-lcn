@@ -15,12 +15,12 @@
  */
 package com.codingapi.txlcn.tc.core.txc.resource;
 
+import com.codingapi.txlcn.tc.aspect.weave.ConnectionCallback;
 import com.codingapi.txlcn.tc.support.resouce.TransactionResourceExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
-import java.util.function.Supplier;
 
 /**
  * Description:
@@ -40,7 +40,7 @@ public class TxcTransactionResourceExecutor implements TransactionResourceExecut
 
 
     @Override
-    public Connection proxyConnection(Supplier<Connection> connectionSupplier) {
-        return connectionHelper.proxy(connectionSupplier.get());
+    public Connection proxyConnection(ConnectionCallback connectionCallback) throws Throwable {
+        return connectionHelper.proxy(connectionCallback.call());
     }
 }

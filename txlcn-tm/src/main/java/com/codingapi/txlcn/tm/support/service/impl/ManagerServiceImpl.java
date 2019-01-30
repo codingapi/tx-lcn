@@ -15,11 +15,11 @@
  */
 package com.codingapi.txlcn.tm.support.service.impl;
 
-import com.codingapi.txlcn.spi.message.params.NotifyConnectParams;
+import com.codingapi.txlcn.txmsg.params.NotifyConnectParams;
 import com.codingapi.txlcn.tm.support.service.ManagerService;
-import com.codingapi.txlcn.tm.core.message.MessageCreator;
-import com.codingapi.txlcn.spi.message.RpcClient;
-import com.codingapi.txlcn.spi.message.exception.RpcException;
+import com.codingapi.txlcn.tm.txmsg.MessageCreator;
+import com.codingapi.txlcn.txmsg.RpcClient;
+import com.codingapi.txlcn.txmsg.exception.RpcException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

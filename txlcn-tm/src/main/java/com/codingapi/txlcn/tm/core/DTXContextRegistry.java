@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tm.core;
 
-import com.codingapi.txlcn.commons.exception.TransactionException;
+import com.codingapi.txlcn.common.exception.TransactionException;
 
 /**
  * Description: 事务组生命期管理

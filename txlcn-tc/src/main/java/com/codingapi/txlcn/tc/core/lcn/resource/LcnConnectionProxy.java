@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core.lcn.resource;
 
-import com.codingapi.txlcn.spi.message.dto.RpcResponseState;
+import com.codingapi.txlcn.txmsg.dto.RpcResponseState;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;

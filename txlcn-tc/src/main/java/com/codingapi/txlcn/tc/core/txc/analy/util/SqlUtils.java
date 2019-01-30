@@ -15,8 +15,8 @@
  */
 package com.codingapi.txlcn.tc.core.txc.analy.util;
 
-import com.codingapi.txlcn.commons.exception.SerializerException;
-import com.codingapi.txlcn.commons.util.serializer.SerializerContext;
+import com.codingapi.txlcn.common.exception.SerializerException;
+import com.codingapi.txlcn.common.util.serializer.SerializerContext;
 import com.codingapi.txlcn.tc.core.txc.analy.def.bean.FieldCluster;
 import com.codingapi.txlcn.tc.core.txc.analy.def.bean.FieldValue;
 import com.codingapi.txlcn.tc.core.txc.analy.def.bean.ModifiedRecord;

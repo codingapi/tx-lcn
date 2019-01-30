@@ -15,10 +15,10 @@
  */
 package com.codingapi.txlcn.tc.core.txc.analy;
 
-import com.codingapi.txlcn.commons.exception.TCGlobalContextException;
-import com.codingapi.txlcn.commons.exception.TxcLogicException;
-import com.codingapi.txlcn.commons.lock.DTXLocks;
-import com.codingapi.txlcn.spi.message.exception.RpcException;
+import com.codingapi.txlcn.common.exception.TCGlobalContextException;
+import com.codingapi.txlcn.common.exception.TxcLogicException;
+import com.codingapi.txlcn.common.lock.DTXLocks;
+import com.codingapi.txlcn.txmsg.exception.RpcException;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.txc.analy.def.TxcService;
 import com.codingapi.txlcn.tc.core.txc.analy.def.TxcSqlExecutor;
@@ -28,7 +28,7 @@ import com.codingapi.txlcn.tc.core.txc.analy.undo.TableRecordList;
 import com.codingapi.txlcn.tc.core.txc.analy.undo.UndoLogAnalyser;
 import com.codingapi.txlcn.tc.core.txc.analy.util.SqlUtils;
 import com.codingapi.txlcn.tc.corelog.txc.TxcLogHelper;
-import com.codingapi.txlcn.tc.message.ReliableMessenger;
+import com.codingapi.txlcn.tc.txmsg.ReliableMessenger;
 import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.DbUtils;

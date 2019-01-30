@@ -15,9 +15,9 @@
  */
 package com.codingapi.txlcn.tc.corelog.aspect;
 
-import com.codingapi.txlcn.commons.bean.TransactionInfo;
-import com.codingapi.txlcn.commons.exception.SerializerException;
-import com.codingapi.txlcn.commons.util.serializer.SerializerContext;
+import com.codingapi.txlcn.tc.aspect.TransactionInfo;
+import com.codingapi.txlcn.common.exception.SerializerException;
+import com.codingapi.txlcn.common.util.serializer.SerializerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

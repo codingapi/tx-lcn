@@ -17,8 +17,8 @@ package com.codingapi.txlcn.tc.support.propagation;
 
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.TxTransactionInfo;
-import com.codingapi.txlcn.commons.annotation.DTXPropagation;
-import com.codingapi.txlcn.commons.exception.TransactionException;
+import com.codingapi.txlcn.tc.annotation.DTXPropagation;
+import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.tc.core.DTXState;
 import lombok.extern.slf4j.Slf4j;
 

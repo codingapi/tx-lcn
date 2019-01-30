@@ -15,8 +15,8 @@
  */
 package com.codingapi.txlcn.tc.core.tcc.control;
 
-import com.codingapi.txlcn.commons.annotation.TccTransaction;
-import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
+import com.codingapi.txlcn.tc.annotation.TccTransaction;
+import com.codingapi.txlcn.common.exception.BeforeBusinessException;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import com.codingapi.txlcn.tc.core.TccTransactionInfo;

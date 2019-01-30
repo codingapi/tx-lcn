@@ -15,7 +15,8 @@
  */
 package com.codingapi.txlcn.tc.core.lcn.resource;
 
-import com.codingapi.txlcn.commons.exception.TCGlobalContextException;
+import com.codingapi.txlcn.common.exception.TCGlobalContextException;
+import com.codingapi.txlcn.tc.aspect.weave.ConnectionCallback;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.support.resouce.TransactionResourceExecutor;
@@ -24,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
-import java.util.function.Supplier;
 
 /**
  * @author lorne
@@ -41,12 +41,12 @@ public class LcnTransactionResourceExecutor implements TransactionResourceExecut
     }
 
     @Override
-    public Connection proxyConnection(Supplier<Connection> connectionSupplier) throws Throwable {
+    public Connection proxyConnection(ConnectionCallback connectionCallback) throws Throwable {
         String groupId = DTXLocalContext.cur().getGroupId();
         try {
             return globalContext.getLcnConnection(groupId);
         } catch (TCGlobalContextException e) {
-            LcnConnectionProxy lcnConnectionProxy = new LcnConnectionProxy(connectionSupplier.get());
+            LcnConnectionProxy lcnConnectionProxy = new LcnConnectionProxy(connectionCallback.call());
             globalContext.setLcnConnection(groupId, lcnConnectionProxy);
             lcnConnectionProxy.setAutoCommit(false);
             return lcnConnectionProxy;

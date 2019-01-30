@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.tc.corelog.aspect;
 
-import com.codingapi.txlcn.commons.bean.TransactionInfo;
+import com.codingapi.txlcn.tc.aspect.TransactionInfo;
 
 /**
  * Description: 切面日志操作

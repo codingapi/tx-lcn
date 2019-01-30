@@ -24,6 +24,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
+import java.sql.Connection;
+
 /**
  * create by lorne on 2018/1/5
  */
@@ -44,7 +46,7 @@ public class DataSourceAspect implements Ordered {
 
     @Around("execution(* javax.sql.DataSource.getConnection(..))")
     public Object around(ProceedingJoinPoint point) throws Throwable {
-        return dtxResourceWeaver.around(point);
+        return dtxResourceWeaver.getConnection(() -> (Connection) point.proceed());
     }
 
 

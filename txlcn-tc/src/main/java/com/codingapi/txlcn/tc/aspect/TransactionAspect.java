@@ -15,11 +15,10 @@
  */
 package com.codingapi.txlcn.tc.aspect;
 
+import com.codingapi.txlcn.tc.annotation.*;
 import com.codingapi.txlcn.tc.aspect.weave.DTXLogicWeaver;
-import com.codingapi.txlcn.tc.core.DTXInfo;
 import com.codingapi.txlcn.tc.config.TxClientConfig;
-import com.codingapi.txlcn.commons.annotation.*;
-import com.codingapi.txlcn.commons.util.Transactions;
+import com.codingapi.txlcn.common.util.Transactions;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -49,28 +48,28 @@ public class TransactionAspect implements Ordered {
     /**
      * DTC Aspect Common type() can lcn,tcc,txc and custom DTX type
      */
-    @Pointcut("@annotation(com.codingapi.txlcn.commons.annotation.TxTransaction)")
+    @Pointcut("@annotation(com.codingapi.txlcn.tc.annotation.TxTransaction)")
     public void txTransactionPointcut() {
     }
 
     /**
      * DTC Aspect (Type of LCN)
      */
-    @Pointcut("@annotation(com.codingapi.txlcn.commons.annotation.LcnTransaction)")
+    @Pointcut("@annotation(com.codingapi.txlcn.tc.annotation.LcnTransaction)")
     public void lcnTransactionPointcut() {
     }
 
     /**
      * DTC Aspect (Type of TXC)
      */
-    @Pointcut("@annotation(com.codingapi.txlcn.commons.annotation.TxcTransaction)")
+    @Pointcut("@annotation(com.codingapi.txlcn.tc.annotation.TxcTransaction)")
     public void txcTransactionPointcut() {
     }
 
     /**
      * DTC Aspect (Type of TCC)
      */
-    @Pointcut("@annotation(com.codingapi.txlcn.commons.annotation.TccTransaction)")
+    @Pointcut("@annotation(com.codingapi.txlcn.tc.annotation.TccTransaction)")
     public void tccTransactionPointcut() {
     }
 
@@ -114,7 +113,7 @@ public class TransactionAspect implements Ordered {
         return dtxLogicWeaver.runTransaction(dtxInfo, point::proceed);
     }
 
-    @Around("this(com.codingapi.txlcn.commons.annotation.ITxTransaction) && execution( * *(..))")
+    @Around("this(com.codingapi.txlcn.tc.annotation.ITxTransaction) && execution( * *(..))")
     public Object around(ProceedingJoinPoint point) throws Throwable {
         if (!(point.getThis() instanceof ITxTransaction)) {
             throw new IllegalStateException("error join point");

@@ -2,13 +2,12 @@ package com.codingapi.txlcn.tracing;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.codingapi.txlcn.commons.util.Maps;
-import com.codingapi.txlcn.commons.util.RandomUtils;
+import com.codingapi.txlcn.common.util.Maps;
+import com.codingapi.txlcn.common.util.RandomUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Description:

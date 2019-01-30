@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.tc.aspect.interceptor;
 
 import com.codingapi.txlcn.tc.aspect.weave.DTXLogicWeaver;
-import com.codingapi.txlcn.tc.core.DTXInfo;
+import com.codingapi.txlcn.tc.aspect.DTXInfo;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 

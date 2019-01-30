@@ -15,8 +15,8 @@
  */
 package com.codingapi.txlcn.tm.support.service.impl;
 
-import com.codingapi.txlcn.commons.exception.TxManagerException;
-import com.codingapi.txlcn.commons.util.RandomUtils;
+import com.codingapi.txlcn.common.exception.TxManagerException;
+import com.codingapi.txlcn.common.util.RandomUtils;
 import com.codingapi.txlcn.logger.db.LogDbProperties;
 import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.exception.TxLoggerException;
@@ -26,8 +26,8 @@ import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.support.restapi.auth.DefaultTokenStorage;
 import com.codingapi.txlcn.tm.support.restapi.model.*;
 import com.codingapi.txlcn.tm.support.service.AdminService;
-import com.codingapi.txlcn.spi.message.RpcClient;
-import com.codingapi.txlcn.spi.message.dto.AppInfo;
+import com.codingapi.txlcn.txmsg.RpcClient;
+import com.codingapi.txlcn.txmsg.dto.AppInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.PropertyMapper;

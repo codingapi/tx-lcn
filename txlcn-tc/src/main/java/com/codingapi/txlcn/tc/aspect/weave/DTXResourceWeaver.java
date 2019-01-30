@@ -19,7 +19,6 @@ import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.support.TXLCNTransactionBeanHelper;
 import com.codingapi.txlcn.tc.support.resouce.TransactionResourceExecutor;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -42,22 +41,16 @@ public class DTXResourceWeaver {
         this.transactionBeanHelper = transactionBeanHelper;
     }
 
-    public Object around(ProceedingJoinPoint point) throws Throwable {
+    public Object getConnection(ConnectionCallback connectionCallback) throws Throwable {
         DTXLocalContext dtxLocalContext = DTXLocalContext.cur();
         if (Objects.nonNull(dtxLocalContext) && dtxLocalContext.isProxy()) {
             String transactionType = dtxLocalContext.getTransactionType();
             TransactionResourceExecutor transactionResourceExecutor =
                     transactionBeanHelper.loadTransactionResourceExecuter(transactionType);
-            Connection connection = transactionResourceExecutor.proxyConnection(() -> {
-                try {
-                    return (Connection) point.proceed();
-                } catch (Throwable throwable) {
-                    throw new IllegalStateException(throwable);
-                }
-            });
+            Connection connection = transactionResourceExecutor.proxyConnection(connectionCallback);
             log.debug("proxy a sql connection: {}.", connection);
             return connection;
         }
-        return point.proceed();
+        return connectionCallback.call();
     }
 }

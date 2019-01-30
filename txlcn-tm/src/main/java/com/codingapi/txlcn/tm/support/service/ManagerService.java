@@ -15,8 +15,8 @@
  */
 package com.codingapi.txlcn.tm.support.service;
 
-import com.codingapi.txlcn.spi.message.params.NotifyConnectParams;
-import com.codingapi.txlcn.spi.message.exception.RpcException;
+import com.codingapi.txlcn.txmsg.params.NotifyConnectParams;
+import com.codingapi.txlcn.txmsg.exception.RpcException;
 
 /**
  * Description:

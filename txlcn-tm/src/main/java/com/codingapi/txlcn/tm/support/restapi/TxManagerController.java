@@ -15,9 +15,9 @@
  */
 package com.codingapi.txlcn.tm.support.restapi;
 
-import com.codingapi.txlcn.spi.message.params.NotifyConnectParams;
+import com.codingapi.txlcn.txmsg.params.NotifyConnectParams;
 import com.codingapi.txlcn.tm.support.service.ManagerService;
-import com.codingapi.txlcn.spi.message.exception.RpcException;
+import com.codingapi.txlcn.txmsg.exception.RpcException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

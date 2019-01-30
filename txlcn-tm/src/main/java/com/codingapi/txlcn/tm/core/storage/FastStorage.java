@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tm.core.storage;
 
-import com.codingapi.txlcn.commons.exception.FastStorageException;
+import com.codingapi.txlcn.common.exception.FastStorageException;
 import com.codingapi.txlcn.tm.cluster.TMProperties;
 
 import java.util.List;

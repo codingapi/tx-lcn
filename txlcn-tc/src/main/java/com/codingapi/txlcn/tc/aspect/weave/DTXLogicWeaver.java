@@ -15,8 +15,7 @@
  */
 package com.codingapi.txlcn.tc.aspect.weave;
 
-import com.codingapi.txlcn.tc.aspect.BusinessCallback;
-import com.codingapi.txlcn.tc.core.DTXInfo;
+import com.codingapi.txlcn.tc.aspect.DTXInfo;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.DTXServiceExecutor;
 import com.codingapi.txlcn.tc.core.context.TCGlobalContext;

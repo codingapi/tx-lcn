@@ -15,9 +15,9 @@
  */
 package com.codingapi.txlcn.tc.aspect.interceptor;
 
-import com.codingapi.txlcn.tc.core.DTXInfo;
-import com.codingapi.txlcn.commons.annotation.*;
-import com.codingapi.txlcn.commons.util.Transactions;
+import com.codingapi.txlcn.tc.annotation.*;
+import com.codingapi.txlcn.tc.aspect.DTXInfo;
+import com.codingapi.txlcn.common.util.Transactions;
 import org.aopalliance.intercept.MethodInvocation;
 
 import java.util.Objects;

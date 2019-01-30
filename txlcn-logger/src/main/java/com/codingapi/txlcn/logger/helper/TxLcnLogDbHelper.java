@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.logger.helper;
 
-import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
+import com.codingapi.txlcn.common.runner.TxLcnInitializer;
 import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.exception.TxLoggerException;
 import com.codingapi.txlcn.logger.model.Field;

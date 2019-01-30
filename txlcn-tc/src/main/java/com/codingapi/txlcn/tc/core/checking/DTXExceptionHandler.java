@@ -15,8 +15,8 @@
  */
 package com.codingapi.txlcn.tc.core.checking;
 
-import com.codingapi.txlcn.commons.exception.BeforeBusinessException;
-import com.codingapi.txlcn.commons.exception.TxClientException;
+import com.codingapi.txlcn.common.exception.BeforeBusinessException;
+import com.codingapi.txlcn.common.exception.TxClientException;
 
 /**
  * Description:

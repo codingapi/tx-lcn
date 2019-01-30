@@ -21,7 +21,7 @@ import com.codingapi.txlcn.tc.core.txc.analy.def.SqlExecuteInterceptor;
 import com.codingapi.txlcn.tc.core.txc.analy.def.TxcService;
 import com.codingapi.txlcn.tc.core.txc.analy.def.bean.*;
 import com.codingapi.txlcn.tc.core.txc.analy.util.SqlUtils;
-import com.codingapi.txlcn.commons.exception.TxcLogicException;
+import com.codingapi.txlcn.common.exception.TxcLogicException;
 import com.codingapi.txlcn.tc.support.p6spy.common.StatementInformation;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.schema.Column;

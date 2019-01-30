@@ -3,7 +3,7 @@ package com.codingapi.txlcn.tracing.dubbo;
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.extension.Activate;
 import com.alibaba.dubbo.rpc.*;
-import com.codingapi.txlcn.commons.util.Maps;
+import com.codingapi.txlcn.common.util.Maps;
 import com.codingapi.txlcn.tracing.TracingConstants;
 import com.codingapi.txlcn.tracing.TracingContext;
 

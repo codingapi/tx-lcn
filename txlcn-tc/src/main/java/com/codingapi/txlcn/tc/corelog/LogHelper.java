@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tc.corelog;
 
-import com.codingapi.txlcn.commons.runner.TxLcnInitializer;
+import com.codingapi.txlcn.common.runner.TxLcnInitializer;
 
 /**
  * Description:

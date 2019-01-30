@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.tm.support.service;
 
-import com.codingapi.txlcn.commons.exception.TxManagerException;
+import com.codingapi.txlcn.common.exception.TxManagerException;
 import com.codingapi.txlcn.tm.support.restapi.model.*;
 
 /**

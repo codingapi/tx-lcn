@@ -15,8 +15,8 @@
  */
 package com.codingapi.txlcn.tc.core.tcc.control;
 
-import com.codingapi.txlcn.commons.exception.TransactionException;
-import com.codingapi.txlcn.commons.util.Transactions;
+import com.codingapi.txlcn.common.exception.TransactionException;
+import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.tc.core.DTXState;
 import com.codingapi.txlcn.tc.core.TxTransactionInfo;
 import com.codingapi.txlcn.tc.core.context.TxContext;

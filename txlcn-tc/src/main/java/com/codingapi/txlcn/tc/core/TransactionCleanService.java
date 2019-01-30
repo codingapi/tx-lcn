@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core;
 
-import com.codingapi.txlcn.commons.exception.TransactionClearException;
+import com.codingapi.txlcn.common.exception.TransactionClearException;
 
 /**
  * Description:

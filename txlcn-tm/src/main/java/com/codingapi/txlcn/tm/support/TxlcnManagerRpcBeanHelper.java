@@ -16,8 +16,8 @@
 package com.codingapi.txlcn.tm.support;
 
 
-import com.codingapi.txlcn.spi.message.LCNCmdType;
-import com.codingapi.txlcn.tm.core.message.RpcExecuteService;
+import com.codingapi.txlcn.txmsg.LCNCmdType;
+import com.codingapi.txlcn.tm.txmsg.RpcExecuteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;

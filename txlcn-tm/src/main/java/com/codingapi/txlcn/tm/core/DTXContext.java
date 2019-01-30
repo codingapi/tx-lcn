@@ -1,7 +1,7 @@
 package com.codingapi.txlcn.tm.core;
 
 
-import com.codingapi.txlcn.commons.exception.TransactionException;
+import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.tm.core.storage.TransactionUnit;
 
 import java.util.List;

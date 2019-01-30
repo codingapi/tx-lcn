@@ -1,8 +1,8 @@
 package com.codingapi.txlcn.tm;
 
-import com.codingapi.txlcn.commons.runner.TxLcnApplicationRunner;
+import com.codingapi.txlcn.common.runner.TxLcnApplicationRunner;
 import com.codingapi.txlcn.logger.TxLoggerConfiguration;
-import com.codingapi.txlcn.spi.MessageConfiguration;
+import com.codingapi.txlcn.txmsg.MessageConfiguration;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.tm.core.storage.FastStorageProvider;

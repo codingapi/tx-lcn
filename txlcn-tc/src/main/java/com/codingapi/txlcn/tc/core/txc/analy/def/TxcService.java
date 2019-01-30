@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core.txc.analy.def;
 
-import com.codingapi.txlcn.commons.exception.TxcLogicException;
+import com.codingapi.txlcn.common.exception.TxcLogicException;
 import com.codingapi.txlcn.tc.core.txc.analy.def.bean.*;
 
 /**

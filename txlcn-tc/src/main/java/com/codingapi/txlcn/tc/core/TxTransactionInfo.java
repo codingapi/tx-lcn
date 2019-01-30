@@ -16,9 +16,9 @@
 package com.codingapi.txlcn.tc.core;
 
 
-import com.codingapi.txlcn.commons.annotation.DTXPropagation;
-import com.codingapi.txlcn.commons.bean.TransactionInfo;
-import com.codingapi.txlcn.tc.aspect.BusinessCallback;
+import com.codingapi.txlcn.tc.annotation.DTXPropagation;
+import com.codingapi.txlcn.tc.aspect.TransactionInfo;
+import com.codingapi.txlcn.tc.aspect.weave.BusinessCallback;
 import lombok.Data;
 
 import java.lang.reflect.Method;

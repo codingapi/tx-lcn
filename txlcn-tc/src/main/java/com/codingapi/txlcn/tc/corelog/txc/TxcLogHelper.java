@@ -61,7 +61,7 @@ public class TxcLogHelper implements LogHelper {
      *
      * @param groupId groupId
      * @param unitId  unitId
-     * @return
+     * @return undo log list
      * @throws SQLException 数据库操作失败
      */
     public List<UndoLogDO> getUndoLogByGroupAndUnitId(String groupId, String unitId) throws SQLException {

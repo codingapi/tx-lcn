@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tracing;
 
-import com.codingapi.txlcn.commons.util.Maps;
+import com.codingapi.txlcn.common.util.Maps;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
