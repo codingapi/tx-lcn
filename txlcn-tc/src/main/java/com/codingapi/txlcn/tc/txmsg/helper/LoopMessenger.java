@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.tc.txmsg.helper;
 
 import com.codingapi.txlcn.common.exception.LcnBusinessException;
+import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.txmsg.MessageConstants;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.dto.MessageDto;
@@ -28,9 +29,12 @@ public class LoopMessenger implements ReliableMessenger {
 
     private final RpcClient rpcClient;
 
+    private final long notifyGroupTimeout;
+
     @Autowired
-    public LoopMessenger(RpcClient rpcClient) {
+    public LoopMessenger(RpcClient rpcClient, TxClientConfig clientConfig) {
         this.rpcClient = rpcClient;
+        this.notifyGroupTimeout = clientConfig.getTmRpcTimeout() * clientConfig.getChainLevel();
     }
 
     @Override
@@ -52,7 +56,7 @@ public class LoopMessenger implements ReliableMessenger {
         NotifyGroupParams notifyGroupParams = new NotifyGroupParams();
         notifyGroupParams.setGroupId(groupId);
         notifyGroupParams.setState(transactionState);
-        MessageDto messageDto = request0(MessageCreator.notifyGroup(notifyGroupParams), 5000);
+        MessageDto messageDto = request0(MessageCreator.notifyGroup(notifyGroupParams), notifyGroupTimeout);
         // 成功清理发起方事务
         if (!MessageUtils.statusOk(messageDto)) {
             throw new LcnBusinessException(messageDto.loadBean(Throwable.class));
