@@ -148,7 +148,7 @@ public class DefaultGlobalContext implements TCGlobalContext {
      */
     @Override
     public void destroyTx(String groupId) {
-        attachmentCache.remove(groupId + ".dtx", "dtx.context");
+        attachmentCache.remove(groupId + ".dtx");
     }
 
     @Override
