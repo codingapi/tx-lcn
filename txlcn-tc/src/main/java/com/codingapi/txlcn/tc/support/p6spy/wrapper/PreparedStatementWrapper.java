@@ -287,6 +287,7 @@ public class PreparedStatementWrapper extends StatementWrapper implements Prepar
 
     @Override
     @SuppressWarnings("unchecked")
+    @Deprecated
     public void setUnicodeStream(int parameterIndex, InputStream x, int length) throws SQLException {
         SQLException e = null;
         try {

@@ -876,6 +876,7 @@ public class CallableStatementWrapper extends PreparedStatementWrapper implement
   }
 
   @Override
+  @Deprecated
   public BigDecimal getBigDecimal(int parameterIndex, int scale) throws SQLException {
     return delegate.getBigDecimal(parameterIndex, scale);
   }

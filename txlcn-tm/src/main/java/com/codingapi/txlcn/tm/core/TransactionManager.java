@@ -75,4 +75,12 @@ public interface TransactionManager {
      * @return transactionState
      */
     int transactionState(String groupId);
+
+    /**
+     * 获取事务状态。从FastStorage
+     *
+     * @param groupId groupId
+     * @return transactionState
+     */
+    int transactionStateFromFastStorage(String groupId);
 }

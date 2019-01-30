@@ -113,6 +113,11 @@ public class SimpleTransactionManager implements TransactionManager {
         return dtxContextRegistry.transactionState(groupId);
     }
 
+    @Override
+    public int transactionStateFromFastStorage(String groupId) {
+        return dtxContextRegistry.transactionState(groupId);
+    }
+
     private void notifyTransaction(DTXContext dtxContext, int transactionState) throws TransactionException {
         for (TransactionUnit transUnit : dtxContext.transactionUnits()) {
             NotifyUnitParams notifyUnitParams = new NotifyUnitParams();

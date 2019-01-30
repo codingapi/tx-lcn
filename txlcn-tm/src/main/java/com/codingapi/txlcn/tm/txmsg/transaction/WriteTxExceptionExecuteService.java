@@ -36,7 +36,7 @@ import java.util.Objects;
  *
  * @author ujued
  */
-@Component("rpc_write-compensation")
+@Component("rpc_write-exception")
 @Slf4j
 public class WriteTxExceptionExecuteService implements RpcExecuteService {
 
@@ -62,7 +62,7 @@ public class WriteTxExceptionExecuteService implements RpcExecuteService {
             writeTxExceptionReq.setModId(rpcClient.getAppName(transactionCmd.getRemoteKey()));
 
             //获取事务状态（可能存在设置了手动回滚）
-            int transactionState = transactionManager.transactionState(transactionCmd.getGroupId());
+            int transactionState = transactionManager.transactionStateFromFastStorage(transactionCmd.getGroupId());
 
             writeTxExceptionReq.setTransactionState(transactionState == -1 ? txExceptionParams.getTransactionState() : transactionState);
             writeTxExceptionReq.setGroupId(txExceptionParams.getGroupId());

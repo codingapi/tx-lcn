@@ -204,6 +204,7 @@ public class ResultSetWrapper extends AbstractWrapper implements ResultSet {
   }
 
   @Override
+  @Deprecated
   public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
     SQLException e = null;
     try {
@@ -288,6 +289,7 @@ public class ResultSetWrapper extends AbstractWrapper implements ResultSet {
   }
 
   @Override
+  @Deprecated
   public InputStream getUnicodeStream(int columnIndex) throws SQLException {
     SQLException e = null;
     try {
@@ -428,6 +430,7 @@ public class ResultSetWrapper extends AbstractWrapper implements ResultSet {
   }
 
   @Override
+  @Deprecated
   public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException {
     SQLException e = null;
     try {
@@ -512,6 +515,7 @@ public class ResultSetWrapper extends AbstractWrapper implements ResultSet {
   }
 
   @Override
+  @Deprecated
   public InputStream getUnicodeStream(String columnLabel) throws SQLException {
     SQLException e = null;
     try {

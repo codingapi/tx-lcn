@@ -70,7 +70,7 @@ public enum LCNCmdType {
      * 记录补偿
      * 简写 wc
      */
-    writeCompensation("write-compensation", MessageConstants.ACTION_WRITE_EXCEPTION),
+    writeCompensation("write-exception", MessageConstants.ACTION_WRITE_EXCEPTION),
 
 
     /**

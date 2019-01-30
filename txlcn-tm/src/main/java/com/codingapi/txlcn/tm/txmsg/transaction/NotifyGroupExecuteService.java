@@ -66,8 +66,8 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
             log.debug("notify group params: {}", JSON.toJSONString(notifyGroupParams));
 
             int commitState = notifyGroupParams.getState();
-            //获取事务状态（当手动回滚时会先设置状态）
-            int transactionState = transactionManager.transactionState(transactionCmd.getGroupId());
+            // 获取事务状态（当手动回滚时会先设置状态）
+            int transactionState = transactionManager.transactionStateFromFastStorage(transactionCmd.getGroupId());
             boolean hasThrow = false;
             if (transactionState == 0) {
                 commitState = 0;
