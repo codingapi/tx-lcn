@@ -14,6 +14,6 @@ public class TracingConstants {
 
     public static final String HEADER_KEY_GROUP_ID = "X-Group-ID";
 
-    public static final String HEADER_KEY_APP_LIST = "X-App-List";
+    public static final String HEADER_KEY_APP_MAP = "X-App-Map";
 
 }

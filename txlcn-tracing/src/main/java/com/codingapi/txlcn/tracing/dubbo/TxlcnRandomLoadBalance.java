@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tracing.loadbalance.dubbo;
+package com.codingapi.txlcn.tracing.dubbo;
 
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
-import com.alibaba.dubbo.rpc.cluster.loadbalance.RoundRobinLoadBalance;
+import com.alibaba.dubbo.rpc.cluster.loadbalance.RandomLoadBalance;
 
 import java.util.List;
 
@@ -29,10 +29,11 @@ import java.util.List;
  *
  * @author ujued
  */
-public class TxlcnRoundRobinLoadBalance extends RoundRobinLoadBalance {
+public class TxlcnRandomLoadBalance extends RandomLoadBalance {
 
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) {
         return DubboTxlcnLoadBalance.chooseInvoker(invokers, url, invocation, super::select);
     }
+
 }

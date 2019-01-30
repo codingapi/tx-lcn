@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tracing.loadbalance.springcloud;
+package com.codingapi.txlcn.tracing.http.ribbon;
 
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.txlcn.tracing.TracingContext;

@@ -13,7 +13,7 @@ import java.util.*;
  * Description:
  * 1. {@code fields}为 {@code null}。发起方出现，未开始事务组
  * 2. {@code fields}不为空，fields.get(TracingConstants.GROUP_ID) 是 {@code empty}。参与方出现，未开启事务组。
- * 3.
+ * 3. TBD
  * Date: 19-1-28 下午4:21
  *
  * @author ujued
@@ -76,7 +76,7 @@ public class TracingContext {
         raiseNonGroupException();
     }
 
-    public String appListString() {
+    public String appMapString() {
         if (hasGroup()) {
             return this.fields.get(TracingConstants.APP_MAP);
         }

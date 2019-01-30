@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tracing.loadbalance.dubbo;
+package com.codingapi.txlcn.tracing.dubbo;
 
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
-import com.alibaba.dubbo.rpc.cluster.loadbalance.ConsistentHashLoadBalance;
+import com.alibaba.dubbo.rpc.cluster.loadbalance.RoundRobinLoadBalance;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author ujued
  */
-public class TxlcnConsistentHashLoadBalance extends ConsistentHashLoadBalance {
+public class TxlcnRoundRobinLoadBalance extends RoundRobinLoadBalance {
 
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) {

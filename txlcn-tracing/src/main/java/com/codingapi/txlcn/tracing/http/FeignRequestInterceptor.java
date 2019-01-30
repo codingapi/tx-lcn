@@ -1,5 +1,7 @@
-package com.codingapi.txlcn.tracing;
+package com.codingapi.txlcn.tracing.http;
 
+import com.codingapi.txlcn.tracing.TracingConstants;
+import com.codingapi.txlcn.tracing.TracingContext;
 import feign.Feign;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
@@ -21,6 +23,6 @@ public class FeignRequestInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate requestTemplate) {
         requestTemplate.header(TracingConstants.HEADER_KEY_GROUP_ID, TracingContext.tracing().groupId());
-        requestTemplate.header(TracingConstants.HEADER_KEY_APP_LIST, TracingContext.tracing().appListString());
+        requestTemplate.header(TracingConstants.HEADER_KEY_APP_MAP, TracingContext.tracing().appMapString());
     }
 }

@@ -19,7 +19,7 @@ public class TracingHandlerInterceptor implements Filter {
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         String groupId = invocation.getAttachment(TracingConstants.HEADER_KEY_GROUP_ID, "");
-        String appList = invocation.getAttachment(TracingConstants.HEADER_KEY_APP_LIST, "");
+        String appList = invocation.getAttachment(TracingConstants.HEADER_KEY_APP_MAP, "");
         TracingContext.tracing().init(Maps.newHashMap(TracingConstants.GROUP_ID, groupId, TracingConstants.APP_MAP, appList));
         return invoker.invoke(invocation);
     }

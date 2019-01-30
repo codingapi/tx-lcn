@@ -1,9 +1,10 @@
-package com.codingapi.txlcn.tracing.loadbalance.springcloud;
+package com.codingapi.txlcn.tracing.http.ribbon;
 
 import com.netflix.loadbalancer.IRule;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.annotation.Bean;
@@ -17,10 +18,11 @@ import org.springframework.context.annotation.Scope;
  * @author ujued
  */
 @Configuration
-@EnableConfigurationProperties(LoadBalanceConfiguration.class)
+@EnableConfigurationProperties(LoadbalancerConfiguration.class)
 @ConditionalOnClass(IRule.class)
-@ConditionalOnProperty(name = "tx-lcn.springcloud.loadbalance.enabled", matchIfMissing = true)
-public class LoadBalanceConfiguration {
+@ConfigurationProperties("tx-lcn.ribbon.loadbalancer.dtx")
+@ConditionalOnProperty(name = "tx-lcn.ribbon.loadbalancer.dtx.enabled", matchIfMissing = true)
+public class LoadbalancerConfiguration {
     private boolean enabled;
 
     public boolean isEnabled() {
