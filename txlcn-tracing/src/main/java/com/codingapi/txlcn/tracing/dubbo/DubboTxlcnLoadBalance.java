@@ -35,10 +35,11 @@ import java.util.List;
  */
 @Slf4j
 class DubboTxlcnLoadBalance {
+    private static final String empty = "";
 
     static <T> Invoker<T> chooseInvoker(List<Invoker<T>> invokers, URL url, Invocation invocation, TxLcnLoadBalance loadBalance) {
         TracingContext.tracing()
-                .addApp(RpcContext.getContext().getLocalAddressString(), "");
+                .addApp(RpcContext.getContext().getLocalAddressString(), empty);
         assert invokers.size() > 0;
         JSONObject appMap = TracingContext.tracing().appMap();
         log.debug("invokers: {}", invokers);
@@ -55,7 +56,7 @@ class DubboTxlcnLoadBalance {
         }
         if (chooseInvoker == null) {
             Invoker<T> invoker = loadBalance.select(invokers, url, invocation);
-            TracingContext.tracing().addApp(invoker.getUrl().getAddress(), "");
+            TracingContext.tracing().addApp(invoker.getUrl().getAddress(), empty);
             return invoker;
         }
         return chooseInvoker;
