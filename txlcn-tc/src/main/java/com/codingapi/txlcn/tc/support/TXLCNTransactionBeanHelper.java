@@ -18,7 +18,6 @@ package com.codingapi.txlcn.tc.support;
 import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import com.codingapi.txlcn.tc.core.DTXLogicState;
 import com.codingapi.txlcn.tc.core.TransactionCleanService;
-import com.codingapi.txlcn.tc.core.propagation.TXLCNTransactionSeparator;
 import com.codingapi.txlcn.tc.support.resouce.TransactionResourceExecutor;
 import com.codingapi.txlcn.tc.txmsg.RpcExecuteService;
 import com.codingapi.txlcn.txmsg.LCNCmdType;
@@ -61,13 +60,6 @@ public class TXLCNTransactionBeanHelper {
      * transaction:前缀 %s:事务类型（lcn,tcc,txc)
      */
     private static final String TRANSACTION_BEAN_NAME_FORMAT = "transaction_%s";
-
-    /**
-     * transaction transactionState resolver
-     * transaction_state_resolver_%s
-     * %s:transaction type. lcn, tcc, txc so on.
-     */
-    private static final String TRANSACTION_STATE_RESOLVER_BEAN_NAME_FORMAT = "transaction_state_resolver_%s";
 
     /**
      * Transaction Clean Service
@@ -125,22 +117,6 @@ public class TXLCNTransactionBeanHelper {
     private RpcExecuteService loadRpcExecuteService(String beanName) {
         return spring.getBean(beanName, RpcExecuteService.class);
     }
-
-    /**
-     * 获取事务状态决策器
-     *
-     * @param transactionType 事务类型
-     * @return 事务状态决策器
-     */
-    public TXLCNTransactionSeparator loadLCNTransactionStateResolver(String transactionType) {
-        try {
-            String name = String.format(TRANSACTION_STATE_RESOLVER_BEAN_NAME_FORMAT, transactionType);
-            return spring.getBean(name, TXLCNTransactionSeparator.class);
-        } catch (Exception e) {
-            return spring.getBean(String.format(TRANSACTION_STATE_RESOLVER_BEAN_NAME_FORMAT, "default"), TXLCNTransactionSeparator.class);
-        }
-    }
-
 
     public TransactionCleanService loadTransactionCleanService(String transactionType) {
         return spring.getBean(String.format(TRANSACTION_CLEAN_SERVICE_NAME_FORMAT, transactionType), TransactionCleanService.class);

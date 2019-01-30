@@ -29,14 +29,14 @@ import lombok.extern.slf4j.Slf4j;
  * @author ujued
  */
 @Slf4j
-public class CustomizableTransactionSeparator implements TXLCNTransactionSeparator {
+public class DefaultTransactionPropagationResolver implements TxLcnTransactionPropagationResolver {
 
     @Override
     public DTXLogicState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException {
 
         // 本线程已经参与分布式事务(本地方法互调)
         if (DTXLocalContext.cur().isInUnit()) {
-            log.info("Default by DTXLocalContext is not null! {}", DTXLocalContext.cur());
+            log.info("Default by business in unit!");
             return DTXLogicState.DEFAULT;
         }
 

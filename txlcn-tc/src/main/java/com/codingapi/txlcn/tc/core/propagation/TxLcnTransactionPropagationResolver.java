@@ -15,14 +15,24 @@
  */
 package com.codingapi.txlcn.tc.core.propagation;
 
-import org.springframework.stereotype.Component;
+import com.codingapi.txlcn.tc.core.TxTransactionInfo;
+import com.codingapi.txlcn.common.exception.TransactionException;
+import com.codingapi.txlcn.tc.core.DTXLogicState;
 
 /**
- * Description: 默认的事务分离器
+ * Description: 事务分离器
  * Date: 2018/12/5
  *
  * @author ujued
  */
-@Component("transaction_state_resolver_default")
-public class DefaultTransactionSeparator extends CustomizableTransactionSeparator {
+public interface TxLcnTransactionPropagationResolver {
+
+    /**
+     * 判断事务状态
+     *
+     * @param txTransactionInfo txTransactionInfo
+     * @return DTXLogicState
+     * @throws TransactionException TransactionException
+     */
+    DTXLogicState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException;
 }
