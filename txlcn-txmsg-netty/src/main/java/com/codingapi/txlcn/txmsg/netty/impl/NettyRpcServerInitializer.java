@@ -18,7 +18,7 @@ package com.codingapi.txlcn.txmsg.netty.impl;
 import com.codingapi.txlcn.txmsg.RpcServerInitializer;
 import com.codingapi.txlcn.txmsg.dto.ManagerProperties;
 import com.codingapi.txlcn.txmsg.netty.em.NettyType;
-import com.codingapi.txlcn.txmsg.netty.handler.NettyRpcServerHandlerInitHandler;
+import com.codingapi.txlcn.txmsg.netty.handler.init.NettyRpcServerChannelInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -42,11 +42,14 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class NettyRpcServerInitializer implements RpcServerInitializer, DisposableBean {
 
-    @Autowired
-    private NettyRpcServerHandlerInitHandler nettyRpcServerHandlerInitHandler;
-
+    private final NettyRpcServerChannelInitializer nettyRpcServerChannelInitializer;
     private EventLoopGroup workerGroup;
     private NioEventLoopGroup bossGroup;
+
+    @Autowired
+    public NettyRpcServerInitializer(NettyRpcServerChannelInitializer nettyRpcServerChannelInitializer) {
+        this.nettyRpcServerChannelInitializer = nettyRpcServerChannelInitializer;
+    }
 
 
     @Override
@@ -54,7 +57,7 @@ public class NettyRpcServerInitializer implements RpcServerInitializer, Disposab
         NettyContext.type = NettyType.server;
         NettyContext.params = managerProperties;
 
-        nettyRpcServerHandlerInitHandler.setManagerProperties(managerProperties);
+        nettyRpcServerChannelInitializer.setManagerProperties(managerProperties);
 
         int port = managerProperties.getRpcPort();
         bossGroup = new NioEventLoopGroup();
@@ -65,7 +68,7 @@ public class NettyRpcServerInitializer implements RpcServerInitializer, Disposab
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 100)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(nettyRpcServerHandlerInitHandler);
+                    .childHandler(nettyRpcServerChannelInitializer);
 
             // Start the server.
             b.bind(port);

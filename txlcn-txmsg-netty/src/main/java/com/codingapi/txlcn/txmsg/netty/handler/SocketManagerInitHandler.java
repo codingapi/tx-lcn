@@ -18,7 +18,7 @@ package com.codingapi.txlcn.txmsg.netty.handler;
 import com.codingapi.txlcn.txmsg.netty.bean.SocketManager;
 import com.codingapi.txlcn.txmsg.netty.bean.NettyRpcCmd;
 import com.codingapi.txlcn.txmsg.MessageConstants;
-import com.codingapi.txlcn.common.util.RandomUtils;
+import com.codingapi.txlcn.common.util.id.RandomUtils;
 import com.codingapi.txlcn.txmsg.dto.MessageDto;
 import com.codingapi.txlcn.txmsg.dto.RpcCmd;
 import io.netty.channel.ChannelHandler;
@@ -46,21 +46,19 @@ public class SocketManagerInitHandler extends ChannelInboundHandlerAdapter {
         messageDto.setAction(MessageConstants.ACTION_HEART_CHECK);
         heartCmd = new NettyRpcCmd();
         heartCmd.setMsg(messageDto);
-        heartCmd.setKey(RandomUtils.randomKey());
+        heartCmd.setKey(RandomUtils.simpleKey());
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         SocketManager.getInstance().addChannel(ctx.channel());
-        log.info("Connected: {}", ctx.channel().remoteAddress());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
         SocketManager.getInstance().removeChannel(ctx.channel());
-        log.error("Disconnected: {}", ctx.channel().remoteAddress());
     }
 
 

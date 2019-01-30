@@ -21,7 +21,7 @@ import com.codingapi.txlcn.txmsg.dto.TxManagerHost;
 import com.codingapi.txlcn.txmsg.listener.ClientInitCallBack;
 import com.codingapi.txlcn.txmsg.netty.bean.SocketManager;
 import com.codingapi.txlcn.txmsg.netty.em.NettyType;
-import com.codingapi.txlcn.txmsg.netty.handler.NettyRpcClientHandlerInitHandler;
+import com.codingapi.txlcn.txmsg.netty.handler.init.NettyRpcClientChannelInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -30,13 +30,17 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Description:
@@ -45,20 +49,32 @@ import java.util.concurrent.*;
  *
  * @author ujued
  */
-@Service
+@Component
 @Slf4j
 public class NettyRpcClientInitializer implements RpcClientInitializer, DisposableBean {
 
-    @Autowired
-    private NettyRpcClientHandlerInitHandler nettyRpcClientHandlerInitHandler;
+    private static NettyRpcClientInitializer INSTANCE;
 
-    @Autowired
-    private RpcConfig rpcConfig;
+    private final NettyRpcClientChannelInitializer nettyRpcClientChannelInitializer;
 
-    @Autowired
-    private ClientInitCallBack clientInitCallBack;
+    private final RpcConfig rpcConfig;
+
+    private final ClientInitCallBack clientInitCallBack;
 
     private EventLoopGroup workerGroup;
+
+    @Autowired
+    public NettyRpcClientInitializer(NettyRpcClientChannelInitializer nettyRpcClientChannelInitializer, RpcConfig rpcConfig, ClientInitCallBack clientInitCallBack) {
+        this.nettyRpcClientChannelInitializer = nettyRpcClientChannelInitializer;
+        this.rpcConfig = rpcConfig;
+        this.clientInitCallBack = clientInitCallBack;
+        INSTANCE = this;
+    }
+
+    public static void reConnect(SocketAddress socketAddress) {
+        Objects.requireNonNull(socketAddress, "non support!");
+        INSTANCE.connect(socketAddress);
+    }
 
     @Override
     public void init(List<TxManagerHost> hosts, boolean sync) {
@@ -89,7 +105,7 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
                     b.channel(NioSocketChannel.class);
                     b.option(ChannelOption.SO_KEEPALIVE, true);
                     b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
-                    b.handler(nettyRpcClientHandlerInitHandler);
+                    b.handler(nettyRpcClientChannelInitializer);
                     return Optional.of(b.connect(socketAddress).syncUninterruptibly());
                 } catch (Exception e) {
                     log.warn("Connect socket({}) fail. {}ms latter try again.", socketAddress, rpcConfig.getReconnectDelay());

@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.txmsg.netty.bean;
 
-import com.codingapi.txlcn.common.util.RandomUtils;
+import com.codingapi.txlcn.common.util.id.RandomUtils;
 import com.codingapi.txlcn.txmsg.dto.MessageDto;
 import com.codingapi.txlcn.txmsg.dto.RpcCmd;
 import com.codingapi.txlcn.txmsg.exception.RpcException;

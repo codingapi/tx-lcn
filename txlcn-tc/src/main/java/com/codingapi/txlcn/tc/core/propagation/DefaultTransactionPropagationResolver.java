@@ -21,6 +21,7 @@ import com.codingapi.txlcn.tc.core.TxTransactionInfo;
 import com.codingapi.txlcn.tc.annotation.DTXPropagation;
 import com.codingapi.txlcn.common.exception.TransactionException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * Description: 可定制的事务分离器
@@ -29,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author ujued
  */
 @Slf4j
+@Component
 public class DefaultTransactionPropagationResolver implements TxLcnTransactionPropagationResolver {
 
     @Override

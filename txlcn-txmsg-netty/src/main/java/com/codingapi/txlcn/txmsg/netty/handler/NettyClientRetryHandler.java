@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.txmsg.netty.handler;
 
 import com.codingapi.txlcn.txmsg.MessageConstants;
-import com.codingapi.txlcn.common.util.RandomUtils;
+import com.codingapi.txlcn.common.util.id.RandomUtils;
 import com.codingapi.txlcn.txmsg.listener.ClientInitCallBack;
 import com.codingapi.txlcn.txmsg.dto.MessageDto;
 import com.codingapi.txlcn.txmsg.netty.bean.SocketManager;
@@ -45,23 +45,20 @@ import java.util.List;
 @ChannelHandler.Sharable
 @Component
 public class NettyClientRetryHandler extends ChannelInboundHandlerAdapter {
-
-    @Autowired
-    private NettyRpcClientInitializer nettyRpcClientInitializer;
-
-    @Autowired
-    private ClientInitCallBack clientInitCallBack;
+    private final ClientInitCallBack clientInitCallBack;
 
     private int keepSize;
 
     private NettyRpcCmd heartCmd;
 
-    public NettyClientRetryHandler() {
+    @Autowired
+    public NettyClientRetryHandler(ClientInitCallBack clientInitCallBack) {
         MessageDto messageDto = new MessageDto();
         messageDto.setAction(MessageConstants.ACTION_HEART_CHECK);
         heartCmd = new NettyRpcCmd();
         heartCmd.setMsg(messageDto);
-        heartCmd.setKey(RandomUtils.randomKey());
+        heartCmd.setKey(RandomUtils.simpleKey());
+        this.clientInitCallBack = clientInitCallBack;
     }
 
     @Override
@@ -79,7 +76,7 @@ public class NettyClientRetryHandler extends ChannelInboundHandlerAdapter {
 
         SocketAddress socketAddress = ctx.channel().remoteAddress();
         log.error("socketAddress:{} ", socketAddress);
-        nettyRpcClientInitializer.connect(socketAddress);
+        NettyRpcClientInitializer.reConnect(socketAddress);
     }
 
 
@@ -92,7 +89,7 @@ public class NettyClientRetryHandler extends ChannelInboundHandlerAdapter {
             Thread.sleep(1000 * 15);
             log.error("current size:{}  ", size);
             log.error("try connect tx-manager:{} ", ctx.channel().remoteAddress());
-            nettyRpcClientInitializer.connect(ctx.channel().remoteAddress());
+            NettyRpcClientInitializer.reConnect(ctx.channel().remoteAddress());
         }
         //发送数据包检测是否断开连接.
         ctx.writeAndFlush(heartCmd);

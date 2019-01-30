@@ -13,30 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.common.util;
+package com.codingapi.txlcn.common.util.id;
 
-import java.util.Random;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
  * @author lorne 2018/12/2
  */
 public class RandomUtils {
-    
-    private static Random random = new Random();
 
-    private static IdWorker idWorker = new IdWorker(random.nextInt(1024));
+    private static IdGen theIdGen;
+
+    public static void init(IdGen idGen) {
+        theIdGen = idGen;
+    }
 
     public static String getUUID() {
-        return UUID.randomUUID().toString().replace("-" , "");
-    }
-    
-    public static String randomKey() {
-        try {
-            return String.valueOf(idWorker.nextId());
-        } catch (Exception e) {
-            return getUUID();
-        }
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
+    public static String randomKey() {
+        Objects.requireNonNull(theIdGen, "Set IdGen before get randomKey.");
+        return String.valueOf(theIdGen.nextId());
+    }
+
+    public static String simpleKey() {
+        return String.valueOf(System.nanoTime());
+    }
 }

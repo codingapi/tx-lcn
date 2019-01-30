@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.tm.support.service.impl;
 
 import com.codingapi.txlcn.common.exception.TxManagerException;
-import com.codingapi.txlcn.common.util.RandomUtils;
+import com.codingapi.txlcn.common.util.id.RandomUtils;
 import com.codingapi.txlcn.logger.db.LogDbProperties;
 import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.exception.TxLoggerException;

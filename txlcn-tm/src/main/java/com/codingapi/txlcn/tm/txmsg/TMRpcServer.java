@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
  * @author lorne
  */
 @Component
-public class TxLcnManagerRpcServer implements TxLcnInitializer {
+public class TMRpcServer implements TxLcnInitializer {
 
     private final TxManagerConfig txManagerConfig;
 
@@ -41,7 +41,7 @@ public class TxLcnManagerRpcServer implements TxLcnInitializer {
     private final RpcConfig rpcConfig;
 
     @Autowired
-    public TxLcnManagerRpcServer(TxManagerConfig txManagerConfig, RpcServerInitializer rpcServerInitializer, RpcConfig rpcConfig) {
+    public TMRpcServer(TxManagerConfig txManagerConfig, RpcServerInitializer rpcServerInitializer, RpcConfig rpcConfig) {
         this.txManagerConfig = txManagerConfig;
         this.rpcServerInitializer = rpcServerInitializer;
         this.rpcConfig = rpcConfig;

@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
  * @author lorne
  */
 @Component
-public class TXLCNClientMessageServer implements TxLcnInitializer {
+public class TCRpcServer implements TxLcnInitializer {
 
     private final RpcClientInitializer rpcClientInitializer;
 
@@ -40,8 +40,8 @@ public class TXLCNClientMessageServer implements TxLcnInitializer {
     private final RpcConfig rpcConfig;
 
     @Autowired
-    public TXLCNClientMessageServer(RpcClientInitializer rpcClientInitializer,
-                                    TxClientConfig txClientConfig, RpcConfig rpcConfig) {
+    public TCRpcServer(RpcClientInitializer rpcClientInitializer,
+                       TxClientConfig txClientConfig, RpcConfig rpcConfig) {
         this.rpcClientInitializer = rpcClientInitializer;
         this.txClientConfig = txClientConfig;
         this.rpcConfig = rpcConfig;

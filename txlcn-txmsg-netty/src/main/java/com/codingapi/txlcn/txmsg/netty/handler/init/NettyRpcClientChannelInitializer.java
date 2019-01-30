@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.txmsg.netty.handler;
+package com.codingapi.txlcn.txmsg.netty.handler.init;
 
-import com.codingapi.txlcn.txmsg.dto.ManagerProperties;
+import com.codingapi.txlcn.txmsg.netty.handler.*;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.timeout.IdleStateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Description:
@@ -34,25 +31,20 @@ import java.util.concurrent.TimeUnit;
  * @author ujued
  */
 @Component
-public class NettyRpcServerHandlerInitHandler extends ChannelInitializer<Channel> {
+public class NettyRpcClientChannelInitializer extends ChannelInitializer<Channel> {
 
     @Autowired
     private RpcAnswerHandler rpcAnswerHandler;
 
-    private ManagerProperties managerProperties;
-
-    public void setManagerProperties(ManagerProperties managerProperties) {
-        this.managerProperties = managerProperties;
-    }
+    @Autowired
+    private NettyClientRetryHandler nettyClientRetryHandler;
 
     @Override
     protected void initChannel(Channel ch) throws Exception {
+
         ch.pipeline().addLast(new LengthFieldPrepender(4, false));
-        ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
-
-        ch.pipeline().addLast(new IdleStateHandler(managerProperties.getCheckTime(),
-                managerProperties.getCheckTime(), managerProperties.getCheckTime(), TimeUnit.MILLISECONDS));
-
+        ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE,
+                0, 4, 0, 4));
 
         ch.pipeline().addLast(new ObjectSerializerEncoder());
         ch.pipeline().addLast(new ObjectSerializerDecoder());
@@ -60,6 +52,7 @@ public class NettyRpcServerHandlerInitHandler extends ChannelInitializer<Channel
 
         ch.pipeline().addLast(new RpcCmdDecoder());
         ch.pipeline().addLast(new RpcCmdEncoder());
+        ch.pipeline().addLast(nettyClientRetryHandler);
         ch.pipeline().addLast(new SocketManagerInitHandler());
         ch.pipeline().addLast(rpcAnswerHandler);
     }
