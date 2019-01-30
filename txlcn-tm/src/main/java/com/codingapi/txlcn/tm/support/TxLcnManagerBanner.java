@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tm.banner;
+package com.codingapi.txlcn.tm.support;
 
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import org.springframework.boot.Banner;

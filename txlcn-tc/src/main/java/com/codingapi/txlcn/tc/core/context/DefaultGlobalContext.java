@@ -39,6 +39,8 @@ import java.util.stream.Collectors;
  * Date: 19-1-22 下午6:17
  *
  * @author ujued
+ * @see AttachmentCache
+ * @see PrimaryKeysProvider
  */
 @Component
 @Slf4j
@@ -61,8 +63,7 @@ public class DefaultGlobalContext implements TCGlobalContext {
     }
 
     @Override
-    public LcnConnectionProxy getLcnConnection(String groupId)
-            throws TCGlobalContextException {
+    public LcnConnectionProxy getLcnConnection(String groupId) throws TCGlobalContextException {
         if (attachmentCache.containsKey(groupId, LcnConnectionProxy.class.getName())) {
             return attachmentCache.attachment(groupId, LcnConnectionProxy.class.getName());
         }
@@ -72,44 +73,47 @@ public class DefaultGlobalContext implements TCGlobalContext {
     @Override
     public TccTransactionInfo tccTransactionInfo(String unitId, Supplier<TccTransactionInfo, BeforeBusinessException> supplier)
             throws BeforeBusinessException {
+        String unitTransactionInfoKey = unitId + ".tcc.transaction";
         if (Objects.isNull(supplier)) {
-            return attachmentCache.attachment(unitId, TccTransactionInfo.class.getName());
+            return attachmentCache.attachment(unitTransactionInfoKey);
         }
 
-        if (attachmentCache.containsKey(unitId, TccTransactionInfo.class.getName())) {
-            return attachmentCache.attachment(unitId, TccTransactionInfo.class.getName());
+        if (attachmentCache.containsKey(unitTransactionInfoKey)) {
+            return attachmentCache.attachment(unitTransactionInfoKey);
         }
 
         TccTransactionInfo tccTransactionInfo = supplier.get();
-        attachmentCache.attach(unitId, TccTransactionInfo.class.getName(), tccTransactionInfo);
+        attachmentCache.attach(unitTransactionInfoKey, tccTransactionInfo);
         return tccTransactionInfo;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void addTxcLockId(String groupId, String unitId, Set<String> lockIdList) {
-        String lockPrefix = "txc.lock." + unitId;
-        if (attachmentCache.containsKey(groupId, lockPrefix)) {
-            ((Set) attachmentCache.attachment(groupId, lockPrefix)).addAll(lockIdList);
+        String lockKey = unitId + ".txc.lock";
+        if (attachmentCache.containsKey(groupId, lockKey)) {
+            ((Set) attachmentCache.attachment(groupId, lockKey)).addAll(lockIdList);
             return;
         }
         Set<String> lockList = new HashSet<>(lockIdList);
-        attachmentCache.attach(groupId, lockPrefix, lockList);
+        attachmentCache.attach(groupId, lockKey, lockList);
     }
 
     @Override
     public Set<String> findTxcLockSet(String groupId, String unitId) throws TCGlobalContextException {
-        if (attachmentCache.containsKey(groupId, "txc.lock." + unitId)) {
-            return attachmentCache.attachment(groupId, "txc.lock." + unitId);
+        String lockKey = unitId + ".txc.lock";
+        if (attachmentCache.containsKey(groupId, lockKey)) {
+            return attachmentCache.attachment(groupId, lockKey);
         }
         throw new TCGlobalContextException("non exists lock id.");
     }
 
     @Override
     public TableStruct tableStruct(String table, Supplier<TableStruct, SQLException> structSupplier) throws SQLException {
-        if (attachmentCache.containsKey("sql.table." + table, TableStruct.class.getName())) {
+        String tableStructKey = table + ".struct";
+        if (attachmentCache.containsKey(tableStructKey)) {
             log.debug("cache hit! table {}'s struct.", table);
-            return attachmentCache.attachment("sql.table." + table, TableStruct.class.getName());
+            return attachmentCache.attachment(tableStructKey);
         }
         TableStruct tableStruct = structSupplier.get();
         if (Objects.nonNull(primaryKeysProviders)) {
@@ -124,7 +128,7 @@ public class DefaultGlobalContext implements TCGlobalContext {
                 }
             });
         }
-        attachmentCache.attach("sql.table." + table, TableStruct.class.getName(), tableStruct);
+        attachmentCache.attach(tableStructKey, tableStruct);
         return tableStruct;
     }
 
@@ -137,7 +141,8 @@ public class DefaultGlobalContext implements TCGlobalContext {
             TracingContext.tracing().beginTransactionGroup();
         }
         txContext.setGroupId(TracingContext.tracing().groupId());
-        attachmentCache.attach(txContext.getGroupId() + ".dtx", txContext);
+        String txContextKey = txContext.getGroupId() + ".dtx";
+        attachmentCache.attach(txContextKey, txContext);
         return txContext;
     }
 

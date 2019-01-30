@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.core;
+package com.codingapi.txlcn.tc.aspect.interceptor;
 
-import java.util.ArrayList;
+import com.codingapi.txlcn.tc.aspect.weave.DTXLogicWeaver;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 
 /**
  * Description:
- * Date: 2018/12/5
+ * Date: 1/12/19
  *
  * @author ujued
  */
-public class TransactionUnitTypeList extends ArrayList<String> {
+public class TxLcnInterceptor implements MethodInterceptor {
 
-    /**
-     * builder type to add element.
-     *
-     * @param transactionType transactionType
-     * @return TransactionUnitTypeList
-     */
-    public TransactionUnitTypeList selfAdd(String transactionType) {
-        this.add(transactionType);
-        return this;
+    private final DTXLogicWeaver dtxLogicWeaver;
+
+    public TxLcnInterceptor(DTXLogicWeaver dtxLogicWeaver) {
+        this.dtxLogicWeaver = dtxLogicWeaver;
+    }
+
+    @Override
+    public Object invoke(MethodInvocation invocation) throws Throwable {
+        return dtxLogicWeaver.runTransaction(InterceptorInvocationUtils.load(invocation), invocation::proceed);
     }
 }

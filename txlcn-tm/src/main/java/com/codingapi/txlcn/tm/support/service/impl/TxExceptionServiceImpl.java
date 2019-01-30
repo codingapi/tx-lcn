@@ -68,7 +68,7 @@ public class TxExceptionServiceImpl implements TxExceptionService {
 
     @Override
     public void writeTxException(WriteTxExceptionDTO writeTxExceptionReq) {
-        log.info("write tx_exception.");
+        log.info("write tx_exception. {}", writeTxExceptionReq);
         TxException txException = new TxException();
         txException.setCreateTime(new Date());
         txException.setGroupId(writeTxExceptionReq.getGroupId());

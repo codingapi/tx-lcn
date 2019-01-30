@@ -30,7 +30,7 @@ import java.util.Objects;
 @Slf4j
 public class DTXLocalContext {
 
-    private final static ThreadLocal<DTXLocalContext> currentLocal = new InheritableThreadLocal<DTXLocalContext>();
+    private final static ThreadLocal<DTXLocalContext> currentLocal = new InheritableThreadLocal<>();
 
     /**
      * 事务类型

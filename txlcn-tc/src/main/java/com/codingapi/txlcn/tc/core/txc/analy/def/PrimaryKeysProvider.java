@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Description:
+ * Description: 关系型数据库表与主键的映射关系
  * Date: 19-1-25 下午3:43
  *
  * @author ujued

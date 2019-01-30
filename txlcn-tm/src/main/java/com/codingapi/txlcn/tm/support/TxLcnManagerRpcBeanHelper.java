@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
  * @author lorne
  */
 @Component
-public class TxlcnManagerRpcBeanHelper {
+public class TxLcnManagerRpcBeanHelper {
 
 
     /**

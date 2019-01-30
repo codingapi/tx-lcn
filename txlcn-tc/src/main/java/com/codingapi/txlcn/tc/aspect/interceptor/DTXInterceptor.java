@@ -16,7 +16,6 @@
 package com.codingapi.txlcn.tc.aspect.interceptor;
 
 import com.codingapi.txlcn.tc.aspect.weave.DTXLogicWeaver;
-import com.codingapi.txlcn.tc.aspect.DTXInfo;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
@@ -37,8 +36,7 @@ public class DTXInterceptor extends TransactionInterceptor {
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        DTXInfo dtxInfo = InterceptorInvocationUtils.load(invocation);
-        return dtxLogicWeaver.runTransaction(dtxInfo, () -> super.invoke(invocation));
+        return dtxLogicWeaver.runTransaction(InterceptorInvocationUtils.load(invocation), () -> super.invoke(invocation));
     }
 
 }

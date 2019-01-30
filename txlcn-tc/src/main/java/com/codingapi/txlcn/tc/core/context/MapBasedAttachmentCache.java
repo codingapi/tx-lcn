@@ -23,10 +23,11 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Description:
+ * Description: 基于JDK线程安全的 {@code ConcurrentHashMap} 实现的 {@code AttachmentCache}
  * Date: 19-1-23 下午12:04
  *
  * @author ujued
+ * @see AttachmentCache
  */
 @Component
 public class MapBasedAttachmentCache implements AttachmentCache {
@@ -90,8 +91,13 @@ public class MapBasedAttachmentCache implements AttachmentCache {
     }
 
     @Override
-    public boolean containsKey(String groupId, String key) {
-        return cache.containsKey(groupId) && cache.get(groupId).containsKey(key);
+    public boolean containsKey(String mainKey, String key) {
+        return cache.containsKey(mainKey) && cache.get(mainKey).containsKey(key);
+    }
+
+    @Override
+    public boolean containsKey(String key) {
+        return singlePropCache.containsKey(key);
     }
 
     @Override
