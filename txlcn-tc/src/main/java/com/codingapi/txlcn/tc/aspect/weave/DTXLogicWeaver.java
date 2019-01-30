@@ -21,6 +21,7 @@ import com.codingapi.txlcn.tc.core.DTXServiceExecutor;
 import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.core.context.TxContext;
 import com.codingapi.txlcn.tc.core.TxTransactionInfo;
+import com.codingapi.txlcn.tracing.TracingContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -97,6 +98,8 @@ public class DTXLogicWeaver {
                 // 销毁事务
                 globalContext.destroyTx(info.getGroupId());
                 DTXLocalContext.makeNeverAppeared();
+
+                TracingContext.tracing().destroy();
             }
             log.debug("TX-unit end------>");
         }

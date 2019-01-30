@@ -25,12 +25,18 @@ public class RandomUtils {
     
     private static Random random = new Random();
 
+    private static IdWorker idWorker = new IdWorker(random.nextInt(1024));
+
     public static String getUUID() {
         return UUID.randomUUID().toString().replace("-" , "");
     }
     
     public static String randomKey() {
-        return System.nanoTime() + "" + random.nextInt(10000);
+        try {
+            return String.valueOf(idWorker.nextId());
+        } catch (Exception e) {
+            return getUUID();
+        }
     }
 
 }
