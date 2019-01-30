@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tm.txmsg;
 
+import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.support.TxLcnManagerRpcBeanHelper;
 import com.codingapi.txlcn.txmsg.LCNCmdType;
 import com.codingapi.txlcn.txmsg.RpcAnswer;
@@ -48,9 +49,11 @@ public class ServerRpcAnswer implements RpcAnswer, DisposableBean {
     private final TxLcnManagerRpcBeanHelper rpcBeanHelper;
 
     @Autowired
-    public ServerRpcAnswer(RpcClient rpcClient, TxLcnManagerRpcBeanHelper rpcBeanHelper) {
+    public ServerRpcAnswer(RpcClient rpcClient, TxLcnManagerRpcBeanHelper rpcBeanHelper, TxManagerConfig managerConfig) {
+        managerConfig.setConcurrentLevel(
+                Math.max(Runtime.getRuntime().availableProcessors() * 5, managerConfig.getConcurrentLevel()));
         this.rpcClient = rpcClient;
-        this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 5,
+        this.executorService = Executors.newFixedThreadPool(managerConfig.getConcurrentLevel(),
                 new ThreadFactoryBuilder().setDaemon(false).setNameFormat("tm-rpc-service-%d").build());
         this.rpcBeanHelper = rpcBeanHelper;
     }

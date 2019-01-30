@@ -17,7 +17,6 @@ package com.codingapi.txlcn.tm.txmsg;
 
 import com.codingapi.txlcn.tm.support.service.TxExceptionService;
 import com.codingapi.txlcn.tm.support.service.WriteTxExceptionDTO;
-import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.params.NotifyUnitParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +36,9 @@ public class ManagerRpcExceptionHandler implements RpcExceptionHandler {
 
     private final TxExceptionService compensationService;
 
-    private final RpcClient rpcClient;
-
     @Autowired
-    public ManagerRpcExceptionHandler(TxExceptionService compensationService, RpcClient rpcClient) {
+    public ManagerRpcExceptionHandler(TxExceptionService compensationService) {
         this.compensationService = compensationService;
-        this.rpcClient = rpcClient;
     }
 
     @Override

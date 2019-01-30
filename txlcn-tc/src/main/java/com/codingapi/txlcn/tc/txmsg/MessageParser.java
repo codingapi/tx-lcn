@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.txmsg.helper;
+package com.codingapi.txlcn.tc.txmsg;
 
 import com.codingapi.txlcn.txmsg.LCNCmdType;
 import com.codingapi.txlcn.txmsg.MessageConstants;

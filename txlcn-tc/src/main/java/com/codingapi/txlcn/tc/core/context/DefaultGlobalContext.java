@@ -154,6 +154,8 @@ public class DefaultGlobalContext implements TCGlobalContext {
     @Override
     public void destroyTx(String groupId) {
         attachmentCache.remove(groupId + ".dtx");
+        // 销毁GroupId
+        TracingContext.tracing().destroy();
     }
 
     @Override
@@ -180,7 +182,5 @@ public class DefaultGlobalContext implements TCGlobalContext {
     public void clearGroup(String groupId) {
         // 事务组相关的数据
         this.attachmentCache.removeAll(groupId);
-        // 销毁GroupId
-        TracingContext.tracing().destroy();
     }
 }
