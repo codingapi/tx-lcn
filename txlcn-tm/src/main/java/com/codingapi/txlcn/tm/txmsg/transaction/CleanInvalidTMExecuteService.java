@@ -57,6 +57,7 @@ public class CleanInvalidTMExecuteService implements RpcExecuteService {
             String[] args = ApplicationInformation.splitAddress(address.toString());
             try {
                 fastStorage.removeTMProperties(args[0], Integer.valueOf(args[1]));
+                fastStorage.releaseMachineId(args[0] + ":" + args[1]);
             } catch (FastStorageException e) {
                 txLogger.trace("", "", Transactions.TE, "remove TM %s fail.", address);
             }

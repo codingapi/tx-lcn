@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.logger;
 
+import com.codingapi.txlcn.common.util.Transactions;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -23,10 +24,20 @@ import lombok.extern.slf4j.Slf4j;
  * @author meetzy
  */
 @Slf4j
-public class NoTxLogger implements TxLogger {
+public class Slf4jTxLogger implements TxLogger {
 
     @Override
     public void trace(String groupId, String unitId, String tag, String content, Object... args) {
-        log.debug("{}-{}-{}: {} ({})", groupId, unitId, tag, content, args);
+        log.debug("{}-{}-{}: " + content, groupId, unitId, tag, content, args);
+    }
+
+    @Override
+    public void info(String groupId, String unitId, String tag, String content, Object... args) {
+        log.debug("{}-{}-{}: " + content, groupId, unitId, tag, args);
+    }
+
+    @Override
+    public void error(String groupId, String unitId, String content, Object... args) {
+        log.error("{}-{}-{}: " + content, groupId, unitId, Transactions.TE, args);
     }
 }

@@ -56,7 +56,7 @@ public class TxLoggerConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public TxLogger txLogger() {
-        return new NoTxLogger();
+        return new Slf4jTxLogger();
     }
 
     @Bean

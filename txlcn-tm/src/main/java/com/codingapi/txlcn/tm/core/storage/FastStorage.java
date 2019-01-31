@@ -188,4 +188,22 @@ public interface FastStorage {
      * @throws FastStorageException fastStorageException
      */
     void removeTMProperties(String host, int transactionPort) throws FastStorageException;
+
+    /*-----------------------Machine ID------------------------------*/
+
+    /**
+     * 从{@code size}中找一个未使用的数字, 并与{@code key}做关联
+     *
+     * @param key key
+     * @param size 限制大小
+     */
+    int acquireMachineId(String key, int size) throws FastStorageException;
+
+    /**
+     * 释放{@code key}的MachineId
+     *
+     * @param key key
+     */
+    void releaseMachineId(String key);
+
 }

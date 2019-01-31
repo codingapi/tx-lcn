@@ -15,8 +15,10 @@
  */
 package com.codingapi.txlcn.tm.txmsg.transaction;
 
+import com.codingapi.txlcn.common.exception.FastStorageException;
 import com.codingapi.txlcn.common.exception.TxManagerException;
 import com.codingapi.txlcn.common.util.ApplicationInformation;
+import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.RpcConfig;
 import com.codingapi.txlcn.txmsg.params.InitClientParams;
@@ -52,14 +54,18 @@ public class InitClientService implements RpcExecuteService {
 
     private final RpcConfig rpcConfig;
 
+    private final FastStorage fastStorage;
+
     @Autowired
     public InitClientService(RpcClient rpcClient, TxManagerConfig txManagerConfig, ConfigurableEnvironment environment,
-                             @Autowired(required = false) ServerProperties serverProperties, RpcConfig rpcConfig) {
+                             @Autowired(required = false) ServerProperties serverProperties, RpcConfig rpcConfig,
+                             FastStorage fastStorage) {
         this.rpcClient = rpcClient;
         this.txManagerConfig = txManagerConfig;
         this.environment = environment;
         this.serverProperties = serverProperties;
         this.rpcConfig = rpcConfig;
+        this.fastStorage = fastStorage;
     }
 
 
@@ -73,6 +79,13 @@ public class InitClientService implements RpcExecuteService {
         initClientParams.setTmRpcTimeout(rpcConfig.getWaitTime());
         // TM Name
         initClientParams.setAppName(ApplicationInformation.modId(environment, serverProperties));
+        // MachineId
+        try {
+            initClientParams.setMachineId(
+                    fastStorage.acquireMachineId(initClientParams.getAppName(), txManagerConfig.getMachineIdLen()));
+        } catch (FastStorageException e) {
+            return new TxManagerException(e);
+        }
         return initClientParams;
     }
 }

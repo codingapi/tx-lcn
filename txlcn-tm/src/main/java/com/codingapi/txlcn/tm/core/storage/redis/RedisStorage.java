@@ -51,6 +51,8 @@ public class RedisStorage implements FastStorage {
 
     private static final String REDIS_TM_LIST = "tm.instances";
 
+    private static final String REDIS_MACHINE_ID_MAP = "tm.machine.id.gen";
+
     private RedisTemplate<String, Object> redisTemplate;
 
     private TxManagerConfig managerConfig;
@@ -221,4 +223,27 @@ public class RedisStorage implements FastStorage {
         log.debug("removed TM {}:{}", host, transactionPort);
     }
 
+
+    @Override
+    public int acquireMachineId(String key, int size) throws FastStorageException {
+        if (redisTemplate.opsForHash().hasKey(REDIS_MACHINE_ID_MAP, key)) {
+            return (int) redisTemplate.opsForHash().get(REDIS_MACHINE_ID_MAP, key);
+        }
+        redisTemplate.opsForHash().putIfAbsent(REDIS_MACHINE_ID_MAP, "cur_id", -1);
+        int curId = (int) redisTemplate.opsForHash().get(REDIS_MACHINE_ID_MAP, "cur_id");
+        for (int i = 0; i < size; i++) {
+            ++curId;
+            if (redisTemplate.opsForHash().values(REDIS_MACHINE_ID_MAP).contains((curId) &= Integer.MAX_VALUE)) {
+                continue;
+            }
+            redisTemplate.opsForHash().put(REDIS_MACHINE_ID_MAP, key, curId);
+            return curId;
+        }
+        throw new FastStorageException("non can used", FastStorageException.EX_CODE_NON_MACHINE_ID);
+    }
+
+    @Override
+    public void releaseMachineId(String key) {
+        redisTemplate.opsForHash().delete(REDIS_MACHINE_ID_MAP, key);
+    }
 }

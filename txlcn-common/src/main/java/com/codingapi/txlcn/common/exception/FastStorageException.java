@@ -34,6 +34,8 @@ public class FastStorageException extends Exception {
 
     public static final int EX_CODE_REPEAT_LOCK = 102;
 
+    public static final int EX_CODE_NON_MACHINE_ID = 103;
+
     private int code;
 
 
@@ -63,6 +65,6 @@ public class FastStorageException extends Exception {
 
     @Override
     public String toString() {
-        return super.toString() + "(code=101)";
+        return super.toString() + "(code=" + code + ')';
     }
 }

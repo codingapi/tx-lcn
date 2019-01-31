@@ -43,4 +43,9 @@ public class InitClientParams implements Serializable {
      * TM RPC 超时时间
      */
     private long tmRpcTimeout;
+
+    /**
+     * 分配的机器ID
+     */
+    private int machineId;
 }

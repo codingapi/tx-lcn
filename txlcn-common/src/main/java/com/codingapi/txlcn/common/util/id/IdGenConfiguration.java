@@ -43,7 +43,7 @@ public class IdGenConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public IdGen idGen() {
-        SnowFlakeGenerator.Factory factory = new SnowFlakeGenerator.Factory(5, 5);
+        SnowFlakeGenerator.Factory factory = new SnowFlakeGenerator.Factory(15, 0);
         SnowFlakeGenerator snowFlakeGenerator = factory.create(idcId, machineId);
         return snowFlakeGenerator::nextId;
     }

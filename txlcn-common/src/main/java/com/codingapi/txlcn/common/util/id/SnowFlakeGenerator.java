@@ -109,7 +109,7 @@ public class SnowFlakeGenerator {
     private SnowFlakeGenerator(int idcBitNum, int machineBitNum, long idcId, long machineId) {
         int sequenceBitNum = REMAIN_BIT_NUM - idcBitNum - machineBitNum;
 
-        if (idcBitNum <= 0 || machineBitNum <= 0 || sequenceBitNum <= 0) {
+        if (idcBitNum < 0 || machineBitNum <= 0 || sequenceBitNum <= 0) {
             throw new IllegalArgumentException("Error bit number");
         }
 
