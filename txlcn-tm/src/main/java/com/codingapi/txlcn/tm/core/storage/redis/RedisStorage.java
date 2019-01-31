@@ -151,7 +151,6 @@ public class RedisStorage implements FastStorage {
             if (Objects.isNull(hasLockValue)) {
                 throw new FastStorageException("acquire locks fail.", FastStorageException.EX_CODE_REPEAT_LOCK);
             }
-            log.info("Has LockValue: {}, lockValue: {}", hasLockValue, lockValue);
             // 不在同一个DTX下，已存在的锁是排它锁 或者 新请求的不是共享锁时， 获取锁失败
             if (Objects.isNull(lockValue.getGroupId()) || !lockValue.getGroupId().equals(hasLockValue.getGroupId())) {
                 if (hasLockValue.getLockType() == DTXLocks.X_LOCK || lockValue.getLockType() != DTXLocks.S_LOCK) {
