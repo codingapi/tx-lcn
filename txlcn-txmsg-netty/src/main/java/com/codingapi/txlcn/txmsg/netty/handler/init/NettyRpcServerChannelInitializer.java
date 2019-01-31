@@ -43,6 +43,10 @@ public class NettyRpcServerChannelInitializer extends ChannelInitializer<Channel
     @Autowired
     private SocketManagerInitHandler socketManagerInitHandler;
 
+    @Autowired
+    private RpcCmdDecoder rpcCmdDecoder;
+
+
     private ManagerProperties managerProperties;
 
     public void setManagerProperties(ManagerProperties managerProperties) {
@@ -62,7 +66,7 @@ public class NettyRpcServerChannelInitializer extends ChannelInitializer<Channel
         ch.pipeline().addLast(new ObjectSerializerDecoder());
 
 
-        ch.pipeline().addLast(new RpcCmdDecoder());
+        ch.pipeline().addLast(rpcCmdDecoder);
         ch.pipeline().addLast(new RpcCmdEncoder());
         ch.pipeline().addLast(socketManagerInitHandler);
         ch.pipeline().addLast(rpcAnswerHandler);

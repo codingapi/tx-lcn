@@ -15,19 +15,25 @@
  */
 package com.codingapi.txlcn.txmsg.listener;
 
+import com.codingapi.txlcn.txmsg.dto.RpcCmd;
 
 /**
  * @author lorne 2019/1/31
  */
-public class DefaultRpcConnectionListener implements RpcConnectionListener {
+public interface HeartbeatListener {
 
-    @Override
-    public void connect(String remoteKey) {
 
-    }
+    /**
+     * 当TC接受到心跳数据的监听事件
+     * @param cmd   数据包
+     */
+    void onTcReceivedHeart(RpcCmd cmd);
 
-    @Override
-    public void disconnect(String remoteKey, String appName) {
 
-    }
+    /**
+     * 当TM接收到心跳数据的监听事件
+     * @param cmd   数据包
+     */
+    void onTmReceivedHeart(RpcCmd cmd);
+
 }

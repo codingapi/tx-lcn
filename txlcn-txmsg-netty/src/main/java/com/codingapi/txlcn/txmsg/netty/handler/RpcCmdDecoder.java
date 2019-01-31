@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.txmsg.netty.handler;
 
+import com.codingapi.txlcn.txmsg.listener.HeartbeatListener;
 import com.codingapi.txlcn.txmsg.netty.bean.NettyRpcCmd;
 import com.codingapi.txlcn.txmsg.netty.bean.RpcContent;
 import com.codingapi.txlcn.txmsg.MessageConstants;
@@ -24,6 +25,8 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 
@@ -36,8 +39,11 @@ import org.springframework.util.StringUtils;
  */
 @ChannelHandler.Sharable
 @Slf4j
+@Component
 public class RpcCmdDecoder extends SimpleChannelInboundHandler<NettyRpcCmd> {
 
+    @Autowired
+    private HeartbeatListener heartbeatListener;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, NettyRpcCmd cmd) {
@@ -47,9 +53,12 @@ public class RpcCmdDecoder extends SimpleChannelInboundHandler<NettyRpcCmd> {
         //心态数据包直接响应
         if (cmd.getMsg() != null && MessageConstants.ACTION_HEART_CHECK.equals(cmd.getMsg().getAction())) {
             if (NettyContext.currentType().equals(NettyType.client)) {
+                //设置值
+                heartbeatListener.onTcReceivedHeart(cmd);
                 ctx.writeAndFlush(cmd);
                 return;
             } else {
+                heartbeatListener.onTmReceivedHeart(cmd);
                 return;
             }
         }

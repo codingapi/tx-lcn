@@ -15,19 +15,21 @@
  */
 package com.codingapi.txlcn.txmsg.listener;
 
+import com.codingapi.txlcn.txmsg.dto.RpcCmd;
 
 /**
  * @author lorne 2019/1/31
  */
-public class DefaultRpcConnectionListener implements RpcConnectionListener {
+public class DefaultHeartbeatListener implements HeartbeatListener{
+
 
     @Override
-    public void connect(String remoteKey) {
+    public void onTcReceivedHeart(RpcCmd cmd) {
 
     }
 
     @Override
-    public void disconnect(String remoteKey, String appName) {
+    public void onTmReceivedHeart(RpcCmd cmd) {
 
     }
 }
