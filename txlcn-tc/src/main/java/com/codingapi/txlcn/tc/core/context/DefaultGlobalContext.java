@@ -182,7 +182,7 @@ public class DefaultGlobalContext implements TCGlobalContext {
         if (!hasTxContext()) {
             throw new IllegalStateException("non txContext.");
         }
-        return (System.currentTimeMillis() - txContext().getCreateTime()) > clientConfig.getDtxTime();
+        return (System.currentTimeMillis() - txContext().getCreateTime()) >= clientConfig.getDtxTime();
     }
 
     /**
