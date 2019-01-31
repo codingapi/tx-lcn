@@ -17,8 +17,6 @@ package com.codingapi.txlcn.common.util.id;
 
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author lorne 2018/12/2
@@ -44,23 +42,5 @@ public class RandomUtils {
 
     public static String simpleKey() {
         return String.valueOf(System.nanoTime());
-    }
-
-    static volatile String last = "";
-
-    public static void main(String[] args) {
-        IdGenInit.applySnowFlakeIdGen(10, 1);
-        System.out.println(randomKey());
-
-        ExecutorService executorService = Executors.newFixedThreadPool(20);
-        for (int i = 0; i < 100; i++) {
-            executorService.submit(() -> {
-                String now = randomKey();
-                if (now.equals(last)) {
-                    System.out.println("error");
-                }
-                last = now;
-            });
-        }
     }
 }

@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class IdGenInit {
 
     public static void applySnowFlakeIdGen(int machineLen, int machineId) {
-        RandomUtils.init(new DefaultIdGen(machineLen, 12, machineId));
+        SnowFlakeGenerator.Factory factory = new SnowFlakeGenerator.Factory(machineLen, 0);
+        SnowFlakeGenerator snowFlakeGenerator = factory.create(0, machineId);
+        RandomUtils.init(snowFlakeGenerator::nextId);
     }
 }

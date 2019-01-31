@@ -93,7 +93,7 @@ public class TxManagerConfig {
     /**
      * 机器ID长度
      */
-    private int machineIdLen = 20;
+    private int machineIdLen = 10;
 
     public long getDtxLockTime() {
         return dtxLockTime == -1 ? dtxTime : dtxLockTime;
