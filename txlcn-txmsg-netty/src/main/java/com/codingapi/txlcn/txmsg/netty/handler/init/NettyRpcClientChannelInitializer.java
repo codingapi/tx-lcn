@@ -39,6 +39,9 @@ public class NettyRpcClientChannelInitializer extends ChannelInitializer<Channel
     @Autowired
     private NettyClientRetryHandler nettyClientRetryHandler;
 
+    @Autowired
+    private SocketManagerInitHandler socketManagerInitHandler;
+
     @Override
     protected void initChannel(Channel ch) throws Exception {
 
@@ -53,7 +56,7 @@ public class NettyRpcClientChannelInitializer extends ChannelInitializer<Channel
         ch.pipeline().addLast(new RpcCmdDecoder());
         ch.pipeline().addLast(new RpcCmdEncoder());
         ch.pipeline().addLast(nettyClientRetryHandler);
-        ch.pipeline().addLast(new SocketManagerInitHandler());
+        ch.pipeline().addLast(socketManagerInitHandler);
         ch.pipeline().addLast(rpcAnswerHandler);
     }
 }
