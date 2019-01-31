@@ -15,7 +15,6 @@
  */
 package com.codingapi.txlcn.tm.core.storage.redis;
 
-import com.alibaba.fastjson.JSON;
 import com.codingapi.txlcn.common.exception.FastStorageException;
 import com.codingapi.txlcn.common.lock.DTXLocks;
 import com.codingapi.txlcn.common.util.ApplicationInformation;
@@ -31,7 +30,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 /**
