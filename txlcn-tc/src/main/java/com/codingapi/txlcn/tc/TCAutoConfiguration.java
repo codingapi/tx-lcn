@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @ComponentScan
-@Import({TxLoggerConfiguration.class, TracingAutoConfiguration.class, DependenciesImportSelector.class, IdGenConfiguration.class})
+@Import({TxLoggerConfiguration.class, TracingAutoConfiguration.class, DependenciesImportSelector.class})
 public class TCAutoConfiguration {
 
     /**

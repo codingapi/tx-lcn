@@ -20,6 +20,7 @@ import com.codingapi.txlcn.common.exception.TxManagerException;
 import com.codingapi.txlcn.common.util.ApplicationInformation;
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
+import com.codingapi.txlcn.tm.support.service.ManagerService;
 import com.codingapi.txlcn.tm.txmsg.RpcExecuteService;
 import com.codingapi.txlcn.tm.txmsg.TransactionCmd;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
@@ -42,12 +43,15 @@ public class CleanInvalidTMExecuteService implements RpcExecuteService {
 
     private final FastStorage fastStorage;
 
+    private final ManagerService managerService;
+
     private final TxLogger txLogger;
 
     @Autowired
-    public CleanInvalidTMExecuteService(FastStorage fastStorage, TxLogger txLogger) {
+    public CleanInvalidTMExecuteService(FastStorage fastStorage, TxLogger txLogger, ManagerService managerService) {
         this.fastStorage = fastStorage;
         this.txLogger = txLogger;
+        this.managerService = managerService;
     }
 
     @Override
@@ -57,7 +61,7 @@ public class CleanInvalidTMExecuteService implements RpcExecuteService {
             String[] args = ApplicationInformation.splitAddress(address.toString());
             try {
                 fastStorage.removeTMProperties(args[0], Integer.valueOf(args[1]));
-                fastStorage.releaseMachineId(args[0] + ":" + args[1]);
+                managerService.releaseMachineId(args[0], Integer.valueOf(args[1]));
             } catch (FastStorageException e) {
                 txLogger.trace("", "", Transactions.TE, "remove TM %s fail.", address);
             }

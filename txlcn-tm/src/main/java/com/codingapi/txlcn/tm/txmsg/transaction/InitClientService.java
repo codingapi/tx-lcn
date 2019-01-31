@@ -15,16 +15,15 @@
  */
 package com.codingapi.txlcn.tm.txmsg.transaction;
 
-import com.codingapi.txlcn.common.exception.FastStorageException;
 import com.codingapi.txlcn.common.exception.TxManagerException;
 import com.codingapi.txlcn.common.util.ApplicationInformation;
-import com.codingapi.txlcn.tm.core.storage.FastStorage;
+import com.codingapi.txlcn.tm.config.TxManagerConfig;
+import com.codingapi.txlcn.tm.support.service.ManagerService;
+import com.codingapi.txlcn.tm.txmsg.RpcExecuteService;
+import com.codingapi.txlcn.tm.txmsg.TransactionCmd;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.RpcConfig;
 import com.codingapi.txlcn.txmsg.params.InitClientParams;
-import com.codingapi.txlcn.tm.config.TxManagerConfig;
-import com.codingapi.txlcn.tm.txmsg.RpcExecuteService;
-import com.codingapi.txlcn.tm.txmsg.TransactionCmd;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -54,18 +53,18 @@ public class InitClientService implements RpcExecuteService {
 
     private final RpcConfig rpcConfig;
 
-    private final FastStorage fastStorage;
+    private final ManagerService managerService;
 
     @Autowired
     public InitClientService(RpcClient rpcClient, TxManagerConfig txManagerConfig, ConfigurableEnvironment environment,
                              @Autowired(required = false) ServerProperties serverProperties, RpcConfig rpcConfig,
-                             FastStorage fastStorage) {
+                             ManagerService managerService) {
         this.rpcClient = rpcClient;
         this.txManagerConfig = txManagerConfig;
         this.environment = environment;
         this.serverProperties = serverProperties;
         this.rpcConfig = rpcConfig;
-        this.fastStorage = fastStorage;
+        this.managerService = managerService;
     }
 
 
@@ -74,18 +73,14 @@ public class InitClientService implements RpcExecuteService {
         log.info("init client - >{}", transactionCmd);
         InitClientParams initClientParams = transactionCmd.getMsg().loadBean(InitClientParams.class);
         rpcClient.bindAppName(transactionCmd.getRemoteKey(), initClientParams.getAppName());
+        // Machine len and id
+        initClientParams.setMachineLen(txManagerConfig.getMachineIdLen());
+        initClientParams.setMachineId(managerService.acquireMachineId(initClientParams.getAppName()));
         // DTX Time and TM timeout.
         initClientParams.setDtxTime(txManagerConfig.getDtxTime());
         initClientParams.setTmRpcTimeout(rpcConfig.getWaitTime());
         // TM Name
         initClientParams.setAppName(ApplicationInformation.modId(environment, serverProperties));
-        // MachineId
-        try {
-            initClientParams.setMachineId(
-                    fastStorage.acquireMachineId(initClientParams.getAppName(), txManagerConfig.getMachineIdLen()));
-        } catch (FastStorageException e) {
-            return new TxManagerException(e);
-        }
         return initClientParams;
     }
 }

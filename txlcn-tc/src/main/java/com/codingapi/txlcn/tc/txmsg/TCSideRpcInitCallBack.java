@@ -16,6 +16,7 @@
 package com.codingapi.txlcn.tc.txmsg;
 
 import com.codingapi.txlcn.common.util.ApplicationInformation;
+import com.codingapi.txlcn.common.util.id.IdGenInit;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.dto.MessageDto;
 import com.codingapi.txlcn.txmsg.exception.RpcException;
@@ -72,10 +73,17 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
                 if (msg.getData() != null) {
                     //每一次建立连接时将会获取最新的时间
                     InitClientParams resParams = msg.loadBean(InitClientParams.class);
+                    // 1. 设置DTX Time 和 TM RPC timeout
                     txClientConfig.applyDtxTime(resParams.getDtxTime());
                     txClientConfig.applyTmRpcTimeout(resParams.getTmRpcTimeout());
+
+                    // 2. IdGen 初始化
+                    IdGenInit.applySnowFlakeIdGen(resParams.getMachineLen(), resParams.getMachineId());
+
+                    // 3. 日志
                     log.info("Finally, determined dtx time is {}ms, tm rpc timeout is {} ms, machineId is {}",
                             resParams.getDtxTime(), resParams.getTmRpcTimeout(), resParams.getMachineId());
+                    // 4. 执行其它监听器
                     rpcEnvStatusListeners.forEach(rpcEnvStatusListener -> rpcEnvStatusListener.onInitialized(remoteKey));
                     return;
                 }

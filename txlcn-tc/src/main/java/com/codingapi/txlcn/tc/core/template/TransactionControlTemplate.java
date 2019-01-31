@@ -130,7 +130,7 @@ public class TransactionControlTemplate {
         } catch (RpcException e) {
             dtxExceptionHandler.handleJoinGroupMessageException(Arrays.asList(groupId, unitId, transactionType), e);
         } catch (LcnBusinessException e) {
-            dtxExceptionHandler.handleJoinGroupBusinessException(Arrays.asList(groupId, unitId, transactionType), e.getCause());
+            dtxExceptionHandler.handleJoinGroupBusinessException(Arrays.asList(groupId, unitId, transactionType), e);
         }
         txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "join group over");
     }

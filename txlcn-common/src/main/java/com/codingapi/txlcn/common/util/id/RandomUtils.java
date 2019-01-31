@@ -23,7 +23,7 @@ import java.util.UUID;
  */
 public class RandomUtils {
 
-    private static IdGen theIdGen;
+    private static volatile IdGen theIdGen;
 
     public static void init(IdGen idGen) {
         theIdGen = idGen;
@@ -34,7 +34,9 @@ public class RandomUtils {
     }
 
     public static String randomKey() {
-        Objects.requireNonNull(theIdGen, "Set IdGen before get randomKey.");
+        if (Objects.isNull(theIdGen)) {
+            theIdGen = System::nanoTime;
+        }
         return String.valueOf(theIdGen.nextId());
     }
 

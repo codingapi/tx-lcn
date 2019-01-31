@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tm.support.service;
 
+import com.codingapi.txlcn.common.exception.TxManagerException;
 import com.codingapi.txlcn.txmsg.params.NotifyConnectParams;
 import com.codingapi.txlcn.txmsg.exception.RpcException;
 
@@ -28,4 +29,12 @@ import com.codingapi.txlcn.txmsg.exception.RpcException;
 public interface ManagerService {
 
     boolean refresh(NotifyConnectParams notifyConnectParams) throws RpcException;
+
+    int acquireMachineId(String host, int port) throws TxManagerException;
+
+    int acquireMachineId(String tcModId) throws TxManagerException;
+
+    void releaseMachineId(String host, int port);
+
+    void releaseMachineId(String tcModId);
 }

@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
  * @author ujued
  */
 @Configuration
-@Import({TxLoggerConfiguration.class, MessageConfiguration.class, IdGenConfiguration.class})
+@Import({TxLoggerConfiguration.class, MessageConfiguration.class})
 public class TMAutoConfiguration {
 
     @Bean(destroyMethod = "shutdown")

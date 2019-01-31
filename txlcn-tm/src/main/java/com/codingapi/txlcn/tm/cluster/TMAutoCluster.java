@@ -81,7 +81,7 @@ public class TMAutoCluster implements TxLcnInitializer {
                     fastStorage.removeTMProperties(properties.getHost(), properties.getTransactionPort());
                 }
             } catch (Exception e) {
-                log.error("manager auto refresh error ");
+                log.error("manager auto refresh error: {}", e.getMessage());
                 //check exception then remove.
                 if (e instanceof ResourceAccessException) {
                     ResourceAccessException resourceAccessException = (ResourceAccessException) e;

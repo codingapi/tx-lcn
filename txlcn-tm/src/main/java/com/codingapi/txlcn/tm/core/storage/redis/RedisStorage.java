@@ -236,6 +236,7 @@ public class RedisStorage implements FastStorage {
             if (redisTemplate.opsForHash().values(REDIS_MACHINE_ID_MAP).contains((curId) &= Integer.MAX_VALUE)) {
                 continue;
             }
+            redisTemplate.opsForHash().put(REDIS_MACHINE_ID_MAP, "cur_id", curId);
             redisTemplate.opsForHash().put(REDIS_MACHINE_ID_MAP, key, curId);
             return curId;
         }

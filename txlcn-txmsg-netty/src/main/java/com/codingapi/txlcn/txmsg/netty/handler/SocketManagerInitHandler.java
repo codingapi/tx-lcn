@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.txmsg.netty.handler;
 
+import com.codingapi.txlcn.txmsg.listener.RpcConnectionListener;
 import com.codingapi.txlcn.txmsg.netty.bean.SocketManager;
 import com.codingapi.txlcn.txmsg.netty.bean.NettyRpcCmd;
 import com.codingapi.txlcn.txmsg.MessageConstants;
@@ -27,6 +28,8 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Description:
@@ -37,9 +40,13 @@ import lombok.extern.slf4j.Slf4j;
  */
 @ChannelHandler.Sharable
 @Slf4j
+@Component
 public class SocketManagerInitHandler extends ChannelInboundHandlerAdapter {
 
     private RpcCmd heartCmd;
+
+    @Autowired
+    private RpcConnectionListener rpcConnectionListener;
 
     public SocketManagerInitHandler() {
         MessageDto messageDto = new MessageDto();
@@ -52,12 +59,16 @@ public class SocketManagerInitHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
+        rpcConnectionListener.connect(ctx.channel().remoteAddress().toString());
         SocketManager.getInstance().addChannel(ctx.channel());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
+        String removeKey = ctx.channel().remoteAddress().toString();
+        String appName = SocketManager.getInstance().getModuleName(removeKey);
+        rpcConnectionListener.disconnect(removeKey,appName);
         SocketManager.getInstance().removeChannel(ctx.channel());
     }
 

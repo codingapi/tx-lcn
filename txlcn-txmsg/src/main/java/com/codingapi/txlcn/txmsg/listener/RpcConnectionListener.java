@@ -13,44 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.txmsg.params;
+package com.codingapi.txlcn.txmsg.listener;
 
-import lombok.Data;
-
-import java.io.Serializable;
-
-/**
- * Description:
- * Company: CodingApi
- * Date: 2018/12/29
- *
- * @author codingapi
- */
-@Data
-public class InitClientParams implements Serializable {
+public interface RpcConnectionListener {
 
     /**
-     * 模块名称
+     * 建立连接监听
+     * @param remoteKey 远程key
      */
-    private String appName;
+    void connect(String remoteKey);
 
     /**
-     * 分布式事务执行最大时间
+     * 断开连接监听
+     * @param remoteKey 远程key
+     * @param appName   模块名称
      */
-    private long dtxTime;
+    void disconnect(String remoteKey,String appName);
 
-    /**
-     * TM RPC 超时时间
-     */
-    private long tmRpcTimeout;
-
-    /**
-     * 机器ID长度
-     */
-    private int machineLen;
-
-    /**
-     * 分配的机器ID
-     */
-    private int machineId;
 }
