@@ -22,7 +22,7 @@ import com.codingapi.txlcn.tm.core.TransactionManager;
 import com.codingapi.txlcn.tm.txmsg.RpcExecuteService;
 import com.codingapi.txlcn.tm.txmsg.TransactionCmd;
 import com.codingapi.txlcn.tm.support.service.TxExceptionService;
-import com.codingapi.txlcn.tm.support.service.WriteTxExceptionDTO;
+import com.codingapi.txlcn.tm.support.restapi.ao.WriteTxExceptionDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

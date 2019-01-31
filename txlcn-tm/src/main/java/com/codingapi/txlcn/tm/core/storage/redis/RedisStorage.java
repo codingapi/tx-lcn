@@ -50,7 +50,7 @@ public class RedisStorage implements FastStorage {
 
     private static final String REDIS_TM_LIST = "tm.instances";
 
-    private static final String REDIS_MACHINE_ID_MAP = "tm.machine.id.gen";
+    private static final String REDIS_MACHINE_ID_MAP_PREFIX = "tm.machine.id.gen:";
 
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -215,35 +215,28 @@ public class RedisStorage implements FastStorage {
 
 
     @Override
-    public int acquireMachineId(String key, int size) throws FastStorageException {
-        if (redisTemplate.opsForHash().hasKey(REDIS_MACHINE_ID_MAP, key)) {
-            return (int) redisTemplate.opsForHash().get(REDIS_MACHINE_ID_MAP, key);
-        }
-        redisTemplate.opsForHash().putIfAbsent(REDIS_MACHINE_ID_MAP, "cur_id", -1);
-        int curId = (int) redisTemplate.opsForHash().get(REDIS_MACHINE_ID_MAP, "cur_id");
+    public int acquireMachineId(int size, long timeout) throws FastStorageException {
+        redisTemplate.opsForValue().setIfAbsent(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", -1);
+        int curId = (int) redisTemplate.opsForValue().get(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id");
         for (int i = 0; i < size; i++) {
             ++curId;
-            if (redisTemplate.opsForHash().values(REDIS_MACHINE_ID_MAP).contains((curId) &= Integer.MAX_VALUE)) {
+            if (Optional
+                    .ofNullable(redisTemplate.hasKey(REDIS_MACHINE_ID_MAP_PREFIX + ((curId) &= Integer.MAX_VALUE)))
+                    .orElse(true)) {
                 continue;
             }
-            redisTemplate.opsForHash().put(REDIS_MACHINE_ID_MAP, "cur_id", curId);
-            redisTemplate.opsForHash().put(REDIS_MACHINE_ID_MAP, key, curId);
+            redisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", curId);
+            redisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + curId, "", timeout, TimeUnit.MILLISECONDS);
             return curId;
         }
         throw new FastStorageException("non can used", FastStorageException.EX_CODE_NON_MACHINE_ID);
     }
 
     @Override
-    public void releaseMachineIds(List<String> keys) {
-        redisTemplate.opsForHash().delete(REDIS_MACHINE_ID_MAP, keys.toArray(new Object[0]));
-    }
-
-    @Override
-    public int getMachineId(String key) throws FastStorageException {
-        Integer machineId = (Integer) redisTemplate.opsForHash().get(REDIS_MACHINE_ID_MAP, key);
-        if (Objects.isNull(machineId)) {
-            throw new FastStorageException("non it's machine id.", FastStorageException.EX_CODE_NON_MACHINE_ID);
+    public void refreshMachineId(int machineId, long timeout) throws FastStorageException {
+        if (!Optional.ofNullable(redisTemplate.hasKey(REDIS_GROUP_PREFIX + machineId)).orElse(false)) {
+            throw new FastStorageException("non this machine id.", FastStorageException.EX_CODE_NON_MACHINE_ID);
         }
-        return machineId;
+        redisTemplate.opsForValue().set(REDIS_GROUP_PREFIX + machineId, "", timeout, TimeUnit.MILLISECONDS);
     }
 }

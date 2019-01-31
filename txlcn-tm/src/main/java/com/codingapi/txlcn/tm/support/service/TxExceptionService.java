@@ -18,7 +18,8 @@ package com.codingapi.txlcn.tm.support.service;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.txlcn.common.exception.TransactionStateException;
 import com.codingapi.txlcn.common.exception.TxManagerException;
-import com.codingapi.txlcn.tm.support.restapi.model.ExceptionList;
+import com.codingapi.txlcn.tm.support.restapi.ao.WriteTxExceptionDTO;
+import com.codingapi.txlcn.tm.support.restapi.vo.ExceptionList;
 
 import java.util.List;
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tm.support.restapi.model;
+package com.codingapi.txlcn.tm.support.restapi.ao;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,16 +21,24 @@ import lombok.NoArgsConstructor;
 
 /**
  * Description:
- * Date: 19-1-17 下午6:39
+ * Date: 2018/12/18
  *
  * @author ujued
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class DeleteLogsReq {
+public class WriteTxExceptionDTO {
     private String groupId;
-    private String tag;
-    private String lTime;
-    private String rTime;
+    private String unitId;
+    private String modId;
+    private Integer transactionState;
+    private Short registrar;
+
+    public WriteTxExceptionDTO(String groupId, String unitId, String modId, Integer transactionState) {
+        this.groupId = groupId;
+        this.unitId = unitId;
+        this.transactionState = transactionState;
+        this.modId = modId;
+    }
 }

@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tm.support.restapi.model;
+package com.codingapi.txlcn.tm.support.restapi.vo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 /**
  * Description:
- * Date: 2018/12/24
+ * Date: 19-1-17 上午11:56
  *
  * @author ujued
  */
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
-public class TxLogList {
-
+public class ListAppMods {
     private long total;
+    private List<AppMod> appMods;
 
-    private List<TxManagerLog> logs;
+    @Data
+    public static class AppMod {
+        private String modId;
+        private int machineId;
+        private String registerTime;
+    }
 }

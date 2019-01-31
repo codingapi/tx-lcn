@@ -21,10 +21,9 @@ import com.codingapi.txlcn.common.exception.TransactionStateException;
 import com.codingapi.txlcn.common.exception.TxManagerException;
 import com.codingapi.txlcn.tm.cluster.TMProperties;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
-import com.codingapi.txlcn.tm.support.restapi.model.*;
+import com.codingapi.txlcn.tm.support.restapi.vo.*;
 import com.codingapi.txlcn.tm.support.service.AdminService;
 import com.codingapi.txlcn.tm.support.service.TxExceptionService;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -148,18 +147,6 @@ public class AdminController {
     @DeleteMapping("/logs")
     public boolean deleteLogs(@RequestBody DeleteLogsReq deleteLogsReq) throws TxManagerException {
         adminService.deleteLogs(deleteLogsReq);
-        return true;
-    }
-
-    /**
-     * 删除机器ID
-     *
-     * @param modIds
-     * @return
-     */
-    @DeleteMapping("/machine-ids")
-    public boolean deleteMachineIds(@RequestBody List<String> modIds) throws TxManagerException {
-        adminService.deleteMachineIds(modIds);
         return true;
     }
 

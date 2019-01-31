@@ -7,7 +7,6 @@ import com.codingapi.txlcn.tm.support.service.ManagerService;
 import com.codingapi.txlcn.txmsg.listener.RpcConnectionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 /**
  * Description:
@@ -35,19 +34,10 @@ public class EnsureIdGenEngine implements RpcConnectionListener, TxLcnInitialize
 
     @Override
     public void disconnect(String remoteKey, String appName) {
-        if (StringUtils.hasText(appName)) {
-            managerService.releaseMachineId(appName);
-        }
     }
 
     @Override
     public void init() throws Exception {
-        int value = managerService.acquireMachineId(managerConfig.getHost(), managerConfig.getPort());
-        IdGenInit.applySnowFlakeIdGen(managerConfig.getMachineIdLen(), value);
-    }
-
-    @Override
-    public void destroy() {
-        managerService.releaseMachineId(managerConfig.getHost(), managerConfig.getPort());
+        IdGenInit.applySnowFlakeIdGen(managerConfig.getMachineIdLen(), managerService.machineIdSync());
     }
 }

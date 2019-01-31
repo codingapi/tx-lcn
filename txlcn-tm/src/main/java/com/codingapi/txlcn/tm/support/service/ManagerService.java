@@ -30,11 +30,7 @@ public interface ManagerService {
 
     boolean refresh(NotifyConnectParams notifyConnectParams) throws RpcException;
 
-    int acquireMachineId(String host, int port) throws TxManagerException;
+    int machineIdSync() throws TxManagerException;
 
-    int acquireMachineId(String tcModId) throws TxManagerException;
-
-    void releaseMachineId(String host, int port);
-
-    void releaseMachineId(String tcModId);
+    void refreshMachineId(int machineId) throws TxManagerException;
 }

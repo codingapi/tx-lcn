@@ -13,45 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tm.support.restapi.model;
+package com.codingapi.txlcn.tm.support.restapi.vo;
 
+import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * Description:
- * Date: 2018/12/24
+ * Date: 2018/11/23
  *
  * @author ujued
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class TxManagerLog {
-    private Long id;
-    /**
-     * 事务组ID
-     */
-    private String groupId;
+public class ErrorResponse {
+    private int code;
+    private String message;
 
-    /**
-     * 事务单元ID
-     */
-    private String unitId;
-
-    /**
-     * TAG
-     */
-    private String tag;
-
-    /**
-     * 日志内容
-     */
-    private String content;
-
-    /**
-     * 创建时间
-     */
-    private String createTime;
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
+    }
 }

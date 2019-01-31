@@ -13,41 +13,60 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tm.support.restapi.model;
+package com.codingapi.txlcn.tm.support.restapi.vo;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * Description:
- * Date: 2018/12/24
+ * Date: 2018/12/20
  *
  * @author ujued
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class DTXInfo {
+public class ExceptionInfo {
+
+    private long id;
 
     /**
-     * 本周处理事务数量
+     * 事务组ID
      */
-    private long dtxCount;
+    private String groupId;
 
     /**
-     * 本周失败的事务数量
+     * 事务单元ID
      */
-    private int errorDtxCount;
+    private String unitId;
 
     /**
-     * 今天事务数量
+     * 资源管理服务地址
      */
-    private int todayDtxCount;
+    private String modId;
 
     /**
-     * 今天失败的事务数量
+     * 异常情况。-1 【未知】 0 【TxManager通知事务】， 1 【TxClient查询事务状态】 2 【事务发起方通知事务组】
      */
-    private int todayErrorDtxCount;
+    private int registrar;
 
+    /**
+     * 异常状态 0 待处理 1已处理
+     */
+    private short exState;
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+
+    /**
+     * 事务信息
+     */
+    private JSONObject transactionInfo;
 }

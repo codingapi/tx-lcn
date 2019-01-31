@@ -15,7 +15,6 @@
  */
 package com.codingapi.txlcn.tm.support.service.impl;
 
-import com.codingapi.txlcn.common.exception.FastStorageException;
 import com.codingapi.txlcn.common.exception.TxManagerException;
 import com.codingapi.txlcn.common.util.id.RandomUtils;
 import com.codingapi.txlcn.logger.db.LogDbProperties;
@@ -27,7 +26,7 @@ import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.tm.support.TxLcnManagerBanner;
 import com.codingapi.txlcn.tm.support.restapi.auth.DefaultTokenStorage;
-import com.codingapi.txlcn.tm.support.restapi.model.*;
+import com.codingapi.txlcn.tm.support.restapi.vo.*;
 import com.codingapi.txlcn.tm.support.service.AdminService;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.dto.AppInfo;
@@ -37,7 +36,9 @@ import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -178,11 +179,6 @@ public class AdminServiceImpl implements AdminService {
             ListAppMods.AppMod appMod = new ListAppMods.AppMod();
             PropertyMapper.get().from(appInfo::getName).to(appMod::setModId);
             PropertyMapper.get().from(appInfo::getCreateTime).to(t -> appMod.setRegisterTime(dateFormat.format(t)));
-            try {
-                appMod.setMachineId(fastStorage.getMachineId(appInfo.getName()));
-            } catch (FastStorageException e) {
-                appMod.setMachineId(-1);
-            }
             appMods.add(appMod);
         }
         ListAppMods listAppMods = new ListAppMods();
@@ -190,10 +186,4 @@ public class AdminServiceImpl implements AdminService {
         listAppMods.setAppMods(appMods);
         return listAppMods;
     }
-
-    @Override
-    public void deleteMachineIds(List<String> modIds) throws TxManagerException {
-        fastStorage.releaseMachineIds(modIds);
-    }
-
 }

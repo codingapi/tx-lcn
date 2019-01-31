@@ -13,28 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tm.support.restapi.model;
+package com.codingapi.txlcn.tm.support.restapi.vo;
 
-import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * Description:
- * Date: 2018/11/23
+ * Date: 19-1-18 上午11:48
  *
  * @author ujued
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ErrorResponse {
-    private int code;
-    private String message;
-
-    @Override
-    public String toString() {
-        return JSON.toJSONString(this);
-    }
+public class DeleteExceptions {
+    private List<Long> id;
 }

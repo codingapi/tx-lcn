@@ -17,7 +17,7 @@ package com.codingapi.txlcn.tm.support.restapi.auth.sauth.token;
 
 import com.codingapi.txlcn.tm.support.restapi.auth.sauth.SAuthHandleException;
 import com.codingapi.txlcn.tm.support.restapi.auth.sauth.SAuthLogic;
-import com.codingapi.txlcn.tm.support.restapi.model.ErrorResponse;
+import com.codingapi.txlcn.tm.support.restapi.vo.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

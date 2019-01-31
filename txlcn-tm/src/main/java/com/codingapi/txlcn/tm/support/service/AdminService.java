@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.tm.support.service;
 
 import com.codingapi.txlcn.common.exception.TxManagerException;
-import com.codingapi.txlcn.tm.support.restapi.model.*;
+import com.codingapi.txlcn.tm.support.restapi.vo.*;
 
 import java.util.List;
 
@@ -82,12 +82,4 @@ public interface AdminService {
      * @return AppMods
      */
     ListAppMods listAppMods(Integer page, Integer limit);
-
-    /**
-     * 删除MachineIds
-     *
-     * @param modIds modIds
-     * @throws TxManagerException TxManagerException
-     */
-    void deleteMachineIds(List<String> modIds) throws TxManagerException;
 }

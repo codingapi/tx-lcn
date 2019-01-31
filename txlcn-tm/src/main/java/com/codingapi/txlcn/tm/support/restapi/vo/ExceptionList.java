@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tm.support.restapi.model;
+package com.codingapi.txlcn.tm.support.restapi.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,13 +23,14 @@ import java.util.List;
 
 /**
  * Description:
- * Date: 19-1-18 上午11:48
+ * Date: 2018/12/20
  *
  * @author ujued
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class DeleteExceptions {
-    private List<Long> id;
+public class ExceptionList {
+    private long total;
+    private List<ExceptionInfo> exceptions;
 }

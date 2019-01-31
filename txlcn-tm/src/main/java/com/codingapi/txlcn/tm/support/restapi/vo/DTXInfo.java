@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tm.support.service;
+package com.codingapi.txlcn.tm.support.restapi.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,24 +21,33 @@ import lombok.NoArgsConstructor;
 
 /**
  * Description:
- * Date: 2018/12/18
+ * Date: 2018/12/24
  *
  * @author ujued
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class WriteTxExceptionDTO {
-    private String groupId;
-    private String unitId;
-    private String modId;
-    private Integer transactionState;
-    private Short registrar;
+public class DTXInfo {
 
-    public WriteTxExceptionDTO(String groupId, String unitId, String modId, Integer transactionState) {
-        this.groupId = groupId;
-        this.unitId = unitId;
-        this.transactionState = transactionState;
-        this.modId = modId;
-    }
+    /**
+     * 本周处理事务数量
+     */
+    private long dtxCount;
+
+    /**
+     * 本周失败的事务数量
+     */
+    private int errorDtxCount;
+
+    /**
+     * 今天事务数量
+     */
+    private int todayDtxCount;
+
+    /**
+     * 今天失败的事务数量
+     */
+    private int todayErrorDtxCount;
+
 }
