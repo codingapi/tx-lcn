@@ -26,6 +26,7 @@ import com.codingapi.txlcn.txmsg.listener.HeartbeatListener;
 import com.codingapi.txlcn.txmsg.params.InitClientParams;
 import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.tc.support.listener.RpcEnvStatusListener;
+import com.codingapi.txlcn.txmsg.util.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -72,7 +73,7 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack, HeartbeatListe
             try {
                 log.info("Send init message to TM[{}]", remoteKey);
                 MessageDto msg = rpcClient.request(remoteKey, MessageCreator.initClient(modId), 5000);
-                if (msg.getData() != null) {
+                if (MessageUtils.statusOk(msg)) {
                     //每一次建立连接时将会获取最新的时间
                     InitClientParams resParams = msg.loadBean(InitClientParams.class);
                     // 1. 设置DTX Time 、 TM RPC timeout 和 MachineId

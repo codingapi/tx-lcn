@@ -24,9 +24,11 @@ import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.tm.core.storage.GroupProps;
 import com.codingapi.txlcn.tm.core.storage.LockValue;
 import com.codingapi.txlcn.tm.core.storage.TransactionUnit;
+import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -54,14 +56,18 @@ public class RedisStorage implements FastStorage {
 
     private RedisTemplate<String, Object> redisTemplate;
 
+    private StringRedisTemplate stringRedisTemplate;
+
     private TxManagerConfig managerConfig;
 
     public RedisStorage() {
     }
 
-    public RedisStorage(RedisTemplate<String, Object> redisTemplate, TxManagerConfig managerConfig) {
+    public RedisStorage(RedisTemplate<String, Object> redisTemplate, StringRedisTemplate stringRedisTemplate,
+                        TxManagerConfig managerConfig) {
         this.redisTemplate = redisTemplate;
         this.managerConfig = managerConfig;
+        this.stringRedisTemplate = stringRedisTemplate;
     }
 
     @Override
@@ -134,19 +140,23 @@ public class RedisStorage implements FastStorage {
     @Override
     public void acquireLocks(String contextId, Set<String> locks, LockValue lockValue) throws FastStorageException {
         // 未申请锁则为申请正常
-        if (Objects.isNull(locks)) {
+        if (Objects.isNull(locks) || locks.isEmpty()) {
             return;
         }
         Map<String, LockValue> lockIds = locks.stream().collect(Collectors.toMap(lock -> contextId + lock, lock -> lockValue));
+        String firstLockId = contextId + new ArrayList<>(locks).get(0);
         Boolean result = redisTemplate.opsForValue().multiSetIfAbsent(lockIds);
         if (!Optional.ofNullable(result).orElse(false)) {
-            List<Object> lockValues = redisTemplate.opsForValue().multiGet(locks.stream().map(lock -> contextId + lock).collect(Collectors.toList()));
-            assert lockValues != null;
-            LockValue hasLockValue = (LockValue) lockValues.get(0);
+            LockValue hasLockValue = (LockValue) redisTemplate.opsForValue().get(firstLockId);
+            if (Objects.isNull(hasLockValue)) {
+                throw new FastStorageException("acquire locks fail.", FastStorageException.EX_CODE_REPEAT_LOCK);
+            }
+            log.info("Has LockValue: {}, lockValue: {}", hasLockValue, lockValue);
             // 不在同一个DTX下，已存在的锁是排它锁 或者 新请求的不是共享锁时， 获取锁失败
-            if (!hasLockValue.getGroupId().equals(lockValue.getGroupId()) &&
-                    (hasLockValue.getLockType() == DTXLocks.X_LOCK || lockValue.getLockType() != DTXLocks.S_LOCK)) {
-                throw new FastStorageException("", FastStorageException.EX_CODE_REPEAT_LOCK);
+            if (Objects.isNull(lockValue.getGroupId()) || !lockValue.getGroupId().equals(hasLockValue.getGroupId())) {
+                if (hasLockValue.getLockType() == DTXLocks.X_LOCK || lockValue.getLockType() != DTXLocks.S_LOCK) {
+                    throw new FastStorageException("acquire locks fail.", FastStorageException.EX_CODE_REPEAT_LOCK);
+                }
             }
             redisTemplate.opsForValue().multiSet(lockIds);
         }
@@ -213,26 +223,50 @@ public class RedisStorage implements FastStorage {
         log.debug("removed TM {}:{}", host, transactionPort);
     }
 
-    @Override
-    public int acquireOrRefreshMachineId(int machineId, int machineMaxSize, long timeout) throws FastStorageException {
-        if (machineId < 0 || !Optional.ofNullable(redisTemplate.hasKey(REDIS_GROUP_PREFIX + machineId)).orElse(false)) {
-            redisTemplate.opsForValue().setIfAbsent(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", -1);
-            int curId = (int) redisTemplate.opsForValue().get(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id");
-            for (int i = 0; i < machineMaxSize; i++) {
-                ++curId;
-                if (Optional
-                        .ofNullable(redisTemplate.hasKey(REDIS_MACHINE_ID_MAP_PREFIX + ((curId) &= Integer.MAX_VALUE)))
-                        .orElse(true)) {
-                    continue;
-                }
-                redisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", curId);
-                redisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + curId, "", timeout, TimeUnit.MILLISECONDS);
-                return curId;
+    private static final String GLOBAL_CONTEXT = "root";
+    private static final String GLOBAL_LOCK_ID = "global.lock";
+
+    private void acquireGlobalXLock() {
+        LockValue lockValue = new LockValue();
+        lockValue.setLockType(DTXLocks.X_LOCK);
+        while (true) {
+            try {
+                acquireLocks(GLOBAL_CONTEXT, Sets.newHashSet(GLOBAL_LOCK_ID), lockValue);
+                break;
+            } catch (FastStorageException ignored) {
             }
-            throw new FastStorageException("non can used machine id", FastStorageException.EX_CODE_NON_MACHINE_ID);
         }
-        redisTemplate.opsForValue().set(REDIS_GROUP_PREFIX + machineId, "", timeout, TimeUnit.MILLISECONDS);
-        return -1;
     }
 
+    private void releaseGlobalXLock() {
+        releaseLocks(GLOBAL_CONTEXT, Sets.newHashSet(GLOBAL_LOCK_ID));
+    }
+
+    @Override
+    public int acquireOrRefreshMachineId(int machineId, int machineMaxSize, long timeout) throws FastStorageException {
+        try {
+            acquireGlobalXLock();
+            if (machineId < 0 || !Optional.ofNullable(stringRedisTemplate.hasKey(REDIS_GROUP_PREFIX + machineId)).orElse(false)) {
+                stringRedisTemplate.opsForValue().setIfAbsent(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", "-1");
+                for (int i = 0; i < machineMaxSize; i++) {
+                    int curId = Math.toIntExact(
+                            Objects.requireNonNull(
+                                    stringRedisTemplate.opsForValue().increment(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", 1)));
+                    if (Optional
+                            .ofNullable(stringRedisTemplate.hasKey(REDIS_MACHINE_ID_MAP_PREFIX + ((curId) &= machineMaxSize)))
+                            .orElse(true)) {
+                        continue;
+                    }
+                    stringRedisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", String.valueOf(curId));
+                    stringRedisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + curId, "", timeout, TimeUnit.MILLISECONDS);
+                    return curId;
+                }
+                throw new FastStorageException("non can used machine id", FastStorageException.EX_CODE_NON_MACHINE_ID);
+            }
+            stringRedisTemplate.opsForValue().set(REDIS_GROUP_PREFIX + machineId, "", timeout, TimeUnit.MILLISECONDS);
+            return -1;
+        } finally {
+            releaseGlobalXLock();
+        }
+    }
 }

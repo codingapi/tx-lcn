@@ -29,6 +29,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.ExecutorService;
@@ -69,8 +70,9 @@ public class TMAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public FastStorageProvider fastStorageProvider(RedisTemplate<String, Object> redisTemplate, TxManagerConfig managerConfig) {
-        return () -> new RedisStorage(redisTemplate, managerConfig);
+    public FastStorageProvider fastStorageProvider(RedisTemplate<String, Object> redisTemplate,
+                                                   StringRedisTemplate stringRedisTemplate, TxManagerConfig managerConfig) {
+        return () -> new RedisStorage(redisTemplate, stringRedisTemplate, managerConfig);
     }
 
     @Bean

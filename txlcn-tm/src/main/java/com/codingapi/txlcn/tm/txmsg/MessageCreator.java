@@ -25,6 +25,7 @@ import java.io.Serializable;
 
 /**
  * 消息创建器
+ *
  * @author lorne
  */
 public class MessageCreator {
@@ -57,12 +58,13 @@ public class MessageCreator {
     }
 
     /**
-     * 关闭事务组正常响应
-     * @param action action
-     * @param message  message
+     * 正常响应
+     *
+     * @param action  action
+     * @param message message
      * @return MessageDto
      */
-    public static MessageDto notifyGroupOkResponse(Serializable message, String action) {
+    public static MessageDto okResponse(Serializable message, String action) {
         MessageDto messageDto = new MessageDto();
         messageDto.setState(MessageConstants.STATE_OK);
         messageDto.setAction(action);
@@ -71,12 +73,13 @@ public class MessageCreator {
     }
 
     /**
-     * 关闭事务组失败响应
-     * @param action action
-     * @param message  message
+     * 失败响应
+     *
+     * @param action  action
+     * @param message message
      * @return MessageDto
      */
-    public static MessageDto notifyGroupFailResponse(Serializable message,String action) {
+    public static MessageDto failResponse(Serializable message, String action) {
         MessageDto messageDto = new MessageDto();
         messageDto.setAction(action);
         messageDto.setState(MessageConstants.STATE_EXCEPTION);
@@ -86,6 +89,7 @@ public class MessageCreator {
 
     /**
      * 服务器错误
+     *
      * @param action action
      * @return MessageDto
      */

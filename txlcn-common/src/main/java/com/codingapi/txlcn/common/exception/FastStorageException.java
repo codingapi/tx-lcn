@@ -32,9 +32,13 @@ public class FastStorageException extends Exception {
 
     public static final int EX_CODE_NON_GROUP = 101;
 
-    public static final int EX_CODE_REPEAT_LOCK = 102;
+    /**
+     * about lock
+     */
+    public static final int EX_CODE_REPEAT_LOCK = 201;
+    public static final int EX_CODE_ACQUIRE_ERROR = 202;
 
-    public static final int EX_CODE_NON_MACHINE_ID = 103;
+    public static final int EX_CODE_NON_MACHINE_ID = 301;
 
     private int code;
 
@@ -66,5 +70,9 @@ public class FastStorageException extends Exception {
     @Override
     public String toString() {
         return super.toString() + "(code=" + code + ')';
+    }
+
+    public static boolean aboutLock(int code) {
+        return String.valueOf(code).charAt(0) == '2';
     }
 }

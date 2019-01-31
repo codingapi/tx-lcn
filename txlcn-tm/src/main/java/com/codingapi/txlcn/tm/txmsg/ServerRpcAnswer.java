@@ -69,10 +69,10 @@ public class ServerRpcAnswer implements RpcAnswer, DisposableBean {
                 MessageDto messageDto = null;
                 try {
                     Serializable message = rpcExecuteService.execute(transactionCmd);
-                    messageDto = MessageCreator.notifyGroupOkResponse(message, action);
+                    messageDto = MessageCreator.okResponse(message, action);
                 } catch (Throwable e) {
-                    log.error(e.getMessage(), e);
-                    messageDto = MessageCreator.notifyGroupFailResponse(e, action);
+                    log.error("rpc execute service error. action: " + action, e);
+                    messageDto = MessageCreator.failResponse(e, action);
                 } finally {
                     // 对需要响应信息的请求做出响应
                     if (rpcCmd.getKey() != null) {

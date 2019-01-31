@@ -17,6 +17,7 @@ package com.codingapi.txlcn.tm.support.service.impl;
 
 import com.codingapi.txlcn.common.exception.FastStorageException;
 import com.codingapi.txlcn.common.exception.TxManagerException;
+import com.codingapi.txlcn.common.lock.DTXLocks;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.tm.core.storage.LockValue;
@@ -71,29 +72,16 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public int machineIdSync() throws TxManagerException {
-        String contextId = "acquireMachineId";
-        Set<String> locks = Sets.newHashSet("machineIdSync");
-        LockValue lockValue = new LockValue();
-        while (true) {
-            try {
-                fastStorage.acquireLocks(contextId, locks, lockValue);
-                int machineMaxSize = (int) Math.pow(2, managerConfig.getMachineIdLen()) - 1;
-                long timeout = managerConfig.getHeartTime() + 2000;
-                int id = fastStorage.acquireOrRefreshMachineId(-1, machineMaxSize, timeout);
-                log.info("Acquired machine id {}.", id);
-                return id;
-            } catch (FastStorageException e) {
-                if (e.getCode() != FastStorageException.EX_CODE_REPEAT_LOCK) {
-                    break;
-                }
-            } finally {
-                try {
-                    fastStorage.releaseLocks(contextId, locks);
-                } catch (FastStorageException ignored) {
-                }
-            }
+        int machineMaxSize = (int) Math.pow(2, managerConfig.getMachineIdLen()) - 1;
+        long timeout = managerConfig.getHeartTime() + 2000;
+        int id = 0;
+        try {
+            id = fastStorage.acquireOrRefreshMachineId(-1, machineMaxSize, timeout);
+        } catch (FastStorageException e) {
+            throw new TxManagerException(e);
         }
-        throw new TxManagerException("non machine id");
+        log.info("Acquired machine id {}, max machine id is: {}", id, machineMaxSize);
+        return id;
     }
 
     @Override
