@@ -74,8 +74,8 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
                     InitClientParams resParams = msg.loadBean(InitClientParams.class);
                     txClientConfig.applyDtxTime(resParams.getDtxTime());
                     txClientConfig.applyTmRpcTimeout(resParams.getTmRpcTimeout());
-                    log.info("Finally, determined dtx time is {}ms. TM rpc timeout is {} ms.",
-                            resParams.getDtxTime(), resParams.getTmRpcTimeout());
+                    log.info("Finally, determined dtx time is {}ms, tm rpc timeout is {} ms, machineId is {}",
+                            resParams.getDtxTime(), resParams.getTmRpcTimeout(), resParams.getMachineId());
                     rpcEnvStatusListeners.forEach(rpcEnvStatusListener -> rpcEnvStatusListener.onInitialized(remoteKey));
                     return;
                 }
