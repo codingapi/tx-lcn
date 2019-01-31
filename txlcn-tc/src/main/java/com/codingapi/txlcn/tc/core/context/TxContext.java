@@ -49,6 +49,11 @@ public class TxContext {
     private boolean dtxStart;
 
     /**
+     * 事务创建时间
+     */
+    private long createTime = System.currentTimeMillis();
+
+    /**
      * 上下文内分布式事务类型
      */
     private Set<String> transactionTypes = new HashSet<>(6);

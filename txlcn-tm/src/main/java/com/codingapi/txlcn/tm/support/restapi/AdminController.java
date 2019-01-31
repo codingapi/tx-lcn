@@ -19,19 +19,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.codingapi.txlcn.common.exception.FastStorageException;
 import com.codingapi.txlcn.common.exception.TransactionStateException;
 import com.codingapi.txlcn.common.exception.TxManagerException;
-import com.codingapi.txlcn.tm.support.TxLcnManagerBanner;
 import com.codingapi.txlcn.tm.cluster.TMProperties;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.tm.support.restapi.model.*;
 import com.codingapi.txlcn.tm.support.service.AdminService;
 import com.codingapi.txlcn.tm.support.service.TxExceptionService;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Description:
@@ -162,11 +158,6 @@ public class AdminController {
     @GetMapping("/tx-manager")
     public TxManagerInfo getTxManagerInfo() {
         return adminService.getTxManagerInfo();
-    }
-
-    @GetMapping("/tm-version")
-    public Map<String, String> tmVersion() {
-        return Maps.asMap(Sets.newHashSet("version"), k -> TxLcnManagerBanner.VERSION);
     }
 
     private final FastStorage fastStorage;

@@ -18,6 +18,7 @@ package com.codingapi.txlcn.tc.core.context;
 import com.codingapi.txlcn.common.exception.BeforeBusinessException;
 import com.codingapi.txlcn.common.exception.TCGlobalContextException;
 import com.codingapi.txlcn.common.util.function.Supplier;
+import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.tc.core.TccTransactionInfo;
 import com.codingapi.txlcn.tc.core.transaction.lcn.resource.LcnConnectionProxy;
 import com.codingapi.txlcn.tc.core.transaction.txc.analy.def.PrimaryKeysProvider;
@@ -50,11 +51,14 @@ public class DefaultGlobalContext implements TCGlobalContext {
 
     private final List<PrimaryKeysProvider> primaryKeysProviders;
 
+    private final TxClientConfig clientConfig;
+
     @Autowired
-    public DefaultGlobalContext(AttachmentCache attachmentCache,
+    public DefaultGlobalContext(AttachmentCache attachmentCache, TxClientConfig clientConfig,
                                 @Autowired(required = false) List<PrimaryKeysProvider> primaryKeysProviders) {
         this.attachmentCache = attachmentCache;
         this.primaryKeysProviders = primaryKeysProviders;
+        this.clientConfig = clientConfig;
     }
 
     @Override
@@ -171,6 +175,14 @@ public class DefaultGlobalContext implements TCGlobalContext {
     @Override
     public boolean hasTxContext() {
         return TracingContext.tracing().hasGroup() && txContext(TracingContext.tracing().groupId()) != null;
+    }
+
+    @Override
+    public boolean isDTXTimeout() {
+        if (!hasTxContext()) {
+            throw new IllegalStateException("non txContext.");
+        }
+        return (System.currentTimeMillis() - txContext().getCreateTime()) > clientConfig.getDtxTime();
     }
 
     /**

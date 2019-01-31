@@ -27,6 +27,13 @@ import java.io.Serializable;
  */
 @Data
 public class LockValue implements Serializable {
+    /**
+     * 事务组ID
+     */
     private String groupId;
+
+    /**
+     * 锁类型
+     */
     private int lockType;
 }

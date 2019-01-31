@@ -27,6 +27,14 @@ import java.io.Serializable;
  */
 @Data
 public class GroupProps implements Serializable {
+
+    /**
+     * 事务组ID
+     */
     private String groupId;
+
+    /**
+     * 创建时间
+     */
     private long createTimeMillis;
 }

@@ -23,6 +23,7 @@ import com.codingapi.txlcn.logger.exception.TxLoggerException;
 import com.codingapi.txlcn.logger.helper.TxLcnLogDbHelper;
 import com.codingapi.txlcn.logger.model.*;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
+import com.codingapi.txlcn.tm.support.TxLcnManagerBanner;
 import com.codingapi.txlcn.tm.support.restapi.auth.DefaultTokenStorage;
 import com.codingapi.txlcn.tm.support.restapi.model.*;
 import com.codingapi.txlcn.tm.support.service.AdminService;
@@ -96,7 +97,7 @@ public class AdminServiceImpl implements AdminService {
 
         List<Field> list = Stream.of(new GroupId(groupId), new Tag(tag), new StartTime(startTime), new StopTime(stopTime))
                 .filter(Field::ok).collect(Collectors.toList());
-        LogList logList = null;
+        LogList logList;
         try {
             logList = txLoggerHelper.findByLimitAndFields(page, limit, timeOrder, list);
         } catch (TxLoggerException e) {
@@ -135,7 +136,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public TxManagerInfo getTxManagerInfo() {
-
         TxManagerInfo txManagerInfo = new TxManagerInfo();
         txManagerInfo.setClientCount(rpcClient.loadAllRemoteKey().size());
         txManagerInfo.setConcurrentLevel(Math.max(
@@ -146,6 +146,7 @@ public class AdminServiceImpl implements AdminService {
         txManagerInfo.setSocketPort(managerConfig.getPort());
         txManagerInfo.setExUrl(managerConfig.isExUrlEnabled() ? managerConfig.getExUrl() : "disabled");
         txManagerInfo.setEnableTxLogger(String.valueOf(logDbProperties.isEnabled()));
+        txManagerInfo.setTmVersion(TxLcnManagerBanner.VERSION);
         return txManagerInfo;
     }
 

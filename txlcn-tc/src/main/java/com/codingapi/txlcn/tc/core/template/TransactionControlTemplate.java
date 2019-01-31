@@ -15,19 +15,20 @@
  */
 package com.codingapi.txlcn.tc.core.template;
 
-import com.codingapi.txlcn.tc.aspect.TransactionInfo;
 import com.codingapi.txlcn.common.exception.BeforeBusinessException;
 import com.codingapi.txlcn.common.exception.LcnBusinessException;
 import com.codingapi.txlcn.common.exception.TransactionClearException;
 import com.codingapi.txlcn.common.exception.TxClientException;
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
-import com.codingapi.txlcn.txmsg.exception.RpcException;
+import com.codingapi.txlcn.tc.aspect.TransactionInfo;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
-import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
-import com.codingapi.txlcn.tc.txmsg.ReliableMessenger;
 import com.codingapi.txlcn.tc.core.checking.DTXChecking;
 import com.codingapi.txlcn.tc.core.checking.DTXExceptionHandler;
+import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
+import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
+import com.codingapi.txlcn.tc.txmsg.ReliableMessenger;
+import com.codingapi.txlcn.txmsg.exception.RpcException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,17 +57,20 @@ public class TransactionControlTemplate {
 
     private final ReliableMessenger reliableMessenger;
 
+    private final TCGlobalContext globalContext;
+
     @Autowired
-    public TransactionControlTemplate(AspectLogger aspectLogger, DTXChecking dtxChecking,
+    public TransactionControlTemplate(AspectLogger aspectLogger, DTXChecking dtxChecking, TxLogger txLogger,
                                       DTXExceptionHandler dtxExceptionHandler,
                                       TransactionCleanTemplate transactionCleanTemplate,
-                                      TxLogger txLogger, ReliableMessenger reliableMessenger) {
+                                      ReliableMessenger reliableMessenger, TCGlobalContext globalContext) {
         this.aspectLogger = aspectLogger;
         this.dtxChecking = dtxChecking;
         this.dtxExceptionHandler = dtxExceptionHandler;
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.txLogger = txLogger;
         this.reliableMessenger = reliableMessenger;
+        this.globalContext = globalContext;
     }
 
     /**
@@ -81,12 +85,12 @@ public class TransactionControlTemplate {
     public void createGroup(String groupId, String unitId, TransactionInfo transactionInfo, String transactionType)
             throws BeforeBusinessException {
         //创建事务组
-        txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "create group");
         try {
             // 日志
-            log.debug("transaction type[{}] > create group > groupId: {}, unitId: {}", transactionType, groupId, unitId);
+            txLogger.transactionInfo(groupId, unitId,
+                    "transaction type[{}] > create group > groupId: {xid}, unitId: {uid}", transactionType);
+            // 创建事务组消息
             reliableMessenger.createGroup(groupId);
-
             // 缓存发起方切面信息
             aspectLogger.trace(groupId, unitId, transactionInfo);
         } catch (RpcException e) {
@@ -143,6 +147,9 @@ public class TransactionControlTemplate {
         txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "notify group %d.", state);
         log.debug("transaction type[{}] > notify group > groupId: {}, unitId: {}", transactionType, groupId, unitId);
         try {
+            if (globalContext.isDTXTimeout()) {
+                throw new LcnBusinessException("dtx timeout.");
+            }
             reliableMessenger.notifyGroup(groupId, state);
             transactionCleanTemplate.clean(groupId, unitId, transactionType, state);
             log.debug("{} > close transaction group.", transactionType);

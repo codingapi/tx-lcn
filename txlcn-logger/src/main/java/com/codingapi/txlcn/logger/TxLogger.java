@@ -15,6 +15,8 @@
  */
 package com.codingapi.txlcn.logger;
 
+import com.codingapi.txlcn.common.util.Transactions;
+
 /**
  * Description:
  * Company: CodingApi
@@ -33,6 +35,18 @@ public interface TxLogger {
      * @param content content
      */
     void trace(String groupId, String unitId, String tag, String content, Object... args);
+
+    /**
+     * 事务消息
+     *
+     * @param groupId groupId
+     * @param unitId  unitId
+     * @param content content
+     * @param args    args
+     */
+    default void transactionInfo(String groupId, String unitId, String content, Object... args) {
+        info(groupId, unitId, Transactions.TAG_TRANSACTION, content, args);
+    }
 
     /**
      * info log. todo
@@ -54,8 +68,8 @@ public interface TxLogger {
      * @param tag     tag
      * @param content content
      */
-    default void error(String groupId, String unitId, String tag, String content, String... args) {
-        trace(groupId, unitId, tag, content, args);
+    default void error(String groupId, String unitId, String content, Object... args) {
+        trace(groupId, unitId, Transactions.TE, content, args);
     }
 
 }

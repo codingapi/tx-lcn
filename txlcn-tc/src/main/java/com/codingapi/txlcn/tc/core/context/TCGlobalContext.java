@@ -59,4 +59,6 @@ public interface TCGlobalContext {
     TxContext txContext();
 
     boolean hasTxContext();
+
+    boolean isDTXTimeout();
 }

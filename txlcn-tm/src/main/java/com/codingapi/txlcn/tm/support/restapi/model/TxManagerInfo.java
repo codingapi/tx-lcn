@@ -69,4 +69,9 @@ public class TxManagerInfo {
      * 允许系统日志
      */
     private String enableTxLogger;
+
+    /**
+     * TM Version
+     */
+    private String tmVersion;
 }
