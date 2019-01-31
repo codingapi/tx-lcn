@@ -245,7 +245,7 @@ public class RedisStorage implements FastStorage {
     public int acquireOrRefreshMachineId(int machineId, int machineMaxSize, long timeout) throws FastStorageException {
         try {
             acquireGlobalXLock();
-            if (machineId < 0 || !Optional.ofNullable(stringRedisTemplate.hasKey(REDIS_GROUP_PREFIX + machineId)).orElse(false)) {
+            if (machineId < 0) {
                 stringRedisTemplate.opsForValue().setIfAbsent(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", "-1");
                 for (int i = 0; i < machineMaxSize; i++) {
                     int curId = Math.toIntExact(
