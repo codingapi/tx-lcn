@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tm.support.service.impl;
 
+import com.codingapi.txlcn.common.exception.FastStorageException;
 import com.codingapi.txlcn.common.exception.TxManagerException;
 import com.codingapi.txlcn.common.util.id.RandomUtils;
 import com.codingapi.txlcn.logger.db.LogDbProperties;
@@ -23,6 +24,7 @@ import com.codingapi.txlcn.logger.exception.TxLoggerException;
 import com.codingapi.txlcn.logger.helper.TxLcnLogDbHelper;
 import com.codingapi.txlcn.logger.model.*;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
+import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.tm.support.TxLcnManagerBanner;
 import com.codingapi.txlcn.tm.support.restapi.auth.DefaultTokenStorage;
 import com.codingapi.txlcn.tm.support.restapi.model.*;
@@ -58,16 +60,19 @@ public class AdminServiceImpl implements AdminService {
 
     private final RpcClient rpcClient;
 
+    private final FastStorage fastStorage;
+
     @Autowired
     public AdminServiceImpl(TxManagerConfig managerConfig,
                             DefaultTokenStorage defaultTokenStorage,
                             TxLcnLogDbHelper txLoggerHelper,
-                            RpcClient rpcClient, LogDbProperties logDbProperties) {
+                            RpcClient rpcClient, LogDbProperties logDbProperties, FastStorage fastStorage) {
         this.managerConfig = managerConfig;
         this.defaultTokenStorage = defaultTokenStorage;
         this.txLoggerHelper = txLoggerHelper;
         this.rpcClient = rpcClient;
         this.logDbProperties = logDbProperties;
+        this.fastStorage = fastStorage;
     }
 
     @Override
@@ -173,6 +178,11 @@ public class AdminServiceImpl implements AdminService {
             ListAppMods.AppMod appMod = new ListAppMods.AppMod();
             PropertyMapper.get().from(appInfo::getName).to(appMod::setModId);
             PropertyMapper.get().from(appInfo::getCreateTime).to(t -> appMod.setRegisterTime(dateFormat.format(t)));
+            try {
+                appMod.setMachineId(fastStorage.getMachineId(appInfo.getName()));
+            } catch (FastStorageException e) {
+                appMod.setMachineId(-1);
+            }
             appMods.add(appMod);
         }
         ListAppMods listAppMods = new ListAppMods();
@@ -180,4 +190,10 @@ public class AdminServiceImpl implements AdminService {
         listAppMods.setAppMods(appMods);
         return listAppMods;
     }
+
+    @Override
+    public void deleteMachineIds(List<String> modIds) throws TxManagerException {
+        fastStorage.releaseMachineIds(modIds);
+    }
+
 }

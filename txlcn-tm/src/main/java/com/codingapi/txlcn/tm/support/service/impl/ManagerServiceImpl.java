@@ -30,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -112,12 +113,12 @@ public class ManagerServiceImpl implements ManagerService {
     public void releaseMachineId(String host, int port) {
         String key = host + ":" + port;
         log.info("{} released machine id.", key);
-        fastStorage.releaseMachineId(key);
+        fastStorage.releaseMachineIds(Collections.singletonList(key));
     }
 
     @Override
     public void releaseMachineId(String tcModId) {
         log.info("{} released machine id.", tcModId);
-        fastStorage.releaseMachineId(tcModId);
+        fastStorage.releaseMachineIds(Collections.singletonList(tcModId));
     }
 }

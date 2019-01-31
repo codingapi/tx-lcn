@@ -33,6 +33,7 @@ public class ListAppMods {
     @Data
     public static class AppMod {
         private String modId;
+        private int machineId;
         private String registerTime;
     }
 }

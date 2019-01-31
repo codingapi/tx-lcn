@@ -31,6 +31,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 /**
@@ -134,33 +135,24 @@ public class RedisStorage implements FastStorage {
 
     @Override
     public void acquireLocks(String contextId, Set<String> locks, LockValue lockValue) throws FastStorageException {
-
         // 未申请锁则为申请正常
         if (Objects.isNull(locks)) {
             return;
         }
-
-        Set<String> successLocks = new HashSet<>();
-        try {
-            for (String lockId : locks) {
-                String globalLockId = contextId + lockId;
-                LockValue lock = (LockValue) redisTemplate.opsForValue().get(globalLockId);
-                if (Objects.nonNull(lock)) {
-                    // 不在同一个DTX下，已存在的锁是排它锁 或者 新请求的不是共享锁时， 获取锁失败
-                    if (!lockValue.getGroupId().equals(lock.getGroupId()) &&
-                            (lock.getLockType() == DTXLocks.X_LOCK || lockValue.getLockType() != DTXLocks.S_LOCK)) {
-                        throw new FastStorageException("repeat x_lock", FastStorageException.EX_CODE_REPEAT_LOCK);
-                    }
-                    // 直接成功
-                    return;
-                }
-                redisTemplate.opsForValue().set(globalLockId, lockValue, managerConfig.getDtxLockTime(), TimeUnit.MILLISECONDS);
-                successLocks.add(globalLockId);
+        Map<String, LockValue> lockIds = locks.stream().collect(Collectors.toMap(lock -> contextId + lock, lock -> lockValue));
+        Boolean result = redisTemplate.opsForValue().multiSetIfAbsent(lockIds);
+        if (!Optional.ofNullable(result).orElse(false)) {
+            List<Object> lockValues = redisTemplate.opsForValue().multiGet(locks.stream().map(lock -> contextId + lock).collect(Collectors.toList()));
+            assert lockValues != null;
+            LockValue hasLockValue = (LockValue) lockValues.get(0);
+            // 不在同一个DTX下，已存在的锁是排它锁 或者 新请求的不是共享锁时， 获取锁失败
+            if (!hasLockValue.getGroupId().equals(lockValue.getGroupId()) &&
+                    (hasLockValue.getLockType() == DTXLocks.X_LOCK || lockValue.getLockType() != DTXLocks.S_LOCK)) {
+                throw new FastStorageException("", FastStorageException.EX_CODE_REPEAT_LOCK);
             }
-        } catch (FastStorageException e) {
-            redisTemplate.delete(successLocks);
-            throw e;
+            redisTemplate.opsForValue().multiSet(lockIds);
         }
+
     }
 
     @Override
@@ -244,7 +236,16 @@ public class RedisStorage implements FastStorage {
     }
 
     @Override
-    public void releaseMachineId(String key) {
-        redisTemplate.opsForHash().delete(REDIS_MACHINE_ID_MAP, key);
+    public void releaseMachineIds(List<String> keys) {
+        redisTemplate.opsForHash().delete(REDIS_MACHINE_ID_MAP, keys.toArray(new Object[0]));
+    }
+
+    @Override
+    public int getMachineId(String key) throws FastStorageException {
+        Integer machineId = (Integer) redisTemplate.opsForHash().get(REDIS_MACHINE_ID_MAP, key);
+        if (Objects.isNull(machineId)) {
+            throw new FastStorageException("non it's machine id.", FastStorageException.EX_CODE_NON_MACHINE_ID);
+        }
+        return machineId;
     }
 }

@@ -194,16 +194,24 @@ public interface FastStorage {
     /**
      * 从{@code size}中找一个未使用的数字, 并与{@code key}做关联
      *
-     * @param key key
+     * @param key  key
      * @param size 限制大小
      */
     int acquireMachineId(String key, int size) throws FastStorageException;
 
     /**
-     * 释放{@code key}的MachineId
+     * 释放所有{@code key}的MachineId
+     *
+     * @param keys keys
+     */
+    void releaseMachineIds(List<String> keys);
+
+    /**
+     * 获取{@code name}的机器ID
      *
      * @param key key
+     * @return machine id
+     * @throws FastStorageException FastStorageException
      */
-    void releaseMachineId(String key);
-
+    int getMachineId(String key) throws FastStorageException;
 }
