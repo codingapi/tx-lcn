@@ -25,11 +25,11 @@ public class DefaultIdGen implements IdGen {
      */
     private final static long START_STAMP = 1546272000000L;
 
-    public DefaultIdGen(int machineOffset, int sequenceOffset, int machineId) {
-        this.maxSequenceValue = ~(-1 << sequenceOffset);
-        this.timeOffset = 63 - machineOffset - sequenceOffset;
+    public DefaultIdGen(int machineLen, int sequenceLen, int machineId) {
+        this.maxSequenceValue = ~(-1 << sequenceLen);
+        this.machineOffset = sequenceLen;
+        this.timeOffset = machineOffset + machineLen;
         this.machineId = machineId;
-        this.machineOffset = machineOffset;
     }
 
     @Override
