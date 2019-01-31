@@ -16,7 +16,6 @@
 package com.codingapi.txlcn.tm;
 
 import com.codingapi.txlcn.common.runner.TxLcnApplicationRunner;
-import com.codingapi.txlcn.common.util.id.IdGenConfiguration;
 import com.codingapi.txlcn.logger.TxLoggerConfiguration;
 import com.codingapi.txlcn.txmsg.MessageConfiguration;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;

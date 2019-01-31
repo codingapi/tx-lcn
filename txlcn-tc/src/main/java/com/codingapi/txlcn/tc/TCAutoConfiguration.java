@@ -16,8 +16,6 @@
 package com.codingapi.txlcn.tc;
 
 import com.codingapi.txlcn.common.runner.TxLcnApplicationRunner;
-import com.codingapi.txlcn.common.util.id.IdGen;
-import com.codingapi.txlcn.common.util.id.IdGenConfiguration;
 import com.codingapi.txlcn.logger.TxLoggerConfiguration;
 import com.codingapi.txlcn.tc.config.DependenciesImportSelector;
 import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;

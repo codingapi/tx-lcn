@@ -1,8 +1,10 @@
 package com.codingapi.txlcn.tm.config;
 
 import com.codingapi.txlcn.common.runner.TxLcnInitializer;
-import com.codingapi.txlcn.common.util.id.IdGenConfiguration;
+import com.codingapi.txlcn.common.util.id.RandomUtils;
+import com.codingapi.txlcn.common.util.id.SnowFlakeGenerator;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,25 +15,26 @@ import org.springframework.stereotype.Component;
  * @author ujued
  */
 @Component
+@Slf4j
 public class TMIdGenInitializer implements TxLcnInitializer {
 
     private final FastStorage fastStorage;
 
     private final TxManagerConfig managerConfig;
 
-    private final IdGenConfiguration idGenConfiguration;
-
     @Autowired
-    public TMIdGenInitializer(FastStorage fastStorage, TxManagerConfig managerConfig, IdGenConfiguration idGenConfiguration) {
+    public TMIdGenInitializer(FastStorage fastStorage, TxManagerConfig managerConfig) {
         this.fastStorage = fastStorage;
         this.managerConfig = managerConfig;
-        this.idGenConfiguration = idGenConfiguration;
     }
 
     @Override
     public void init() throws Exception {
         int value = fastStorage.acquireMachineId(managerConfig.getHost() + ":" + managerConfig.getPort(), managerConfig.getMachineIdLen());
-        idGenConfiguration.setMachineId(value);
+        SnowFlakeGenerator.Factory factory = new SnowFlakeGenerator.Factory(managerConfig.getMachineIdLen(), 0);
+        SnowFlakeGenerator generator = factory.create(0, value);
+        RandomUtils.init(generator::nextId);
+        log.info("MachineId is {}.", value);
     }
 
     @Override
