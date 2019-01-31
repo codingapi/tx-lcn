@@ -213,30 +213,26 @@ public class RedisStorage implements FastStorage {
         log.debug("removed TM {}:{}", host, transactionPort);
     }
 
-
     @Override
-    public int acquireMachineId(int size, long timeout) throws FastStorageException {
-        redisTemplate.opsForValue().setIfAbsent(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", -1);
-        int curId = (int) redisTemplate.opsForValue().get(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id");
-        for (int i = 0; i < size; i++) {
-            ++curId;
-            if (Optional
-                    .ofNullable(redisTemplate.hasKey(REDIS_MACHINE_ID_MAP_PREFIX + ((curId) &= Integer.MAX_VALUE)))
-                    .orElse(true)) {
-                continue;
+    public int acquireOrRefreshMachineId(int machineId, int machineMaxSize, long timeout) throws FastStorageException {
+        if (machineId < 0 || !Optional.ofNullable(redisTemplate.hasKey(REDIS_GROUP_PREFIX + machineId)).orElse(false)) {
+            redisTemplate.opsForValue().setIfAbsent(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", -1);
+            int curId = (int) redisTemplate.opsForValue().get(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id");
+            for (int i = 0; i < machineMaxSize; i++) {
+                ++curId;
+                if (Optional
+                        .ofNullable(redisTemplate.hasKey(REDIS_MACHINE_ID_MAP_PREFIX + ((curId) &= Integer.MAX_VALUE)))
+                        .orElse(true)) {
+                    continue;
+                }
+                redisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", curId);
+                redisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + curId, "", timeout, TimeUnit.MILLISECONDS);
+                return curId;
             }
-            redisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", curId);
-            redisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + curId, "", timeout, TimeUnit.MILLISECONDS);
-            return curId;
-        }
-        throw new FastStorageException("non can used", FastStorageException.EX_CODE_NON_MACHINE_ID);
-    }
-
-    @Override
-    public void refreshMachineId(int machineId, long timeout) throws FastStorageException {
-        if (!Optional.ofNullable(redisTemplate.hasKey(REDIS_GROUP_PREFIX + machineId)).orElse(false)) {
-            throw new FastStorageException("non this machine id.", FastStorageException.EX_CODE_NON_MACHINE_ID);
+            throw new FastStorageException("non can used machine id", FastStorageException.EX_CODE_NON_MACHINE_ID);
         }
         redisTemplate.opsForValue().set(REDIS_GROUP_PREFIX + machineId, "", timeout, TimeUnit.MILLISECONDS);
+        return -1;
     }
+
 }

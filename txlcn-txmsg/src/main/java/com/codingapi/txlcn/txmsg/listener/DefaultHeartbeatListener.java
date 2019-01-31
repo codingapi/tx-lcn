@@ -15,21 +15,9 @@
  */
 package com.codingapi.txlcn.txmsg.listener;
 
-import com.codingapi.txlcn.txmsg.dto.RpcCmd;
-
 /**
  * @author lorne 2019/1/31
  */
 public class DefaultHeartbeatListener implements HeartbeatListener{
 
-
-    @Override
-    public void onTcReceivedHeart(RpcCmd cmd) {
-
-    }
-
-    @Override
-    public void onTmReceivedHeart(RpcCmd cmd) {
-
-    }
 }

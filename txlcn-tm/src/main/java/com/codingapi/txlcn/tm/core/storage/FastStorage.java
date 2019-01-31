@@ -192,18 +192,13 @@ public interface FastStorage {
     /*-----------------------Machine ID------------------------------*/
 
     /**
-     * 从{@code size}中找一个未使用的数字, 并与{@code key}做关联
-     *
-     * @param size    限制大小
-     * @param timeout 超时删除
-     */
-    int acquireMachineId(int size, long timeout) throws FastStorageException;
-
-    /**
-     * 刷新时间
+     * 申请或刷新一个MachineID
      *
      * @param machineId
+     * @param machineMaxSize 限制大小
+     * @param timeout 超时删除
+     * @return
      * @throws FastStorageException
      */
-    void refreshMachineId(int machineId, long timeout) throws FastStorageException;
+    int acquireOrRefreshMachineId(int machineId, int machineMaxSize, long timeout) throws FastStorageException;
 }

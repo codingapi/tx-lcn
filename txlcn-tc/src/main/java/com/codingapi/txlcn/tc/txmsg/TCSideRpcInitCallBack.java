@@ -19,8 +19,10 @@ import com.codingapi.txlcn.common.util.ApplicationInformation;
 import com.codingapi.txlcn.common.util.id.IdGenInit;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.dto.MessageDto;
+import com.codingapi.txlcn.txmsg.dto.RpcCmd;
 import com.codingapi.txlcn.txmsg.exception.RpcException;
 import com.codingapi.txlcn.txmsg.listener.ClientInitCallBack;
+import com.codingapi.txlcn.txmsg.listener.HeartbeatListener;
 import com.codingapi.txlcn.txmsg.params.InitClientParams;
 import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.tc.support.listener.RpcEnvStatusListener;
@@ -42,7 +44,7 @@ import java.util.List;
  */
 @Component
 @Slf4j
-public class TCSideRpcInitCallBack implements ClientInitCallBack {
+public class TCSideRpcInitCallBack implements ClientInitCallBack, HeartbeatListener {
 
     private final RpcClient rpcClient;
 
@@ -73,9 +75,10 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
                 if (msg.getData() != null) {
                     //每一次建立连接时将会获取最新的时间
                     InitClientParams resParams = msg.loadBean(InitClientParams.class);
-                    // 1. 设置DTX Time 和 TM RPC timeout
+                    // 1. 设置DTX Time 、 TM RPC timeout 和 MachineId
                     txClientConfig.applyDtxTime(resParams.getDtxTime());
                     txClientConfig.applyTmRpcTimeout(resParams.getTmRpcTimeout());
+                    txClientConfig.applyMachineId(resParams.getMachineId());
 
                     // 2. IdGen 初始化
                     IdGenInit.applySnowFlakeIdGen(resParams.getMachineLen(), resParams.getMachineId());
@@ -97,5 +100,10 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack {
     @Override
     public void connectFail(String remoteKey) {
         rpcEnvStatusListeners.forEach(rpcEnvStatusListener -> rpcEnvStatusListener.onConnectFail(remoteKey));
+    }
+
+    @Override
+    public void onTcReceivedHeart(RpcCmd cmd) {
+        cmd.getMsg().setData(txClientConfig.getMachineId());
     }
 }

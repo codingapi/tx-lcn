@@ -77,7 +77,9 @@ public class ManagerServiceImpl implements ManagerService {
         while (true) {
             try {
                 fastStorage.acquireLocks(contextId, locks, lockValue);
-                int id = fastStorage.acquireMachineId((int) Math.pow(2, managerConfig.getMachineIdLen()) - 1, managerConfig.getHeartTime() * 2 + 2000);
+                int machineMaxSize = (int) Math.pow(2, managerConfig.getMachineIdLen()) - 1;
+                long timeout = managerConfig.getHeartTime() + 2000;
+                int id = fastStorage.acquireOrRefreshMachineId(-1, machineMaxSize, timeout);
                 log.info("Acquired machine id {}.", id);
                 return id;
             } catch (FastStorageException e) {
@@ -97,7 +99,9 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public void refreshMachineId(int machineId) throws TxManagerException {
         try {
-            fastStorage.refreshMachineId(machineId, managerConfig.getHeartTime() * 2 + 2000);
+            int machineMaxSize = (int) Math.pow(2, managerConfig.getMachineIdLen()) - 1;
+            long timeout = managerConfig.getHeartTime() + 2000;
+            fastStorage.acquireOrRefreshMachineId(machineId, machineMaxSize, timeout);
         } catch (FastStorageException e) {
             throw new TxManagerException(e);
         }

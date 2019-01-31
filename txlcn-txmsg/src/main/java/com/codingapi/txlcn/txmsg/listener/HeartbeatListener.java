@@ -25,15 +25,18 @@ public interface HeartbeatListener {
 
     /**
      * 当TC接受到心跳数据的监听事件
-     * @param cmd   数据包
+     *
+     * @param cmd 数据包
      */
-    void onTcReceivedHeart(RpcCmd cmd);
-
+    default void onTcReceivedHeart(RpcCmd cmd) {
+    }
 
     /**
      * 当TM接收到心跳数据的监听事件
-     * @param cmd   数据包
+     *
+     * @param cmd 数据包
      */
-    void onTmReceivedHeart(RpcCmd cmd);
+    default void onTmReceivedHeart(RpcCmd cmd) {
+    }
 
 }

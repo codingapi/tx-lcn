@@ -2,8 +2,11 @@ package com.codingapi.txlcn.tm.txmsg;
 
 import com.codingapi.txlcn.common.runner.TxLcnInitializer;
 import com.codingapi.txlcn.common.util.id.IdGenInit;
+import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.support.service.ManagerService;
+import com.codingapi.txlcn.txmsg.dto.RpcCmd;
+import com.codingapi.txlcn.txmsg.listener.HeartbeatListener;
 import com.codingapi.txlcn.txmsg.listener.RpcConnectionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,16 +18,19 @@ import org.springframework.stereotype.Component;
  * @author ujued
  */
 @Component
-public class EnsureIdGenEngine implements RpcConnectionListener, TxLcnInitializer {
+public class EnsureIdGenEngine implements RpcConnectionListener, HeartbeatListener, TxLcnInitializer {
 
     private final TxManagerConfig managerConfig;
 
     private final ManagerService managerService;
 
+    private final TxLogger txLogger;
+
     @Autowired
-    public EnsureIdGenEngine(ManagerService managerService, TxManagerConfig managerConfig) {
+    public EnsureIdGenEngine(ManagerService managerService, TxManagerConfig managerConfig, TxLogger txLogger) {
         this.managerService = managerService;
         this.managerConfig = managerConfig;
+        this.txLogger = txLogger;
     }
 
     @Override
@@ -39,5 +45,15 @@ public class EnsureIdGenEngine implements RpcConnectionListener, TxLcnInitialize
     @Override
     public void init() throws Exception {
         IdGenInit.applySnowFlakeIdGen(managerConfig.getMachineIdLen(), managerService.machineIdSync());
+    }
+
+    @Override
+    public void onTmReceivedHeart(RpcCmd cmd) {
+        try {
+            int machineId = cmd.getMsg().loadBean(Integer.class);
+            managerService.refreshMachineId(machineId);
+        } catch (Exception e) {
+            txLogger.error("onTmReceivedHeart", e.getMessage());
+        }
     }
 }

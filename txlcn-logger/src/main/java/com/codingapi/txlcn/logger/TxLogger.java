@@ -65,11 +65,14 @@ public interface TxLogger {
      *
      * @param groupId groupId
      * @param unitId  unitId
-     * @param tag     tag
      * @param content content
      */
     default void error(String groupId, String unitId, String content, Object... args) {
         trace(groupId, unitId, Transactions.TE, content, args);
+    }
+
+    default void error(String name, String content, Object... args) {
+        error(name, "", content, args);
     }
 
 }
