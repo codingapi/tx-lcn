@@ -15,12 +15,7 @@
  */
 package com.codingapi.txlcn.txmsg;
 
-import com.codingapi.txlcn.txmsg.listener.ClientInitCallBack;
-import com.codingapi.txlcn.txmsg.RpcAnswer;
-import com.codingapi.txlcn.txmsg.RpcConfig;
-import com.codingapi.txlcn.txmsg.listener.DefaultClientInitCallback;
-import com.codingapi.txlcn.txmsg.listener.DefaultRpcConnectionListener;
-import com.codingapi.txlcn.txmsg.listener.RpcConnectionListener;
+import com.codingapi.txlcn.txmsg.listener.*;
 import com.codingapi.txlcn.txmsg.loadbalance.RpcLoadBalance;
 import com.codingapi.txlcn.txmsg.netty.loadbalance.RandomLoadBalance;
 import lombok.Data;
@@ -75,5 +70,11 @@ public class MessageConfiguration {
     @ConditionalOnMissingBean
     public RpcConnectionListener rpcConnectionListener(){
         return new DefaultRpcConnectionListener();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public HeartbeatListener heartbeatListener(){
+        return new DefaultHeartbeatListener();
     }
 }
