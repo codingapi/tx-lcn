@@ -19,22 +19,21 @@ import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
+import com.codingapi.txlcn.tm.core.storage.TransactionUnit;
+import com.codingapi.txlcn.tm.support.service.TxExceptionService;
+import com.codingapi.txlcn.tm.txmsg.MessageCreator;
+import com.codingapi.txlcn.tm.txmsg.RpcExceptionHandler;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.dto.MessageDto;
 import com.codingapi.txlcn.txmsg.exception.RpcException;
 import com.codingapi.txlcn.txmsg.params.NotifyUnitParams;
 import com.codingapi.txlcn.txmsg.util.MessageUtils;
-import com.codingapi.txlcn.tm.txmsg.MessageCreator;
-import com.codingapi.txlcn.tm.txmsg.RpcExceptionHandler;
-import com.codingapi.txlcn.tm.core.storage.TransactionUnit;
-import com.codingapi.txlcn.tm.support.service.TxExceptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Description: 默认事务管理器
@@ -121,16 +120,6 @@ public class SimpleTransactionManager implements TransactionManager {
     @Override
     public int transactionStateFromFastStorage(String groupId) {
         return dtxContextRegistry.transactionState(groupId);
-    }
-
-    @Override
-    public boolean isDTXTimeout(DTXContext dtxContext) {
-        Objects.requireNonNull(dtxContext);
-        try {
-            return (System.currentTimeMillis() - dtxContext.groupProps().getCreateTimeMillis()) > managerConfig.getDtxTime();
-        } catch (TransactionException e) {
-            return true;
-        }
     }
 
     private void notifyTransaction(DTXContext dtxContext, int transactionState) throws TransactionException {

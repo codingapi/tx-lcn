@@ -61,9 +61,6 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
     public Serializable execute(TransactionCmd transactionCmd) throws TxManagerException {
         try {
             DTXContext dtxContext = dtxContextRegistry.get(transactionCmd.getGroupId());
-            if (transactionManager.isDTXTimeout(dtxContext)) {
-                throw new TxManagerException("dtx timeout.");
-            }
             // 解析参数
             NotifyGroupParams notifyGroupParams = transactionCmd.getMsg().loadBean(NotifyGroupParams.class);
             log.debug("notify group params: {}", JSON.toJSONString(notifyGroupParams));
@@ -78,9 +75,8 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
             }
 
             // 系统日志
-            txLogger.trace(
-                    transactionCmd.getGroupId(), "",
-                    Transactions.TAG_TRANSACTION, "notify group " + notifyGroupParams.getState());
+            txLogger.transactionInfo(
+                    transactionCmd.getGroupId(), "", "notify group state: %d", notifyGroupParams.getState());
 
             if (commitState == 1) {
                 transactionManager.commit(dtxContext);
@@ -95,7 +91,7 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
         } finally {
             transactionManager.close(transactionCmd.getGroupId());
             // 系统日志
-            txLogger.trace(transactionCmd.getGroupId(), "", Transactions.TAG_TRANSACTION, "notify group over");
+            txLogger.transactionInfo(transactionCmd.getGroupId(), "", "notify group over");
         }
         return null;
     }

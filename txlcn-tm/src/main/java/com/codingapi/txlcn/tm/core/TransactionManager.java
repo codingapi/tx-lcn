@@ -84,11 +84,4 @@ public interface TransactionManager {
      */
     int transactionStateFromFastStorage(String groupId);
 
-    /**
-     * 判断某个事务是否超时
-     *
-     * @param dtxContext 事务上下文
-     * @return 结果
-     */
-    boolean isDTXTimeout(DTXContext dtxContext);
 }
