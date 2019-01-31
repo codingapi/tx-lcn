@@ -43,4 +43,9 @@ public class RandomUtils {
     public static String simpleKey() {
         return String.valueOf(System.nanoTime());
     }
+
+    public static void main(String[] args) {
+        IdGenInit.applySnowFlakeIdGen(10, 1);
+        System.out.println(randomKey());
+    }
 }

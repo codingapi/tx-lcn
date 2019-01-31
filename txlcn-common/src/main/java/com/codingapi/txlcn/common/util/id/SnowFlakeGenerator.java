@@ -64,7 +64,7 @@ public class SnowFlakeGenerator {
     /**
      * 可分配的位数
      */
-    private final static int REMAIN_BIT_NUM = 22;
+    private final static int REMAIN_BIT_NUM = 32;
 
     /**
      * idc编号

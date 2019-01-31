@@ -18,7 +18,6 @@ package com.codingapi.txlcn.tm.core;
 import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
-import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.storage.TransactionUnit;
 import com.codingapi.txlcn.tm.support.service.TxExceptionService;
 import com.codingapi.txlcn.tm.txmsg.MessageCreator;
@@ -55,18 +54,14 @@ public class SimpleTransactionManager implements TransactionManager {
 
     private final DTXContextRegistry dtxContextRegistry;
 
-    private final TxManagerConfig managerConfig;
-
     @Autowired
     public SimpleTransactionManager(RpcExceptionHandler rpcExceptionHandler, RpcClient rpcClient, TxLogger txLogger,
-                                    TxExceptionService exceptionService, DTXContextRegistry dtxContextRegistry,
-                                    TxManagerConfig managerConfig) {
+                                    TxExceptionService exceptionService, DTXContextRegistry dtxContextRegistry) {
         this.rpcExceptionHandler = rpcExceptionHandler;
         this.exceptionService = exceptionService;
         this.rpcClient = rpcClient;
         this.txLogger = txLogger;
         this.dtxContextRegistry = dtxContextRegistry;
-        this.managerConfig = managerConfig;
     }
 
     @Override
