@@ -52,27 +52,27 @@ public abstract class Maps {
         return map;
     }
 
-    public static <K, V> Map<K, V> newImmutableMap(K key1, V value1) {
+    public static <K, V> Map<K, V> of(K key1, V value1) {
         ImmutableMap<K, V> map = new ImmutableMap<>();
         map.put(key1, value1);
         return map;
     }
 
-    public static <K, V> Map<K, V> newImmutableMap(K key1, V value1, K key2, V value2) {
+    public static <K, V> Map<K, V> of(K key1, V value1, K key2, V value2) {
         ImmutableMap<K, V> map = new ImmutableMap<>();
         map.put(key1, value1);
         map.put(key2, value2);
         return map;
     }
 
-    public static <K, V> Map<K, V> newImmutableMap(K key1, V value1, K key2, V value2, K key3, V value3) {
-        Map<K, V> map = newImmutableMap(key1, value1, key2, value2);
+    public static <K, V> Map<K, V> of(K key1, V value1, K key2, V value2, K key3, V value3) {
+        Map<K, V> map = of(key1, value1, key2, value2);
         map.put(key3, value3);
         return map;
     }
 
-    public static <K, V> Map<K, V> newImmutableMap(K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4) {
-        Map<K, V> map = newImmutableMap(key1, value1, key2, value2, key3, value3);
+    public static <K, V> Map<K, V> of(K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4) {
+        Map<K, V> map = of(key1, value1, key2, value2, key3, value3);
         map.put(key3, value4);
         return map;
     }
@@ -173,6 +173,7 @@ public abstract class Maps {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public V remove(Object o) {
             if (containsKey(o)) {
                 int index = keyIndex((K) o);

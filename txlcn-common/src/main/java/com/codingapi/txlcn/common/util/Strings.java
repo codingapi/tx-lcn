@@ -1,6 +1,5 @@
 package com.codingapi.txlcn.common.util;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
 
@@ -57,6 +56,6 @@ public abstract class Strings {
 
     public static void main(String[] args) {
         String s1 = "hello, {}. {} is in {}";
-        System.out.println(format(s1, Maps.newImmutableMap("who", "ujued"), "world", "jinan"));
+        System.out.println(format(s1, Maps.of("who", "ujued"), "world", "jinan"));
     }
 }

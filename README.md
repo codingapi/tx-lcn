@@ -32,7 +32,7 @@ TCC忽略不说。LCN与TXC两种框架实现的事务模式到底那个更优�
 3. txlcn-logger:*日志模块。(默认提供日志持久化到MySQL的支持)* 
 4. txlcn-tm:*TXLCN事务管理器*   
 5. txlcn-txmsg:*事务消息扩展接口*   
-6. txlcn-txmsg-netty:*Netty的事务消息接口实现*  
+6. txlcn-txmsg-netty:*事务消息接口的Netty实现*  
 7. txlcn-tracing:*分布式事务追踪工具*
 
 ## 官网文档
