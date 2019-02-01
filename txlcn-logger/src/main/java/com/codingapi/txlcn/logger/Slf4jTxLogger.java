@@ -28,7 +28,7 @@ public class Slf4jTxLogger implements TxLogger {
 
     @Override
     public void trace(String groupId, String unitId, String tag, String content, Object... args) {
-        log.debug("{}: " + content, tag, content, args);
+        log.debug("{}: " + content, tag, args);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class Slf4jTxLogger implements TxLogger {
     }
 
     @Override
-    public void error(String groupId, String unitId, String content, Object... args) {
-        log.error("{}: " + content, groupId, unitId, Transactions.TE, args);
+    public void error(String groupId, String unitId, String tag, String content, Object... args) {
+        log.error("{}: " + content, tag, args);
     }
 }

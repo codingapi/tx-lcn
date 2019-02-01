@@ -58,7 +58,7 @@ public class DefaultNotifiedUnitService implements RpcExecuteService {
             TxContext txContext = globalContext.txContext(transactionCmd.getGroupId());
             if (Objects.nonNull(txContext)) {
                 synchronized (txContext.getLock()) {
-                    txLogger.trace(transactionCmd.getGroupId(), notifyUnitParams.getUnitId(), Transactions.TAG_TRANSACTION,
+                    txLogger.transactionInfo(transactionCmd.getGroupId(), notifyUnitParams.getUnitId(),
                             "clean transaction cmd waiting for business code finish.");
                     txContext.getLock().wait();
                 }

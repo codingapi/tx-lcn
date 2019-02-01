@@ -66,13 +66,12 @@ public class JoinGroupExecuteService implements RpcExecuteService {
         try {
             DTXContext dtxContext = dtxContextRegistry.get(transactionCmd.getGroupId());
             JoinGroupParams joinGroupParams = transactionCmd.getMsg().loadBean(JoinGroupParams.class);
-            txLogger.trace(
-                    transactionCmd.getGroupId(), joinGroupParams.getUnitId(), Transactions.TAG_TRANSACTION, "start join group");
+            txLogger.transactionInfo(transactionCmd.getGroupId(), joinGroupParams.getUnitId(), "start join group");
             transactionManager.join(dtxContext, joinGroupParams.getUnitId(), joinGroupParams.getUnitType(),
                     rpcClient.getAppName(transactionCmd.getRemoteKey()), joinGroupParams.getTransactionState());
-            txLogger.trace(
-                    transactionCmd.getGroupId(), joinGroupParams.getUnitId(), Transactions.TAG_TRANSACTION, "over join group");
+            txLogger.transactionInfo(transactionCmd.getGroupId(), joinGroupParams.getUnitId(), "over join group");
         } catch (TransactionException e) {
+            txLogger.error(this.getClass().getSimpleName(), e.getMessage());
             throw new TxManagerException(e.getLocalizedMessage());
         }
         // non response

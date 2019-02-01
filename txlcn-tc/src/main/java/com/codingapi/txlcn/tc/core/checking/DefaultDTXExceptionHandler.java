@@ -72,7 +72,7 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
             transactionCleanTemplate.clean(groupId, unitId, unitType, 0);
         } catch (TransactionClearException e) {
             log.error("{} > clean transaction error.", unitType);
-            txLogger.trace(groupId, unitId, Transactions.TE, "clean transaction fail.");
+            txLogger.error(this.getClass().getSimpleName(), "clean transaction fail.");
         }
         throw new TransactionException(ex);
     }

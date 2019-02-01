@@ -68,8 +68,7 @@ public class TransactionCleanTemplate {
      * @throws TransactionClearException TransactionClearException
      */
     public void clean(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
-        txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "clean transaction");
-
+        txLogger.transactionInfo(groupId, unitId, "clean transaction");
         try {
             transactionBeanHelper.loadTransactionCleanService(unitType).clear(
                     groupId, state, unitId, unitType
@@ -80,11 +79,8 @@ public class TransactionCleanTemplate {
             dtxChecking.stopDelayChecking(groupId, unitId);
 
             aspectLogger.clearLog(groupId, unitId);
-
-            txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "clean transaction over");
-
-            log.debug("clean transaction over");
         }
+        txLogger.transactionInfo(groupId, unitId, "clean transaction over");
     }
 
     /**
@@ -97,7 +93,7 @@ public class TransactionCleanTemplate {
      * @throws TransactionClearException TransactionClearException
      */
     public void compensationClean(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
-        txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "clean compensation transaction");
+        txLogger.transactionInfo(groupId, unitId, "clean compensation transaction");
         try {
             transactionBeanHelper.loadTransactionCleanService(unitType).clear(
                     groupId, state, unitId, unitType

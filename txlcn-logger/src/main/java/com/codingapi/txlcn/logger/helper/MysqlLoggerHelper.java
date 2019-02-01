@@ -15,6 +15,8 @@
  */
 package com.codingapi.txlcn.logger.helper;
 
+import com.codingapi.txlcn.common.util.Maps;
+import com.codingapi.txlcn.common.util.Strings;
 import com.codingapi.txlcn.logger.db.LogDbHelper;
 import com.codingapi.txlcn.logger.db.LogDbProperties;
 import com.codingapi.txlcn.logger.db.TxLog;
@@ -75,7 +77,10 @@ public class MysqlLoggerHelper implements TxLcnLogDbHelper {
         if (logDbProperties.isEnabled()) {
             String sql = "insert into t_logger(group_id,unit_id,tag,content,create_time,app_name) values(?,?,?,?,?,?)";
             return dbHelper.update(sql, txLoggerInfo.getGroupId(), txLoggerInfo.getUnitId(), txLoggerInfo.getTag(),
-                    String.format(txLoggerInfo.getContent(), txLoggerInfo.getArgs()), txLoggerInfo.getCreateTime(), txLoggerInfo.getAppName());
+                    Strings.format(
+                            txLoggerInfo.getContent(), Maps.newImmutableMap(
+                                    "xid", txLoggerInfo.getGroupId(), "uid", txLoggerInfo.getUnitId()),
+                            txLoggerInfo.getArgs()), txLoggerInfo.getCreateTime(), txLoggerInfo.getAppName());
         } else {
             throw new NotEnableLogException("not enable logger");
         }

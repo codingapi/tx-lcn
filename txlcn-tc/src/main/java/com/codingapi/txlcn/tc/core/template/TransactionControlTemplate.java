@@ -85,7 +85,7 @@ public class TransactionControlTemplate {
         try {
             // 日志
             txLogger.transactionInfo(groupId, unitId,
-                    "transaction type[{}] > create group > groupId: {xid}, unitId: {uid}", transactionType);
+                    "create group > {} > groupId: {xid}, unitId: {uid}", transactionType);
             // 创建事务组消息
             reliableMessenger.createGroup(groupId);
             // 缓存发起方切面信息
@@ -97,7 +97,7 @@ public class TransactionControlTemplate {
             // 创建事务组业务失败
             dtxExceptionHandler.handleCreateGroupBusinessException(groupId, e.getCause());
         }
-        txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "create group over");
+        txLogger.transactionInfo(groupId, unitId, "create group over");
     }
 
     /**
@@ -111,13 +111,12 @@ public class TransactionControlTemplate {
      */
     public void joinGroup(String groupId, String unitId, String transactionType, TransactionInfo transactionInfo)
             throws TransactionException {
-        txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "join group");
-        // 日志
-        log.debug("transaction type[{}] > join group > groupId: {}, unitId: {}", transactionType, groupId, unitId);
         try {
+            txLogger.transactionInfo(groupId, unitId, "join group > {} > groupId: {xid}, unitId: {uid}", transactionType);
+
             reliableMessenger.joinGroup(groupId, unitId, transactionType, DTXLocalContext.transactionState());
 
-            log.debug("{} > joined group.", transactionType);
+            txLogger.transactionInfo(groupId, unitId, "{xid} join group message over.");
 
             // 异步检测
             dtxChecking.startDelayCheckingAsync(groupId, unitId, transactionType);
@@ -129,7 +128,7 @@ public class TransactionControlTemplate {
         } catch (LcnBusinessException e) {
             dtxExceptionHandler.handleJoinGroupBusinessException(Arrays.asList(groupId, unitId, transactionType), e);
         }
-        txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "join group over");
+        txLogger.transactionInfo(groupId, unitId, "join logic group over");
     }
 
     /**
@@ -141,9 +140,9 @@ public class TransactionControlTemplate {
      * @param state           transactionState
      */
     public void notifyGroup(String groupId, String unitId, String transactionType, int state) {
-        txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "notify group %d.", state);
-        log.debug("transaction type[{}] > notify group > groupId: {}, unitId: {}", transactionType, groupId, unitId);
         try {
+            txLogger.transactionInfo(
+                    groupId, unitId, "notify group > {} > groupId: {xid}, unitId: {uid}, state: {}.", transactionType, state);
             if (globalContext.isDTXTimeout()) {
                 throw new LcnBusinessException("dtx timeout.");
             }
@@ -159,6 +158,6 @@ public class TransactionControlTemplate {
             // 关闭事务组失败
             dtxExceptionHandler.handleNotifyGroupBusinessException(Arrays.asList(groupId, state, unitId, transactionType), e.getCause());
         }
-        txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "notify group exception state %d.", state);
+        txLogger.transactionInfo(groupId, unitId, "notify group exception state %d.", state);
     }
 }

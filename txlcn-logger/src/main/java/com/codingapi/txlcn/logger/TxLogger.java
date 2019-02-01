@@ -48,6 +48,10 @@ public interface TxLogger {
         info(groupId, unitId, Transactions.TAG_TRANSACTION, content, args);
     }
 
+    default void taskInfo(String groupId, String unitId, String content, Object... args) {
+        info(groupId, unitId, Transactions.TAG_TASK, content, args);
+    }
+
     /**
      * info log. todo
      *
@@ -58,17 +62,6 @@ public interface TxLogger {
      */
     default void info(String groupId, String unitId, String tag, String content, Object... args) {
         trace(groupId, unitId, tag, content, args);
-    }
-
-    /**
-     * error log. todo
-     *
-     * @param groupId groupId
-     * @param unitId  unitId
-     * @param content content
-     */
-    default void error(String groupId, String unitId, String content, Object... args) {
-        trace(groupId, unitId, Transactions.TE, content, args);
     }
 
     default void error(String groupId, String unitId, String tag, String content, Object... args) {

@@ -18,10 +18,10 @@ package com.codingapi.txlcn.logger;
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.db.TxLog;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -45,12 +45,12 @@ public abstract class AbstractTxLogger implements TxLogger {
         TxLog txLog = new TxLog();
         txLog.setContent(content);
         txLog.setArgs(args);
-        txLog.setGroupId(groupId);
         txLog.setTag(tag);
-        txLog.setUnitId(Objects.isNull(unitId) ? "" : unitId);
+        txLog.setGroupId(StringUtils.isEmpty(groupId) ? "" : groupId);
+        txLog.setUnitId(StringUtils.isEmpty(unitId) ? "" : unitId);
         txLog.setAppName(Transactions.APPLICATION_ID_WHEN_RUNNING);
         txLog.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS").format(new Date()));
-        log.debug("trace tx-logger -> {}", txLog);
+        log.debug("{}: " + content, tag, args);
         this.loggerSaveService.execute(() -> saveTrace(txLog));
     }
 

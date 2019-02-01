@@ -83,22 +83,21 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
 
     @Override
     public void startDelayCheckingAsync(String groupId, String unitId, String transactionType) {
-        txLogger.trace(groupId, unitId, Transactions.TAG_TASK, "start delay checking task");
+        txLogger.taskInfo(groupId, unitId, "start delay checking task");
         ScheduledFuture scheduledFuture = scheduledExecutorService.schedule(() -> {
             try {
                 TxContext txContext = globalContext.txContext(groupId);
                 if (Objects.nonNull(txContext)) {
                     synchronized (txContext.getLock()) {
-                        txLogger.trace(groupId, unitId, Transactions.TAG_TASK,
+                        txLogger.info(groupId, unitId, Transactions.TAG_TASK,
                                 "checking waiting for business code finish.");
                         txContext.getLock().wait();
                     }
                 }
                 int state = reliableMessenger.askTransactionState(groupId, unitId);
-                log.debug("support > ask transaction transactionState:{}", state);
-                txLogger.trace(groupId, unitId, Transactions.TAG_TASK, "ask transaction state %d", state);
+                txLogger.taskInfo(groupId, unitId, "ask transaction state {}", state);
                 if (state == -1) {
-                    log.error("delay clean transaction error.");
+                    txLogger.error(this.getClass().getSimpleName(), "delay clean transaction error.");
                     onAskTransactionStateException(groupId, unitId, transactionType);
                 } else {
                     transactionCleanTemplate.clean(groupId, unitId, transactionType, state);
@@ -108,7 +107,7 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
             } catch (RpcException e) {
                 onAskTransactionStateException(groupId, unitId, transactionType);
             } catch (TransactionClearException | InterruptedException e) {
-                log.error("{} > [transaction transactionState message] error or [clean transaction] error.", transactionType);
+                txLogger.error(this.getClass().getSimpleName(), "{} clean transaction error.", transactionType);
             }
         }, clientConfig.getDtxTime(), TimeUnit.MILLISECONDS);
         delayTasks.put(groupId + unitId, scheduledFuture);
@@ -118,8 +117,7 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
     public void stopDelayChecking(String groupId, String unitId) {
         ScheduledFuture scheduledFuture = delayTasks.get(groupId + unitId);
         if (Objects.nonNull(scheduledFuture)) {
-            txLogger.trace(groupId, unitId, Transactions.TAG_TASK, "stop delay checking task");
-            log.debug("cancel {}:{} checking.", groupId, unitId);
+            txLogger.taskInfo(groupId, unitId, "cancel {}:{} checking.", groupId, unitId);
             scheduledFuture.cancel(true);
         }
     }

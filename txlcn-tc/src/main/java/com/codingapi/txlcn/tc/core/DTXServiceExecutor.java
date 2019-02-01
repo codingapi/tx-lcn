@@ -86,7 +86,7 @@ public class DTXServiceExecutor {
 
             // 4.2 业务执行前
             txLogger.transactionInfo(
-                    info.getGroupId(), info.getUnitId(), "pre business code, unit type: %s", transactionType);
+                    info.getGroupId(), info.getUnitId(), "pre business code, unit type: {}", transactionType);
 
             // 4.3 执行业务
             Object result = dtxLocalControl.doBusinessCode(info);
