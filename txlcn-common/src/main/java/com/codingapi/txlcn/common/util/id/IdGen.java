@@ -22,5 +22,5 @@ package com.codingapi.txlcn.common.util.id;
  * @author ujued
  */
 public interface IdGen {
-    long nextId();
+    String nextId();
 }

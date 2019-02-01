@@ -35,9 +35,9 @@ public class RandomUtils {
 
     public static String randomKey() {
         if (Objects.isNull(theIdGen)) {
-            theIdGen = System::nanoTime;
+            theIdGen = new DefaultIdGen(12, 0);
         }
-        return String.valueOf(theIdGen.nextId());
+        return theIdGen.nextId();
     }
 
     public static String simpleKey() {

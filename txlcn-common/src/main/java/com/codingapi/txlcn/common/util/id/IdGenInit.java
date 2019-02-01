@@ -14,6 +14,10 @@ public abstract class IdGenInit {
     public static void applySnowFlakeIdGen(int machineLen, int machineId) {
         SnowFlakeGenerator.Factory factory = new SnowFlakeGenerator.Factory(machineLen, 0);
         SnowFlakeGenerator snowFlakeGenerator = factory.create(0, machineId);
-        RandomUtils.init(snowFlakeGenerator::nextId);
+        RandomUtils.init(() -> String.valueOf(snowFlakeGenerator.nextId()));
+    }
+
+    public static void applyDefaultIdGen(int seqLen, int machineId) {
+        RandomUtils.init(new DefaultIdGen(seqLen, machineId));
     }
 }

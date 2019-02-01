@@ -82,7 +82,7 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack, HeartbeatListe
                     txClientConfig.applyMachineId(resParams.getMachineId());
 
                     // 2. IdGen 初始化
-                    IdGenInit.applySnowFlakeIdGen(resParams.getMachineLen(), resParams.getMachineId());
+                    IdGenInit.applyDefaultIdGen(resParams.getMachineLen(), resParams.getMachineId());
 
                     // 3. 日志
                     log.info("Finally, determined dtx time is {}ms, tm rpc timeout is {} ms, machineId is {}",
