@@ -15,8 +15,8 @@
  */
 package com.codingapi.txlcn.tc;
 
+import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
@@ -28,9 +28,10 @@ import javax.sql.DataSource;
  * @author ujued
  */
 @Configuration
+@EnableDistributedTransaction(enableTxc = false)
 public class MiniConfiguration {
 
-    @Bean
+//    @Bean
     public DataSource dataSource() {
         HikariDataSource hikariDataSource = new HikariDataSource();
         hikariDataSource.setDriverClassName("com.mysql.jdbc.Driver");

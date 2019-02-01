@@ -37,7 +37,7 @@ import java.util.concurrent.CountDownLatch;
  * @author ujued
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {TCAutoConfiguration.class, MiniConfiguration.class})
+@SpringBootTest(classes = MiniConfiguration.class)
 public class RpcTest {
 
     @Autowired
@@ -91,6 +91,11 @@ public class RpcTest {
     @Test
     public void testCluster() throws RpcException {
         messenger.request(new MessageDto());
+    }
+
+    @Test
+    public void testTxc() {
+
     }
 
 }

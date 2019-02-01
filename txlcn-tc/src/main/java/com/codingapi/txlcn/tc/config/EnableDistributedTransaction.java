@@ -30,7 +30,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@Import(TCAutoConfiguration.class)
+@Import(value = {TCAutoConfiguration.class, DependenciesImportSelector.class})
 public @interface EnableDistributedTransaction {
-
+    boolean enableTxc() default true;
 }

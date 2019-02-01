@@ -22,10 +22,7 @@ import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import com.codingapi.txlcn.tracing.TracingAutoConfiguration;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 
 /**
  * Description:
@@ -35,8 +32,12 @@ import org.springframework.context.annotation.Import;
  * @see EnableDistributedTransaction
  */
 @Configuration
-@ComponentScan
-@Import({TxLoggerConfiguration.class, TracingAutoConfiguration.class, DependenciesImportSelector.class})
+@ComponentScan(
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.ASPECTJ, pattern = "com.codingapi.txlcn.tc.core.transaction.txc..*"
+        )
+)
+@Import({TxLoggerConfiguration.class, TracingAutoConfiguration.class})
 public class TCAutoConfiguration {
 
     /**

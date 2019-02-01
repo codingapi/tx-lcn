@@ -15,9 +15,14 @@
  */
 package com.codingapi.txlcn.tc.config;
 
+import com.codingapi.txlcn.tc.core.transaction.txc.TxcConfiguration;
 import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.NonNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Description:
@@ -36,8 +41,15 @@ public class DependenciesImportSelector implements ImportSelector {
     @Override
     @NonNull
     public String[] selectImports(@NonNull AnnotationMetadata importingClassMetadata) {
-        return new String[]{
-                "com.codingapi.txlcn.txmsg.MessageConfiguration"
-        };
+        boolean enabledTxc = Boolean.valueOf(
+                Objects.requireNonNull(
+                        importingClassMetadata.getAnnotationAttributes(EnableDistributedTransaction.class.getName()))
+                        .get("enableTxc").toString());
+        List<String> importClasses = new ArrayList<>();
+        importClasses.add("com.codingapi.txlcn.txmsg.MessageConfiguration");
+        if (enabledTxc) {
+            importClasses.add(TxcConfiguration.class.getName());
+        }
+        return importClasses.toArray(new String[0]);
     }
 }
