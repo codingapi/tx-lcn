@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.tc.core.template;
 
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
-import com.codingapi.txlcn.tc.support.TXLCNTransactionBeanHelper;
+import com.codingapi.txlcn.tc.support.TxLcnBeanHelper;
 import com.codingapi.txlcn.tc.core.checking.DTXChecking;
 import com.codingapi.txlcn.common.exception.TransactionClearException;
 import com.codingapi.txlcn.common.util.Transactions;
@@ -36,7 +36,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TransactionCleanTemplate {
 
-    private final TXLCNTransactionBeanHelper transactionBeanHelper;
+    private final TxLcnBeanHelper transactionBeanHelper;
 
     private final DTXChecking dtxChecking;
 
@@ -47,7 +47,7 @@ public class TransactionCleanTemplate {
     private final TCGlobalContext globalContext;
 
     @Autowired
-    public TransactionCleanTemplate(TXLCNTransactionBeanHelper transactionBeanHelper,
+    public TransactionCleanTemplate(TxLcnBeanHelper transactionBeanHelper,
                                     DTXChecking dtxChecking,
                                     AspectLogger aspectLogger,
                                     TxLogger txLogger, TCGlobalContext globalContext) {

@@ -15,8 +15,8 @@
  */
 package com.codingapi.txlcn.tc.core.context;
 
-import com.codingapi.txlcn.common.exception.BeforeBusinessException;
 import com.codingapi.txlcn.common.exception.TCGlobalContextException;
+import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.common.util.function.Supplier;
 import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.tc.core.TccTransactionInfo;
@@ -75,8 +75,8 @@ public class DefaultGlobalContext implements TCGlobalContext {
     }
 
     @Override
-    public TccTransactionInfo tccTransactionInfo(String unitId, Supplier<TccTransactionInfo, BeforeBusinessException> supplier)
-            throws BeforeBusinessException {
+    public TccTransactionInfo tccTransactionInfo(String unitId, Supplier<TccTransactionInfo, TransactionException> supplier)
+            throws TransactionException {
         String unitTransactionInfoKey = unitId + ".tcc.transaction";
         if (Objects.isNull(supplier)) {
             return attachmentCache.attachment(unitTransactionInfoKey);

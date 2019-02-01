@@ -20,7 +20,7 @@ import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.dto.MessageDto;
 import com.codingapi.txlcn.txmsg.dto.RpcCmd;
 import com.codingapi.txlcn.txmsg.exception.RpcException;
-import com.codingapi.txlcn.tc.support.TXLCNTransactionBeanHelper;
+import com.codingapi.txlcn.tc.support.TxLcnBeanHelper;
 import com.codingapi.txlcn.common.exception.TxClientException;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -45,14 +45,14 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class ClientRpcAnswer implements RpcAnswer, DisposableBean {
 
-    private final TXLCNTransactionBeanHelper transactionBeanHelper;
+    private final TxLcnBeanHelper transactionBeanHelper;
 
     private final RpcClient rpcClient;
 
     private final ExecutorService executorService;
 
     @Autowired
-    public ClientRpcAnswer(TXLCNTransactionBeanHelper transactionBeanHelper, RpcClient rpcClient) {
+    public ClientRpcAnswer(TxLcnBeanHelper transactionBeanHelper, RpcClient rpcClient) {
         this.transactionBeanHelper = transactionBeanHelper;
         this.rpcClient = rpcClient;
         this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 5,

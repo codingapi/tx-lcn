@@ -15,8 +15,8 @@
  */
 package com.codingapi.txlcn.tc.core.transaction.tcc.control;
 
+import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.tc.annotation.TccTransaction;
-import com.codingapi.txlcn.common.exception.BeforeBusinessException;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import com.codingapi.txlcn.tc.core.TccTransactionInfo;
@@ -48,11 +48,11 @@ public class TccStartingTransaction implements DTXLocalControl {
         this.context = context;
     }
 
-    static TccTransactionInfo prepareTccInfo(TxTransactionInfo info) throws BeforeBusinessException {
+    static TccTransactionInfo prepareTccInfo(TxTransactionInfo info) throws TransactionException {
         Method method = info.getPointMethod();
         TccTransaction tccTransaction = method.getAnnotation(TccTransaction.class);
         if (tccTransaction == null) {
-            throw new BeforeBusinessException("TCC type need @TccTransaction in " + method.getName());
+            throw new TransactionException("TCC type need @TccTransaction in " + method.getName());
         }
         String cancelMethod = tccTransaction.cancelMethod();
         String confirmMethod = tccTransaction.confirmMethod();
@@ -78,13 +78,13 @@ public class TccStartingTransaction implements DTXLocalControl {
     }
 
     @Override
-    public void preBusinessCode(TxTransactionInfo info) throws BeforeBusinessException {
+    public void preBusinessCode(TxTransactionInfo info) throws TransactionException {
         // cache tcc info
         try {
             context.tccTransactionInfo(info.getUnitId(), () -> prepareTccInfo(info))
                     .setMethodParameter(info.getTransactionInfo().getArgumentValues());
         } catch (Throwable throwable) {
-            throw new BeforeBusinessException(throwable);
+            throw new TransactionException(throwable);
         }
 
         // create DTX group

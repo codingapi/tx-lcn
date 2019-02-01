@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.tc.core.transaction.txc.resource;
 
 import com.codingapi.txlcn.tc.aspect.weave.ConnectionCallback;
-import com.codingapi.txlcn.tc.support.resouce.TransactionResourceExecutor;
+import com.codingapi.txlcn.tc.support.resouce.TransactionResourceProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,12 +29,12 @@ import java.sql.Connection;
  * @author ujued
  */
 @Component("transaction_txc")
-public class TxcTransactionResourceExecutor implements TransactionResourceExecutor {
+public class TxcTransactionResourceProxy implements TransactionResourceProxy {
 
     private final ConnectionHelper connectionHelper;
 
     @Autowired
-    public TxcTransactionResourceExecutor(ConnectionHelper connectionHelper) {
+    public TxcTransactionResourceProxy(ConnectionHelper connectionHelper) {
         this.connectionHelper = connectionHelper;
     }
 

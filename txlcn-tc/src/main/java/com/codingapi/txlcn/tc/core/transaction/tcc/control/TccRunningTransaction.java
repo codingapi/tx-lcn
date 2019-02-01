@@ -15,9 +15,8 @@
  */
 package com.codingapi.txlcn.tc.core.transaction.tcc.control;
 
-import com.codingapi.txlcn.common.exception.BeforeBusinessException;
 import com.codingapi.txlcn.common.exception.TransactionClearException;
-import com.codingapi.txlcn.common.exception.TxClientException;
+import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import com.codingapi.txlcn.tc.core.TxTransactionInfo;
@@ -51,14 +50,14 @@ public class TccRunningTransaction implements DTXLocalControl {
     }
 
     @Override
-    public void preBusinessCode(TxTransactionInfo info) throws BeforeBusinessException {
+    public void preBusinessCode(TxTransactionInfo info) throws TransactionException {
 
         // 缓存TCC事务信息，如果有必要
         try {
             globalContext.tccTransactionInfo(info.getUnitId(), () -> TccStartingTransaction.prepareTccInfo(info))
                     .setMethodParameter(info.getTransactionInfo().getArgumentValues());
         } catch (Throwable throwable) {
-            throw new BeforeBusinessException(throwable);
+            throw new TransactionException(throwable);
         }
     }
 
@@ -76,7 +75,7 @@ public class TccRunningTransaction implements DTXLocalControl {
     }
 
     @Override
-    public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) throws TxClientException {
+    public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) throws TransactionException {
         transactionControlTemplate.joinGroup(info.getGroupId(), info.getUnitId(), info.getTransactionType(),
                 info.getTransactionInfo());
     }

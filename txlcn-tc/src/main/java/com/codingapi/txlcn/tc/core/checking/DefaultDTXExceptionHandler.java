@@ -15,14 +15,11 @@
  */
 package com.codingapi.txlcn.tc.core.checking;
 
+import com.codingapi.txlcn.common.exception.*;
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.tc.txmsg.TxMangerReporter;
 import com.codingapi.txlcn.tc.core.template.TransactionCleanTemplate;
-import com.codingapi.txlcn.common.exception.BeforeBusinessException;
-import com.codingapi.txlcn.common.exception.TransactionClearException;
-import com.codingapi.txlcn.common.exception.TxClientException;
-import com.codingapi.txlcn.common.exception.UserRollbackException;
 import com.codingapi.txlcn.txmsg.params.TxExceptionParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,27 +42,28 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
 
     private final TxMangerReporter txMangerReporter;
 
-    @Autowired
-    private TxLogger txLogger;
+    private final TxLogger txLogger;
 
     @Autowired
-    public DefaultDTXExceptionHandler(TransactionCleanTemplate transactionCleanTemplate, TxMangerReporter txMangerReporter) {
+    public DefaultDTXExceptionHandler(TransactionCleanTemplate transactionCleanTemplate,
+                                      TxMangerReporter txMangerReporter, TxLogger txLogger) {
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.txMangerReporter = txMangerReporter;
+        this.txLogger = txLogger;
     }
 
     @Override
-    public void handleCreateGroupBusinessException(Object params, Throwable ex) throws BeforeBusinessException {
-        throw new BeforeBusinessException(ex);
+    public void handleCreateGroupBusinessException(Object params, Throwable ex) throws TransactionException {
+        throw new TransactionException(ex);
     }
 
     @Override
-    public void handleCreateGroupMessageException(Object params, Throwable ex) throws BeforeBusinessException {
-        throw new BeforeBusinessException(ex);
+    public void handleCreateGroupMessageException(Object params, Throwable ex) throws TransactionException {
+        throw new TransactionException(ex);
     }
 
     @Override
-    public void handleJoinGroupBusinessException(Object params, Throwable ex) throws TxClientException {
+    public void handleJoinGroupBusinessException(Object params, Throwable ex) throws TransactionException {
         List paramList = (List) params;
         String groupId = (String) paramList.get(0);
         String unitId = (String) paramList.get(1);
@@ -76,12 +74,12 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
             log.error("{} > clean transaction error.", unitType);
             txLogger.trace(groupId, unitId, Transactions.TE, "clean transaction fail.");
         }
-        throw new TxClientException(ex);
+        throw new TransactionException(ex);
     }
 
     @Override
-    public void handleJoinGroupMessageException(Object params, Throwable ex) throws TxClientException {
-        throw new TxClientException(ex);
+    public void handleJoinGroupMessageException(Object params, Throwable ex) throws TransactionException {
+        throw new TransactionException(ex);
     }
 
     @Override

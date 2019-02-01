@@ -15,11 +15,11 @@
  */
 package com.codingapi.txlcn.tc.core.transaction.lcn.control;
 
+import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.TxTransactionInfo;
 import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import com.codingapi.txlcn.tc.core.template.TransactionControlTemplate;
-import com.codingapi.txlcn.common.exception.BeforeBusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class LcnStartingTransaction implements DTXLocalControl {
     }
 
     @Override
-    public void preBusinessCode(TxTransactionInfo info) throws BeforeBusinessException {
+    public void preBusinessCode(TxTransactionInfo info) throws TransactionException {
         // create DTX group
         transactionControlTemplate.createGroup(
                 info.getGroupId(), info.getUnitId(), info.getTransactionInfo(), info.getTransactionType());

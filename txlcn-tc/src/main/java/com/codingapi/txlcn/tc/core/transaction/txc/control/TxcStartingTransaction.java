@@ -15,7 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core.transaction.txc.control;
 
-import com.codingapi.txlcn.common.exception.BeforeBusinessException;
+import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import com.codingapi.txlcn.tc.core.TxTransactionInfo;
@@ -42,13 +42,13 @@ public class TxcStartingTransaction implements DTXLocalControl {
     }
 
     @Override
-    public void preBusinessCode(TxTransactionInfo info) throws BeforeBusinessException {
+    public void preBusinessCode(TxTransactionInfo info) throws TransactionException {
         try {
             //创建事务组
             transactionControlTemplate.createGroup(
                     info.getGroupId(), info.getUnitId(), info.getTransactionInfo(), info.getTransactionType());
         } catch (Exception e) {
-            throw new BeforeBusinessException(e);
+            throw new TransactionException(e);
         }
 
         // TXC 类型事务需要代理资源

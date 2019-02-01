@@ -19,7 +19,7 @@ import com.codingapi.txlcn.common.exception.TCGlobalContextException;
 import com.codingapi.txlcn.tc.aspect.weave.ConnectionCallback;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
-import com.codingapi.txlcn.tc.support.resouce.TransactionResourceExecutor;
+import com.codingapi.txlcn.tc.support.resouce.TransactionResourceProxy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,12 +31,12 @@ import java.sql.Connection;
  */
 @Service(value = "transaction_lcn")
 @Slf4j
-public class LcnTransactionResourceExecutor implements TransactionResourceExecutor {
+public class LcnTransactionResourceProxy implements TransactionResourceProxy {
 
     private final TCGlobalContext globalContext;
 
     @Autowired
-    public LcnTransactionResourceExecutor(TCGlobalContext globalContext) {
+    public LcnTransactionResourceProxy(TCGlobalContext globalContext) {
         this.globalContext = globalContext;
     }
 

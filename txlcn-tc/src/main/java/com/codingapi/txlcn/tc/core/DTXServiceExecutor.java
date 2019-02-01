@@ -16,11 +16,11 @@
 package com.codingapi.txlcn.tc.core;
 
 
-import com.codingapi.txlcn.common.exception.BeforeBusinessException;
+import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
-import com.codingapi.txlcn.tc.core.propagation.TxLcnTransactionPropagationResolver;
-import com.codingapi.txlcn.tc.support.TXLCNTransactionBeanHelper;
+import com.codingapi.txlcn.tc.core.propagation.DTXPropagationResolver;
+import com.codingapi.txlcn.tc.support.TxLcnBeanHelper;
 import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +40,15 @@ public class DTXServiceExecutor {
 
     private final TxLogger txLogger;
 
-    private final TXLCNTransactionBeanHelper txlcnTransactionBeanHelper;
+    private final TxLcnBeanHelper txLcnBeanHelper;
 
-    private final TxLcnTransactionPropagationResolver propagationResolver;
+    private final DTXPropagationResolver propagationResolver;
 
     @Autowired
-    public DTXServiceExecutor(TxLogger txLogger, TXLCNTransactionBeanHelper txlcnTransactionBeanHelper,
-                              TCGlobalContext globalContext, TxLcnTransactionPropagationResolver propagationResolver) {
+    public DTXServiceExecutor(TxLogger txLogger, TxLcnBeanHelper txLcnBeanHelper,
+                              TCGlobalContext globalContext, DTXPropagationResolver propagationResolver) {
         this.txLogger = txLogger;
-        this.txlcnTransactionBeanHelper = txlcnTransactionBeanHelper;
+        this.txLcnBeanHelper = txLcnBeanHelper;
         this.globalContext = globalContext;
         this.propagationResolver = propagationResolver;
     }
@@ -65,17 +65,16 @@ public class DTXServiceExecutor {
         // 1. 获取事务类型
         String transactionType = info.getTransactionType();
 
-        // 2. 获取事务状态
-        DTXLogicState lcnTransactionState = propagationResolver.loadTransactionState(info);
+        // 2. 获取事务传播状态
+        DTXPropagationState propagationState = propagationResolver.resolvePropagationState(info);
 
         // 2.1 如果不参与分布式事务立即终止
-        if (lcnTransactionState.equals(DTXLogicState.NON)) {
+        if (propagationState.isIgnored()) {
             return info.getBusinessCallback().call();
         }
 
-        // 3. 获取bean
-        DTXLocalControl lcnTransactionControl =
-                txlcnTransactionBeanHelper.loadLCNTransactionControl(transactionType, lcnTransactionState);
+        // 3. 获取本地分布式事务控制器
+        DTXLocalControl dtxLocalControl = txLcnBeanHelper.loadDTXLocalControl(transactionType, propagationState);
 
         // 4. 织入事务操作
         try {
@@ -83,35 +82,31 @@ public class DTXServiceExecutor {
             Set<String> transactionTypeSet = globalContext.txContext(info.getGroupId()).getTransactionTypes();
             transactionTypeSet.add(transactionType);
 
+            dtxLocalControl.preBusinessCode(info);
+
             // 4.2 业务执行前
-            txLogger.info(info.getGroupId(), info.getUnitId(), Transactions.TAG_TRANSACTION,
-                    "pre service business code, add transaction type: %s, types: %s",
-                    transactionType, transactionTypeSet);
-            lcnTransactionControl.preBusinessCode(info);
+            txLogger.transactionInfo(
+                    info.getGroupId(), info.getUnitId(), "pre business code, unit type: %s", transactionType);
 
             // 4.3 执行业务
-            txLogger.info(info.getGroupId(), info.getUnitId(), Transactions.TAG_TRANSACTION,
-                    "do service business code");
-            Object result = lcnTransactionControl.doBusinessCode(info);
+            Object result = dtxLocalControl.doBusinessCode(info);
 
             // 4.4 业务执行成功
-            txLogger.info(info.getGroupId(), info.getUnitId(), Transactions.TAG_TRANSACTION,
-                    "service business success");
-            lcnTransactionControl.onBusinessCodeSuccess(info, result);
+            txLogger.transactionInfo(info.getGroupId(), info.getUnitId(), "business success");
+            dtxLocalControl.onBusinessCodeSuccess(info, result);
             return result;
-        } catch (BeforeBusinessException e) {
-            txLogger.error(info.getGroupId(), info.getUnitId(), Transactions.TAG_TRANSACTION,
-                    "before business code error");
+        } catch (TransactionException e) {
+            txLogger.error(info.getGroupId(), info.getUnitId(), "before business code error");
             throw e;
         } catch (Throwable e) {
             // 4.5 业务执行失败
             txLogger.error(info.getGroupId(), info.getUnitId(), Transactions.TAG_TRANSACTION,
                     "business code error");
-            lcnTransactionControl.onBusinessCodeError(info, e);
+            dtxLocalControl.onBusinessCodeError(info, e);
             throw e;
         } finally {
             // 4.6 业务执行完毕
-            lcnTransactionControl.postBusinessCode(info);
+            dtxLocalControl.postBusinessCode(info);
         }
     }
 

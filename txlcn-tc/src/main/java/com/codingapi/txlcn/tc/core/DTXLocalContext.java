@@ -61,6 +61,11 @@ public class DTXLocalContext {
     private boolean inUnit;
 
     /**
+     * 同事务组标识
+     */
+    private boolean inGroup;
+
+    /**
      * 额外的附加值
      */
     private Object attachment;

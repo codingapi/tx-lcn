@@ -15,10 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core.template;
 
-import com.codingapi.txlcn.common.exception.BeforeBusinessException;
-import com.codingapi.txlcn.common.exception.LcnBusinessException;
-import com.codingapi.txlcn.common.exception.TransactionClearException;
-import com.codingapi.txlcn.common.exception.TxClientException;
+import com.codingapi.txlcn.common.exception.*;
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.tc.aspect.TransactionInfo;
@@ -80,10 +77,10 @@ public class TransactionControlTemplate {
      * @param unitId          unitId
      * @param transactionInfo transactionInfo
      * @param transactionType transactionType
-     * @throws BeforeBusinessException 创建group失败时抛出
+     * @throws TransactionException 创建group失败时抛出
      */
     public void createGroup(String groupId, String unitId, TransactionInfo transactionInfo, String transactionType)
-            throws BeforeBusinessException {
+            throws TransactionException {
         //创建事务组
         try {
             // 日志
@@ -110,10 +107,10 @@ public class TransactionControlTemplate {
      * @param unitId          unitId
      * @param transactionType transactionType
      * @param transactionInfo transactionInfo
-     * @throws TxClientException 加入事务组失败时抛出
+     * @throws TransactionException 加入事务组失败时抛出
      */
     public void joinGroup(String groupId, String unitId, String transactionType, TransactionInfo transactionInfo)
-            throws TxClientException {
+            throws TransactionException {
         txLogger.trace(groupId, unitId, Transactions.TAG_TRANSACTION, "join group");
         // 日志
         log.debug("transaction type[{}] > join group > groupId: {}, unitId: {}", transactionType, groupId, unitId);

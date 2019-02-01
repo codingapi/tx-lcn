@@ -21,7 +21,7 @@ package com.codingapi.txlcn.common.exception;
  *
  * @author ujued
  */
-public class TransactionStateException extends Exception {
+public class TransactionStateException extends TransactionException {
     public static final int NON_MOD = 10;
     public static final int NON_ASPECT = 11;
     public static final int RPC_ERR = 12;

@@ -15,8 +15,8 @@
  */
 package com.codingapi.txlcn.tc.core.context;
 
-import com.codingapi.txlcn.common.exception.BeforeBusinessException;
 import com.codingapi.txlcn.common.exception.TCGlobalContextException;
+import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.common.util.function.Supplier;
 import com.codingapi.txlcn.tc.core.TccTransactionInfo;
 import com.codingapi.txlcn.tc.core.transaction.lcn.resource.LcnConnectionProxy;
@@ -38,8 +38,8 @@ public interface TCGlobalContext {
     LcnConnectionProxy getLcnConnection(String groupId) throws TCGlobalContextException;
 
 
-    TccTransactionInfo tccTransactionInfo(String unitId, Supplier<TccTransactionInfo, BeforeBusinessException> supplier)
-            throws BeforeBusinessException;
+    TccTransactionInfo tccTransactionInfo(String unitId, Supplier<TccTransactionInfo, TransactionException> supplier)
+            throws TransactionException;
 
 
     void addTxcLockId(String groupId, String unitId, Set<String> lockIdSet);

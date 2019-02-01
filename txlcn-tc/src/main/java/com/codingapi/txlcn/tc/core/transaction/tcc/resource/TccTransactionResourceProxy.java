@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.tc.core.transaction.tcc.resource;
 
 import com.codingapi.txlcn.tc.aspect.weave.ConnectionCallback;
-import com.codingapi.txlcn.tc.support.resouce.TransactionResourceExecutor;
+import com.codingapi.txlcn.tc.support.resouce.TransactionResourceProxy;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -25,7 +25,7 @@ import java.sql.Connection;
  * @author 侯存路
  */
 @Service(value = "transaction_tcc")
-public class TccTransactionResourceExecutor implements TransactionResourceExecutor {
+public class TccTransactionResourceProxy implements TransactionResourceProxy {
 
     @Override
     public Connection proxyConnection(ConnectionCallback connectionCallback) throws Throwable {

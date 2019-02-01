@@ -13,26 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc.core.propagation;
-
-import com.codingapi.txlcn.tc.core.TxTransactionInfo;
-import com.codingapi.txlcn.common.exception.TransactionException;
-import com.codingapi.txlcn.tc.core.DTXLogicState;
+package com.codingapi.txlcn.tc.core;
 
 /**
- * Description: 事务分离器
- * Date: 2018/12/5
- *
- * @author ujued
+ * @author lorne
  */
-public interface TxLcnTransactionPropagationResolver {
+public enum DTXPropagationState {
 
     /**
-     * 判断事务状态
-     *
-     * @param txTransactionInfo txTransactionInfo
-     * @return DTXLogicState
-     * @throws TransactionException TransactionException
+     * 创建DTX
      */
-    DTXLogicState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException;
+    CREATE("starting"),
+
+    /**
+     * 加入DTX
+     */
+    JOIN("running"),
+
+    /**
+     * 静默加入DTX
+     */
+    SILENT_JOIN("default"),
+
+    /**
+     * 不参与DTX
+     */
+    NON("non");
+
+
+    private String code;
+
+
+    DTXPropagationState(String code) {
+        this.code = code;
+    }
+
+
+    public String getCode() {
+        return code;
+    }
+
+    public boolean isIgnored() {
+        return this.equals(NON);
+    }
 }

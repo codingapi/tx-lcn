@@ -22,7 +22,7 @@ import java.sql.Connection;
 /**
  * @author lorne
  */
-public interface TransactionResourceExecutor {
+public interface TransactionResourceProxy {
 
     /**
      * 获取资源连接

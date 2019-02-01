@@ -16,7 +16,7 @@
 package com.codingapi.txlcn.tc.core.propagation;
 
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
-import com.codingapi.txlcn.tc.core.DTXLogicState;
+import com.codingapi.txlcn.tc.core.DTXPropagationState;
 import com.codingapi.txlcn.tc.core.TxTransactionInfo;
 import com.codingapi.txlcn.tc.annotation.DTXPropagation;
 import com.codingapi.txlcn.common.exception.TransactionException;
@@ -24,34 +24,35 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
- * Description: 可定制的事务分离器
+ * Description: 事务传播逻辑处理
  * Date: 2018/12/5
  *
  * @author ujued
  */
 @Slf4j
 @Component
-public class DefaultTransactionPropagationResolver implements TxLcnTransactionPropagationResolver {
+public class DefaultDTXPropagationResolver implements DTXPropagationResolver {
 
     @Override
-    public DTXLogicState loadTransactionState(TxTransactionInfo txTransactionInfo) throws TransactionException {
+    public DTXPropagationState resolvePropagationState(TxTransactionInfo txTransactionInfo) throws TransactionException {
 
-        // 本线程已经参与分布式事务(本地方法互调)
-        if (DTXLocalContext.cur().isInUnit()) {
-            log.info("Default by business in unit!");
-            return DTXLogicState.DEFAULT;
+        // 本地已在DTX，根据事务传播，静默加入
+        if (DTXLocalContext.cur().isInGroup()) {
+            log.info("SILENT_JOIN group!");
+            return DTXPropagationState.SILENT_JOIN;
         }
 
-        // 发起分布式事务条件
+        // 发起方之前没有事务
         if (txTransactionInfo.isTransactionStart()) {
-            // 发起方时，对于只加入DTX的事务单元走默认处理
+            // 根据事务传播，对于 SUPPORTS 不参与事务
             if (DTXPropagation.SUPPORTS.equals(txTransactionInfo.getPropagation())) {
-                return DTXLogicState.NON;
+                return DTXPropagationState.NON;
             }
-            return DTXLogicState.STARTING;
+            // 根据事务传播，创建事务
+            return DTXPropagationState.CREATE;
         }
 
-        // 加入分布式事务
-        return DTXLogicState.RUNNING;
+        // 已经存在DTX，根据事务传播，加入
+        return DTXPropagationState.JOIN;
     }
 }

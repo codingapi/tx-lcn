@@ -16,6 +16,7 @@
 package com.codingapi.txlcn.tc.core.transaction.txc.control;
 
 import com.codingapi.txlcn.common.exception.TransactionClearException;
+import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.common.exception.TxClientException;
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
@@ -70,7 +71,7 @@ public class TxcRunningTransaction implements DTXLocalControl {
     }
 
     @Override
-    public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) throws TxClientException {
+    public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) throws TransactionException {
         // 加入事务组
         transactionControlTemplate.joinGroup(info.getGroupId(), info.getUnitId(), info.getTransactionType(),
                 info.getTransactionInfo());

@@ -59,16 +59,22 @@ public class DTXLogicWeaver {
         log.debug("TX-unit start---->");
         DTXLocalContext dtxLocalContext = DTXLocalContext.getOrNew();
         TxContext txContext;
-        if (Objects.isNull(dtxLocalContext.getGroupId()) && !globalContext.hasTxContext()) {
-            // 非子Unit开启本地事务上下文
-            log.debug("Unit start TxContext.");
-            txContext = globalContext.startTx();
-        } else {
+        if (globalContext.hasTxContext()) {
             // 子Unit获取父上下文
             log.debug("Unit[{}] in unit: {}, use parent's TxContext.", dtxInfo.getUnitId(), dtxLocalContext.getUnitId());
             txContext = globalContext.txContext();
+            dtxLocalContext.setInGroup(true);
+        } else {
+            // 非子Unit开启本地事务上下文
+            log.debug("Unit start TxContext.");
+            txContext = globalContext.startTx();
+        }
+
+        // 本地事务调用
+        if (Objects.nonNull(dtxLocalContext.getGroupId())) {
             dtxLocalContext.setInUnit(true);
         }
+
         dtxLocalContext.setUnitId(dtxInfo.getUnitId());
         dtxLocalContext.setGroupId(txContext.getGroupId());
         dtxLocalContext.setTransactionType(dtxInfo.getTransactionType());

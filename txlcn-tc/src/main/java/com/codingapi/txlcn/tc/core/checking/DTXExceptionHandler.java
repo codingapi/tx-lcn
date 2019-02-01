@@ -15,8 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core.checking;
 
-import com.codingapi.txlcn.common.exception.BeforeBusinessException;
-import com.codingapi.txlcn.common.exception.TxClientException;
+import com.codingapi.txlcn.common.exception.TransactionException;
 
 /**
  * Description:
@@ -32,18 +31,18 @@ public interface DTXExceptionHandler {
      *
      * @param params params
      * @param ex ex
-     * @throws BeforeBusinessException BeforeBusinessException
+     * @throws TransactionException TransactionException
      */
-    void handleCreateGroupBusinessException(Object params, Throwable ex) throws BeforeBusinessException;
+    void handleCreateGroupBusinessException(Object params, Throwable ex) throws TransactionException;
 
     /**
      * 处理创建事务组TxManager通信异常
      *
      * @param params params
      * @param ex ex
-     * @throws  BeforeBusinessException BeforeBusinessException
+     * @throws  TransactionException TransactionException
      */
-    void handleCreateGroupMessageException(Object params, Throwable ex)throws BeforeBusinessException;
+    void handleCreateGroupMessageException(Object params, Throwable ex)throws TransactionException;
 
 
     /**
@@ -51,18 +50,18 @@ public interface DTXExceptionHandler {
      *
      * @param params params
      * @param  ex ex
-     * @throws  TxClientException TxClientException
+     * @throws  TransactionException TransactionException
      */
-    void handleJoinGroupBusinessException(Object params, Throwable ex) throws TxClientException;
+    void handleJoinGroupBusinessException(Object params, Throwable ex) throws TransactionException;
 
     /**
      * 加入事务组TxManager通讯异常
      *
      * @param params params
      * @param ex ex
-     * @throws  TxClientException TxClientException
+     * @throws  TransactionException TransactionException
      */
-    void handleJoinGroupMessageException(Object params, Throwable ex) throws TxClientException;
+    void handleJoinGroupMessageException(Object params, Throwable ex) throws TransactionException;
 
     /**
      * 通知事务组业务异常处理

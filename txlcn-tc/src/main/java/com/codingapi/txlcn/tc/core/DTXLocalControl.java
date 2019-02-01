@@ -15,8 +15,7 @@
  */
 package com.codingapi.txlcn.tc.core;
 
-import com.codingapi.txlcn.common.exception.BeforeBusinessException;
-import com.codingapi.txlcn.common.exception.TxClientException;
+import com.codingapi.txlcn.common.exception.TransactionException;
 
 /**
  *  LCN分布式事务控制
@@ -28,9 +27,9 @@ public interface DTXLocalControl {
      * 业务代码执行前
      *
      * @param info info
-     * @throws  BeforeBusinessException BeforeBusinessException
+     * @throws  TransactionException TransactionException
      */
-    default void preBusinessCode(TxTransactionInfo info) throws BeforeBusinessException {
+    default void preBusinessCode(TxTransactionInfo info) throws TransactionException {
 
     }
 
@@ -52,7 +51,7 @@ public interface DTXLocalControl {
      * @param info info
      * @param throwable throwable
      */
-    default void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) {
+    default void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) throws TransactionException {
 
     }
 
@@ -61,9 +60,9 @@ public interface DTXLocalControl {
      *
      * @param info info
      * @param result result
-     * @throws TxClientException TxClientException
+     * @throws TransactionException TransactionException
      */
-    default void onBusinessCodeSuccess(TxTransactionInfo info, Object result) throws TxClientException {
+    default void onBusinessCodeSuccess(TxTransactionInfo info, Object result) throws TransactionException {
 
     }
 

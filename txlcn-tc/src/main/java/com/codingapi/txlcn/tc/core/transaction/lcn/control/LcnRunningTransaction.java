@@ -16,6 +16,7 @@
 package com.codingapi.txlcn.tc.core.transaction.lcn.control;
 
 import com.codingapi.txlcn.common.exception.TransactionClearException;
+import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.common.exception.TxClientException;
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
@@ -67,7 +68,7 @@ public class LcnRunningTransaction implements DTXLocalControl {
     
     
     @Override
-    public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) throws TxClientException {
+    public void onBusinessCodeSuccess(TxTransactionInfo info, Object result) throws TransactionException {
         log.debug("join group: [GroupId: {},Method: {}]" , info.getGroupId(),
                 info.getTransactionInfo().getMethodStr());
         
