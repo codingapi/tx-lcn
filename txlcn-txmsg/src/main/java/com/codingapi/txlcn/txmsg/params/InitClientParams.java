@@ -45,9 +45,9 @@ public class InitClientParams implements Serializable {
     private long tmRpcTimeout;
 
     /**
-     * 机器ID长度
+     * ID序列长度
      */
-    private int machineLen;
+    private int seqLen;
 
     /**
      * 分配的机器ID
