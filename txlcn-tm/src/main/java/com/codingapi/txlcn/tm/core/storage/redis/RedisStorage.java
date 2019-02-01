@@ -262,7 +262,7 @@ public class RedisStorage implements FastStorage {
                 }
                 throw new FastStorageException("non can used machine id", FastStorageException.EX_CODE_NON_MACHINE_ID);
             }
-            stringRedisTemplate.opsForValue().set(REDIS_GROUP_PREFIX + machineId, "", timeout, TimeUnit.MILLISECONDS);
+            stringRedisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + machineId, "", timeout, TimeUnit.MILLISECONDS);
             return -1;
         } finally {
             releaseGlobalXLock();
