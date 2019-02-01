@@ -76,9 +76,7 @@ public class TxLcnBeanHelper {
 
 
     private String getControlBeanName(String transactionType, DTXPropagationState lcnTransactionState) {
-        String name = String.format(CONTROL_BEAN_NAME_FORMAT, transactionType, lcnTransactionState.getCode());
-        log.debug("getControlBeanName->{}", name);
-        return name;
+        return String.format(CONTROL_BEAN_NAME_FORMAT, transactionType, lcnTransactionState.getCode());
     }
 
     private String getRpcBeanName(String transactionType, LCNCmdType cmdType) {
@@ -96,7 +94,6 @@ public class TxLcnBeanHelper {
 
     public TransactionResourceProxy loadTransactionResourceProxy(String beanName) {
         String name = String.format(TRANSACTION_BEAN_NAME_FORMAT, beanName);
-        log.debug("loadTransactionResourceExecutor name ->{}", name);
         return spring.getBean(name, TransactionResourceProxy.class);
     }
 

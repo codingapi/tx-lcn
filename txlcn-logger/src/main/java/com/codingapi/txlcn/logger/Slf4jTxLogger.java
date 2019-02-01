@@ -28,16 +28,16 @@ public class Slf4jTxLogger implements TxLogger {
 
     @Override
     public void trace(String groupId, String unitId, String tag, String content, Object... args) {
-        log.debug("{}-{}-{}: " + content, groupId, unitId, tag, content, args);
+        log.debug("{}: " + content, tag, content, args);
     }
 
     @Override
     public void info(String groupId, String unitId, String tag, String content, Object... args) {
-        log.debug("{}-{}-{}: " + content, groupId, unitId, tag, args);
+        log.debug("{}: " + content, tag, args);
     }
 
     @Override
     public void error(String groupId, String unitId, String content, Object... args) {
-        log.error("{}-{}-{}: " + content, groupId, unitId, Transactions.TE, args);
+        log.error("{}: " + content, groupId, unitId, Transactions.TE, args);
     }
 }

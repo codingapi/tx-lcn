@@ -52,11 +52,13 @@ public interface TCGlobalContext {
 
     TxContext startTx();
 
-    void destroyTx(String groupId);
-
     TxContext txContext(String groupId);
 
     TxContext txContext();
+
+    void destroyTx();
+
+    void destroyTx(String groupId);
 
     boolean hasTxContext();
 

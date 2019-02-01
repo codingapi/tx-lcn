@@ -147,6 +147,7 @@ public class DefaultGlobalContext implements TCGlobalContext {
         txContext.setGroupId(TracingContext.tracing().groupId());
         String txContextKey = txContext.getGroupId() + ".dtx";
         attachmentCache.attach(txContextKey, txContext);
+        log.debug("Start TxContext[{}]", txContext.getGroupId());
         return txContext;
     }
 
@@ -158,8 +159,7 @@ public class DefaultGlobalContext implements TCGlobalContext {
     @Override
     public void destroyTx(String groupId) {
         attachmentCache.remove(groupId + ".dtx");
-        // 销毁GroupId
-        TracingContext.tracing().destroy();
+        log.debug("Destroy TxContext[{}]", groupId);
     }
 
     @Override
@@ -173,6 +173,14 @@ public class DefaultGlobalContext implements TCGlobalContext {
     }
 
     @Override
+    public void destroyTx() {
+        if (!hasTxContext()) {
+            throw new IllegalStateException("non TxContext.");
+        }
+        destroyTx(txContext().getGroupId());
+    }
+
+    @Override
     public boolean hasTxContext() {
         return TracingContext.tracing().hasGroup() && txContext(TracingContext.tracing().groupId()) != null;
     }
@@ -180,7 +188,7 @@ public class DefaultGlobalContext implements TCGlobalContext {
     @Override
     public boolean isDTXTimeout() {
         if (!hasTxContext()) {
-            throw new IllegalStateException("non txContext.");
+            throw new IllegalStateException("non TxContext.");
         }
         return (System.currentTimeMillis() - txContext().getCreateTime()) >= clientConfig.getDtxTime();
     }

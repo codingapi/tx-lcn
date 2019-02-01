@@ -24,27 +24,27 @@ import org.springframework.util.DigestUtils;
  * @author ujued
  */
 public class Transactions {
-    
+
     public static String APPLICATION_ID_WHEN_RUNNING;
-    
+
     /////////// 事务类型  //////////////////
-    
-    public static final String LCN = "lcn" ;
-    
-    public static final String TCC = "tcc" ;
-    
-    public static final String TXC = "txc" ;
-    
+
+    public static final String LCN = "lcn";
+
+    public static final String TCC = "tcc";
+
+    public static final String TXC = "txc";
+
     /////////// 常量 //////////////////////
-    
-    public static final String TE = "tx_ex" ;
-    
-    public static final String TAG_TRANSACTION = "tx" ;
-    
-    public static final String TAG_TASK = "tx_task" ;
-    
+
+    public static final String TE = "Transaction Error";
+
+    public static final String TAG_TRANSACTION = "Transaction";
+
+    public static final String TAG_TASK = "Transaction Task";
+
     /////////// 工具方法  ////////////////////////////////////////////
-    
+
     /**
      * 方法签名生成事务单元ID
      *

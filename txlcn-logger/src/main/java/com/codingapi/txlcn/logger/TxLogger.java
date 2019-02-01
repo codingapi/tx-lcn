@@ -71,8 +71,12 @@ public interface TxLogger {
         trace(groupId, unitId, Transactions.TE, content, args);
     }
 
-    default void error(String name, String content, Object... args) {
-        error(name, "", content, args);
+    default void error(String groupId, String unitId, String tag, String content, Object... args) {
+        trace(groupId, unitId, tag, content, args);
+    }
+
+    default void error(String tag, String content, Object... args) {
+        error("", "", tag, content, args);
     }
 
 }

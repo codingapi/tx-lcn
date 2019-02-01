@@ -21,6 +21,7 @@ import com.codingapi.txlcn.tc.core.DTXServiceExecutor;
 import com.codingapi.txlcn.tc.core.TxTransactionInfo;
 import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.core.context.TxContext;
+import com.codingapi.txlcn.tracing.TracingContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,23 +57,22 @@ public class DTXLogicWeaver {
             return business.call();
         }
 
-        log.debug("TX-unit start---->");
+        log.debug("<---- TxLcn start ---->");
         DTXLocalContext dtxLocalContext = DTXLocalContext.getOrNew();
         TxContext txContext;
         if (globalContext.hasTxContext()) {
-            // 子Unit获取父上下文
-            log.debug("Unit[{}] in unit: {}, use parent's TxContext.", dtxInfo.getUnitId(), dtxLocalContext.getUnitId());
+            // 有事务上下文的获取父上下文
             txContext = globalContext.txContext();
             dtxLocalContext.setInGroup(true);
+            log.debug("Unit[{}] used parent's TxContext[{}].", dtxInfo.getUnitId(), txContext.getGroupId());
         } else {
-            // 非子Unit开启本地事务上下文
-            log.debug("Unit start TxContext.");
+            // 没有的开启本地事务上下文
             txContext = globalContext.startTx();
         }
 
         // 本地事务调用
         if (Objects.nonNull(dtxLocalContext.getGroupId())) {
-            dtxLocalContext.setInUnit(true);
+            dtxLocalContext.setDestroy(false);
         }
 
         dtxLocalContext.setUnitId(dtxInfo.getUnitId());
@@ -94,17 +94,21 @@ public class DTXLogicWeaver {
         try {
             return transactionServiceExecutor.transactionRunning(info);
         } finally {
-            if (!dtxLocalContext.isInUnit()) {
-                log.debug("Destroy TxContext[{}]", info.getGroupId());
+            if (dtxLocalContext.isDestroy()) {
                 // 获取事务上下文通知事务执行完毕
                 synchronized (txContext.getLock()) {
                     txContext.getLock().notifyAll();
                 }
-                // 销毁事务
-                globalContext.destroyTx(info.getGroupId());
+
+                // TxContext生命周期是？ 和事务组一样（不与具体模块相关的）
+                if (!dtxLocalContext.isInGroup()) {
+                    globalContext.destroyTx();
+                }
+
                 DTXLocalContext.makeNeverAppeared();
+                TracingContext.tracing().destroy();
             }
-            log.debug("TX-unit end------>");
+            log.debug("<---- TxLcn end ---->");
         }
     }
 }
