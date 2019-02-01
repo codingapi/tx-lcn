@@ -200,5 +200,5 @@ public interface FastStorage {
      * @return
      * @throws FastStorageException
      */
-    int acquireOrRefreshMachineId(int machineId, int machineMaxSize, long timeout) throws FastStorageException;
+    int acquireOrRefreshMachineId(int machineId, long machineMaxSize, long timeout) throws FastStorageException;
 }

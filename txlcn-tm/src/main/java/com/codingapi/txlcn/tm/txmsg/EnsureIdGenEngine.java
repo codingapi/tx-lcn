@@ -55,7 +55,7 @@ public class EnsureIdGenEngine implements RpcConnectionListener, HeartbeatListen
 
     @Override
     public void init() throws Exception {
-        IdGenInit.applyDefaultIdGen(managerConfig.getMachineIdLen(), managerService.machineIdSync());
+        IdGenInit.applyDefaultIdGen(managerConfig.getSeqLen(), managerService.machineIdSync());
 
         Transactions.setApplicationIdWhenRunning(ApplicationInformation.modId(environment, serverProperties));
     }

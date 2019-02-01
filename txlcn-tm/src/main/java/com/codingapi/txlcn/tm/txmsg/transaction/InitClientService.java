@@ -74,7 +74,7 @@ public class InitClientService implements RpcExecuteService {
         InitClientParams initClientParams = transactionCmd.getMsg().loadBean(InitClientParams.class);
         rpcClient.bindAppName(transactionCmd.getRemoteKey(), initClientParams.getAppName());
         // Machine len and id
-        initClientParams.setMachineLen(txManagerConfig.getMachineIdLen());
+        initClientParams.setMachineLen(txManagerConfig.getSeqLen());
         initClientParams.setMachineId(managerService.machineIdSync());
         // DTX Time and TM timeout.
         initClientParams.setDtxTime(txManagerConfig.getDtxTime());

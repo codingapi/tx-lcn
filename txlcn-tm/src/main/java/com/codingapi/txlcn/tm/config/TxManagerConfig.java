@@ -91,9 +91,9 @@ public class TxManagerConfig {
     private String exUrl;
 
     /**
-     * 机器ID长度
+     * ID序列长度
      */
-    private int machineIdLen = 10;
+    private int seqLen = 12;
 
     public long getDtxLockTime() {
         return dtxLockTime == -1 ? dtxTime : dtxLockTime;

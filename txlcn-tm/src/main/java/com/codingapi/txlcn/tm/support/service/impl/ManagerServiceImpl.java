@@ -17,22 +17,18 @@ package com.codingapi.txlcn.tm.support.service.impl;
 
 import com.codingapi.txlcn.common.exception.FastStorageException;
 import com.codingapi.txlcn.common.exception.TxManagerException;
-import com.codingapi.txlcn.common.lock.DTXLocks;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
-import com.codingapi.txlcn.tm.core.storage.LockValue;
 import com.codingapi.txlcn.txmsg.params.NotifyConnectParams;
 import com.codingapi.txlcn.tm.support.service.ManagerService;
 import com.codingapi.txlcn.tm.txmsg.MessageCreator;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.exception.RpcException;
-import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Description:
@@ -72,7 +68,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public int machineIdSync() throws TxManagerException {
-        int machineMaxSize = (int) Math.pow(2, managerConfig.getMachineIdLen()) - 1;
+        long machineMaxSize = ~(-1L << (64 - 1 - managerConfig.getSeqLen())) - 1;
         long timeout = managerConfig.getHeartTime() + 2000;
         int id = 0;
         try {
@@ -87,7 +83,7 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public void refreshMachineId(int machineId) throws TxManagerException {
         try {
-            int machineMaxSize = (int) Math.pow(2, managerConfig.getMachineIdLen()) - 1;
+            long machineMaxSize = ~(-1L << (64 - 1 - managerConfig.getSeqLen())) - 1;
             long timeout = managerConfig.getHeartTime() + 2000;
             fastStorage.acquireOrRefreshMachineId(machineId, machineMaxSize, timeout);
         } catch (FastStorageException e) {

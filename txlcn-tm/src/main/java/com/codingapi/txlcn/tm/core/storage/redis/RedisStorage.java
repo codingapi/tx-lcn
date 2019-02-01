@@ -242,7 +242,7 @@ public class RedisStorage implements FastStorage {
     }
 
     @Override
-    public int acquireOrRefreshMachineId(int machineId, int machineMaxSize, long timeout) throws FastStorageException {
+    public int acquireOrRefreshMachineId(int machineId, long machineMaxSize, long timeout) throws FastStorageException {
         try {
             acquireGlobalXLock();
             if (machineId < 0) {
