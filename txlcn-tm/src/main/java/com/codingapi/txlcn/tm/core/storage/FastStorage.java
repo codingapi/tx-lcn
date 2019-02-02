@@ -31,33 +31,14 @@ public interface FastStorage {
 
 
     /*-----------------------DTX group------------------------------*/
-
     /**
      * init DTX group.
      * note: group info should clean by self 10 seconds after DTX time.
      *
-     * @param groupProps groupProps
+     * @param groupId groupId
      * @throws FastStorageException fastStorageException
      */
-    void initGroup(GroupProps groupProps) throws FastStorageException;
-
-    /**
-     * the group props.
-     *
-     * @param groupId groupId
-     * @return group props
-     * @throws FastStorageException FastStorageException
-     */
-    GroupProps getGroupProps(String groupId) throws FastStorageException;
-
-    /**
-     * DTX group has unit
-     *
-     * @param groupId         groupId
-     * @param transactionUnit transactionUnit
-     * @return bool
-     */
-    boolean containsTransactionUnit(String groupId, TransactionUnit transactionUnit);
+    void initGroup(String groupId) throws FastStorageException;
 
     /**
      * has group

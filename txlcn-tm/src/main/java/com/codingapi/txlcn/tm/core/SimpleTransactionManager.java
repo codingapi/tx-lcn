@@ -75,7 +75,7 @@ public class SimpleTransactionManager implements TransactionManager {
 
     @Override
     public void join(DTXContext dtxContext, String unitId, String unitType, String modId, int userState) throws TransactionException {
-        log.debug("unit:{} joined group:{}", unitId, dtxContext.groupProps().getGroupId());
+        log.debug("unit:{} joined group:{}", unitId, dtxContext.getGroupId());
         //手动回滚时设置状态为回滚状态 0
         if (userState == 0) {
             dtxContext.resetTransactionState(0);
@@ -120,11 +120,11 @@ public class SimpleTransactionManager implements TransactionManager {
     private void notifyTransaction(DTXContext dtxContext, int transactionState) throws TransactionException {
         for (TransactionUnit transUnit : dtxContext.transactionUnits()) {
             NotifyUnitParams notifyUnitParams = new NotifyUnitParams();
-            notifyUnitParams.setGroupId(dtxContext.groupProps().getGroupId());
+            notifyUnitParams.setGroupId(dtxContext.getGroupId());
             notifyUnitParams.setUnitId(transUnit.getUnitId());
             notifyUnitParams.setUnitType(transUnit.getUnitType());
             notifyUnitParams.setState(transactionState);
-            txLogger.info(dtxContext.groupProps().getGroupId(),
+            txLogger.info(dtxContext.getGroupId(),
                     notifyUnitParams.getUnitId(), Transactions.TAG_TRANSACTION, "notify %s's unit: %s",
                     transUnit.getModId(), transUnit.getUnitId());
             try {
@@ -145,8 +145,7 @@ public class SimpleTransactionManager implements TransactionManager {
                 List<Object> params = Arrays.asList(notifyUnitParams, transUnit.getModId());
                 rpcExceptionHandler.handleNotifyUnitMessageException(params, e);
             } finally {
-                txLogger.info(dtxContext.groupProps().getGroupId(),
-                        notifyUnitParams.getUnitId(), Transactions.TAG_TRANSACTION, "notify unit over");
+                txLogger.transactionInfo(dtxContext.getGroupId(), notifyUnitParams.getUnitId(), "notify unit over");
             }
         }
     }

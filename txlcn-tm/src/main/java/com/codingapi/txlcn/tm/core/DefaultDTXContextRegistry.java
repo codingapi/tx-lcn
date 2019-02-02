@@ -41,10 +41,7 @@ public class DefaultDTXContextRegistry implements DTXContextRegistry {
     @Override
     public DTXContext create(String groupId) throws TransactionException {
         try {
-            GroupProps groupProps = new GroupProps();
-            groupProps.setGroupId(groupId);
-            groupProps.setCreateTimeMillis(System.currentTimeMillis());
-            fastStorage.initGroup(groupProps);
+            fastStorage.initGroup(groupId);
         } catch (FastStorageException e) {
             // idempotent processing
             if (e.getCode() != FastStorageException.EX_CODE_REPEAT_GROUP) {
@@ -57,9 +54,9 @@ public class DefaultDTXContextRegistry implements DTXContextRegistry {
     @Override
     public DTXContext get(String groupId) throws TransactionException {
         // test has group
-        if (!fastStorage.containsGroup(groupId)) {
-            throw new TransactionException("non this transaction group: " + groupId);
-        }
+//        if (!fastStorage.containsGroup(groupId)) {
+//            throw new TransactionException("non this transaction group: " + groupId);
+//        }
         return new DefaultDTXContext(groupId, fastStorage);
     }
 

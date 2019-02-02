@@ -43,10 +43,6 @@ public class DefaultDTXContext implements DTXContext {
     @Override
     public void join(TransactionUnit transactionUnit) throws TransactionException {
         try {
-            // idempotent processing
-            if (fastStorage.containsTransactionUnit(groupId, transactionUnit)) {
-                return;
-            }
             fastStorage.saveTransactionUnitToGroup(groupId, transactionUnit);
         } catch (FastStorageException e) {
             throw new TransactionException("attempts to join the non-existent transaction group.");
@@ -72,12 +68,8 @@ public class DefaultDTXContext implements DTXContext {
     }
 
     @Override
-    public GroupProps groupProps() throws TransactionException {
-        try {
-            return fastStorage.getGroupProps(groupId);
-        } catch (FastStorageException e) {
-            throw new TransactionException(e);
-        }
+    public String getGroupId() {
+        return this.groupId;
     }
 
     @Override

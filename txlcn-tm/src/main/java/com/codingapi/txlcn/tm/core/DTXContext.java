@@ -55,11 +55,11 @@ public interface DTXContext {
     List<TransactionUnit> transactionUnits() throws TransactionException;
 
     /**
-     * 获取事务组属性
+     * 获取事务组ID
      *
-     * @return GroupProps
+     * @return groupId
      */
-    GroupProps groupProps() throws TransactionException;
+    String getGroupId();
 
     /**
      * 获取事务组状态

@@ -21,7 +21,6 @@ import com.codingapi.txlcn.common.util.ApplicationInformation;
 import com.codingapi.txlcn.tm.cluster.TMProperties;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
-import com.codingapi.txlcn.tm.core.storage.GroupProps;
 import com.codingapi.txlcn.tm.core.storage.LockValue;
 import com.codingapi.txlcn.tm.core.storage.TransactionUnit;
 import com.google.common.collect.Sets;
@@ -71,21 +70,9 @@ public class RedisStorage implements FastStorage {
     }
 
     @Override
-    public void initGroup(GroupProps groupProps) {
-        redisTemplate.opsForHash().put(REDIS_GROUP_PREFIX + groupProps.getGroupId(), "root", groupProps);
-        redisTemplate.expire(REDIS_GROUP_PREFIX + groupProps.getGroupId(),
-                managerConfig.getDtxTime() + 10000, TimeUnit.MILLISECONDS);
-    }
-
-    @Override
-    public GroupProps getGroupProps(String groupId) throws FastStorageException {
-        return (GroupProps) redisTemplate.opsForHash().get(REDIS_GROUP_PREFIX + groupId, "root");
-    }
-
-    @Override
-    public boolean containsTransactionUnit(String groupId, TransactionUnit transactionUnit) {
-        Object unit = redisTemplate.opsForHash().get(REDIS_GROUP_PREFIX + groupId, transactionUnit.getUnitId());
-        return Objects.nonNull(unit);
+    public void initGroup(String groupId) {
+        redisTemplate.opsForHash().put(REDIS_GROUP_PREFIX + groupId, "root", "");
+        redisTemplate.expire(REDIS_GROUP_PREFIX + groupId, managerConfig.getDtxTime() + 10000, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -198,13 +185,13 @@ public class RedisStorage implements FastStorage {
     @Override
     public void saveTMProperties(TMProperties tmProperties) {
         Objects.requireNonNull(tmProperties);
-        redisTemplate.opsForHash().put(REDIS_TM_LIST,
-                tmProperties.getHost() + ":" + tmProperties.getTransactionPort(), tmProperties.getHttpPort());
+        stringRedisTemplate.opsForHash().put(REDIS_TM_LIST,
+                tmProperties.getHost() + ":" + tmProperties.getTransactionPort(), String.valueOf(tmProperties.getHttpPort()));
     }
 
     @Override
     public List<TMProperties> findTMProperties() {
-        return redisTemplate.opsForHash().entries(REDIS_TM_LIST).entrySet().stream()
+        return stringRedisTemplate.opsForHash().entries(REDIS_TM_LIST).entrySet().stream()
                 .map(entry -> {
                     String[] args = ApplicationInformation.splitAddress(entry.getKey().toString());
                     TMProperties tmProperties = new TMProperties();
@@ -251,12 +238,15 @@ public class RedisStorage implements FastStorage {
                     int curId = Math.toIntExact(
                             Objects.requireNonNull(
                                     stringRedisTemplate.opsForValue().increment(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", 1)));
+                    if (curId > machineMaxSize) {
+                        stringRedisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", "0");
+                        curId = 0;
+                    }
                     if (Optional
-                            .ofNullable(stringRedisTemplate.hasKey(REDIS_MACHINE_ID_MAP_PREFIX + ((curId) &= machineMaxSize)))
+                            .ofNullable(stringRedisTemplate.hasKey(REDIS_MACHINE_ID_MAP_PREFIX + curId))
                             .orElse(true)) {
                         continue;
                     }
-                    stringRedisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", String.valueOf(curId));
                     stringRedisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + curId, "", timeout, TimeUnit.MILLISECONDS);
                     return curId;
                 }
