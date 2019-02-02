@@ -32,7 +32,7 @@ import java.io.PrintStream;
  */
 public class TxLcnManagerBanner implements Banner {
 
-    public static final String VERSION = "5.0.0.RC2";
+    public static final String VERSION = "5.0.0";
 
     private static final String BANNER =
             "          _______   __      _     _____  _   _          \n" +
