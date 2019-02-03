@@ -74,7 +74,7 @@
                 <!--<configuration>-->
                     <!--<archive>-->
                         <!--<manifest>-->
-                            <!--<mainClass>com.codingapi.txlcn.manager.TxManagerApplication</mainClass>-->
+                            <!--<mainClass>com.codingapi.txlcn.tm.TMApplication</mainClass>-->
                             <!--<addClasspath>true</addClasspath>-->
                             <!--<classpathPrefix>lib/</classpathPrefix>-->
                         <!--</manifest>-->
