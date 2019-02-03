@@ -178,8 +178,8 @@ public interface FastStorage {
      * @param machineId
      * @param machineMaxSize 限制大小
      * @param timeout 超时删除
-     * @return
-     * @throws FastStorageException
+     * @return MachineID
+     * @throws FastStorageException FastStorageException
      */
     int acquireOrRefreshMachineId(int machineId, long machineMaxSize, long timeout) throws FastStorageException;
 }

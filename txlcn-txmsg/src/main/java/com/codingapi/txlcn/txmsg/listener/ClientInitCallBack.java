@@ -35,7 +35,7 @@ public interface ClientInitCallBack {
     /**
      * 连接失败回调
      *
-     * @param remoteKey
+     * @param remoteKey 远程调用唯一key
      */
     void connectFail(String remoteKey);
 }

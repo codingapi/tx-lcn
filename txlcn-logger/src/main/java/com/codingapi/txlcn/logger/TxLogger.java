@@ -33,6 +33,7 @@ public interface TxLogger {
      * @param unitId  unitId
      * @param tag     tag
      * @param content content
+     * @param args args
      */
     void trace(String groupId, String unitId, String tag, String content, Object... args);
 
@@ -59,6 +60,7 @@ public interface TxLogger {
      * @param unitId  unitId
      * @param tag     tag
      * @param content content
+     * @param args args
      */
     default void info(String groupId, String unitId, String tag, String content, Object... args) {
         trace(groupId, unitId, tag, content, args);

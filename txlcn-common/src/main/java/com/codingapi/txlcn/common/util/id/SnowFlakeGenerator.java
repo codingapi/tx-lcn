@@ -125,6 +125,7 @@ public class SnowFlakeGenerator {
 
     /**
      * 产生下一个ID
+     * @return id
      */
     public synchronized long nextId() {
         long currentStamp = getTimeMill();
