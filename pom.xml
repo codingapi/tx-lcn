@@ -53,8 +53,7 @@
         <txlcn-hessian.version>4.0.38</txlcn-hessian.version>
         <txlcn-protostuff.version>1.1.3</txlcn-protostuff.version>
         <txlcn-kryo.version>4.0.0</txlcn-kryo.version>
-        <txlcn-com.alibaba.boot.dubbo.version>0.2.0</txlcn-com.alibaba.boot.dubbo.version>
-        <txlcn-brave-instrumentation.version>5.4.3</txlcn-brave-instrumentation.version>
+
         <txlcn-com.lmax.disruptor.version>3.4.2</txlcn-com.lmax.disruptor.version>
         <txlcn-commons-dbutils.version>1.7</txlcn-commons-dbutils.version>
         <txlcn-com.github.jsqlparser.version>1.3</txlcn-com.github.jsqlparser.version>
@@ -62,6 +61,12 @@
         <txlcn-hikari-cp.version>3.1.0</txlcn-hikari-cp.version>
         <txlcn-com.github.pagehelper.version>1.2.10</txlcn-com.github.pagehelper.version>
         <txlcn-org.mybatis.spring.boot.version>1.3.2</txlcn-org.mybatis.spring.boot.version>
+        <txlcn-org.springframework.spring-webmvc.version>5.1.4.RELEASE</txlcn-org.springframework.spring-webmvc.version>
+        <txlcn-javax.servlet-api.version>4.0.1</txlcn-javax.servlet-api.version>
+        <txlcn-com.alibaba.dubbo.verion>2.6.5</txlcn-com.alibaba.dubbo.verion>
+        <txlcn-com.netflix.feign.core.verison>8.18.0</txlcn-com.netflix.feign.core.verison>
+        <txlcn-com.netflix.ribbon.loadbalancer.version>2.3.0</txlcn-com.netflix.ribbon.loadbalancer.version>
+        <txlcn-org.springframework.cloud.commons.version>2.1.0.RELEASE</txlcn-org.springframework.cloud.commons.version>
     </properties>
 
 
@@ -226,18 +231,6 @@
             </dependency>
 
             <dependency>
-                <groupId>com.alibaba.boot</groupId>
-                <artifactId>dubbo-spring-boot-starter</artifactId>
-                <version>${txlcn-com.alibaba.boot.dubbo.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.zipkin.brave</groupId>
-                <artifactId>brave-instrumentation-dubbo-rpc</artifactId>
-                <version>${txlcn-brave-instrumentation.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>com.caucho</groupId>
                 <artifactId>hessian</artifactId>
                 <version>${txlcn-hessian.version}</version>
@@ -268,11 +261,39 @@
             </dependency>
 
             <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${txlcn-org.springframework.spring-webmvc.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${txlcn-javax.servlet-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>${txlcn-com.alibaba.dubbo.verion}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.netflix.feign</groupId>
+                <artifactId>feign-core</artifactId>
+                <version>${txlcn-com.netflix.feign.core.verison}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.netflix.ribbon</groupId>
+                <artifactId>ribbon-loadbalancer</artifactId>
+                <version>${txlcn-com.netflix.ribbon.loadbalancer.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${txlcn-spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <artifactId>spring-cloud-commons</artifactId>
+                <version>${txlcn-org.springframework.cloud.commons.version}</version>
             </dependency>
 
         </dependencies>

@@ -50,6 +50,11 @@ public class TxlcnZoneAvoidanceRule extends ZoneAvoidanceRule {
 
     @Override
     public Server choose(Object key) {
+        //非分布式事务直接执行默认业务.
+        if(!TracingContext.tracing().hasGroup()){
+            return super.choose(key);
+        }
+
         // 1. 自己加入此事务组调用链
         assert registration != null;
         TracingContext.tracing().addApp(registration.getServiceId(), registration.getHost() + ":" + registration.getPort());
