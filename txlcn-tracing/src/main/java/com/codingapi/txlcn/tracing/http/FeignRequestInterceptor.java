@@ -38,6 +38,6 @@ public class FeignRequestInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate requestTemplate) {
         requestTemplate.header(TracingConstants.HEADER_KEY_GROUP_ID, TracingContext.tracing().groupId());
-        requestTemplate.header(TracingConstants.HEADER_KEY_APP_MAP, TracingContext.tracing().appMapString());
+        requestTemplate.header(TracingConstants.HEADER_KEY_APP_MAP, TracingContext.tracing().appMapBase64String());
     }
 }

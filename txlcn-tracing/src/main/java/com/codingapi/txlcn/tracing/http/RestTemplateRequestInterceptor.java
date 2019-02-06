@@ -46,7 +46,7 @@ public class RestTemplateRequestInterceptor implements ClientHttpRequestIntercep
             @NonNull HttpRequest httpRequest, @NonNull byte[] bytes,
             @NonNull ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
         httpRequest.getHeaders().add(TracingConstants.HEADER_KEY_GROUP_ID, TracingContext.tracing().groupId());
-        httpRequest.getHeaders().add(TracingConstants.HEADER_KEY_APP_MAP, TracingContext.tracing().appMapString());
+        httpRequest.getHeaders().add(TracingConstants.HEADER_KEY_APP_MAP, TracingContext.tracing().appMapBase64String());
         return clientHttpRequestExecution.execute(httpRequest, bytes);
     }
 }

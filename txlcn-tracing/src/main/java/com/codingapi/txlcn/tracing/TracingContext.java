@@ -20,8 +20,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.codingapi.txlcn.common.util.Maps;
 import com.codingapi.txlcn.common.util.id.RandomUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
 
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -62,6 +64,13 @@ public class TracingContext {
         if (Objects.isNull(fields)) {
             this.fields = new HashMap<>();
         }
+        //APP_MAP base64 解码
+        if(initFields.containsKey(TracingConstants.APP_MAP)){
+            String appMapVal = initFields.get(TracingConstants.APP_MAP);
+            if(!appMapVal.startsWith("{")||!appMapVal.contains("{")){
+                initFields.put(TracingConstants.APP_MAP,baseString2appMap(appMapVal));
+            }
+        }
         this.fields.putAll(initFields);
     }
 
@@ -91,12 +100,20 @@ public class TracingContext {
         raiseNonGroupException();
     }
 
-    public String appMapString() {
+    public String appMapBase64String() {
         if (hasGroup()) {
-            return this.fields.get(TracingConstants.APP_MAP);
+            return Base64Utils.encodeToString(this.fields.get(TracingConstants.APP_MAP).getBytes(Charset.forName("utf8")));
         }
         raiseNonGroupException();
         return "";
+    }
+
+    private String baseString2appMap(String base64Str) {
+        //解码
+        if(!"".equals(base64Str)){
+            base64Str = Base64Utils.encodeToString(base64Str.getBytes(Charset.forName("utf8")));
+        }
+        return base64Str;
     }
 
     public JSONObject appMap() {
