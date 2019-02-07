@@ -19,6 +19,8 @@ import com.codingapi.txlcn.tc.aspect.weave.DTXLogicWeaver;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
+import java.util.Properties;
+
 /**
  * Description:
  * Date: 1/12/19
@@ -30,13 +32,21 @@ public class DTXInterceptor extends TransactionInterceptor {
 
     private final DTXLogicWeaver dtxLogicWeaver;
 
+    private Properties transactionAttributes;
+
     public DTXInterceptor(DTXLogicWeaver dtxLogicWeaver) {
         this.dtxLogicWeaver = dtxLogicWeaver;
     }
 
     @Override
+    public void setTransactionAttributes(Properties transactionAttributes) {
+        this.transactionAttributes = transactionAttributes;
+        super.setTransactionAttributes(transactionAttributes);
+    }
+
+    @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        return dtxLogicWeaver.runTransaction(InterceptorInvocationUtils.load(invocation), () -> super.invoke(invocation));
+        return dtxLogicWeaver.runTransaction(InterceptorInvocationUtils.load(invocation,transactionAttributes), () -> super.invoke(invocation));
     }
 
 }
