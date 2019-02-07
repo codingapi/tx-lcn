@@ -21,6 +21,7 @@ import com.codingapi.txlcn.common.util.Transactions;
 import org.aopalliance.intercept.MethodInvocation;
 
 import java.util.Objects;
+import java.util.Properties;
 
 /**
  * Description:
@@ -31,11 +32,17 @@ import java.util.Objects;
  */
 class InterceptorInvocationUtils {
 
-    static DTXInfo load(MethodInvocation invocation) {
-        TxTransaction txTransaction = invocation.getMethod().getAnnotation(TxTransaction.class);
+    static DTXInfo load(MethodInvocation invocation, Properties transactionAttributes) {
+        //默认值
         String transactionType = Transactions.LCN;
         DTXPropagation dtxPropagation = DTXPropagation.REQUIRED;
-
+        //优先获取配置的信息
+        if(transactionAttributes!=null){
+            transactionType = transactionAttributes.getProperty(Transactions.DTX_TYPE);
+            dtxPropagation =  DTXPropagation.parser(transactionAttributes.getProperty(Transactions.DTX_PROPAGATION));
+        }
+        //获取注解的信息
+        TxTransaction txTransaction = invocation.getMethod().getAnnotation(TxTransaction.class);
         if (Objects.nonNull(txTransaction)) {
             transactionType = txTransaction.type();
             dtxPropagation = txTransaction.propagation();

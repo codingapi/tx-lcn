@@ -43,6 +43,17 @@ public class Transactions {
 
     public static final String TAG_TASK = "Transaction Task";
 
+
+    /**
+     * 分布式事务类型 Properties传递参数key
+     */
+    public static final String DTX_TYPE = "DTX_TYPE";
+
+    /**
+     * 分布式事务传播类型 Properties传递参数key
+     */
+    public static final String DTX_PROPAGATION = "DTX_PROPAGATION";
+
     /////////// 工具方法  ////////////////////////////////////////////
 
     /**

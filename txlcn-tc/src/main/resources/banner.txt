@@ -7,4 +7,4 @@ ${AnsiColor.BRIGHT_GREEN}
          | | / /^\ \     | |___| \__/\| |\  |
          \_/ \/   \/     \_____/\____/\_| \_/
 
-         TX-LCN TxClient  version:5.0.0
+         TX-LCN TxClient  version:5.0.0.RELEASE
