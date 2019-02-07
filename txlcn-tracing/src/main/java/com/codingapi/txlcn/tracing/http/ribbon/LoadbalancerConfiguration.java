@@ -30,10 +30,10 @@ import org.springframework.context.annotation.Scope;
  * @author ujued
  */
 @Configuration
+@ConditionalOnClass(IRule.class)
 public class LoadbalancerConfiguration {
 
     @Bean
-    @ConditionalOnClass(IRule.class)
     @ConditionalOnProperty(name = "tx-lcn.ribbon.loadbalancer.dtx.enabled", havingValue = "true")
     @Scope("prototype")
     public IRule ribbonRule(Registration registration) {
