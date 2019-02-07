@@ -30,5 +30,22 @@ public enum DTXPropagation {
     /**
      * 当前没有分布式事务，非分布式事务运行。当前有分布式事务，就加入
      */
-    SUPPORTS
+    SUPPORTS;
+
+
+
+    public static DTXPropagation parser(String code){
+        switch (code){
+            case "REQUIRED":{
+                return REQUIRED;
+            }
+            case "SUPPORTS":{
+                return SUPPORTS;
+            }
+            default:{
+                return REQUIRED;
+            }
+        }
+    }
+
 }

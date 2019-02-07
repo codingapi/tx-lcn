@@ -19,6 +19,8 @@ import com.codingapi.txlcn.tc.aspect.weave.DTXLogicWeaver;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
+import java.util.Properties;
+
 /**
  * Description:
  * Date: 1/12/19
@@ -29,12 +31,18 @@ public class TxLcnInterceptor implements MethodInterceptor {
 
     private final DTXLogicWeaver dtxLogicWeaver;
 
+    private Properties transactionAttributes;
+
     public TxLcnInterceptor(DTXLogicWeaver dtxLogicWeaver) {
         this.dtxLogicWeaver = dtxLogicWeaver;
     }
 
+    public void setTransactionAttributes(Properties transactionAttributes) {
+        this.transactionAttributes = transactionAttributes;
+    }
+
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        return dtxLogicWeaver.runTransaction(InterceptorInvocationUtils.load(invocation), invocation::proceed);
+        return dtxLogicWeaver.runTransaction(InterceptorInvocationUtils.load(invocation,transactionAttributes), invocation::proceed);
     }
 }

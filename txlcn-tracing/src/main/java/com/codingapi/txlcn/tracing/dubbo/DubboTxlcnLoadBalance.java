@@ -35,9 +35,15 @@ import java.util.List;
  */
 @Slf4j
 class DubboTxlcnLoadBalance {
+
     private static final String empty = "";
 
     static <T> Invoker<T> chooseInvoker(List<Invoker<T>> invokers, URL url, Invocation invocation, TxLcnLoadBalance loadBalance) {
+
+        //非分布式事务直接执行默认业务.
+        if(!TracingContext.tracing().hasGroup()){
+            return loadBalance.select(invokers, url, invocation);
+        }
         TracingContext.tracing()
                 .addApp(RpcContext.getContext().getLocalAddressString(), empty);
         assert invokers.size() > 0;
