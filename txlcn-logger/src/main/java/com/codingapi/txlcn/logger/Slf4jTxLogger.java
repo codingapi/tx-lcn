@@ -15,7 +15,6 @@
  */
 package com.codingapi.txlcn.logger;
 
-import com.codingapi.txlcn.common.util.Transactions;
 import lombok.extern.slf4j.Slf4j;
 
 /**

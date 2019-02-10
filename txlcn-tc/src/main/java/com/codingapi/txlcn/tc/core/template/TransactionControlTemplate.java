@@ -158,6 +158,6 @@ public class TransactionControlTemplate {
             // 关闭事务组失败
             dtxExceptionHandler.handleNotifyGroupBusinessException(Arrays.asList(groupId, state, unitId, transactionType), e.getCause());
         }
-        txLogger.transactionInfo(groupId, unitId, "notify group exception state %d.", state);
+        txLogger.transactionInfo(groupId, unitId, "notify group exception state {}.", state);
     }
 }
