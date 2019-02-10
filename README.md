@@ -1,4 +1,4 @@
-# tx-lcn分布式事务框架 (5.0.0.dev)
+# tx-lcn分布式事务框架 (5.0.1.RELEASE)
 
 [![Gitter](https://badges.gitter.im/codingapi/tx-lcn.svg)](https://gitter.im/codingapi/tx-lcn?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![BBS](https://bbs.txlcn.org/style/Archlinux/txlcn-bbs.svg)](https://bbs.txlcn.org)
@@ -18,7 +18,7 @@ TCC忽略不说。LCN与TXC两种框架实现的事务模式到底那个更优�
 
 
 版本较4.x主要特点：
-1. 基于springboot 2.0研发
+1. 基于springboot 研发
 2. 抽离LCN封装业务，提出业务接口层与通讯层，可支持自定义分布式事务模式与通讯模式。
 3. 支持LCN TXC TCC 三种事务模式，且可混合支持。
 4. 性能较优秀，去掉了线程等待机制，提高吞吐量。
