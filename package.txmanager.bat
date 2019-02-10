@@ -1,6 +1,6 @@
 @echo off
 
-cd tx-manager
+cd txlcn-tm
 
 start mvn clean package
 

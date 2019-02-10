@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>tx-lcn</artifactId>
+        <groupId>com.codingapi.txlcn</groupId>
+        <version>5.0.1.RELEASE</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>txlcn-tracing</artifactId>
+    <name>txlcn-tracing</name>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>txlcn-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.netflix.feign</groupId>
+            <artifactId>feign-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.netflix.ribbon</groupId>
+            <artifactId>ribbon-loadbalancer</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-commons</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>

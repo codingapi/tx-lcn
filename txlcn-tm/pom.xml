@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.codingapi.txlcn</groupId>
+        <artifactId>tx-lcn</artifactId>
+        <version>5.0.1.RELEASE</version>
+    </parent>
+
+    <artifactId>txlcn-tm</artifactId>
+    <version>5.0.1.RELEASE</version>
+    <packaging>jar</packaging>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>txlcn-logger</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>txlcn-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>txlcn-txmsg-netty</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+        </dependency>
+
+    </dependencies>
+
+
+    <!-- deploy 注释掉下 -->
+    <build>
+        <plugins>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-jar-plugin</artifactId>-->
+                <!--<version>2.6</version>-->
+                <!--<configuration>-->
+                    <!--<archive>-->
+                        <!--<manifest>-->
+                            <!--<mainClass>com.codingapi.txlcn.tm.TMApplication</mainClass>-->
+                            <!--<addClasspath>true</addClasspath>-->
+                            <!--<classpathPrefix>lib/</classpathPrefix>-->
+                        <!--</manifest>-->
+                        <!--<manifestEntries>-->
+                            <!--<Class-Path>./</Class-Path>-->
+                        <!--</manifestEntries>-->
+                    <!--</archive>-->
+                    <!--<excludes>-->
+                        <!--<exclude>config/**</exclude>-->
+                    <!--</excludes>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+
+            <!--<plugin>-->
+                <!--<artifactId>maven-assembly-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<appendAssemblyId>false</appendAssemblyId>-->
+                    <!--<descriptors>-->
+                        <!--<descriptor>src/main/build/package.xml</descriptor>-->
+                    <!--</descriptors>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>make-assembly</id>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>single</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
