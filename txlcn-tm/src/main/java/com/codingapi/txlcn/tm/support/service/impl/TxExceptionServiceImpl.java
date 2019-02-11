@@ -77,6 +77,7 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         txException.setRegistrar(writeTxExceptionReq.getRegistrar());
         txException.setModId(writeTxExceptionReq.getModId());
         txException.setExState((short) 0);
+        txException.setRemark(writeTxExceptionReq.getRemark());
         txExceptionMapper.save(txException);
         txExceptionListener.onException(txException);
     }

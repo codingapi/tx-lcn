@@ -29,8 +29,8 @@ import java.util.List;
 @Mapper
 public interface TxExceptionMapper {
 
-    @Insert("insert into t_tx_exception(group_id, unit_id, mod_id, transaction_state, registrar, ex_state, create_time) " +
-            "values(#{groupId}, #{unitId}, #{modId}, #{transactionState}, #{registrar}, #{exState}, #{createTime})")
+    @Insert("insert into t_tx_exception(group_id, unit_id, mod_id, transaction_state, registrar, ex_state, create_time, remark) " +
+            "values(#{groupId}, #{unitId}, #{modId}, #{transactionState}, #{registrar}, #{exState}, #{createTime}, #{remark})")
     void save(TxException txException);
 
     @Select("select * from t_tx_exception where group_id=#{groupId} and unit_id=#{unitId}")

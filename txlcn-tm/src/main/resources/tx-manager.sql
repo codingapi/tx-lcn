@@ -31,6 +31,7 @@ CREATE TABLE `t_tx_exception`  (
   `transaction_state` tinyint(4) NULL DEFAULT NULL,
   `registrar` tinyint(4) NULL DEFAULT NULL,
   `ex_state` tinyint(4) NULL DEFAULT NULL COMMENT '0 待处理 1已处理',
+  `remark` varchar(10240) NULL DEFAULT NULL COMMENT '备注',
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 967 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
