@@ -1,5 +1,6 @@
 # tx-lcn分布式事务框架 (5.0.1.RELEASE)
 
+[![Maven](https://img.shields.io/badge/Maven%20Central-5.0.1.RELEASE-blue.svg)](https://search.maven.org/search?q=g:com.codingapi.txlcn%20AND%20txlcn)
 [![Gitter](https://badges.gitter.im/codingapi/tx-lcn.svg)](https://gitter.im/codingapi/tx-lcn?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![BBS](https://bbs.txlcn.org/style/Archlinux/txlcn-bbs.svg)](https://bbs.txlcn.org)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?label=license)](https://github.com/codingapi/tx-lcn/blob/master/LICENSE)
