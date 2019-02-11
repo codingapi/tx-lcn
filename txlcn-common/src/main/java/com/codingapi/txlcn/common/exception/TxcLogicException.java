@@ -22,6 +22,17 @@ package com.codingapi.txlcn.common.exception;
  * @author ujued
  */
 public class TxcLogicException extends Exception {
+
+    private Object attachment;
+
+    public Object getAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(Object attachment) {
+        this.attachment = attachment;
+    }
+
     public TxcLogicException() {
     }
 

@@ -273,8 +273,8 @@ public class TxcServiceImpl implements TxcService {
     @Override
     public void undo(String groupId, String unitId) throws TxcLogicException {
         DTXLocalContext.makeUnProxy();
+        List<StatementInfo> statementInfoList = new ArrayList<>();
         try {
-            List<StatementInfo> statementInfoList = new ArrayList<>();
             List<UndoLogDO> undoLogDOList = txcLogHelper.getUndoLogByGroupAndUnitId(groupId, unitId);
 
             for (UndoLogDO undoLogDO : undoLogDOList) {
@@ -295,7 +295,9 @@ public class TxcServiceImpl implements TxcService {
             }
             txcSqlExecutor.applyUndoLog(statementInfoList);
         } catch (SQLException e) {
-            throw new TxcLogicException(e);
+            TxcLogicException exception = new TxcLogicException(e);
+            exception.setAttachment(statementInfoList);
+            throw exception;
         } finally {
             DTXLocalContext.undoProxyStatus();
         }

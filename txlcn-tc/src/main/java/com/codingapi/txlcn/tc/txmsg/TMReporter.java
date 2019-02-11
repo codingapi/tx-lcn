@@ -17,11 +17,14 @@ package com.codingapi.txlcn.tc.txmsg;
 
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
+import com.codingapi.txlcn.tc.core.transaction.txc.analy.def.bean.StatementInfo;
 import com.codingapi.txlcn.txmsg.exception.RpcException;
 import com.codingapi.txlcn.txmsg.params.TxExceptionParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Description: 客户端上报Manager
@@ -31,7 +34,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class TxMangerReporter {
+public class TMReporter {
 
     private final ReliableMessenger reliableMessenger;
 
@@ -40,7 +43,7 @@ public class TxMangerReporter {
     private static final String REPORT_ERROR_MESSAGE = "report transaction transactionState error";
 
     @Autowired
-    public TxMangerReporter(ReliableMessenger reliableMessenger, TxLogger txLogger) {
+    public TMReporter(ReliableMessenger reliableMessenger, TxLogger txLogger) {
         this.reliableMessenger = reliableMessenger;
         this.txLogger = txLogger;
     }
@@ -84,5 +87,15 @@ public class TxMangerReporter {
         } catch (RpcException e) {
             txLogger.trace(exceptionParams.getGroupId(), exceptionParams.getUnitId(), Transactions.TE, REPORT_ERROR_MESSAGE);
         }
+    }
+
+    public void reportTxcUndoException(String groupId, String unitId, List<StatementInfo> statementInfoList) {
+        TxExceptionParams exceptionParams = new TxExceptionParams();
+        exceptionParams.setGroupId(groupId);
+        exceptionParams.setUnitId(unitId);
+        exceptionParams.setRegistrar(TxExceptionParams.TXC_UNDO_ERROR);
+        exceptionParams.setTransactionState(0);
+        exceptionParams.setRemark(statementInfoList.toString());
+        report(exceptionParams);
     }
 }

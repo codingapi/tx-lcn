@@ -25,7 +25,7 @@ import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.core.context.TxContext;
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
 import com.codingapi.txlcn.tc.txmsg.ReliableMessenger;
-import com.codingapi.txlcn.tc.txmsg.TxMangerReporter;
+import com.codingapi.txlcn.tc.txmsg.TMReporter;
 import com.codingapi.txlcn.tc.core.template.TransactionCleanTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
@@ -61,18 +61,18 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
 
     private final AspectLogger aspectLogger;
 
-    private final TxMangerReporter txMangerReporter;
+    private final TMReporter tmReporter;
 
     private final TCGlobalContext globalContext;
 
     @Autowired
     public SimpleDTXChecking(TxClientConfig clientConfig, AspectLogger aspectLogger, TxLogger txLogger,
-                             TxMangerReporter txMangerReporter, TCGlobalContext globalContext,
+                             TMReporter tmReporter, TCGlobalContext globalContext,
                              ReliableMessenger reliableMessenger) {
         this.clientConfig = clientConfig;
         this.aspectLogger = aspectLogger;
         this.txLogger = txLogger;
-        this.txMangerReporter = txMangerReporter;
+        this.tmReporter = tmReporter;
         this.globalContext = globalContext;
         this.reliableMessenger = reliableMessenger;
     }
@@ -125,7 +125,7 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
     private void onAskTransactionStateException(String groupId, String unitId, String transactionType) {
         try {
             // 通知TxManager事务补偿
-            txMangerReporter.reportTransactionState(groupId, unitId, TxExceptionParams.ASK_ERROR, 0);
+            tmReporter.reportTransactionState(groupId, unitId, TxExceptionParams.ASK_ERROR, 0);
             log.warn("{} > has compensation info!", transactionType);
 
             // 事务回滚, 保留适当的补偿信息

@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tm.support.db.domain;
 
+import com.codingapi.txlcn.txmsg.params.TxExceptionParams;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -55,7 +56,8 @@ public class TxException {
     private Integer transactionState;
 
     /**
-     * 上报方 -1 未知 0 Manager 通知事务失败， 1 client询问事务状态失败2 事务发起方关闭事务组失败
+     * 上报方
+     * @see TxExceptionParams
      */
     private short registrar;
 
@@ -68,4 +70,9 @@ public class TxException {
      * 发生时间
      */
     private Date createTime;
+
+    /**
+     * 备注
+     */
+    private String remark;
 }

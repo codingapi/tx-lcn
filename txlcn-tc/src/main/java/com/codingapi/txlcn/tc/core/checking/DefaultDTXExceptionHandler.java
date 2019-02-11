@@ -16,9 +16,8 @@
 package com.codingapi.txlcn.tc.core.checking;
 
 import com.codingapi.txlcn.common.exception.*;
-import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
-import com.codingapi.txlcn.tc.txmsg.TxMangerReporter;
+import com.codingapi.txlcn.tc.txmsg.TMReporter;
 import com.codingapi.txlcn.tc.core.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.txmsg.params.TxExceptionParams;
 import lombok.extern.slf4j.Slf4j;
@@ -40,15 +39,15 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
 
     private final TransactionCleanTemplate transactionCleanTemplate;
 
-    private final TxMangerReporter txMangerReporter;
+    private final TMReporter tmReporter;
 
     private final TxLogger txLogger;
 
     @Autowired
     public DefaultDTXExceptionHandler(TransactionCleanTemplate transactionCleanTemplate,
-                                      TxMangerReporter txMangerReporter, TxLogger txLogger) {
+                                      TMReporter tmReporter, TxLogger txLogger) {
         this.transactionCleanTemplate = transactionCleanTemplate;
-        this.txMangerReporter = txMangerReporter;
+        this.tmReporter = tmReporter;
         this.txLogger = txLogger;
     }
 
@@ -136,6 +135,6 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
         }
 
         // 上报Manager，上报直到成功.
-        txMangerReporter.reportTransactionState(groupId, null, TxExceptionParams.NOTIFY_GROUP_ERROR, state);
+        tmReporter.reportTransactionState(groupId, null, TxExceptionParams.NOTIFY_GROUP_ERROR, state);
     }
 }

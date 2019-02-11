@@ -20,7 +20,7 @@ import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.TccTransactionInfo;
 import com.codingapi.txlcn.tc.core.TransactionCleanService;
 import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
-import com.codingapi.txlcn.tc.txmsg.TxMangerReporter;
+import com.codingapi.txlcn.tc.txmsg.TMReporter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -41,15 +41,15 @@ public class TccTransactionCleanService implements TransactionCleanService {
 
     private final ApplicationContext applicationContext;
 
-    private final TxMangerReporter txMangerReporter;
+    private final TMReporter tmReporter;
 
     private final TCGlobalContext globalContext;
 
     @Autowired
     public TccTransactionCleanService(ApplicationContext applicationContext,
-                                      TxMangerReporter txMangerReporter, TCGlobalContext globalContext) {
+                                      TMReporter tmReporter, TCGlobalContext globalContext) {
         this.applicationContext = applicationContext;
-        this.txMangerReporter = txMangerReporter;
+        this.tmReporter = tmReporter;
         this.globalContext = globalContext;
     }
 
@@ -73,7 +73,7 @@ public class TccTransactionCleanService implements TransactionCleanService {
                 log.debug("User confirm/cancel logic over.");
             } catch (Throwable e) {
                 log.error("Tcc clean error.", e);
-                txMangerReporter.reportTccCleanException(groupId, unitId, state);
+                tmReporter.reportTccCleanException(groupId, unitId, state);
             }
         } catch (Throwable e) {
             throw new TransactionClearException(e.getMessage());
