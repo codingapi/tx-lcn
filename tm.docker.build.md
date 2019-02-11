@@ -26,7 +26,7 @@ docker run -p 7970:7970 -p 8070:8070 --restart always --name tm \
 - -e 相当于 java -jar tm.jar 后面的参数,
 - spring.datasource.url 这个配置里面如果有特殊符号 命令行不支持,建议使用第二种方式
 
-2. 增加外部配置文件运行. 需要在宿主机器上有文件 /opt/data/lcntm/application-prod.properties
+2. 增加外部配置文件运行. 需要在宿主机器上有文件 /opt/data/lcntm/application-dev.properties
 
 ```
 docker run -p 7970:7970 -p 8070:8070 --restart always --name tm \
