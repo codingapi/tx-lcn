@@ -10,7 +10,7 @@ mvn clean package -DskipTests docker:build
 1. 命令行传参数运行
 
 ```
-d run -p 7970:7970 -p 8070:8070 --name tm \
+docker run -p 7970:7970 -p 8070:8070 --name tm \
 -e spring.datasource.url=jdbc:mysql://localhost:3306/tx_manager \
 -e spring.datasource.username=root \
 -e spring.datasource.password=123456 -e spring.redis.host=gj.dw.cn \
@@ -28,7 +28,7 @@ d run -p 7970:7970 -p 8070:8070 --name tm \
 2. 增加外部配置文件运行. 需要在宿主机器上有文件 /opt/data/lcntm/application-prod.properties
 
 ```
-d run -p 7970:7970 -p 8070:8070 --name tm \
+docker run -p 7970:7970 -p 8070:8070 --name tm \
 -v /opt/data/lcntm:/opt/data/lcntm \
 -e spring.profiles.active=prod \
 -e spring.config.additional-location=/opt/data/lcntm/application-prod.properties  \
