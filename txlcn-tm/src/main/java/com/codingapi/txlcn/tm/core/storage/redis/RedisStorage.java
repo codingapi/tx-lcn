@@ -147,6 +147,8 @@ public class RedisStorage implements FastStorage {
             redisTemplate.opsForValue().multiSet(lockIds);
         }
 
+        // 锁超时时间设置
+        lockIds.forEach((k, v) -> redisTemplate.expire(k, managerConfig.getDtxTime(), TimeUnit.MILLISECONDS));
     }
 
     @Override
