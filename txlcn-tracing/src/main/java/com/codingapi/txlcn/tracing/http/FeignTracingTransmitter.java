@@ -15,8 +15,7 @@
  */
 package com.codingapi.txlcn.tracing.http;
 
-import com.codingapi.txlcn.tracing.TracingConstants;
-import com.codingapi.txlcn.tracing.TracingContext;
+import com.codingapi.txlcn.tracing.Tracings;
 import feign.Feign;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
@@ -33,13 +32,10 @@ import org.springframework.stereotype.Component;
 @ConditionalOnClass(Feign.class)
 @Component
 @Order
-public class FeignRequestInterceptor implements RequestInterceptor {
+public class FeignTracingTransmitter implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
-        if (TracingContext.tracing().hasGroup()) {
-            requestTemplate.header(TracingConstants.HEADER_KEY_GROUP_ID, TracingContext.tracing().groupId());
-            requestTemplate.header(TracingConstants.HEADER_KEY_APP_MAP, TracingContext.tracing().appMapBase64String());
-        }
+        Tracings.transmit(requestTemplate::header);
     }
 }
