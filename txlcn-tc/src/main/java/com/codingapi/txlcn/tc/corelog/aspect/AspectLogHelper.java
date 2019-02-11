@@ -52,8 +52,8 @@ public class AspectLogHelper implements LogHelper {
                 "(" +
                 "ID BIGINT NOT NULL AUTO_INCREMENT, " +
                 "UNIT_ID VARCHAR(32) NOT NULL," +
-                "GROUP_ID VARCHAR(32) NOT NULL," +
-                "METHOD_STR VARCHAR(300) NOT NULL ," +
+                "GROUP_ID VARCHAR(64) NOT NULL," +
+                "METHOD_STR VARCHAR(512) NOT NULL ," +
                 "BYTES BLOB NOT NULL," +
                 "GROUP_ID_HASH BIGINT NOT NULL," +
                 "UNIT_ID_HASH BIGINT NOT NULL," +
