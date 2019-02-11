@@ -10,28 +10,29 @@ mvn clean package -DskipTests docker:build
 1. 命令行传参数运行
 
 ```
-docker run -p 7970:7970 -p 8070:8070 --name tm \
--e spring.datasource.url=jdbc:mysql://localhost:3306/tx_manager \
+docker run -p 7970:7970 -p 8070:8070 --restart always --name tm \
+-e spring.datasource.url=jdbc:mysql://127.0.0.1:3306/tx_manager \
 -e spring.datasource.username=root \
--e spring.datasource.password=123456 -e spring.redis.host=gj.dw.cn \
--e spring.redis.port=6379 -e spring.redis.port=6379 -e spring.redis.password=dev123456 \
+-e spring.datasource.password=123456 \
+-e spring.redis.host=127.0.0.1 -e spring.redis.port=6379 -e spring.redis.password=dev123456 \
 -e tx-lcn.manager.admin-key=123456
 -d johnnywjh/txlcn.tm:5.0.1
 ```
 - 说明
 - -p 端口映射 宿主机器端口:容器内端口
 - --name : 容器别名
+-  --restart always : 容器伴随docker服务启动(如果docker是开机启动,那么这个容器就是开机启动的)
 - -d : 放入后台运行
 - -e 相当于 java -jar tm.jar 后面的参数,
 - spring.datasource.url 这个配置里面如果有特殊符号 命令行不支持,建议使用第二种方式
 
-2. 增加外部配置文件运行. 需要在宿主机器上有文件 /opt/data/lcntm/application-prod.properties
+2. 增加外部配置文件运行. 需要在宿主机器上有文件 /opt/data/lcntm/application-dev.properties
 
 ```
-docker run -p 7970:7970 -p 8070:8070 --name tm \
+docker run -p 7970:7970 -p 8070:8070 --restart always --name tm \
 -v /opt/data/lcntm:/opt/data/lcntm \
--e spring.profiles.active=prod \
--e spring.config.additional-location=/opt/data/lcntm/application-prod.properties  \
+-e spring.profiles.active=dev \
+-e spring.config.additional-location=/opt/data/lcntm/application-dev.properties  \
 -d johnnywjh/txlcn.tm:5.0.1
 ```
 - 说明
