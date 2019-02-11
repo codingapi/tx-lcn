@@ -59,7 +59,7 @@ public class TccTransactionCleanService implements TransactionCleanService {
         try {
             TccTransactionInfo tccInfo = globalContext.tccTransactionInfo(unitId, null);
             Object object = applicationContext.getBean(tccInfo.getExecuteClass());
-            // 用户的 confirm or cancel method 可以用到这个
+            // 用户的 confirm 或 cancel method 可以用到这个
             if (Objects.isNull(DTXLocalContext.cur())) {
                 DTXLocalContext.getOrNew().setJustNow(true);
             }

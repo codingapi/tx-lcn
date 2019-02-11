@@ -49,6 +49,7 @@ public class TxcTransactionCleanService implements TransactionCleanService {
 
     @Override
     public void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException {
+        boolean rethrowTxcException = false;
         try {
             // 若需要回滚读undo_log，进行回滚
             if (state == 0) {
@@ -58,6 +59,7 @@ public class TxcTransactionCleanService implements TransactionCleanService {
             @SuppressWarnings("unchecked")
             List<StatementInfo> statementInfoList = (List<StatementInfo>) e.getAttachment();
             tmReporter.reportTxcUndoException(groupId, unitId, statementInfoList);
+            rethrowTxcException = true;
         }
 
         try {
@@ -67,5 +69,8 @@ public class TxcTransactionCleanService implements TransactionCleanService {
             throw new TransactionClearException(e);
         }
 
+        if (rethrowTxcException) {
+            throw TransactionClearException.needCompensation();
+        }
     }
 }
