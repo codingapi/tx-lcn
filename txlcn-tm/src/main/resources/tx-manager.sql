@@ -13,6 +13,8 @@
 
  Date: 29/12/2018 18:35:59
 */
+CREATE DATABASE IF NOT EXISTS  `tx-manager` DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+USE `tx-manager`;
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
@@ -27,7 +29,7 @@ CREATE TABLE `t_tx_exception`  (
   `unit_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `mod_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `transaction_state` tinyint(4) NULL DEFAULT NULL,
-  `registrar` tinyint(4) NULL DEFAULT NULL COMMENT '-1 未知 0 Manager 通知事务失败， 1 client询问事务状态失败2 事务发起方关闭事务组失败',
+  `registrar` tinyint(4) NULL DEFAULT NULL,
   `ex_state` tinyint(4) NULL DEFAULT NULL COMMENT '0 待处理 1已处理',
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
