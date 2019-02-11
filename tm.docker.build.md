@@ -4,9 +4,9 @@
 mvn clean package -DskipTests docker:build
 ```
 
-##### 运行文档
+#### 运行说明
 - 可以不用构建,在有docker环境的机器上直接运行下面命令
-#### 运行
+
 1. 命令行传参数运行
 
 ```
