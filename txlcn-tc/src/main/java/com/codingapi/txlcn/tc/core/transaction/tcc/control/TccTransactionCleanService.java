@@ -16,11 +16,14 @@
 package com.codingapi.txlcn.tc.core.transaction.tcc.control;
 
 import com.codingapi.txlcn.common.exception.TransactionClearException;
+import com.codingapi.txlcn.common.util.Maps;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.TccTransactionInfo;
 import com.codingapi.txlcn.tc.core.TransactionCleanService;
 import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.txmsg.TMReporter;
+import com.codingapi.txlcn.tracing.TracingConstants;
+import com.codingapi.txlcn.tracing.TracingContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -59,10 +62,11 @@ public class TccTransactionCleanService implements TransactionCleanService {
         try {
             TccTransactionInfo tccInfo = globalContext.tccTransactionInfo(unitId, null);
             Object object = applicationContext.getBean(tccInfo.getExecuteClass());
-            // 用户的 confirm 或 cancel method 可以用到这个
+            // 将要移除。
             if (Objects.isNull(DTXLocalContext.cur())) {
                 DTXLocalContext.getOrNew().setJustNow(true);
             }
+            TracingContext.init(Maps.of(TracingConstants.GROUP_ID, groupId, TracingConstants.APP_MAP, "{}"));
             DTXLocalContext.getOrNew().setGroupId(groupId);
             DTXLocalContext.cur().setUnitId(unitId);
             exeMethod = tccInfo.getExecuteClass().getMethod(
@@ -81,6 +85,7 @@ public class TccTransactionCleanService implements TransactionCleanService {
             if (DTXLocalContext.cur().isJustNow()) {
                 DTXLocalContext.makeNeverAppeared();
             }
+            TracingContext.tracing().destroy();
         }
     }
 }

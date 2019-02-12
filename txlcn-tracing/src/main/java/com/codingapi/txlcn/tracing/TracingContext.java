@@ -60,18 +60,19 @@ public class TracingContext {
         init(Maps.newHashMap(TracingConstants.GROUP_ID, RandomUtils.randomKey(), TracingConstants.APP_MAP, "{}"));
     }
 
-    public void init(Map<String, String> initFields) {
-        if (Objects.isNull(fields)) {
-            this.fields = new HashMap<>();
+    public static void init(Map<String, String> initFields) {
+        TracingContext tracingContext = tracing();
+        if (Objects.isNull(tracingContext.fields)) {
+            tracingContext.fields = new HashMap<>();
         }
         //APP_MAP base64 解码
-        if(initFields.containsKey(TracingConstants.APP_MAP)){
+        if (initFields.containsKey(TracingConstants.APP_MAP)) {
             String appMapVal = initFields.get(TracingConstants.APP_MAP);
-            if(!appMapVal.startsWith("{")||!appMapVal.contains("{")){
-                initFields.put(TracingConstants.APP_MAP,baseString2appMap(appMapVal));
+            if (!appMapVal.startsWith("{") || !appMapVal.contains("{")) {
+                initFields.put(TracingConstants.APP_MAP, tracingContext.baseString2appMap(appMapVal));
             }
         }
-        this.fields.putAll(initFields);
+        tracingContext.fields.putAll(initFields);
     }
 
     public boolean hasGroup() {
@@ -110,7 +111,7 @@ public class TracingContext {
 
     private String baseString2appMap(String base64Str) {
         //解码
-        if(!"".equals(base64Str)){
+        if (!"".equals(base64Str)) {
             base64Str = Base64Utils.encodeToString(base64Str.getBytes(Charset.forName("utf8")));
         }
         return base64Str;

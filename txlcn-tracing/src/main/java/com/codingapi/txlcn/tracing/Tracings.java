@@ -38,7 +38,7 @@ public class Tracings {
     public static void apply(TracingGetter tracingGetter) {
         String groupId = Optional.ofNullable(tracingGetter.get(TracingConstants.HEADER_KEY_GROUP_ID)).orElse("");
         String appList = Optional.ofNullable(tracingGetter.get(TracingConstants.HEADER_KEY_APP_MAP)).orElse("");
-        TracingContext.tracing().init(Maps.newHashMap(TracingConstants.GROUP_ID, groupId, TracingConstants.APP_MAP, appList));
+        TracingContext.init(Maps.newHashMap(TracingConstants.GROUP_ID, groupId, TracingConstants.APP_MAP, appList));
     }
 
     /**
@@ -48,8 +48,8 @@ public class Tracings {
         /**
          * 设置tracing属性
          *
-         * @param key
-         * @param value
+         * @param key   key
+         * @param value value
          */
         void set(String key, String value);
     }
@@ -61,8 +61,8 @@ public class Tracings {
         /**
          * 获取tracing属性
          *
-         * @param key
-         * @return
+         * @param key key
+         * @return tracing value
          */
         String get(String key);
     }

@@ -24,6 +24,8 @@ import java.util.Objects;
 
 /**
  * 分布式事务远程调用控制对象
+ * ！！！不推荐用户业务使用，API变更性大，使用不当有可能造成事务流程出错 ！！！
+ * <p>
  * Created by lorne on 2017/6/5.
  */
 @Data
@@ -90,6 +92,7 @@ public class DTXLocalContext {
      *
      * @see TccTransactionCleanService#clear(java.lang.String, int, java.lang.String, java.lang.String)
      */
+    @Deprecated
     private boolean justNow;
 
     //////// private     ///////////////////////

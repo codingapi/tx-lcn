@@ -17,6 +17,8 @@ package com.codingapi.txlcn.common.util;
 
 import org.springframework.util.DigestUtils;
 
+import java.util.Optional;
+
 /**
  * Description: 事务相关工具类
  * Date: 2018/12/17
@@ -68,5 +70,14 @@ public class Transactions {
 
     public static void setApplicationIdWhenRunning(String applicationIdWhenRunning) {
         Transactions.APPLICATION_ID_WHEN_RUNNING = applicationIdWhenRunning;
+    }
+
+    /**
+     * 获取应用标识。（OnRunning）
+     *
+     * @return ApplicationId
+     */
+    public static String getApplicationId() {
+        return Optional.ofNullable(APPLICATION_ID_WHEN_RUNNING).orElse("unsuitable call this");
     }
 }
