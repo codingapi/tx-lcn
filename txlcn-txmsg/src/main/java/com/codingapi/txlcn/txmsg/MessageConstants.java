@@ -61,21 +61,22 @@ public class MessageConstants {
     /**
      * 通知建立连接
      */
-    public static final String ACTION_NEW_TXMANAGER = "newTxManager";
+    public static final String ACTION_NEW_TXMANAGER = "ntm";
 
     /**
      * 获取切面日志
      */
-    public static final String ACTION_GET_ASPECT_LOG = "getAspectLog";
+    public static final String ACTION_GET_ASPECT_LOG = "gal";
+
+    /**
+     * 删除切面日志
+     */
+    public static final String ACTION_DELETE_ASPECT_LOG = "dal";
+
     /**
      * 初始化客户端
      */
-    public static final String ACTION_INIT_CLIENT = "initClient";
-
-    /**
-     * 初始化客户端GroupId默认值
-     */
-    public static final String ACTION_INIT_GROUPID = "INITCLIENTGROUPID";
+    public static final String ACTION_INIT_CLIENT = "init";
 
     /**
      * 查询分布式事务锁
@@ -87,6 +88,15 @@ public class MessageConstants {
      */
     public static final String ACTION_RELEASE_DTX_LOCK = "rdtxl";
 
+    /**
+     * 清理失效的TM
+     */
+    public static final String ACTION_CLEAN_INVALID_TM = "citm";
+
+    /**
+     * 查询TM Cluster
+     */
+    public static final String ACTION_QUERY_TM_CLUSTER = "qtmc";
 
     /**
      * 发起请求状态
@@ -103,13 +113,4 @@ public class MessageConstants {
      */
     public static final int STATE_EXCEPTION = 500;
 
-    /**
-     * 清理失效的TM
-     */
-    public static final String ACTION_CLEAN_INVALID_TM = "citm";
-
-    /**
-     * 查询TM Cluster
-     */
-    public static final String ACTION_QUERY_TM_CLUSTER = "qtmc";
 }

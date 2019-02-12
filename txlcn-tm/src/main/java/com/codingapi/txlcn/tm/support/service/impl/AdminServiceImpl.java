@@ -61,19 +61,16 @@ public class AdminServiceImpl implements AdminService {
 
     private final RpcClient rpcClient;
 
-    private final FastStorage fastStorage;
-
     @Autowired
     public AdminServiceImpl(TxManagerConfig managerConfig,
                             DefaultTokenStorage defaultTokenStorage,
                             TxLcnLogDbHelper txLoggerHelper,
-                            RpcClient rpcClient, LogDbProperties logDbProperties, FastStorage fastStorage) {
+                            RpcClient rpcClient, LogDbProperties logDbProperties) {
         this.managerConfig = managerConfig;
         this.defaultTokenStorage = defaultTokenStorage;
         this.txLoggerHelper = txLoggerHelper;
         this.rpcClient = rpcClient;
         this.logDbProperties = logDbProperties;
-        this.fastStorage = fastStorage;
     }
 
     @Override

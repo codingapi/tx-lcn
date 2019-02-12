@@ -129,7 +129,7 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
             log.warn("{} > has compensation info!", transactionType);
 
             // 事务回滚, 保留适当的补偿信息
-            transactionCleanTemplate.compensationClean(groupId, unitId, transactionType, 0);
+            transactionCleanTemplate.cleanWithoutAspectLog(groupId, unitId, transactionType, 0);
         } catch (TransactionClearException e) {
             log.error("{} > clean transaction error.", transactionType);
         }

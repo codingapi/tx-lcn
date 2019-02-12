@@ -60,6 +60,7 @@ public class TxcTransactionCleanService implements TransactionCleanService {
             List<StatementInfo> statementInfoList = (List<StatementInfo>) e.getAttachment();
             tmReporter.reportTxcUndoException(groupId, unitId, statementInfoList);
             rethrowTxcException = true;
+            log.debug("need compensation !");
         }
 
         try {

@@ -46,11 +46,10 @@ public class H2DbHelper implements DisposableBean {
     public H2DbHelper(H2DbProperties h2DbProperties) {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setDriverClassName(org.h2.Driver.class.getName());
-        log.info("Init H2 DATABASE at {}", h2DbProperties.getFilePath());
         hikariConfig.setJdbcUrl(String.format("jdbc:h2:%s", h2DbProperties.getFilePath()));
         hikariDataSource = new HikariDataSource(hikariConfig);
         queryRunner = new QueryRunner(hikariDataSource);
-        log.info("Init H2 DATABASE finished.");
+        log.info("Init H2 DATABASE at {}", h2DbProperties.getFilePath());
     }
 
     public QueryRunner queryRunner() {

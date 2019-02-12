@@ -17,6 +17,7 @@ package com.codingapi.txlcn.tc;
 
 import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;

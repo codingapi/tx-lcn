@@ -69,7 +69,8 @@ public class TransactionCleanTemplate {
     public void clean(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
         txLogger.transactionInfo(groupId, unitId, "clean transaction");
         try {
-            compensationClean(groupId, unitId, unitType, state);
+            cleanWithoutAspectLog(groupId, unitId, unitType, state);
+            aspectLogger.clearLog(groupId, unitId);
         } catch (TransactionClearException e) {
             if (!e.isNeedCompensation()) {
                 aspectLogger.clearLog(groupId, unitId);
@@ -89,7 +90,7 @@ public class TransactionCleanTemplate {
      * @param state    transactionState
      * @throws TransactionClearException TransactionClearException
      */
-    public void compensationClean(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
+    public void cleanWithoutAspectLog(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
         try {
             transactionBeanHelper.loadTransactionCleanService(unitType).clear(
                     groupId, state, unitId, unitType

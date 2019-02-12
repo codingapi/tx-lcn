@@ -164,4 +164,22 @@ public class TxExceptionServiceImpl implements TxExceptionService {
     public void deleteExceptions(List<Long> ids) throws TxManagerException {
         txExceptionMapper.deleteByIdList(ids);
     }
+
+    @Override
+    public void deleteTransactionInfo(String groupId, String unitId, String modId) throws TxManagerException {
+        List<String> remoteKeys = rpcClient.remoteKeys(modId);
+        if (remoteKeys.isEmpty()) {
+            throw new TxManagerException("不存在的模块");
+        }
+        try {
+            for (String remoteKey : remoteKeys) {
+                MessageDto messageDto = rpcClient.request(remoteKey, MessageCreator.deleteAspectLog(groupId, unitId), 5000);
+                if (MessageUtils.statusOk(messageDto)) {
+                    return;
+                }
+            }
+        } catch (RpcException e) {
+            throw new TxManagerException(e.getMessage());
+        }
+    }
 }

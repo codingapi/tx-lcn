@@ -129,9 +129,9 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
         String unitId = (String) paramList.get(2);
         String transactionType = (String) paramList.get(3);
         try {
-            transactionCleanTemplate.compensationClean(groupId, unitId, transactionType, state);
+            transactionCleanTemplate.cleanWithoutAspectLog(groupId, unitId, transactionType, state);
         } catch (TransactionClearException e) {
-            log.error("{} > compensationClean transaction error.", transactionType);
+            log.error("{} > cleanWithoutAspectLog transaction error.", transactionType);
         }
 
         // 上报Manager，上报直到成功.

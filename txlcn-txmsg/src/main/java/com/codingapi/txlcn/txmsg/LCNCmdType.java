@@ -93,6 +93,12 @@ public enum LCNCmdType {
     getAspectLog("get-aspect-log", MessageConstants.ACTION_GET_ASPECT_LOG),
 
     /**
+     * 删除切面日志
+     * dal
+     */
+    deleteAspectLog("delete-aspect-log", MessageConstants.ACTION_DELETE_ASPECT_LOG),
+
+    /**
      * 查询tm 集群
      */
     queryTMCluster("query-tm-cluster", MessageConstants.ACTION_QUERY_TM_CLUSTER),
@@ -121,7 +127,7 @@ public enum LCNCmdType {
     }
 
     public static LCNCmdType parserCmd(String cmd) {
-        log.debug("parsed cmd: {}", cmd);
+        log.debug("parsed txmsg cmd: {}", cmd);
         switch (cmd) {
             case MessageConstants.ACTION_CREATE_GROUP:
                 return createGroup;
@@ -143,6 +149,8 @@ public enum LCNCmdType {
                 return notifyConnect;
             case MessageConstants.ACTION_GET_ASPECT_LOG:
                 return getAspectLog;
+            case MessageConstants.ACTION_DELETE_ASPECT_LOG:
+                return deleteAspectLog;
             case MessageConstants.ACTION_INIT_CLIENT:
                 return initClient;
             case MessageConstants.ACTION_QUERY_TM_CLUSTER:

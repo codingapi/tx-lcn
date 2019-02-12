@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc;
+package com.codingapi.txlcn.tc.txc;
 
+import com.codingapi.txlcn.tc.MiniConfiguration;
+import com.codingapi.txlcn.tc.TCAutoConfiguration;
 import org.apache.commons.dbutils.QueryRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
