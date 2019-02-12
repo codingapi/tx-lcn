@@ -66,6 +66,11 @@ public class ExceptionInfo {
     private Date createTime;
 
     /**
+     * 备注
+     */
+    private String remark;
+
+    /**
      * 事务信息
      */
     private JSONObject transactionInfo;
