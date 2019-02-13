@@ -16,6 +16,7 @@
 package com.codingapi.txlcn.tracing.http;
 
 import com.codingapi.txlcn.tracing.Tracings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpRequest;
@@ -27,6 +28,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Description:
@@ -38,6 +41,16 @@ import java.io.IOException;
 @Component
 @Order
 public class RestTemplateTracingTransmitter implements ClientHttpRequestInterceptor {
+
+    @Autowired
+    public RestTemplateTracingTransmitter(@Autowired(required = false) List<RestTemplate> restTemplates) {
+        if (Objects.nonNull(restTemplates)) {
+            restTemplates.forEach(restTemplate -> {
+                List<ClientHttpRequestInterceptor> interceptors = restTemplate.getInterceptors();
+                interceptors.add(interceptors.size(), RestTemplateTracingTransmitter.this);
+            });
+        }
+    }
 
     @Override
     @NonNull

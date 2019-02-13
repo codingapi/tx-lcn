@@ -42,7 +42,7 @@ public class TxLcnManagerBanner implements Banner {
             "           | | / /^\\ \\     | |___| \\__/\\| |\\  |    \n" +
             "           \\_/ \\/   \\/     \\_____/\\____/\\_| \\_/  \n";
 
-    private static final String SERVER_INFO = "   Tx-Manager-%s HTTP port:%s  DTX port:%s";
+    private static final String SERVER_INFO = "      TM-%s HTTP port:%s  DTX port:%s";
 
     @Override
     public void printBanner(Environment environment, Class<?> sourceClass, PrintStream printStream) {
