@@ -15,14 +15,16 @@
  */
 package com.codingapi.txlcn.common.util.serializer;
 
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.runtime.DefaultIdStrategy;
-import com.dyuproject.protostuff.runtime.Delegate;
-import com.dyuproject.protostuff.runtime.RuntimeEnv;
-import com.dyuproject.protostuff.runtime.RuntimeSchema;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import io.protostuff.Schema;
+import io.protostuff.runtime.DefaultIdStrategy;
+import io.protostuff.runtime.Delegate;
+import io.protostuff.runtime.RuntimeEnv;
+import io.protostuff.runtime.RuntimeSchema;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -38,9 +40,21 @@ public class SchemaCache {
 
     private final static DefaultIdStrategy idStrategy = ((DefaultIdStrategy) RuntimeEnv.ID_STRATEGY);
     private final static Delegate<Timestamp> TIMESTAMP_DELEGATE = new TimestampDelegate();
+    private final static Delegate<Date> DATE_DELEGATE = new DateDelegate();
 
     static {
         idStrategy.registerDelegate(TIMESTAMP_DELEGATE);
+        idStrategy.registerDelegate(DATE_DELEGATE);
+    }
+
+    /**
+     * 注册 Delegate
+     * @param delegate delegate
+     */
+    public void registerDelegate(Delegate<?> delegate){
+        if(delegate!=null){
+            idStrategy.registerDelegate(delegate);
+        }
     }
 
     public static SchemaCache getInstance() {
@@ -54,7 +68,6 @@ public class SchemaCache {
     private Schema<?> get(final Class<?> cls, Cache<Class<?>, Schema<?>> cache) {
         try {
             return cache.get(cls, () -> RuntimeSchema.createFrom(cls,idStrategy));
-
         } catch (ExecutionException e) {
             e.printStackTrace();
             return null;

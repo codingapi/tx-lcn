@@ -15,11 +15,12 @@
  */
 package com.codingapi.txlcn.common.util.serializer;
 
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.Pipe;
-import com.dyuproject.protostuff.WireFormat;
-import com.dyuproject.protostuff.runtime.Delegate;
+
+import io.protostuff.Input;
+import io.protostuff.Output;
+import io.protostuff.Pipe;
+import io.protostuff.WireFormat;
+import io.protostuff.runtime.Delegate;
 
 import java.io.IOException;
 import java.sql.Timestamp;

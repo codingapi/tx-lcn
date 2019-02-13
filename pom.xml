@@ -112,14 +112,17 @@
         </dependency>
 
         <dependency>
-            <groupId>com.dyuproject.protostuff</groupId>
+            <groupId>io.protostuff</groupId>
             <artifactId>protostuff-core</artifactId>
+            <version>1.6.0</version>
         </dependency>
 
         <dependency>
-            <groupId>com.dyuproject.protostuff</groupId>
+            <groupId>io.protostuff</groupId>
             <artifactId>protostuff-runtime</artifactId>
+            <version>1.6.0</version>
         </dependency>
+
 
         <dependency>
             <groupId>com.esotericsoftware</groupId>
@@ -235,16 +238,28 @@
             </dependency>
 
             <dependency>
-                <groupId>com.dyuproject.protostuff</groupId>
+                <groupId>io.protostuff</groupId>
                 <artifactId>protostuff-core</artifactId>
-                <version>${txlcn-protostuff.version}</version>
+                <version>1.6.0</version>
             </dependency>
 
             <dependency>
-                <groupId>com.dyuproject.protostuff</groupId>
+                <groupId>io.protostuff</groupId>
                 <artifactId>protostuff-runtime</artifactId>
-                <version>${txlcn-protostuff.version}</version>
+                <version>1.6.0</version>
             </dependency>
+
+            <!--<dependency>-->
+                <!--<groupId>com.dyuproject.protostuff</groupId>-->
+                <!--<artifactId>protostuff-core</artifactId>-->
+                <!--<version>${txlcn-protostuff.version}</version>-->
+            <!--</dependency>-->
+
+            <!--<dependency>-->
+                <!--<groupId>com.dyuproject.protostuff</groupId>-->
+                <!--<artifactId>protostuff-runtime</artifactId>-->
+                <!--<version>${txlcn-protostuff.version}</version>-->
+            <!--</dependency>-->
 
             <dependency>
                 <groupId>com.esotericsoftware</groupId>
