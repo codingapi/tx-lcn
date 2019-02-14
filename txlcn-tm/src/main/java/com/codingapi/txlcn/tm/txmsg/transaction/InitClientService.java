@@ -23,6 +23,7 @@ import com.codingapi.txlcn.tm.txmsg.RpcExecuteService;
 import com.codingapi.txlcn.tm.txmsg.TransactionCmd;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.RpcConfig;
+import com.codingapi.txlcn.txmsg.exception.RpcException;
 import com.codingapi.txlcn.txmsg.params.InitClientParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +73,11 @@ public class InitClientService implements RpcExecuteService {
     public Serializable execute(TransactionCmd transactionCmd) throws TxManagerException {
         log.info("init client - >{}", transactionCmd);
         InitClientParams initClientParams = transactionCmd.getMsg().loadBean(InitClientParams.class);
-        rpcClient.bindAppName(transactionCmd.getRemoteKey(), initClientParams.getAppName());
+        try {
+            rpcClient.bindAppName(transactionCmd.getRemoteKey(), initClientParams.getAppName(),initClientParams.getLabelName());
+        } catch (RpcException e) {
+            throw new TxManagerException(e);
+        }
         // Machine len and id
         initClientParams.setSeqLen(txManagerConfig.getSeqLen());
         initClientParams.setMachineId(managerService.machineIdSync());
