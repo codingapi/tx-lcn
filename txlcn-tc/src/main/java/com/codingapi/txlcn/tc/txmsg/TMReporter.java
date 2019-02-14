@@ -15,12 +15,10 @@
  */
 package com.codingapi.txlcn.tc.txmsg;
 
-import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.tc.core.transaction.txc.analy.def.bean.StatementInfo;
 import com.codingapi.txlcn.txmsg.exception.RpcException;
 import com.codingapi.txlcn.txmsg.params.TxExceptionParams;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,19 +31,17 @@ import java.util.List;
  * @author ujued
  */
 @Component
-@Slf4j
 public class TMReporter {
 
     private final ReliableMessenger reliableMessenger;
 
-    private final TxLogger txLogger;
+    private static final TxLogger txLogger = TxLogger.newLogger(TMReporter.class);
 
     private static final String REPORT_ERROR_MESSAGE = "report transaction transactionState error";
 
     @Autowired
-    public TMReporter(ReliableMessenger reliableMessenger, TxLogger txLogger) {
+    public TMReporter(ReliableMessenger reliableMessenger) {
         this.reliableMessenger = reliableMessenger;
-        this.txLogger = txLogger;
     }
 
     /**
@@ -85,7 +81,7 @@ public class TMReporter {
         try {
             reliableMessenger.request(MessageCreator.writeTxException(exceptionParams));
         } catch (RpcException e) {
-            txLogger.trace(exceptionParams.getGroupId(), exceptionParams.getUnitId(), Transactions.TE, REPORT_ERROR_MESSAGE);
+            txLogger.trace(exceptionParams.getGroupId(), exceptionParams.getUnitId(), "TM report", REPORT_ERROR_MESSAGE);
         }
     }
 

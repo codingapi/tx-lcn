@@ -26,6 +26,10 @@ import com.codingapi.txlcn.common.util.Transactions;
  */
 public interface TxLogger {
 
+    static TxLogger newLogger(Class<?> type) {
+        return new DefaultTxLogger(type);
+    }
+
     /**
      * trace log
      *
@@ -33,45 +37,37 @@ public interface TxLogger {
      * @param unitId  unitId
      * @param tag     tag
      * @param content content
-     * @param args args
+     * @param args    args
      */
     void trace(String groupId, String unitId, String tag, String content, Object... args);
 
     /**
-     * 事务消息
+     * 事务日志
      *
      * @param groupId groupId
      * @param unitId  unitId
      * @param content content
      * @param args    args
      */
-    default void transactionInfo(String groupId, String unitId, String content, Object... args) {
-        info(groupId, unitId, Transactions.TAG_TRANSACTION, content, args);
-    }
-
-    default void taskInfo(String groupId, String unitId, String content, Object... args) {
-        info(groupId, unitId, Transactions.TAG_TASK, content, args);
+    default void txTrace(String groupId, String unitId, String content, Object... args) {
+        trace(groupId, unitId, Transactions.TAG_TRANSACTION, content, args);
     }
 
     /**
-     * info log. todo
+     * 任务日志
      *
      * @param groupId groupId
      * @param unitId  unitId
-     * @param tag     tag
      * @param content content
-     * @param args args
+     * @param args    args
      */
-    default void info(String groupId, String unitId, String tag, String content, Object... args) {
-        trace(groupId, unitId, tag, content, args);
+    default void taskTrace(String groupId, String unitId, String content, Object... args) {
+        trace(groupId, unitId, Transactions.TAG_TASK, content, args);
     }
 
-    default void error(String groupId, String unitId, String tag, String content, Object... args) {
-        trace(groupId, unitId, tag, content, args);
-    }
+    void error(String groupId, String unitId, String tag, String content, Object... args);
 
     default void error(String tag, String content, Object... args) {
-        error("", "", tag, content, args);
+        error("non", "non", tag, content, args);
     }
-
 }

@@ -21,7 +21,6 @@ import com.codingapi.txlcn.tc.core.checking.DTXChecking;
 import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
 import com.codingapi.txlcn.tc.support.TxLcnBeanHelper;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +31,6 @@ import org.springframework.stereotype.Component;
  * @author ujued
  */
 @Component
-@Slf4j
 public class TransactionCleanTemplate {
 
     private final TxLcnBeanHelper transactionBeanHelper;
@@ -41,19 +39,16 @@ public class TransactionCleanTemplate {
 
     private final AspectLogger aspectLogger;
 
-    private final TxLogger txLogger;
+    private static final TxLogger txLogger = TxLogger.newLogger(TransactionCleanTemplate.class);
 
     private final TCGlobalContext globalContext;
 
     @Autowired
-    public TransactionCleanTemplate(TxLcnBeanHelper transactionBeanHelper,
-                                    DTXChecking dtxChecking,
-                                    AspectLogger aspectLogger,
-                                    TxLogger txLogger, TCGlobalContext globalContext) {
+    public TransactionCleanTemplate(TxLcnBeanHelper transactionBeanHelper, DTXChecking dtxChecking,
+                                    AspectLogger aspectLogger, TCGlobalContext globalContext) {
         this.transactionBeanHelper = transactionBeanHelper;
         this.dtxChecking = dtxChecking;
         this.aspectLogger = aspectLogger;
-        this.txLogger = txLogger;
         this.globalContext = globalContext;
     }
 
@@ -67,7 +62,7 @@ public class TransactionCleanTemplate {
      * @throws TransactionClearException TransactionClearException
      */
     public void clean(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
-        txLogger.transactionInfo(groupId, unitId, "clean transaction");
+        txLogger.txTrace(groupId, unitId, "clean transaction");
         try {
             cleanWithoutAspectLog(groupId, unitId, unitType, state);
             aspectLogger.clearLog(groupId, unitId);
@@ -78,7 +73,7 @@ public class TransactionCleanTemplate {
         } catch (Throwable throwable) {
             aspectLogger.clearLog(groupId, unitId);
         }
-        txLogger.transactionInfo(groupId, unitId, "clean transaction over");
+        txLogger.txTrace(groupId, unitId, "clean transaction over");
     }
 
     /**

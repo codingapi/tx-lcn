@@ -28,18 +28,17 @@ public class EnsureIdGenEngine implements RpcConnectionListener, HeartbeatListen
 
     private final ManagerService managerService;
 
-    private final TxLogger txLogger;
+    private final TxLogger txLogger = TxLogger.newLogger(EnsureIdGenEngine.class);
 
     private final ConfigurableEnvironment environment;
 
     private final ServerProperties serverProperties;
 
     @Autowired
-    public EnsureIdGenEngine(ManagerService managerService, TxManagerConfig managerConfig, TxLogger txLogger,
+    public EnsureIdGenEngine(ManagerService managerService, TxManagerConfig managerConfig,
                              ConfigurableEnvironment environment, ServerProperties serverProperties) {
         this.managerService = managerService;
         this.managerConfig = managerConfig;
-        this.txLogger = txLogger;
         this.environment = environment;
         this.serverProperties = serverProperties;
     }
@@ -66,7 +65,7 @@ public class EnsureIdGenEngine implements RpcConnectionListener, HeartbeatListen
             int machineId = cmd.getMsg().loadBean(Integer.class);
             managerService.refreshMachineId(machineId);
         } catch (Exception e) {
-            txLogger.error("onTmReceivedHeart", e.getMessage());
+            txLogger.error("onTmReceivedHeart", e.toString());
         }
     }
 }
