@@ -95,8 +95,8 @@ public class RpcTest {
     }
 
     @Test
-    public void testTxc() {
-
+    public void testTxc() throws InterruptedException {
+        Thread.sleep(10000);
     }
 
 }

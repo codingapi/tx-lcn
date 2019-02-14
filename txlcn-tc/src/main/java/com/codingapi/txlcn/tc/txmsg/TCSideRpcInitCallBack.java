@@ -17,6 +17,7 @@ package com.codingapi.txlcn.tc.txmsg;
 
 import com.codingapi.txlcn.common.util.ApplicationInformation;
 import com.codingapi.txlcn.common.util.id.IdGenInit;
+import com.codingapi.txlcn.common.util.id.ModIdProvider;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.dto.MessageDto;
 import com.codingapi.txlcn.txmsg.dto.RpcCmd;
@@ -51,19 +52,19 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack, HeartbeatListe
 
     private final TxClientConfig txClientConfig;
 
-    private final String modId;
-
     private final List<RpcEnvStatusListener> rpcEnvStatusListeners;
+
+    private final ModIdProvider modIdProvider;
 
     @Autowired
     public TCSideRpcInitCallBack(RpcClient rpcClient, TxClientConfig txClientConfig,
                                  ConfigurableEnvironment environment,
                                  @Autowired(required = false) ServerProperties serverProperties,
-                                 List<RpcEnvStatusListener> rpcEnvStatusListeners) {
+                                 List<RpcEnvStatusListener> rpcEnvStatusListeners, ModIdProvider modIdProvider) {
         this.rpcClient = rpcClient;
         this.txClientConfig = txClientConfig;
-        this.modId = ApplicationInformation.modId(environment, serverProperties);
         this.rpcEnvStatusListeners = rpcEnvStatusListeners;
+        this.modIdProvider = modIdProvider;
     }
 
     @Override
@@ -72,7 +73,7 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack, HeartbeatListe
         new Thread(() -> {
             try {
                 log.info("Send init message to TM[{}]", remoteKey);
-                MessageDto msg = rpcClient.request(remoteKey, MessageCreator.initClient(modId), 5000);
+                MessageDto msg = rpcClient.request(remoteKey, MessageCreator.initClient(modIdProvider.modId()), 5000);
                 if (MessageUtils.statusOk(msg)) {
                     //每一次建立连接时将会获取最新的时间
                     InitClientParams resParams = msg.loadBean(InitClientParams.class);

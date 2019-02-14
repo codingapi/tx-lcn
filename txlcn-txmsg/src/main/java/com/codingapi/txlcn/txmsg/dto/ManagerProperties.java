@@ -27,6 +27,8 @@ import lombok.Data;
 @Data
 public class ManagerProperties  {
 
+    private String rpcHost;
+
     /**
      * 端口
      */

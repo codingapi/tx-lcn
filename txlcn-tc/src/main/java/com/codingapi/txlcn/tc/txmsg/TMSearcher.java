@@ -17,6 +17,7 @@ package com.codingapi.txlcn.tc.txmsg;
 
 import com.codingapi.txlcn.common.util.ApplicationInformation;
 import com.codingapi.txlcn.common.util.Transactions;
+import com.codingapi.txlcn.common.util.id.ModIdProvider;
 import com.codingapi.txlcn.txmsg.RpcClientInitializer;
 import com.codingapi.txlcn.txmsg.dto.TxManagerHost;
 import com.codingapi.txlcn.txmsg.exception.RpcException;
@@ -53,10 +54,9 @@ public class TMSearcher {
 
     @Autowired
     public TMSearcher(RpcClientInitializer rpcClientInitializer, TxClientConfig clientConfig,
-                      ReliableMessenger reliableMessenger, ConfigurableEnvironment environment,
-                      @Autowired(required = false) ServerProperties serverProperties) {
+                      ReliableMessenger reliableMessenger, ModIdProvider modIdProvider) {
         // 1. util class init
-        Transactions.setApplicationIdWhenRunning(ApplicationInformation.modId(environment, serverProperties));
+        Transactions.setApplicationIdWhenRunning(modIdProvider.modId());
 
         // 2. TMSearcher init
         RPC_CLIENT_INITIALIZER = rpcClientInitializer;

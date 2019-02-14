@@ -23,9 +23,13 @@ import java.util.List;
 public class TxExceptionServiceTest {
     @Autowired
     private TxExceptionService txExceptionService;
-    
+
+    public TxExceptionServiceTest() {
+        System.setProperty("spring.profiles.active", "ujued");
+    }
+
     @Test
-    public void writeTxException(){
+    public void writeTxException() {
         WriteTxExceptionDTO w = new WriteTxExceptionDTO();
         w.setRegistrar((short) 1);
         w.setGroupId("14141414");
@@ -35,32 +39,32 @@ public class TxExceptionServiceTest {
         w.setUnitId("2019");
         txExceptionService.writeTxException(w);
     }
-    
+
     @Test
-    public void transactionState(){
+    public void transactionState() {
         System.out.println(txExceptionService.transactionState("14141414"));
     }
-    
+
     @Test
-    public void exceptionList(){
-    
-        System.out.println(JSON.toJSONString(txExceptionService.exceptionList(0,1,0,"",1)));
+    public void exceptionList() {
+
+        System.out.println(JSON.toJSONString(txExceptionService.exceptionList(0, 1, 0, "", 1)));
     }
-    
+
     @Test
     public void getTransactionInfo() throws TransactionStateException, TxManagerException {
-        System.out.println(txExceptionService.getTransactionInfo("14141414","2019").toJSONString());
+        System.out.println(txExceptionService.getTransactionInfo("14141414", "2019").toJSONString());
     }
-    
+
     @Test
     public void deleteExceptions() throws TxManagerException {
         List<Long> ids = new ArrayList<>();
         ids.add(1L);
         txExceptionService.deleteExceptions(ids);
     }
-    
+
     @Test
     public void deleteTransactionInfo() throws TransactionStateException, TxManagerException {
-        System.out.println(txExceptionService.getTransactionInfo("14141414","2019").toJSONString());
+        System.out.println(txExceptionService.getTransactionInfo("14141414", "2019").toJSONString());
     }
 }
