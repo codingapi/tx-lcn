@@ -32,6 +32,7 @@ public abstract class Maps {
         map.put(key, value);
         return map;
     }
+
     public static <K, V> Map<K, V> newHashMap(K key1, V value1, K key2, V value2) {
         Map<K, V> map = new HashMap<>();
         map.put(key1, value1);
@@ -75,6 +76,7 @@ public abstract class Maps {
         map.put(key3, value4);
         return map;
     }
+
 
     static class ImmutableMap<K, V> implements Map<K, V> {
 
@@ -226,7 +228,21 @@ public abstract class Maps {
 
         @Override
         public Set<Entry<K, V>> entrySet() {
-            throw new UnsupportedOperationException("not support entey set.");
+            int size = size();
+            Set<Entry<K, V>> entries = new HashSet<>(maxSize);
+            if (Objects.nonNull(key1)) {
+                entries.add(new SimpleEntry<>(this, key1));
+            }
+            if (Objects.nonNull(key2)) {
+                entries.add(new SimpleEntry<>(this, key2));
+            }
+            if (Objects.nonNull(key3)) {
+                entries.add(new SimpleEntry<>(this, key3));
+            }
+            if (Objects.nonNull(key4)) {
+                entries.add(new SimpleEntry<>(this, key4));
+            }
+            return entries;
         }
 
         private int keyIndex(K o) {
@@ -259,6 +275,35 @@ public abstract class Maps {
                 return this.value4;
             }
             return null;
+        }
+
+        static class SimpleEntry<K, V> implements Map.Entry<K, V> {
+
+            private ImmutableMap<K, V> map;
+
+            private K key;
+
+            public SimpleEntry(ImmutableMap<K, V> map, K key) {
+                this.map = map;
+                this.key = key;
+            }
+
+            @Override
+            public K getKey() {
+                return key;
+            }
+
+            @Override
+            public V getValue() {
+                return map.get(key);
+            }
+
+            @Override
+            public V setValue(V value) {
+                V old = getValue();
+                map.put(key, value);
+                return old;
+            }
         }
     }
 }
