@@ -60,6 +60,7 @@ public class DTXLogicWeaver {
         log.debug("<---- TxLcn start ---->");
         DTXLocalContext dtxLocalContext = DTXLocalContext.getOrNew();
         TxContext txContext;
+        // ---------- 保证每个模块在一个DTX下只会有一个TxContext ---------- //
         if (globalContext.hasTxContext()) {
             // 有事务上下文的获取父上下文
             txContext = globalContext.txContext();
@@ -94,8 +95,9 @@ public class DTXLogicWeaver {
         try {
             return transactionServiceExecutor.transactionRunning(info);
         } finally {
+            // 线程执行业务完毕清理本地数据
             if (dtxLocalContext.isDestroy()) {
-                // 获取事务上下文通知事务执行完毕
+                // 通知事务执行完毕
                 synchronized (txContext.getLock()) {
                     txContext.getLock().notifyAll();
                 }

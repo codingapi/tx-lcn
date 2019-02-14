@@ -51,13 +51,13 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
     private static final ScheduledExecutorService scheduledExecutorService =
             Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 
+    private static final TxLogger txLogger = TxLogger.newLogger(SimpleDTXChecking.class);
+
     private TransactionCleanTemplate transactionCleanTemplate;
 
     private final ReliableMessenger reliableMessenger;
 
     private final TxClientConfig clientConfig;
-
-    private final TxLogger txLogger;
 
     private final AspectLogger aspectLogger;
 
@@ -66,12 +66,10 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
     private final TCGlobalContext globalContext;
 
     @Autowired
-    public SimpleDTXChecking(TxClientConfig clientConfig, AspectLogger aspectLogger, TxLogger txLogger,
-                             TMReporter tmReporter, TCGlobalContext globalContext,
-                             ReliableMessenger reliableMessenger) {
+    public SimpleDTXChecking(TxClientConfig clientConfig, AspectLogger aspectLogger, TMReporter tmReporter,
+                             TCGlobalContext globalContext, ReliableMessenger reliableMessenger) {
         this.clientConfig = clientConfig;
         this.aspectLogger = aspectLogger;
-        this.txLogger = txLogger;
         this.tmReporter = tmReporter;
         this.globalContext = globalContext;
         this.reliableMessenger = reliableMessenger;
@@ -83,19 +81,18 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
 
     @Override
     public void startDelayCheckingAsync(String groupId, String unitId, String transactionType) {
-        txLogger.taskInfo(groupId, unitId, "start delay checking task");
+        txLogger.taskTrace(groupId, unitId, "start delay checking task");
         ScheduledFuture scheduledFuture = scheduledExecutorService.schedule(() -> {
             try {
                 TxContext txContext = globalContext.txContext(groupId);
                 if (Objects.nonNull(txContext)) {
                     synchronized (txContext.getLock()) {
-                        txLogger.info(groupId, unitId, Transactions.TAG_TASK,
-                                "checking waiting for business code finish.");
+                        txLogger.taskTrace(groupId, unitId, "checking waiting for business code finish.");
                         txContext.getLock().wait();
                     }
                 }
                 int state = reliableMessenger.askTransactionState(groupId, unitId);
-                txLogger.taskInfo(groupId, unitId, "ask transaction state {}", state);
+                txLogger.taskTrace(groupId, unitId, "ask transaction state {}", state);
                 if (state == -1) {
                     txLogger.error(this.getClass().getSimpleName(), "delay clean transaction error.");
                     onAskTransactionStateException(groupId, unitId, transactionType);
@@ -117,7 +114,7 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
     public void stopDelayChecking(String groupId, String unitId) {
         ScheduledFuture scheduledFuture = delayTasks.get(groupId + unitId);
         if (Objects.nonNull(scheduledFuture)) {
-            txLogger.taskInfo(groupId, unitId, "cancel {}:{} checking.", groupId, unitId);
+            txLogger.taskTrace(groupId, unitId, "cancel {}:{} checking.", groupId, unitId);
             scheduledFuture.cancel(true);
         }
     }
@@ -131,7 +128,7 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
             // 事务回滚, 保留适当的补偿信息
             transactionCleanTemplate.cleanWithoutAspectLog(groupId, unitId, transactionType, 0);
         } catch (TransactionClearException e) {
-            log.error("{} > clean transaction error.", transactionType);
+            txLogger.error(groupId, unitId, Transactions.TAG_TASK, "{} > clean transaction error.", transactionType);
         }
     }
 

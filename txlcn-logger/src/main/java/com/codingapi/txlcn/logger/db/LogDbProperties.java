@@ -38,6 +38,8 @@ public class LogDbProperties extends HikariConfig {
 
     private boolean enabled = false;
 
+    private boolean onlyError = true;
+
     public LogDbProperties(@Autowired(required = false) DataSourceProperties dataSourceProperties) {
         if (Objects.isNull(dataSourceProperties) ||
                 Objects.isNull(dataSourceProperties.getDriverClassName()) ||

@@ -37,18 +37,16 @@ import java.util.List;
 @Slf4j
 public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
 
+    private static final TxLogger txLogger = TxLogger.newLogger(DefaultDTXExceptionHandler.class);
+
     private final TransactionCleanTemplate transactionCleanTemplate;
 
     private final TMReporter tmReporter;
 
-    private final TxLogger txLogger;
-
     @Autowired
-    public DefaultDTXExceptionHandler(TransactionCleanTemplate transactionCleanTemplate,
-                                      TMReporter tmReporter, TxLogger txLogger) {
+    public DefaultDTXExceptionHandler(TransactionCleanTemplate transactionCleanTemplate, TMReporter tmReporter) {
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.tmReporter = tmReporter;
-        this.txLogger = txLogger;
     }
 
     @Override
@@ -70,8 +68,7 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
         try {
             transactionCleanTemplate.clean(groupId, unitId, unitType, 0);
         } catch (TransactionClearException e) {
-            log.error("{} > clean transaction error.", unitType);
-            txLogger.error(this.getClass().getSimpleName(), "clean transaction fail.");
+            txLogger.error(groupId, unitId, "join group", "clean [{}]transaction fail.", unitType);
         }
         throw new TransactionException(ex);
     }
@@ -101,7 +98,7 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
         try {
             transactionCleanTemplate.clean(groupId, unitId, transactionType, state);
         } catch (TransactionClearException e) {
-            log.error("{} > clean transaction error.", transactionType);
+            txLogger.error(groupId, unitId, "notify group", "{} > clean transaction error.", transactionType);
         }
     }
 
@@ -131,7 +128,7 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
         try {
             transactionCleanTemplate.cleanWithoutAspectLog(groupId, unitId, transactionType, state);
         } catch (TransactionClearException e) {
-            log.error("{} > cleanWithoutAspectLog transaction error.", transactionType);
+            txLogger.error(groupId, unitId, "notify group", "{} > cleanWithoutAspectLog transaction error.", transactionType);
         }
 
         // 上报Manager，上报直到成功.
