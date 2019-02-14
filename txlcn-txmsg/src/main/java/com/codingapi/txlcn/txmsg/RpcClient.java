@@ -123,8 +123,10 @@ public abstract class RpcClient {
      *
      * @param remoteKey 远程标识
      * @param appName   应用名称
+     * @param labelName  TC标识名称
+     * @throws RpcException   RpcException
      */
-    public abstract void bindAppName(String remoteKey, String appName);
+    public abstract void bindAppName(String remoteKey, String appName,String labelName) throws RpcException;
 
 
     /**

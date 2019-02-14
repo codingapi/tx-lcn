@@ -98,7 +98,7 @@ public class TxExceptionServiceImpl implements TxExceptionService {
     @Override
     public ExceptionList exceptionList(Integer page, Integer limit, Integer exState, String keyword, Integer registrar) {
         if (Objects.isNull(page) || page <= 0) {
-            page = 0;
+            page = 1;
         }
         if (Objects.isNull(limit) || limit < 1) {
             limit = 10;
@@ -118,7 +118,7 @@ public class TxExceptionServiceImpl implements TxExceptionService {
             return cb.and(predicatesList.toArray(predicates));
         };
         
-        Page<TxException> pageTxExceptions = txExceptionRepository.findAll(specification, PageRequest.of(page, limit));
+        Page<TxException> pageTxExceptions = txExceptionRepository.findAll(specification, PageRequest.of(page-1, limit));
         List<TxException> txExceptions = pageTxExceptions.getContent();
         
         List<ExceptionInfo> exceptionInfoList = new ArrayList<>(txExceptions.size());
