@@ -59,7 +59,7 @@ public class EnsureIdGenEngine implements RpcConnectionListener, HeartbeatListen
             int machineId = cmd.getMsg().loadBean(Integer.class);
             managerService.refreshMachineId(machineId);
         } catch (Exception e) {
-            txLogger.error("onTmReceivedHeart", e.toString());
+            e.printStackTrace();
         }
     }
 }
