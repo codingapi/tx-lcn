@@ -41,5 +41,5 @@ public interface TxExceptionRepository extends JpaRepository<TxException, Long> 
      * @return list get(0)
      */
     @Query(value = "select transaction_state from t_tx_exception where group_id=?1",nativeQuery = true)
-    List<Integer> getTransactionStateByGroupId(Pageable page, String groupId);
+    List<Integer> getTransactionStateByGroupId(String groupId,Pageable page);
 }
