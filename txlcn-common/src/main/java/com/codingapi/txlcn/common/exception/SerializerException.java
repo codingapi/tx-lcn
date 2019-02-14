@@ -15,11 +15,13 @@
  */
 package com.codingapi.txlcn.common.exception;
 
+import java.io.IOException;
+
 /**
  * @author lorne  2018/12/2
  *
  */
-public class SerializerException extends Exception {
+public class SerializerException extends IOException {
 
 
     public SerializerException() {
@@ -38,9 +40,7 @@ public class SerializerException extends Exception {
         super(cause);
     }
 
-    protected SerializerException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
+
 
 
 }
