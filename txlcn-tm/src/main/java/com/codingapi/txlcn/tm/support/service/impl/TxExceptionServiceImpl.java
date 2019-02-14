@@ -54,23 +54,19 @@ import java.util.Objects;
 @Slf4j
 public class TxExceptionServiceImpl implements TxExceptionService {
     
-    //private final TxExceptionMapper txExceptionMapper;
-    
     private final RpcClient rpcClient;
     
     private final TxExceptionListener txExceptionListener;
     
-    @Autowired
-    private  TxExceptionRepository txExceptionRepository;
-    
-//    @Autowired
-//    private EntityManager entityManager;
+    private final TxExceptionRepository txExceptionRepository;
     
     @Autowired
-    public TxExceptionServiceImpl( RpcClient rpcClient,
-                                  TxExceptionListener txExceptionListener) {
+    public TxExceptionServiceImpl(RpcClient rpcClient,
+                                  TxExceptionListener txExceptionListener,
+                                  TxExceptionRepository txExceptionRepository) {
         this.rpcClient = rpcClient;
         this.txExceptionListener = txExceptionListener;
+        this.txExceptionRepository = txExceptionRepository;
     }
     
     @Override
@@ -85,7 +81,6 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         txException.setModId(writeTxExceptionReq.getModId());
         txException.setExState((short) 0);
         txException.setRemark(writeTxExceptionReq.getRemark());
-        //txExceptionMapper.save(txException);
         txExceptionRepository.save(txException);
         txExceptionListener.onException(txException);
     }
@@ -93,8 +88,7 @@ public class TxExceptionServiceImpl implements TxExceptionService {
     @Override
     public int transactionState(String groupId) {
         log.debug("transactionState > groupId: {}", groupId);
-        //Integer state = txExceptionMapper.getTransactionStateByGroupId(groupId);
-        Integer state = txExceptionRepository.getTransactionStateByGroupId(PageRequest.of(0,1),groupId).get(0);
+        Integer state = txExceptionRepository.getTransactionStateByGroupId(PageRequest.of(0, 1), groupId).get(0);
         if (Objects.isNull(state)) {
             return -1;
         }
@@ -104,13 +98,12 @@ public class TxExceptionServiceImpl implements TxExceptionService {
     @Override
     public ExceptionList exceptionList(Integer page, Integer limit, Integer exState, String keyword, Integer registrar) {
         if (Objects.isNull(page) || page <= 0) {
-            page = 1;
+            page = 0;
         }
         if (Objects.isNull(limit) || limit < 1) {
             limit = 10;
         }
-        
-        
+        // 组装条件参数
         Specification<TxException> specification = (Specification<TxException>) (root, cq, cb) -> {
             List<Predicate> predicatesList = new ArrayList<>();
             if ((Objects.nonNull(exState) && exState != -2) && (Objects.nonNull(registrar) && registrar != -2)) {
@@ -125,25 +118,9 @@ public class TxExceptionServiceImpl implements TxExceptionService {
             return cb.and(predicatesList.toArray(predicates));
         };
         
-        
         Page<TxException> pageTxExceptions = txExceptionRepository.findAll(specification, PageRequest.of(page, limit));
         List<TxException> txExceptions = pageTxExceptions.getContent();
         
-        //Page pageInfo = PageHelper.startPage(page, limit, true);
-//        List<TxException> txExceptions;
-//        if ((Objects.nonNull(exState) && exState != -2) && (Objects.nonNull(registrar) && registrar != -2)) {
-//            //txExceptions = txExceptionMapper.findByExStateAndRegistrar(exState, registrar);
-//            txExceptions = txExceptionRepository.findByExStateAndRegistrar(exState.shortValue(), registrar.shortValue());
-//        } else if (Objects.nonNull(exState) && exState != -2) {
-//            //txExceptions = txExceptionMapper.findByExState(exState);
-//            txExceptions = txExceptionRepository.findByExState(exState.shortValue());
-//        } else if (Objects.nonNull(registrar) && registrar != -2) {
-//            //txExceptions = txExceptionMapper.findByRegistrar(registrar);
-//            txExceptions = txExceptionRepository.findByRegistrar(registrar.shortValue());
-//        } else {
-//            //txExceptions = txExceptionMapper.findAll();
-//            txExceptions = txExceptionRepository.findAll();
-//        }
         List<ExceptionInfo> exceptionInfoList = new ArrayList<>(txExceptions.size());
         for (TxException txException : txExceptions) {
             ExceptionInfo exceptionInfo = new ExceptionInfo();
@@ -157,7 +134,6 @@ public class TxExceptionServiceImpl implements TxExceptionService {
                 } catch (TransactionStateException e) {
                     if (e.getCode() == TransactionStateException.NON_ASPECT) {
                         // 不存在异常日志，正常
-                        //txExceptionMapper.changeExState(txException.getId(), (short) 1);
                         txExceptionRepository.changeExState(txException.getId(), (short) 1);
                         exceptionInfo.setExState((short) 1);
                     }
@@ -173,7 +149,6 @@ public class TxExceptionServiceImpl implements TxExceptionService {
     
     @Override
     public JSONObject getTransactionInfo(String groupId, String unitId) throws TransactionStateException {
-        //TxException exception = txExceptionMapper.getByGroupAndUnitId(groupId, unitId);
         TxException exception = txExceptionRepository.findByGroupIdAndUnitId(groupId, unitId);
         if (Objects.isNull(exception)) {
             throw new TransactionStateException("non exists aspect log", TransactionStateException.NON_ASPECT);
@@ -196,8 +171,7 @@ public class TxExceptionServiceImpl implements TxExceptionService {
     }
     
     @Override
-    public void deleteExceptions(List<Long> ids) throws TxManagerException {
-        //txExceptionMapper.deleteByIdList(ids);
+    public void deleteExceptions(List<Long> ids) {
         for (Long id : ids) {
             txExceptionRepository.deleteById(id);
         }

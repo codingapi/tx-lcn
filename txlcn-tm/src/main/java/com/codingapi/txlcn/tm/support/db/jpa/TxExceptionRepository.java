@@ -17,18 +17,29 @@ import java.util.List;
 @Repository
 public interface TxExceptionRepository extends JpaRepository<TxException, Long> , JpaSpecificationExecutor<TxException> {
     
+    /**
+     * find TxException by groupId and unitId
+     * @param groupId groupId
+     * @param unitId unitId
+     * @return TxException
+     */
     TxException findByGroupIdAndUnitId(String groupId, String unitId);
     
-//    List<TxException> findByRegistrar(Pageable pageable,short registrar);
-//
-//    List<TxException> findByExState(Pageable pageable,short exState);
-//
-//    List<TxException> findByExStateAndRegistrar(Pageable pageable,short exState, short registrar);
-    
+    /**
+     * update exSate
+     * @param id id
+     * @param state state
+     */
     @Query(value = "update t_tx_exception set ex_state=?2 where id=?1",nativeQuery = true)
     @Modifying
     void changeExState(Long id, short state);
     
+    /**
+     * find status
+     * @param page page need one
+     * @param groupId groupId
+     * @return list get(0)
+     */
     @Query(value = "select transaction_state from t_tx_exception where group_id=?1",nativeQuery = true)
     List<Integer> getTransactionStateByGroupId(Pageable page, String groupId);
 }
