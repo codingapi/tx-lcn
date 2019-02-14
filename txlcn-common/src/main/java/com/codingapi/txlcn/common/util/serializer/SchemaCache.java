@@ -16,8 +16,14 @@
 package com.codingapi.txlcn.common.util.serializer;
 
 
+import com.codingapi.txlcn.common.util.serializer.jdk.ListMultimapDelegate;
+import com.codingapi.txlcn.common.util.serializer.jdk.MultimapDelegate;
+import com.codingapi.txlcn.common.util.serializer.jdk.MultisetDelegate;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multiset;
 import io.protostuff.Schema;
 import io.protostuff.runtime.DefaultIdStrategy;
 import io.protostuff.runtime.Delegate;
@@ -39,12 +45,22 @@ public class SchemaCache {
     }
 
     private final static DefaultIdStrategy idStrategy = ((DefaultIdStrategy) RuntimeEnv.ID_STRATEGY);
+
+    //java.sql
     private final static Delegate<Timestamp> TIMESTAMP_DELEGATE = new TimestampDelegate();
     private final static Delegate<Date> DATE_DELEGATE = new DateDelegate();
+
+    //google gauva
+    private final static Delegate<ListMultimap> LISTMULTIMAP_DELEGATE = new ListMultimapDelegate();
+    private final static Delegate<Multimap> MULTIMAP_DELEGATE = new MultimapDelegate();
+    private final static Delegate<Multiset> MULTISET_DELEGATE = new MultisetDelegate();
 
     static {
         idStrategy.registerDelegate(TIMESTAMP_DELEGATE);
         idStrategy.registerDelegate(DATE_DELEGATE);
+        idStrategy.registerDelegate(LISTMULTIMAP_DELEGATE);
+        idStrategy.registerDelegate(MULTIMAP_DELEGATE);
+        idStrategy.registerDelegate(MULTISET_DELEGATE);
     }
 
     /**
