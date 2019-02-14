@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.List;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TMApplication.class)
+@ActiveProfiles("meetzy")
 public class TxExceptionServiceTest {
     @Autowired
     private TxExceptionService txExceptionService;
@@ -27,7 +29,7 @@ public class TxExceptionServiceTest {
     @Test
     public void writeTxException(){
         WriteTxExceptionDTO w = new WriteTxExceptionDTO();
-        w.setRegistrar((short) 1);
+        w.setRegistrar((short) 0);
         w.setGroupId("14141414");
         w.setModId("41414141");
         w.setRemark("Test");
@@ -44,7 +46,7 @@ public class TxExceptionServiceTest {
     @Test
     public void exceptionList(){
     
-        System.out.println(JSON.toJSONString(txExceptionService.exceptionList(0,1,0,"",1)));
+        System.out.println(JSON.toJSONString(txExceptionService.exceptionList(0,1,-2,"",-2)));
     }
     
     @Test
