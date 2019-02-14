@@ -18,25 +18,27 @@ package com.codingapi.txlcn.tm.support.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.txlcn.common.exception.TransactionStateException;
 import com.codingapi.txlcn.common.exception.TxManagerException;
-import com.codingapi.txlcn.tm.txmsg.MessageCreator;
 import com.codingapi.txlcn.tm.support.db.domain.TxException;
-import com.codingapi.txlcn.tm.support.db.mybatis.TxExceptionMapper;
+import com.codingapi.txlcn.tm.support.db.jpa.TxExceptionRepository;
+import com.codingapi.txlcn.tm.support.restapi.ao.WriteTxExceptionDTO;
 import com.codingapi.txlcn.tm.support.restapi.vo.ExceptionInfo;
 import com.codingapi.txlcn.tm.support.restapi.vo.ExceptionList;
 import com.codingapi.txlcn.tm.support.service.TxExceptionService;
-import com.codingapi.txlcn.tm.support.restapi.ao.WriteTxExceptionDTO;
 import com.codingapi.txlcn.tm.support.txex.TxExceptionListener;
+import com.codingapi.txlcn.tm.txmsg.MessageCreator;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.dto.MessageDto;
 import com.codingapi.txlcn.txmsg.exception.RpcException;
 import com.codingapi.txlcn.txmsg.util.MessageUtils;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,21 +53,26 @@ import java.util.Objects;
 @Service
 @Slf4j
 public class TxExceptionServiceImpl implements TxExceptionService {
-
-    private final TxExceptionMapper txExceptionMapper;
-
+    
+    //private final TxExceptionMapper txExceptionMapper;
+    
     private final RpcClient rpcClient;
-
+    
     private final TxExceptionListener txExceptionListener;
-
+    
     @Autowired
-    public TxExceptionServiceImpl(TxExceptionMapper txExceptionMapper, RpcClient rpcClient,
+    private  TxExceptionRepository txExceptionRepository;
+    
+//    @Autowired
+//    private EntityManager entityManager;
+    
+    @Autowired
+    public TxExceptionServiceImpl( RpcClient rpcClient,
                                   TxExceptionListener txExceptionListener) {
-        this.txExceptionMapper = txExceptionMapper;
         this.rpcClient = rpcClient;
         this.txExceptionListener = txExceptionListener;
     }
-
+    
     @Override
     public void writeTxException(WriteTxExceptionDTO writeTxExceptionReq) {
         log.info("write tx_exception. {}", writeTxExceptionReq);
@@ -78,20 +85,22 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         txException.setModId(writeTxExceptionReq.getModId());
         txException.setExState((short) 0);
         txException.setRemark(writeTxExceptionReq.getRemark());
-        txExceptionMapper.save(txException);
+        //txExceptionMapper.save(txException);
+        txExceptionRepository.save(txException);
         txExceptionListener.onException(txException);
     }
-
+    
     @Override
     public int transactionState(String groupId) {
         log.debug("transactionState > groupId: {}", groupId);
-        Integer state = txExceptionMapper.getTransactionStateByGroupId(groupId);
+        //Integer state = txExceptionMapper.getTransactionStateByGroupId(groupId);
+        Integer state = txExceptionRepository.getTransactionStateByGroupId(PageRequest.of(0,1),groupId).get(0);
         if (Objects.isNull(state)) {
             return -1;
         }
         return state;
     }
-
+    
     @Override
     public ExceptionList exceptionList(Integer page, Integer limit, Integer exState, String keyword, Integer registrar) {
         if (Objects.isNull(page) || page <= 0) {
@@ -100,22 +109,46 @@ public class TxExceptionServiceImpl implements TxExceptionService {
         if (Objects.isNull(limit) || limit < 1) {
             limit = 10;
         }
-        Page pageInfo = PageHelper.startPage(page, limit, true);
-        List<TxException> txExceptions;
-        if ((Objects.nonNull(exState) && exState != -2) && (Objects.nonNull(registrar) && registrar != -2)) {
-            txExceptions = txExceptionMapper.findByExStateAndRegistrar(exState, registrar);
-        } else if (Objects.nonNull(exState) && exState != -2) {
-            txExceptions = txExceptionMapper.findByExState(exState);
-        } else if (Objects.nonNull(registrar) && registrar != -2) {
-            txExceptions = txExceptionMapper.findByRegistrar(registrar);
-        } else {
-            txExceptions = txExceptionMapper.findAll();
-        }
+        
+        
+        Specification<TxException> specification = (Specification<TxException>) (root, cq, cb) -> {
+            List<Predicate> predicatesList = new ArrayList<>();
+            if ((Objects.nonNull(exState) && exState != -2) && (Objects.nonNull(registrar) && registrar != -2)) {
+                predicatesList.add(cb.equal(root.get("exState"), exState));
+                predicatesList.add(cb.equal(root.get("registrar"), registrar));
+            } else if (Objects.nonNull(exState) && exState != -2) {
+                predicatesList.add(cb.equal(root.get("exState"), exState));
+            } else if (Objects.nonNull(registrar) && registrar != -2) {
+                predicatesList.add(cb.equal(root.get("registrar"), registrar));
+            }
+            Predicate[] predicates = new Predicate[predicatesList.size()];
+            return cb.and(predicatesList.toArray(predicates));
+        };
+        
+        
+        Page<TxException> pageTxExceptions = txExceptionRepository.findAll(specification, PageRequest.of(page, limit));
+        List<TxException> txExceptions = pageTxExceptions.getContent();
+        
+        //Page pageInfo = PageHelper.startPage(page, limit, true);
+//        List<TxException> txExceptions;
+//        if ((Objects.nonNull(exState) && exState != -2) && (Objects.nonNull(registrar) && registrar != -2)) {
+//            //txExceptions = txExceptionMapper.findByExStateAndRegistrar(exState, registrar);
+//            txExceptions = txExceptionRepository.findByExStateAndRegistrar(exState.shortValue(), registrar.shortValue());
+//        } else if (Objects.nonNull(exState) && exState != -2) {
+//            //txExceptions = txExceptionMapper.findByExState(exState);
+//            txExceptions = txExceptionRepository.findByExState(exState.shortValue());
+//        } else if (Objects.nonNull(registrar) && registrar != -2) {
+//            //txExceptions = txExceptionMapper.findByRegistrar(registrar);
+//            txExceptions = txExceptionRepository.findByRegistrar(registrar.shortValue());
+//        } else {
+//            //txExceptions = txExceptionMapper.findAll();
+//            txExceptions = txExceptionRepository.findAll();
+//        }
         List<ExceptionInfo> exceptionInfoList = new ArrayList<>(txExceptions.size());
         for (TxException txException : txExceptions) {
             ExceptionInfo exceptionInfo = new ExceptionInfo();
             BeanUtils.copyProperties(txException, exceptionInfo);
-
+            
             // 如果状态为解决，决定查下模块的日志来最终判断异常状态
             if (txException.getExState() != 1) {
                 try {
@@ -124,7 +157,8 @@ public class TxExceptionServiceImpl implements TxExceptionService {
                 } catch (TransactionStateException e) {
                     if (e.getCode() == TransactionStateException.NON_ASPECT) {
                         // 不存在异常日志，正常
-                        txExceptionMapper.changeExState(txException.getId(), (short) 1);
+                        //txExceptionMapper.changeExState(txException.getId(), (short) 1);
+                        txExceptionRepository.changeExState(txException.getId(), (short) 1);
                         exceptionInfo.setExState((short) 1);
                     }
                 }
@@ -132,14 +166,15 @@ public class TxExceptionServiceImpl implements TxExceptionService {
             exceptionInfoList.add(exceptionInfo);
         }
         ExceptionList exceptionList = new ExceptionList();
-        exceptionList.setTotal(pageInfo.getTotal());
+        exceptionList.setTotal(pageTxExceptions.getTotalElements());
         exceptionList.setExceptions(exceptionInfoList);
         return exceptionList;
     }
-
+    
     @Override
     public JSONObject getTransactionInfo(String groupId, String unitId) throws TransactionStateException {
-        TxException exception = txExceptionMapper.getByGroupAndUnitId(groupId, unitId);
+        //TxException exception = txExceptionMapper.getByGroupAndUnitId(groupId, unitId);
+        TxException exception = txExceptionRepository.findByGroupIdAndUnitId(groupId, unitId);
         if (Objects.isNull(exception)) {
             throw new TransactionStateException("non exists aspect log", TransactionStateException.NON_ASPECT);
         }
@@ -159,12 +194,15 @@ public class TxExceptionServiceImpl implements TxExceptionService {
             throw new TransactionStateException(e, TransactionStateException.RPC_ERR);
         }
     }
-
+    
     @Override
     public void deleteExceptions(List<Long> ids) throws TxManagerException {
-        txExceptionMapper.deleteByIdList(ids);
+        //txExceptionMapper.deleteByIdList(ids);
+        for (Long id : ids) {
+            txExceptionRepository.deleteById(id);
+        }
     }
-
+    
     @Override
     public void deleteTransactionInfo(String groupId, String unitId, String modId) throws TxManagerException {
         List<String> remoteKeys = rpcClient.remoteKeys(modId);

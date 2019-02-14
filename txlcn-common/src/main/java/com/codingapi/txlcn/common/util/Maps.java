@@ -32,7 +32,6 @@ public abstract class Maps {
         map.put(key, value);
         return map;
     }
-
     public static <K, V> Map<K, V> newHashMap(K key1, V value1, K key2, V value2) {
         Map<K, V> map = new HashMap<>();
         map.put(key1, value1);
