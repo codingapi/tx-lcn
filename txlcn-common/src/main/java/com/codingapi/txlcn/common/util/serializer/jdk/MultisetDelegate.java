@@ -13,47 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.common.util.serializer;
+package com.codingapi.txlcn.common.util.serializer.jdk;
 
-
-import io.protostuff.Input;
-import io.protostuff.Output;
-import io.protostuff.Pipe;
-import io.protostuff.WireFormat;
+import com.google.common.collect.Multiset;
+import io.protostuff.*;
 import io.protostuff.runtime.Delegate;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 
 
 /**
- *  protostuff timestamp Delegate
+ * JavaSerializer. MultisetDelegate
  *
- * @author jiujie
- *
+ * @author lorne
  */
-public class TimestampDelegate implements Delegate<Timestamp> {
+public class MultisetDelegate implements Delegate<Multiset> {
 
+    private JavaSerializer javaSerializer = new JavaSerializer();
+
+    @Override
     public WireFormat.FieldType getFieldType() {
-        return WireFormat.FieldType.FIXED64;
+        return WireFormat.FieldType.BYTES;
     }
 
-    public Class<?> typeClass() {
-        return Timestamp.class;
+    public Multiset readFrom(Input input) throws IOException {
+        return javaSerializer.deSerialize(input.readBytes().toByteArray(),typeClass());
     }
 
-    public Timestamp readFrom(Input input) throws IOException {
-        return new Timestamp(input.readFixed64());
-    }
-
-    public void writeTo(Output output, int number, Timestamp value,
+    public void writeTo(Output output, int number, Multiset value,
                         boolean repeated) throws IOException {
-        output.writeFixed64(number, value.getTime(), repeated);
+        byte[] bytes =  javaSerializer.serialize(value);
+        output.writeBytes(number, ByteString.copyFrom(bytes), repeated);
     }
 
     public void transfer(Pipe pipe, Input input, Output output, int number,
                          boolean repeated) throws IOException {
-        output.writeFixed64(number, input.readFixed64(), repeated);
+        output.writeBytes(number, input.readBytes(), repeated);
     }
 
+    @Override
+    public Class<Multiset> typeClass() {
+        return Multiset.class;
+    }
 }
