@@ -7,6 +7,10 @@ package com.codingapi.txlcn.common.util.id;
  * @author ujued
  */
 public interface ModIdProvider {
-
+    /**
+     * get mod id
+     *
+     * @return id
+     */
     String modId();
 }

@@ -15,9 +15,6 @@
  */
 package com.codingapi.txlcn.common.util.id;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
 /**
  * Description:
  * Date: 19-1-30 下午8:10
@@ -159,10 +156,5 @@ public class SnowFlakeGenerator {
         }
         return timestamp;
     }
-
-    public static void main(String[] args) {
-        LocalDateTime localDateTime = LocalDateTime.of(2019, 1, 1, 0, 0, 0, 0);
-        System.out.println(localDateTime.toEpochSecond(ZoneOffset.ofHours(8)));
-        System.out.println(System.currentTimeMillis() / 1000);
-    }
+    
 }
