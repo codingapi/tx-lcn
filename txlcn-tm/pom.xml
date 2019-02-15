@@ -110,9 +110,9 @@
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.4.12</version>
+                <version>1.0.0</version>
                 <configuration>
-                    <imageName>johnnywjh/txlcn.tm</imageName>
+                    <imageName>codingapi/txlcn-tm</imageName>
                     <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
                     <resources>
                         <resource>
@@ -122,8 +122,11 @@
                         </resource>
                     </resources>
                     <imageTags>
-                        <imageTag>5.0.1</imageTag>
+                        <imageTag>5.0.2</imageTag>
                     </imageTags>
+
+                    <serverId>docker-hub</serverId>
+                    <registryUrl>https://index.docker.io/v1/</registryUrl>
                 </configuration>
             </plugin>
 
