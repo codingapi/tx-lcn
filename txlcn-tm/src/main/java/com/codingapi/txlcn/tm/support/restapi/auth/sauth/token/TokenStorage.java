@@ -22,12 +22,31 @@ package com.codingapi.txlcn.tm.support.restapi.auth.sauth.token;
  * @author ujued
  */
 public interface TokenStorage {
-
+    
+    /**
+     * has token
+     *
+     * @param token token
+     * @return bool
+     */
     boolean exist(String token);
-
+    
+    /**
+     * add token
+     *
+     * @param token token
+     */
     void add(String token);
-
+    
+    /**
+     * remove token
+     *
+     * @param token token
+     */
     void remove(String token);
-
+    
+    /**
+     * del all
+     */
     void clear();
 }

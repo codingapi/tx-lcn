@@ -24,10 +24,27 @@ import com.codingapi.txlcn.tc.core.TxTransactionInfo;
  * @author ujued
  */
 public interface TransactionListener {
-
+    
+    /**
+     * tx begin
+     *
+     * @param txTransactionInfo txTransactionInfo
+     */
     void onTransactionBegin(TxTransactionInfo txTransactionInfo);
-
+    
+    /**
+     * tx error
+     *
+     * @param txTransactionInfo txTransactionInfo
+     */
     void onTransactionError(TxTransactionInfo txTransactionInfo);
-
+    
+    /**
+     * tx clean
+     *
+     * @param groupId          groupId
+     * @param unitId           unitId
+     * @param transactionState transactionState
+     */
     void onTransactionClean(String groupId, String unitId, int transactionState);
 }
