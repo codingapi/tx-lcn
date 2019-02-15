@@ -38,7 +38,7 @@ import java.util.*;
 @Slf4j
 public class TracingContext {
 
-    private static ThreadLocal<TracingContext> tracingContextThreadLocal = new ThreadLocal<>();
+    private static ThreadLocal<TracingContext> tracingContextThreadLocal = new InheritableThreadLocal<>();
 
     private TracingContext() {
 
