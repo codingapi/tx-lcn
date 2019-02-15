@@ -74,7 +74,6 @@ public class SimpleTransactionManager implements TransactionManager {
 
     @Override
     public void join(DTXContext dtxContext, String unitId, String unitType, String modId, int userState) throws TransactionException {
-        log.debug("unit:{} joined group:{}", unitId, dtxContext.getGroupId());
         //手动回滚时设置状态为回滚状态 0
         if (userState == 0) {
             dtxContext.resetTransactionState(0);
@@ -117,7 +116,9 @@ public class SimpleTransactionManager implements TransactionManager {
     }
 
     private void notifyTransaction(DTXContext dtxContext, int transactionState) throws TransactionException {
-        for (TransactionUnit transUnit : dtxContext.transactionUnits()) {
+        List<TransactionUnit> transactionUnits = dtxContext.transactionUnits();
+        log.debug("group[{}]'s transaction units: {}", dtxContext.getGroupId(), transactionUnits);
+        for (TransactionUnit transUnit : transactionUnits) {
             NotifyUnitParams notifyUnitParams = new NotifyUnitParams();
             notifyUnitParams.setGroupId(dtxContext.getGroupId());
             notifyUnitParams.setUnitId(transUnit.getUnitId());

@@ -24,7 +24,9 @@ import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
 
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Description:
@@ -38,7 +40,7 @@ import java.util.*;
 @Slf4j
 public class TracingContext {
 
-    private static ThreadLocal<TracingContext> tracingContextThreadLocal = new InheritableThreadLocal<>();
+    private static ThreadLocal<TracingContext> tracingContextThreadLocal = new ThreadLocal<>();
 
     private TracingContext() {
 
@@ -73,6 +75,7 @@ public class TracingContext {
             }
         }
         tracingContext.fields.putAll(initFields);
+        tracingContext.fields.put(TracingConstants.THREAD_ID, String.valueOf(Thread.currentThread().getId()));
     }
 
     public boolean hasGroup() {
@@ -86,6 +89,10 @@ public class TracingContext {
         }
         raiseNonGroupException();
         return "";
+    }
+
+    public Map<String, String> fields() {
+        return this.fields;
     }
 
     public void addApp(String serviceId, String address) {

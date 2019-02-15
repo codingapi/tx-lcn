@@ -70,7 +70,7 @@ public class TMAutoCluster implements TxLcnInitializer {
         // 1. 通知 TC 建立连接
         List<TMProperties> tmList = fastStorage.findTMProperties().stream()
                 .filter(tmProperties ->
-                        !tmProperties.getHost().equals(txManagerConfig.getHost()) && !tmProperties.getTransactionPort().equals(txManagerConfig.getPort()))
+                        !tmProperties.getHost().equals(txManagerConfig.getHost()) || !tmProperties.getTransactionPort().equals(txManagerConfig.getPort()))
                 .collect(Collectors.toList());
         for (TMProperties properties : tmList) {
             NotifyConnectParams notifyConnectParams = new NotifyConnectParams();

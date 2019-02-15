@@ -41,8 +41,6 @@ public class TxManagerConfig {
     public TxManagerConfig(ServerProperties serverProperties) {
         this.port = Objects.requireNonNull(serverProperties.getPort(), "TM http port not configured?") +
                 PORT_CHANGE_VALUE;
-        this.adminKey = "codingapi";
-        this.exUrl = "/provider/email-to/ujued@qq.com";
     }
 
     /**
@@ -78,7 +76,7 @@ public class TxManagerConfig {
     /**
      * 后台密码
      */
-    private String adminKey;
+    private String adminKey = "codingapi";
 
     /**
      * 是否允许异常回调
@@ -88,7 +86,7 @@ public class TxManagerConfig {
     /**
      * 异常回调地址
      */
-    private String exUrl;
+    private String exUrl = "/provider/email-to/ujued@qq.com";
 
     /**
      * ID序列长度

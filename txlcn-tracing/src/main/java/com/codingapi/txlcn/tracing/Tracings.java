@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.tracing;
 
 import com.codingapi.txlcn.common.util.Maps;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import java.util.Optional;
  *
  * @author ujued
  */
+@Slf4j
 public class Tracings {
 
     /**
@@ -25,6 +27,7 @@ public class Tracings {
      */
     public static void transmit(TracingSetter tracingSetter) {
         if (TracingContext.tracing().hasGroup()) {
+            log.debug("tracing transmit group:{}", TracingContext.tracing().groupId());
             tracingSetter.set(TracingConstants.HEADER_KEY_GROUP_ID, TracingContext.tracing().groupId());
             tracingSetter.set(TracingConstants.HEADER_KEY_APP_MAP, TracingContext.tracing().appMapBase64String());
         }
@@ -38,6 +41,7 @@ public class Tracings {
     public static void apply(TracingGetter tracingGetter) {
         String groupId = Optional.ofNullable(tracingGetter.get(TracingConstants.HEADER_KEY_GROUP_ID)).orElse("");
         String appList = Optional.ofNullable(tracingGetter.get(TracingConstants.HEADER_KEY_APP_MAP)).orElse("");
+        log.debug("tracing apply group:{}, app map:{}", groupId, appList);
         TracingContext.init(Maps.newHashMap(TracingConstants.GROUP_ID, groupId, TracingConstants.APP_MAP, appList));
     }
 

@@ -78,6 +78,7 @@ public class TMSearcher {
                 return;
             }
             clusterCountLatch = new CountDownLatch(cluster.size() - knownTMClusterSize);
+            log.debug("wait connect size is {}", cluster.size() - knownTMClusterSize);
             RPC_CLIENT_INITIALIZER.init(TxManagerHost.parserList(new ArrayList<>(cluster)), true);
             clusterCountLatch.await(10, TimeUnit.SECONDS);
             echoTMClusterSuccessful();
@@ -92,9 +93,9 @@ public class TMSearcher {
     public static boolean searchedOne() {
         if (Objects.nonNull(clusterCountLatch)) {
             if (clusterCountLatch.getCount() == 0) {
-                clusterCountLatch.countDown();
                 return false;
             }
+            clusterCountLatch.countDown();
             return true;
         }
         return false;
