@@ -101,11 +101,6 @@
                 <!--</executions>-->
             <!--</plugin>-->
 
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
             <!--docker 构建-->
             <plugin>
                 <groupId>com.spotify</groupId>
