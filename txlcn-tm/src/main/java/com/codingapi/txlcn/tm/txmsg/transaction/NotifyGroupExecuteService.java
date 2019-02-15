@@ -83,7 +83,7 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
         } finally {
             transactionManager.close(transactionCmd.getGroupId());
             // 系统日志
-            txLogger.txTrace(transactionCmd.getGroupId(), "", "notify group over");
+            txLogger.txTrace(transactionCmd.getGroupId(), "", "notify group successfully.");
         }
         return null;
     }
