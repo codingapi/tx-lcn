@@ -63,6 +63,12 @@ public class TracingContext {
     }
 
     public static void init(Map<String, String> initFields) {
+
+        // return if null fields.
+        if (Objects.isNull(initFields)) {
+            log.warn("init tracingContext fail. null init fields.");
+            return;
+        }
         TracingContext tracingContext = tracing();
         if (Objects.isNull(tracingContext.fields)) {
             tracingContext.fields = new HashMap<>();

@@ -50,7 +50,8 @@ public class TracingHystrixConcurrencyStrategy extends HystrixConcurrencyStrateg
                     .getMetricsPublisher();
             HystrixPropertiesStrategy propertiesStrategy = HystrixPlugins.getInstance()
                     .getPropertiesStrategy();
-
+            log.debug("HystrixEventNotifier:{}, HystrixMetricsPublisher:{}, HystrixPropertiesStrategy:{}",
+                    eventNotifier, metricsPublisher, propertiesStrategy);
             HystrixPlugins.reset();
             HystrixPlugins.getInstance().registerConcurrencyStrategy(this);
             HystrixPlugins.getInstance()
@@ -67,12 +68,19 @@ public class TracingHystrixConcurrencyStrategy extends HystrixConcurrencyStrateg
     public <T> Callable<T> wrapCallable(Callable<T> callable) {
         Map<String, String> fields = TracingContext.tracing().fields();
         return () -> {
+            boolean isReInitTracingContext = true;
             try {
+                if (TracingContext.tracing().hasGroup()) {
+                    isReInitTracingContext = false;
+                    return delegate.wrapCallable(callable).call();
+                }
                 log.debug("Hystrix transfer tracing.");
                 TracingContext.init(fields);
-                return callable.call();
+                return delegate.wrapCallable(callable).call();
             } finally {
-                TracingContext.tracing().destroy();
+                if (isReInitTracingContext) {
+                    TracingContext.tracing().destroy();
+                }
             }
         };
     }
