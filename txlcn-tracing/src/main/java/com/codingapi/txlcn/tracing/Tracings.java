@@ -41,8 +41,10 @@ public class Tracings {
     public static void apply(TracingGetter tracingGetter) {
         String groupId = Optional.ofNullable(tracingGetter.get(TracingConstants.HEADER_KEY_GROUP_ID)).orElse("");
         String appList = Optional.ofNullable(tracingGetter.get(TracingConstants.HEADER_KEY_APP_MAP)).orElse("");
-        log.debug("tracing apply group:{}, app map:{}", groupId, appList);
         TracingContext.init(Maps.newHashMap(TracingConstants.GROUP_ID, groupId, TracingConstants.APP_MAP, appList));
+        if (TracingContext.tracing().hasGroup()) {
+            log.debug("tracing apply group:{}, app map:{}", groupId, appList);
+        }
     }
 
     /**
