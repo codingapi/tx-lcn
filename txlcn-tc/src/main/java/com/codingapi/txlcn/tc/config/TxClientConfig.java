@@ -76,9 +76,9 @@ public class TxClientConfig {
 
     private long tmRpcTimeout;
 
-    private int machineId;
+    private long machineId;
 
-    private void setMachineId(int machineId) {
+    private void setMachineId(long machineId) {
         this.machineId = machineId;
     }
 
@@ -98,7 +98,7 @@ public class TxClientConfig {
         setDtxTime(dtxTime);
     }
 
-    public void applyMachineId(int machineId) {
+    public void applyMachineId(long machineId) {
         setMachineId(machineId);
     }
 }
