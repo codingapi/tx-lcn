@@ -57,5 +57,5 @@ public class InitClientParams implements Serializable {
     /**
      * 分配的机器ID
      */
-    private int machineId;
+    private long machineId;
 }

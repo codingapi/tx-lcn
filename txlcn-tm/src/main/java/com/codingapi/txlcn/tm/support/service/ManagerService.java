@@ -27,26 +27,29 @@ import com.codingapi.txlcn.txmsg.exception.RpcException;
  * @author codingapi
  */
 public interface ManagerService {
-    
+
     /**
      * refresh connect
+     *
      * @param notifyConnectParams notifyConnectParams
      * @return bool
      * @throws RpcException RpcException
      */
     boolean refresh(NotifyConnectParams notifyConnectParams) throws RpcException;
-    
+
     /**
      * machine id
+     *
      * @return int
      * @throws TxManagerException TxManagerException
      */
-    int machineIdSync() throws TxManagerException;
-    
+    long machineIdSync() throws TxManagerException;
+
     /**
      * refresh machine id
+     *
      * @param machineId machineId
      * @throws TxManagerException TxManagerException
      */
-    void refreshMachineId(int machineId) throws TxManagerException;
+    void refreshMachines(long... machineId) throws TxManagerException;
 }

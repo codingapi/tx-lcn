@@ -67,12 +67,12 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public int machineIdSync() throws TxManagerException {
+    public long machineIdSync() throws TxManagerException {
         long machineMaxSize = ~(-1L << (64 - 1 - managerConfig.getSeqLen())) - 1;
         long timeout = managerConfig.getHeartTime() + 2000;
-        int id = 0;
+        long id;
         try {
-            id = fastStorage.acquireOrRefreshMachineId(-1, machineMaxSize, timeout);
+            id = fastStorage.acquireMachineId(machineMaxSize, timeout);
         } catch (FastStorageException e) {
             throw new TxManagerException(e);
         }
@@ -81,13 +81,8 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public void refreshMachineId(int machineId) throws TxManagerException {
-        try {
-            long machineMaxSize = ~(-1L << (64 - 1 - managerConfig.getSeqLen())) - 1;
-            long timeout = managerConfig.getHeartTime() + 2000;
-            fastStorage.acquireOrRefreshMachineId(machineId, machineMaxSize, timeout);
-        } catch (FastStorageException e) {
-            throw new TxManagerException(e);
-        }
+    public void refreshMachines(long... machineId) throws TxManagerException {
+        long timeout = managerConfig.getHeartTime() + 2000;
+        fastStorage.refreshMachines(timeout, machineId);
     }
 }

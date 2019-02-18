@@ -93,6 +93,16 @@ public class TxManagerConfig {
      */
     private int seqLen = 12;
 
+    private long machineId;
+
+    private void setMachineId(long machineId) {
+        this.machineId = machineId;
+    }
+
+    public void applyMachineId(long machineId) {
+        setMachineId(machineId);
+    }
+
     public long getDtxLockTime() {
         return dtxLockTime == -1 ? dtxTime : dtxLockTime;
     }

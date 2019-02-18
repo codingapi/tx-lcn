@@ -17,7 +17,7 @@ public abstract class IdGenInit {
      * @param machineLen 机器位长度
      * @param machineId  机器ID
      */
-    public static void applySnowFlakeIdGen(int machineLen, int machineId) {
+    public static void applySnowFlakeIdGen(int machineLen, long machineId) {
         SnowFlakeGenerator.Factory factory = new SnowFlakeGenerator.Factory(machineLen, 0);
         SnowFlakeGenerator snowFlakeGenerator = factory.create(0, machineId);
         RandomUtils.init(() -> String.valueOf(snowFlakeGenerator.nextId()));
@@ -29,7 +29,7 @@ public abstract class IdGenInit {
      * @param seqLen    序列位长度
      * @param machineId 机器ID
      */
-    public static void applyDefaultIdGen(int seqLen, int machineId) {
+    public static void applyDefaultIdGen(int seqLen, long machineId) {
         RandomUtils.init(new DefaultIdGen(seqLen, machineId));
     }
 }

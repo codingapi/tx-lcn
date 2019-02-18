@@ -48,7 +48,8 @@ public class EnsureIdGenEngine implements RpcConnectionListener, HeartbeatListen
 
     @Override
     public void init() throws Exception {
-        IdGenInit.applyDefaultIdGen(managerConfig.getSeqLen(), managerService.machineIdSync());
+        managerConfig.applyMachineId(managerService.machineIdSync());
+        IdGenInit.applyDefaultIdGen(managerConfig.getSeqLen(), managerConfig.getMachineId());
 
         Transactions.setApplicationIdWhenRunning(modIdProvider.modId());
     }
@@ -56,9 +57,8 @@ public class EnsureIdGenEngine implements RpcConnectionListener, HeartbeatListen
     @Override
     public void onTmReceivedHeart(RpcCmd cmd) {
         try {
-            int machineId = cmd.getMsg().loadBean(Integer.class);
-            managerService.refreshMachineId(machineId);
-            // todo refresh tm machine id.
+            Long machineId = cmd.getMsg().loadBean(Long.class);
+            managerService.refreshMachines(machineId, managerConfig.getMachineId());
         } catch (Exception e) {
             e.printStackTrace();
         }

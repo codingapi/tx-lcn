@@ -31,6 +31,7 @@ public interface FastStorage {
 
 
     /*-----------------------DTX group------------------------------*/
+
     /**
      * init DTX group.
      * note: group info should clean by self 10 seconds after DTX time.
@@ -175,11 +176,12 @@ public interface FastStorage {
     /**
      * 申请或刷新一个MachineID
      *
-     * @param machineId
      * @param machineMaxSize 限制大小
-     * @param timeout 超时删除
+     * @param timeout        超时删除
      * @return MachineID
      * @throws FastStorageException FastStorageException
      */
-    int acquireOrRefreshMachineId(int machineId, long machineMaxSize, long timeout) throws FastStorageException;
+    long acquireMachineId(long machineMaxSize, long timeout) throws FastStorageException;
+
+    void refreshMachines(long timeout, long... machines);
 }
