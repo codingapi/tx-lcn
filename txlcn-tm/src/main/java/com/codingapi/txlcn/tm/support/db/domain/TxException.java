@@ -43,16 +43,19 @@ public class TxException {
     /**
      * 事务组ID
      */
+    @Column(length = 60)
     private String groupId;
 
     /**
      * 事务单元ID
      */
+    @Column(length = 60)
     private String unitId;
 
     /**
      * 资源管理服务地址
      */
+    @Column(length = 100)
     private String modId;
 
     /**
