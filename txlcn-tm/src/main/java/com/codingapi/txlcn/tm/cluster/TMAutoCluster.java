@@ -109,6 +109,11 @@ public class TMAutoCluster implements TxLcnInitializer {
     }
 
     @Override
+    public void destroy() throws Exception {
+        fastStorage.removeTMProperties(txManagerConfig.getHost(), txManagerConfig.getPort());
+    }
+
+    @Override
     public int order() {
         return TxLcnRunnerOrders.MIN;
     }

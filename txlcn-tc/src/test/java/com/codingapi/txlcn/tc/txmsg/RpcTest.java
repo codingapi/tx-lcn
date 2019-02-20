@@ -94,9 +94,6 @@ public class RpcTest {
         messenger.request(new MessageDto());
     }
 
-    @Test
-    public void testTxc() throws InterruptedException {
-        Thread.sleep(10000);
-    }
+
 
 }
