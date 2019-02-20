@@ -236,9 +236,8 @@ public class RedisStorage implements FastStorage {
             acquireGlobalXLock();
             stringRedisTemplate.opsForValue().setIfAbsent(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", "-1");
             for (int i = 0; i < machineMaxSize; i++) {
-                int curId = Math.toIntExact(
-                        Objects.requireNonNull(
-                                stringRedisTemplate.opsForValue().increment(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", 1)));
+                long curId = Objects.requireNonNull(
+                        stringRedisTemplate.opsForValue().increment(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", 1));
                 if (curId > machineMaxSize) {
                     stringRedisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", "0");
                     curId = 0;
