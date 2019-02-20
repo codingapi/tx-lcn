@@ -175,7 +175,7 @@ public class SocketManager {
     public List<String> removeKeys(String moduleName) {
         List<String> allKeys = new ArrayList<>();
         for (Channel channel : channels) {
-            if (getModuleName(channel).equals(moduleName)) {
+            if (moduleName.equals(getModuleName(channel))) {
                 allKeys.add(channel.remoteAddress().toString());
             }
         }
