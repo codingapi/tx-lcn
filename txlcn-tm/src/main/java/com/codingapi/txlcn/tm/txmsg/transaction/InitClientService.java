@@ -65,10 +65,10 @@ public class InitClientService implements RpcExecuteService {
 
     @Override
     public Serializable execute(TransactionCmd transactionCmd) throws TxManagerException {
-        log.info("init client - >{}", transactionCmd);
         InitClientParams initClientParams = transactionCmd.getMsg().loadBean(InitClientParams.class);
+        log.info("Registered TC: {}", initClientParams.getLabelName());
         try {
-            rpcClient.bindAppName(transactionCmd.getRemoteKey(), initClientParams.getAppName(),initClientParams.getLabelName());
+            rpcClient.bindAppName(transactionCmd.getRemoteKey(), initClientParams.getAppName(), initClientParams.getLabelName());
         } catch (RpcException e) {
             throw new TxManagerException(e);
         }

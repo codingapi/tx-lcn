@@ -193,6 +193,16 @@ public class DefaultGlobalContext implements TCGlobalContext {
         return (System.currentTimeMillis() - txContext().getCreateTime()) >= clientConfig.getDtxTime();
     }
 
+    @Override
+    public int dtxState(String groupId) {
+        return this.attachmentCache.containsKey(groupId, "rollback-only") ? 0 : 1;
+    }
+
+    @Override
+    public void setRollbackOnly(String groupId) {
+        this.attachmentCache.attach(groupId, "rollback-only", true);
+    }
+
     /**
      * 清理事务时调用
      *

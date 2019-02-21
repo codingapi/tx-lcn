@@ -177,8 +177,8 @@ public class DTXLocalContext {
      *
      * @return 1 commit 0 rollback
      */
-    public static int transactionState() {
+    public static int transactionState(int userDtxState) {
         DTXLocalContext dtxLocalContext = Objects.requireNonNull(currentLocal.get(), "DTX can't be null.");
-        return dtxLocalContext.userTransactionState == -1 ? dtxLocalContext.sysTransactionState : dtxLocalContext.userTransactionState;
+        return userDtxState == 1 ? dtxLocalContext.sysTransactionState : userDtxState;
     }
 }

@@ -113,7 +113,7 @@ public class TransactionControlTemplate {
         try {
             txLogger.txTrace(groupId, unitId, "join group > {} > groupId: {xid}, unitId: {uid}", transactionType);
 
-            reliableMessenger.joinGroup(groupId, unitId, transactionType, DTXLocalContext.transactionState());
+            reliableMessenger.joinGroup(groupId, unitId, transactionType, DTXLocalContext.transactionState(globalContext.dtxState(groupId)));
 
             txLogger.txTrace(groupId, unitId, "{xid} join group message over.");
 
