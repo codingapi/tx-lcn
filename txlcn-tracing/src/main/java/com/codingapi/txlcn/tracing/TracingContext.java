@@ -56,6 +56,8 @@ public class TracingContext {
 
     private Map<String, String> fields;
 
+    private boolean destroy;
+
     public void beginTransactionGroup() {
         if (hasGroup()) {
             return;
@@ -73,6 +75,7 @@ public class TracingContext {
         TracingContext tracingContext = tracing();
         if (Objects.isNull(tracingContext.fields)) {
             tracingContext.fields = new HashMap<>();
+            tracingContext.destroy = true;
         }
         tracingContext.fields.putAll(initFields);
     }
@@ -157,7 +160,9 @@ public class TracingContext {
      */
     public void destroy() {
         if (Objects.nonNull(tracingContextThreadLocal.get())) {
-            tracingContextThreadLocal.remove();
+            if (tracingContextThreadLocal.get().destroy) {
+                tracingContextThreadLocal.remove();
+            }
         }
     }
 
