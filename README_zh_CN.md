@@ -1,4 +1,4 @@
-# Distributed Transaction Framework - LCN (5.0.2.dev)
+# TX-LCN分布式事务框架 (5.0.2.dev)
 
 [![Maven](https://img.shields.io/badge/endpoint.svg?url=https://bbs.txlcn.org/maven-central)](https://bbs.txlcn.org/maven-list)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/codingapi/tx-lcn/blob/master/LICENSE)
@@ -6,8 +6,9 @@
 [![Gitter](https://badges.gitter.im/codingapi/tx-lcn.svg)](https://gitter.im/codingapi/tx-lcn?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 
-## Project Introduction
-5.0完全拥抱SpringBoot体系，基于JDK1.8，不仅仅支持LCN事务模式，同时引入了TCC，TXC模式，把分布式事务协调的模式抽象出来，让各种模式可以嵌套使用。
+## 项目介绍
+
+5.0完全拥抱springboot体系，基于JDK1.8，不仅仅支持LCN事务模式，同时引入了TCC，TXC模式，把分布式事务协调的模式抽象出来，让各种模式可以嵌套使用。
 
 事务模式说明：TCC是用户自己实现提交回滚业务，LCN是框架代理JDBC Connection实现提交回滚业务, TXC是框架分析业务SQL提前提交，在需要回滚时生成逆向回滚。
 
@@ -25,16 +26,22 @@ TCC忽略不说。LCN与TXC两种框架实现的事务模式到底那个更优�
 
 
 
-## Modules
-1. txlcn-tc: *TXLCN分布式事务客户端*
-2. txlcn-common: *公共模块*   
-3. txlcn-logger: *日志模块。(默认提供日志持久化到MySQL的支持)* 
-4. txlcn-tm: *TXLCN事务管理器*   
-5. txlcn-txmsg: *事务消息扩展接口*   
-6. txlcn-txmsg-netty: *事务消息接口的Netty实现*  
-7. txlcn-tracing: *分布式事务追踪工具*
+## 模块划分
 
-## The Authority
-Website: [https://txlcn.org](https://txlcn.org)
-Statistics: [Members Enter](https://github.com/codingapi/tx-lcn/issues/7)
-QQ：554855843 (Hot) 970071379(Normal)
+1. txlcn-tc:*TXLCN分布式事务客户端*
+2. txlcn-common:*公共模块*   
+3. txlcn-logger:*日志模块。(默认提供日志持久化到MySQL的支持)* 
+4. txlcn-tm:*TXLCN事务管理器*   
+5. txlcn-txmsg:*事务消息扩展接口*   
+6. txlcn-txmsg-netty:*事务消息接口的Netty实现*  
+7. txlcn-tracing:*分布式事务追踪工具*
+
+## 官网文档
+
+官网文档 见docs分支
+
+https://txlcn.org
+
+
+技术交流群：554855843(已满) 970071379(未满)
+
