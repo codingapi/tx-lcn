@@ -59,6 +59,7 @@ public class TccTransactionCleanService implements TransactionCleanService {
     @Override
     public void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException {
         Method exeMethod;
+        boolean shouldDestroy = !TracingContext.tracing().hasGroup();
         try {
             TccTransactionInfo tccInfo = globalContext.tccTransactionInfo(unitId, null);
             Object object = applicationContext.getBean(tccInfo.getExecuteClass());
@@ -66,7 +67,9 @@ public class TccTransactionCleanService implements TransactionCleanService {
             if (Objects.isNull(DTXLocalContext.cur())) {
                 DTXLocalContext.getOrNew().setJustNow(true);
             }
-            TracingContext.init(Maps.of(TracingConstants.GROUP_ID, groupId, TracingConstants.APP_MAP, "{}"));
+            if (shouldDestroy) {
+                TracingContext.init(Maps.of(TracingConstants.GROUP_ID, groupId, TracingConstants.APP_MAP, "{}"));
+            }
             DTXLocalContext.getOrNew().setGroupId(groupId);
             DTXLocalContext.cur().setUnitId(unitId);
             exeMethod = tccInfo.getExecuteClass().getMethod(
@@ -85,7 +88,9 @@ public class TccTransactionCleanService implements TransactionCleanService {
             if (DTXLocalContext.cur().isJustNow()) {
                 DTXLocalContext.makeNeverAppeared();
             }
-            TracingContext.tracing().destroy();
+            if (shouldDestroy) {
+                TracingContext.tracing().destroy();
+            }
         }
     }
 }

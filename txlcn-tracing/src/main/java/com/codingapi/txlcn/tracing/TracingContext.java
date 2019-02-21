@@ -20,11 +20,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.codingapi.txlcn.common.util.Maps;
 import com.codingapi.txlcn.common.util.id.RandomUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -56,8 +53,6 @@ public class TracingContext {
 
     private Map<String, String> fields;
 
-    private boolean destroy;
-
     public void beginTransactionGroup() {
         if (hasGroup()) {
             return;
@@ -75,7 +70,6 @@ public class TracingContext {
         TracingContext tracingContext = tracing();
         if (Objects.isNull(tracingContext.fields)) {
             tracingContext.fields = new HashMap<>();
-            tracingContext.destroy = true;
         }
         tracingContext.fields.putAll(initFields);
     }
@@ -160,9 +154,7 @@ public class TracingContext {
      */
     public void destroy() {
         if (Objects.nonNull(tracingContextThreadLocal.get())) {
-            if (tracingContextThreadLocal.get().destroy) {
-                tracingContextThreadLocal.remove();
-            }
+            tracingContextThreadLocal.remove();
         }
     }
 
