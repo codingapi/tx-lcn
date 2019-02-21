@@ -27,8 +27,6 @@ public class TracingConstants {
 
     public static final String APP_MAP = "appMap";
 
-    public static final String THREAD_ID = "threadId";
-
     public static final String HEADER_KEY_GROUP_ID = "X-Group-ID";
 
     public static final String HEADER_KEY_APP_MAP = "X-App-Map";

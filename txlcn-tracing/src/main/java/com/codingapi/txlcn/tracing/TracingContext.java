@@ -24,15 +24,16 @@ import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Description:
  * 1. {@code fields}为 {@code null}。发起方出现，未开始事务组
  * 2. {@code fields}不为空，fields.get(TracingConstants.GROUP_ID) 是 {@code empty}。参与方出现，未开启事务组。
- * 3. TBD
  * Date: 19-1-28 下午4:21
  *
  * @author ujued
@@ -73,22 +74,24 @@ public class TracingContext {
         if (Objects.isNull(tracingContext.fields)) {
             tracingContext.fields = new HashMap<>();
         }
-        //APP_MAP base64 解码
-        if (initFields.containsKey(TracingConstants.APP_MAP)) {
-            String appMapVal = initFields.get(TracingConstants.APP_MAP);
-            if (!appMapVal.startsWith("{") || !appMapVal.contains("{")) {
-                initFields.put(TracingConstants.APP_MAP, tracingContext.baseString2appMap(appMapVal));
-            }
-        }
         tracingContext.fields.putAll(initFields);
-        tracingContext.fields.put(TracingConstants.THREAD_ID, String.valueOf(Thread.currentThread().getId()));
     }
 
+    /**
+     * 判断是否有事务组
+     *
+     * @return result
+     */
     public boolean hasGroup() {
         return Objects.nonNull(fields) && fields.containsKey(TracingConstants.GROUP_ID) &&
                 StringUtils.hasText(fields.get(TracingConstants.GROUP_ID));
     }
 
+    /**
+     * 获取事务组ID
+     *
+     * @return groupId
+     */
     public String groupId() {
         if (hasGroup()) {
             return fields.get(TracingConstants.GROUP_ID);
@@ -97,10 +100,21 @@ public class TracingContext {
         return "";
     }
 
+    /**
+     * 所有的字段
+     *
+     * @return fields
+     */
     public Map<String, String> fields() {
         return this.fields;
     }
 
+    /**
+     * 添加App
+     *
+     * @param serviceId serviceId
+     * @param address   address
+     */
     public void addApp(String serviceId, String address) {
         if (hasGroup()) {
             JSONObject map = JSON.parseObject(this.fields.get(TracingConstants.APP_MAP));
@@ -114,35 +128,36 @@ public class TracingContext {
         raiseNonGroupException();
     }
 
-    public String appMapBase64String() {
-        if (hasGroup()) {
-            return Base64Utils.encodeToString(this.fields.get(TracingConstants.APP_MAP).getBytes(Charset.forName("utf8")));
-        }
-        raiseNonGroupException();
-        return "";
-    }
-
-    private String baseString2appMap(String base64Str) {
-        //解码
-        if (!"".equals(base64Str)) {
-            base64Str = Base64Utils.encodeToString(base64Str.getBytes(Charset.forName("utf8")));
-        }
-        return base64Str;
-    }
-
+    /**
+     * JSON Type App map.
+     *
+     * @return appMap
+     */
     public JSONObject appMap() {
-        if (hasGroup()) {
-            String appMap = this.fields.get(TracingConstants.APP_MAP);
-            log.debug("App map: {}", appMap);
-            return JSON.parseObject(appMap);
-        }
-        raiseNonGroupException();
-        return JSON.parseObject("{}");
+        return JSON.parseObject(appMapString());
     }
 
+    /**
+     * String Type App map.
+     *
+     * @return appMap
+     */
+    public String appMapString() {
+        if (hasGroup()) {
+            String appMap = Optional.ofNullable(this.fields.get(TracingConstants.APP_MAP)).orElse("");
+            log.debug("App map: {}", appMap);
+            return appMap;
+        }
+        raiseNonGroupException();
+        return "{}";
+    }
+
+    /**
+     * 销毁当前线程Tracing信息
+     */
     public void destroy() {
         if (Objects.nonNull(tracingContextThreadLocal.get())) {
-            tracingContextThreadLocal.set(null);
+            tracingContextThreadLocal.remove();
         }
     }
 
