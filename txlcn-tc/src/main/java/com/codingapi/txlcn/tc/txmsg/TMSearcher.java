@@ -89,6 +89,7 @@ public class TMSearcher {
 
     /**
      * 搜索到一个
+     * @return is searched one
      */
     public static boolean searchedOne() {
         if (Objects.nonNull(clusterCountLatch)) {

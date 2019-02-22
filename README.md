@@ -1,4 +1,4 @@
-# Distributed Transaction Framework - LCN (5.0.2.dev)
+# Distributed Transaction Framework - LCN (5.0.2.RELEASE)
 
 [![Maven](https://img.shields.io/badge/endpoint.svg?url=https://bbs.txlcn.org/maven-central)](https://bbs.txlcn.org/maven-list)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/codingapi/tx-lcn/blob/master/LICENSE)

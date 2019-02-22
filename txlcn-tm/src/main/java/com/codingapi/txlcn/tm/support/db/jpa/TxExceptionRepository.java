@@ -11,8 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * @author meetzy
- * @date 2019-02-14 12:09
+ * @author meetzy 2019-02-14 12:09
  */
 @Repository
 public interface TxExceptionRepository extends JpaRepository<TxException, Long> , JpaSpecificationExecutor<TxException> {

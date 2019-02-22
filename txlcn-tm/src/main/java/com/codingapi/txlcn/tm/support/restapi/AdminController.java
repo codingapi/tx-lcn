@@ -157,6 +157,7 @@ public class AdminController {
      * @param unitId  unitId
      * @param modId   modId
      * @return result always true if non exception
+     * @throws TxManagerException TxManagerException
      */
     @DeleteMapping("/transaction-info")
     public boolean deleteTransactionInfo(

@@ -174,7 +174,7 @@ public class DTXLocalContext {
 
     /**
      * 事务状态
-     *
+     * @param userDtxState state
      * @return 1 commit 0 rollback
      */
     public static int transactionState(int userDtxState) {

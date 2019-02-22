@@ -71,7 +71,7 @@ public class MessageCreator {
 
     /**
      * 申请锁消息
-     *
+     * @param groupId groupId
      * @param locks    locks
      * @param lockType lockType
      * @return message
