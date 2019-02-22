@@ -17,7 +17,6 @@ package com.codingapi.txlcn.tm.txmsg.transaction;
 
 import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.common.exception.TxManagerException;
-import com.codingapi.txlcn.common.exception.UserRollbackException;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.tm.core.DTXContext;
 import com.codingapi.txlcn.tm.core.DTXContextRegistry;
@@ -60,10 +59,8 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
             int commitState = notifyGroupParams.getState();
             // 获取事务状态（当手动回滚时会先设置状态）
             int transactionState = transactionManager.transactionStateFromFastStorage(transactionCmd.getGroupId());
-            boolean hasThrow = false;
             if (transactionState == 0) {
                 commitState = 0;
-                hasThrow = true;
             }
 
             // 系统日志
@@ -75,9 +72,10 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
             } else if (commitState == 0) {
                 transactionManager.rollback(dtxContext);
             }
-            if (hasThrow) {
-                throw new UserRollbackException("user mandatory rollback");
+            if (transactionState == 0) {
+                txLogger.txTrace(transactionCmd.getGroupId(), "", "mandatory rollback for user.");
             }
+            return transactionState;
         } catch (TransactionException e) {
             throw new TxManagerException(e);
         } finally {
@@ -85,6 +83,5 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
             // 系统日志
             txLogger.txTrace(transactionCmd.getGroupId(), "", "notify group successfully.");
         }
-        return null;
     }
 }

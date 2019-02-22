@@ -53,10 +53,11 @@ public interface ReliableMessenger {
      *
      * @param groupId          groupId
      * @param transactionState 分布式事务状态
+     * @return dtx state
      * @throws RpcException         Non TM
      * @throws LcnBusinessException TM Business Err
      */
-    void notifyGroup(String groupId, int transactionState) throws RpcException, LcnBusinessException;
+    int notifyGroup(String groupId, int transactionState) throws RpcException, LcnBusinessException;
 
     /**
      * 加入事务组

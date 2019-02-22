@@ -56,7 +56,7 @@ public abstract class AbstractTxLogger implements TxLogger {
         if (logDbProperties.isEnabled() && !logDbProperties.isOnlyError()) {
             saveTxLog(groupId, unitId, tag, content, args);
         }
-        LOG.debug(content, args);
+        LOG.debug(content + " @group(" + groupId + ")", args);
     }
 
     @Override
@@ -67,7 +67,7 @@ public abstract class AbstractTxLogger implements TxLogger {
         if (logDbProperties.isEnabled() && logDbProperties.isOnlyError()) {
             saveTxLog(groupId, unitId, tag, content, args);
         }
-        LOG.error(content, args);
+        LOG.error(content + " @group(" + groupId + ")", args);
     }
 
     private void saveTxLog(String groupId, String unitId, String tag, String content, Object... args) {

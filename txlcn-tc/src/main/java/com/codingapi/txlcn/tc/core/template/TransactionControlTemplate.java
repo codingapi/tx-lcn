@@ -84,7 +84,7 @@ public class TransactionControlTemplate {
         try {
             // 日志
             txLogger.txTrace(groupId, unitId,
-                    "create group > {} > groupId: {xid}, unitId: {uid}", transactionType);
+                    "create group > transaction type: {}", transactionType);
             // 创建事务组消息
             reliableMessenger.createGroup(groupId);
             // 缓存发起方切面信息
@@ -111,11 +111,11 @@ public class TransactionControlTemplate {
     public void joinGroup(String groupId, String unitId, String transactionType, TransactionInfo transactionInfo)
             throws TransactionException {
         try {
-            txLogger.txTrace(groupId, unitId, "join group > {} > groupId: {xid}, unitId: {uid}", transactionType);
+            txLogger.txTrace(groupId, unitId, "join group > transaction type: {}", transactionType);
 
             reliableMessenger.joinGroup(groupId, unitId, transactionType, DTXLocalContext.transactionState(globalContext.dtxState(groupId)));
 
-            txLogger.txTrace(groupId, unitId, "{xid} join group message over.");
+            txLogger.txTrace(groupId, unitId, "join group message over.");
 
             // 异步检测
             dtxChecking.startDelayCheckingAsync(groupId, unitId, transactionType);
@@ -127,7 +127,7 @@ public class TransactionControlTemplate {
         } catch (LcnBusinessException e) {
             dtxExceptionHandler.handleJoinGroupBusinessException(Arrays.asList(groupId, unitId, transactionType), e);
         }
-        txLogger.txTrace(groupId, unitId, "join logic group over");
+        txLogger.txTrace(groupId, unitId, "join group logic over");
     }
 
     /**
@@ -141,11 +141,11 @@ public class TransactionControlTemplate {
     public void notifyGroup(String groupId, String unitId, String transactionType, int state) {
         try {
             txLogger.txTrace(
-                    groupId, unitId, "notify group > {} > groupId: {xid}, unitId: {uid}, state: {}.", transactionType, state);
+                    groupId, unitId, "notify group > transaction type: {}, state: {}.", transactionType, state);
             if (globalContext.isDTXTimeout()) {
                 throw new LcnBusinessException("dtx timeout.");
             }
-            reliableMessenger.notifyGroup(groupId, state);
+            state = reliableMessenger.notifyGroup(groupId, state);
             transactionCleanTemplate.clean(groupId, unitId, transactionType, state);
         } catch (TransactionClearException e) {
             txLogger.trace(groupId, unitId, Transactions.TE, "clean transaction fail.");

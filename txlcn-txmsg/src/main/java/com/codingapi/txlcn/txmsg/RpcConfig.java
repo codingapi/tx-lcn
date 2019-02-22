@@ -45,11 +45,11 @@ public class RpcConfig {
     /**
      * 断线重连次数
      */
-    private int reconnectCount = 5;
+    private int reconnectCount = 8;
 
     /**
      * 重连延迟时间(ms)
      */
-    private long reconnectDelay = 10000;
+    private long reconnectDelay = 6000;
 
 }
