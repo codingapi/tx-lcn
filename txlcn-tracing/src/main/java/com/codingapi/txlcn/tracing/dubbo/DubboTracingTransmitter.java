@@ -18,24 +18,21 @@ package com.codingapi.txlcn.tracing.dubbo;
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.extension.Activate;
 import com.alibaba.dubbo.rpc.*;
-import com.codingapi.txlcn.common.util.Maps;
-import com.codingapi.txlcn.tracing.TracingConstants;
-import com.codingapi.txlcn.tracing.TracingContext;
+import com.codingapi.txlcn.tracing.Tracings;
+
 
 /**
- * Description: 接收Tracing需要的数据
- * Date: 19-1-28 下午5:08
+ * Description: 传递Tracing需要的数据
+ * Date: 19-1-28 下午5:15
  *
  * @author ujued
  */
-@Activate(group = {Constants.PROVIDER})
-public class TracingHandlerInterceptor implements Filter {
+@Activate(group = Constants.CONSUMER)
+public class DubboTracingTransmitter implements Filter {
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-        String groupId = invocation.getAttachment(TracingConstants.HEADER_KEY_GROUP_ID, "");
-        String appList = invocation.getAttachment(TracingConstants.HEADER_KEY_APP_MAP, "");
-        TracingContext.tracing().init(Maps.newHashMap(TracingConstants.GROUP_ID, groupId, TracingConstants.APP_MAP, appList));
+        Tracings.transmit(RpcContext.getContext()::setAttachment);
         return invoker.invoke(invocation);
     }
 }

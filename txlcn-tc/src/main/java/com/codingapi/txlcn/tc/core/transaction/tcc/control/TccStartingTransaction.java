@@ -39,13 +39,13 @@ public class TccStartingTransaction implements DTXLocalControl {
 
     private final TransactionControlTemplate transactionControlTemplate;
 
-    private final TCGlobalContext context;
+    private final TCGlobalContext globalContext;
 
     @Autowired
     public TccStartingTransaction(TransactionControlTemplate transactionControlTemplate,
-                                  TCGlobalContext context) {
+                                  TCGlobalContext globalContext) {
         this.transactionControlTemplate = transactionControlTemplate;
-        this.context = context;
+        this.globalContext = globalContext;
     }
 
     static TccTransactionInfo prepareTccInfo(TxTransactionInfo info) throws TransactionException {
@@ -81,7 +81,7 @@ public class TccStartingTransaction implements DTXLocalControl {
     public void preBusinessCode(TxTransactionInfo info) throws TransactionException {
         // cache tcc info
         try {
-            context.tccTransactionInfo(info.getUnitId(), () -> prepareTccInfo(info))
+            globalContext.tccTransactionInfo(info.getUnitId(), () -> prepareTccInfo(info))
                     .setMethodParameter(info.getTransactionInfo().getArgumentValues());
         } catch (Throwable throwable) {
             throw new TransactionException(throwable);
@@ -110,6 +110,7 @@ public class TccStartingTransaction implements DTXLocalControl {
     @Override
     public void postBusinessCode(TxTransactionInfo info) {
         transactionControlTemplate.notifyGroup(
-                info.getGroupId(), info.getUnitId(), info.getTransactionType(), DTXLocalContext.transactionState());
+                info.getGroupId(), info.getUnitId(), info.getTransactionType(),
+                DTXLocalContext.transactionState(globalContext.dtxState(info.getGroupId())));
     }
 }

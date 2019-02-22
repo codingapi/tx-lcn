@@ -13,27 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tm.support.db.mybatis;
+package com.codingapi.txlcn.tracing.http;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.codingapi.txlcn.tracing.Tracings;
+import feign.Feign;
+import feign.RequestInterceptor;
+import feign.RequestTemplate;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 /**
  * Description:
- * Date: 19-1-17 上午10:59
+ * Date: 19-1-28 下午3:47
  *
  * @author ujued
  */
-public class TxExceptionMapperProvider {
+@ConditionalOnClass(Feign.class)
+@Component
+@Order
+public class FeignTracingTransmitter implements RequestInterceptor {
 
-    @SuppressWarnings("unchecked")
-    public String deleteByIdList(Map<String, Object> params) {
-        return "delete from t_tx_exception where id in (" +
-                ((List<Long>) params.get("list"))
-                        .stream()
-                        .map(Object::toString)
-                        .collect(Collectors.joining(", ")) +
-                ')';
+    @Override
+    public void apply(RequestTemplate requestTemplate) {
+        Tracings.transmit(requestTemplate::header);
     }
 }

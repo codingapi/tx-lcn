@@ -28,9 +28,9 @@ public interface TransactionCleanService {
     /**
      * 事务清理业务
      *
-     * @param groupId groupId
+     * @param groupId  groupId
      * @param state    事务状态 1 提交 0 回滚
-     * @param unitId unitId
+     * @param unitId   unitId
      * @param unitType 事务类型
      * @throws TransactionClearException TransactionClearException
      */

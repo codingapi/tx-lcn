@@ -25,7 +25,7 @@ import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.core.context.TxContext;
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
 import com.codingapi.txlcn.tc.txmsg.ReliableMessenger;
-import com.codingapi.txlcn.tc.txmsg.TxMangerReporter;
+import com.codingapi.txlcn.tc.txmsg.TMReporter;
 import com.codingapi.txlcn.tc.core.template.TransactionCleanTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
@@ -51,28 +51,26 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
     private static final ScheduledExecutorService scheduledExecutorService =
             Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 
+    private static final TxLogger txLogger = TxLogger.newLogger(SimpleDTXChecking.class);
+
     private TransactionCleanTemplate transactionCleanTemplate;
 
     private final ReliableMessenger reliableMessenger;
 
     private final TxClientConfig clientConfig;
 
-    private final TxLogger txLogger;
-
     private final AspectLogger aspectLogger;
 
-    private final TxMangerReporter txMangerReporter;
+    private final TMReporter tmReporter;
 
     private final TCGlobalContext globalContext;
 
     @Autowired
-    public SimpleDTXChecking(TxClientConfig clientConfig, AspectLogger aspectLogger, TxLogger txLogger,
-                             TxMangerReporter txMangerReporter, TCGlobalContext globalContext,
-                             ReliableMessenger reliableMessenger) {
+    public SimpleDTXChecking(TxClientConfig clientConfig, AspectLogger aspectLogger, TMReporter tmReporter,
+                             TCGlobalContext globalContext, ReliableMessenger reliableMessenger) {
         this.clientConfig = clientConfig;
         this.aspectLogger = aspectLogger;
-        this.txLogger = txLogger;
-        this.txMangerReporter = txMangerReporter;
+        this.tmReporter = tmReporter;
         this.globalContext = globalContext;
         this.reliableMessenger = reliableMessenger;
     }
@@ -83,19 +81,18 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
 
     @Override
     public void startDelayCheckingAsync(String groupId, String unitId, String transactionType) {
-        txLogger.taskInfo(groupId, unitId, "start delay checking task");
+        txLogger.taskTrace(groupId, unitId, "start delay checking task");
         ScheduledFuture scheduledFuture = scheduledExecutorService.schedule(() -> {
             try {
                 TxContext txContext = globalContext.txContext(groupId);
                 if (Objects.nonNull(txContext)) {
                     synchronized (txContext.getLock()) {
-                        txLogger.info(groupId, unitId, Transactions.TAG_TASK,
-                                "checking waiting for business code finish.");
+                        txLogger.taskTrace(groupId, unitId, "checking waiting for business code finish.");
                         txContext.getLock().wait();
                     }
                 }
                 int state = reliableMessenger.askTransactionState(groupId, unitId);
-                txLogger.taskInfo(groupId, unitId, "ask transaction state {}", state);
+                txLogger.taskTrace(groupId, unitId, "ask transaction state {}", state);
                 if (state == -1) {
                     txLogger.error(this.getClass().getSimpleName(), "delay clean transaction error.");
                     onAskTransactionStateException(groupId, unitId, transactionType);
@@ -117,7 +114,7 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
     public void stopDelayChecking(String groupId, String unitId) {
         ScheduledFuture scheduledFuture = delayTasks.get(groupId + unitId);
         if (Objects.nonNull(scheduledFuture)) {
-            txLogger.taskInfo(groupId, unitId, "cancel {}:{} checking.", groupId, unitId);
+            txLogger.taskTrace(groupId, unitId, "cancel {}:{} checking.", groupId, unitId);
             scheduledFuture.cancel(true);
         }
     }
@@ -125,13 +122,13 @@ public class SimpleDTXChecking implements DTXChecking, DisposableBean {
     private void onAskTransactionStateException(String groupId, String unitId, String transactionType) {
         try {
             // 通知TxManager事务补偿
-            txMangerReporter.reportTransactionState(groupId, unitId, TxExceptionParams.ASK_ERROR, 0);
+            tmReporter.reportTransactionState(groupId, unitId, TxExceptionParams.ASK_ERROR, 0);
             log.warn("{} > has compensation info!", transactionType);
 
             // 事务回滚, 保留适当的补偿信息
-            transactionCleanTemplate.compensationClean(groupId, unitId, transactionType, 0);
+            transactionCleanTemplate.cleanWithoutAspectLog(groupId, unitId, transactionType, 0);
         } catch (TransactionClearException e) {
-            log.error("{} > clean transaction error.", transactionType);
+            txLogger.error(groupId, unitId, Transactions.TAG_TASK, "{} > clean transaction error.", transactionType);
         }
     }
 

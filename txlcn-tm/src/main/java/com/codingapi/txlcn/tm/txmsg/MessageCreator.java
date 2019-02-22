@@ -17,6 +17,7 @@ package com.codingapi.txlcn.tm.txmsg;
 
 import com.codingapi.txlcn.txmsg.MessageConstants;
 import com.codingapi.txlcn.txmsg.dto.MessageDto;
+import com.codingapi.txlcn.txmsg.params.DeleteAspectLogParams;
 import com.codingapi.txlcn.txmsg.params.GetAspectLogParams;
 import com.codingapi.txlcn.txmsg.params.NotifyConnectParams;
 import com.codingapi.txlcn.txmsg.params.NotifyUnitParams;
@@ -100,6 +101,13 @@ public class MessageCreator {
         return messageDto;
     }
 
+    /**
+     * 获取切面日志
+     *
+     * @param groupId groupId
+     * @param unitId  unitId
+     * @return aspect log
+     */
     public static MessageDto getAspectLog(String groupId, String unitId) {
         GetAspectLogParams getAspectLogParams = new GetAspectLogParams();
         getAspectLogParams.setGroupId(groupId);
@@ -109,6 +117,25 @@ public class MessageCreator {
         messageDto.setGroupId(groupId);
         messageDto.setAction(MessageConstants.ACTION_GET_ASPECT_LOG);
         messageDto.setData(getAspectLogParams);
+        return messageDto;
+    }
+
+    /**
+     * 删除切面日志
+     *
+     * @param groupId groupId
+     * @param unitId  unitId
+     * @return result
+     */
+    public static MessageDto deleteAspectLog(String groupId, String unitId) {
+        DeleteAspectLogParams deleteAspectLogParams = new DeleteAspectLogParams();
+        deleteAspectLogParams.setGroupId(groupId);
+        deleteAspectLogParams.setUnitId(unitId);
+
+        MessageDto messageDto = new MessageDto();
+        messageDto.setData(deleteAspectLogParams);
+        messageDto.setAction(MessageConstants.ACTION_DELETE_ASPECT_LOG);
+        messageDto.setGroupId(groupId);
         return messageDto;
     }
 }

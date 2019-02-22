@@ -16,9 +16,8 @@
 package com.codingapi.txlcn.tc.core.checking;
 
 import com.codingapi.txlcn.common.exception.*;
-import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
-import com.codingapi.txlcn.tc.txmsg.TxMangerReporter;
+import com.codingapi.txlcn.tc.txmsg.TMReporter;
 import com.codingapi.txlcn.tc.core.template.TransactionCleanTemplate;
 import com.codingapi.txlcn.txmsg.params.TxExceptionParams;
 import lombok.extern.slf4j.Slf4j;
@@ -38,18 +37,16 @@ import java.util.List;
 @Slf4j
 public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
 
+    private static final TxLogger txLogger = TxLogger.newLogger(DefaultDTXExceptionHandler.class);
+
     private final TransactionCleanTemplate transactionCleanTemplate;
 
-    private final TxMangerReporter txMangerReporter;
-
-    private final TxLogger txLogger;
+    private final TMReporter tmReporter;
 
     @Autowired
-    public DefaultDTXExceptionHandler(TransactionCleanTemplate transactionCleanTemplate,
-                                      TxMangerReporter txMangerReporter, TxLogger txLogger) {
+    public DefaultDTXExceptionHandler(TransactionCleanTemplate transactionCleanTemplate, TMReporter tmReporter) {
         this.transactionCleanTemplate = transactionCleanTemplate;
-        this.txMangerReporter = txMangerReporter;
-        this.txLogger = txLogger;
+        this.tmReporter = tmReporter;
     }
 
     @Override
@@ -71,8 +68,7 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
         try {
             transactionCleanTemplate.clean(groupId, unitId, unitType, 0);
         } catch (TransactionClearException e) {
-            log.error("{} > clean transaction error.", unitType);
-            txLogger.error(this.getClass().getSimpleName(), "clean transaction fail.");
+            txLogger.error(groupId, unitId, "join group", "clean [{}]transaction fail.", unitType);
         }
         throw new TransactionException(ex);
     }
@@ -102,7 +98,7 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
         try {
             transactionCleanTemplate.clean(groupId, unitId, transactionType, state);
         } catch (TransactionClearException e) {
-            log.error("{} > clean transaction error.", transactionType);
+            txLogger.error(groupId, unitId, "notify group", "{} > clean transaction error.", transactionType);
         }
     }
 
@@ -130,12 +126,12 @@ public class DefaultDTXExceptionHandler implements DTXExceptionHandler {
         String unitId = (String) paramList.get(2);
         String transactionType = (String) paramList.get(3);
         try {
-            transactionCleanTemplate.compensationClean(groupId, unitId, transactionType, state);
+            transactionCleanTemplate.cleanWithoutAspectLog(groupId, unitId, transactionType, state);
         } catch (TransactionClearException e) {
-            log.error("{} > compensationClean transaction error.", transactionType);
+            txLogger.error(groupId, unitId, "notify group", "{} > cleanWithoutAspectLog transaction error.", transactionType);
         }
 
         // 上报Manager，上报直到成功.
-        txMangerReporter.reportTransactionState(groupId, null, TxExceptionParams.NOTIFY_GROUP_ERROR, state);
+        tmReporter.reportTransactionState(groupId, null, TxExceptionParams.NOTIFY_GROUP_ERROR, state);
     }
 }

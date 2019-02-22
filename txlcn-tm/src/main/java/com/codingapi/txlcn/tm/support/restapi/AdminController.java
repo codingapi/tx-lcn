@@ -151,6 +151,24 @@ public class AdminController {
     }
 
     /**
+     * 删除异常事务信息
+     *
+     * @param groupId groupId
+     * @param unitId  unitId
+     * @param modId   modId
+     * @return result always true if non exception
+     * @throws TxManagerException TxManagerException
+     */
+    @DeleteMapping("/transaction-info")
+    public boolean deleteTransactionInfo(
+            @RequestParam("groupId") String groupId,
+            @RequestParam("unitId") String unitId,
+            @RequestParam("modId") String modId) throws TxManagerException {
+        txExceptionService.deleteTransactionInfo(groupId, unitId, modId);
+        return true;
+    }
+
+    /**
      * 获取TxManager信息
      *
      * @return TxManagerInfo

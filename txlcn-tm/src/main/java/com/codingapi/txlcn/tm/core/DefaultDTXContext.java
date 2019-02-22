@@ -45,7 +45,8 @@ public class DefaultDTXContext implements DTXContext {
         try {
             fastStorage.saveTransactionUnitToGroup(groupId, transactionUnit);
         } catch (FastStorageException e) {
-            throw new TransactionException("attempts to join the non-existent transaction group.");
+            throw new TransactionException("attempts to join the non-existent transaction group. ["
+                    + transactionUnit.getUnitId() + '@' + transactionUnit.getModId() + ']');
         }
     }
 

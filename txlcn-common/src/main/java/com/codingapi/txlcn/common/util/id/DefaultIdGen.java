@@ -49,7 +49,7 @@ public class DefaultIdGen implements IdGen {
 
         long seqWithMachine = (machineId << machineOffset & Long.MAX_VALUE) | seq;
 
-        return String.valueOf(curTime - START_TIME) + seqWithMachine;
+        return Long.toHexString((curTime - START_TIME) ^ 9527) + Long.toHexString(seqWithMachine ^ 9527);
     }
 
     private long tilNextMillis() {

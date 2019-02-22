@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.common.util;
 
+import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.util.StringUtils;
@@ -54,8 +55,13 @@ public class ApplicationInformation {
             throw new IllegalStateException("non exists port");
         }
         String[] result = hostAndPort.split(":");
+        if (StringUtils.isEmpty(result[0])) {
+            result[0] = "0.0.0.0";
+            return result;
+        }
         if (result[0].charAt(0) == '/') {
             result[0] = result[0].substring(1);
+            return result;
         }
         return result;
     }

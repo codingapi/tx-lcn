@@ -61,6 +61,7 @@ public class TMRpcServer implements TxLcnInitializer {
         ManagerProperties managerProperties = new ManagerProperties();
         managerProperties.setCheckTime(txManagerConfig.getHeartTime());
         managerProperties.setRpcPort(txManagerConfig.getPort());
+        managerProperties.setRpcHost(txManagerConfig.getHost());
         rpcServerInitializer.init(managerProperties);
     }
 

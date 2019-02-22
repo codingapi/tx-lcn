@@ -15,8 +15,10 @@
  */
 package com.codingapi.txlcn.tc.txmsg;
 
-import com.codingapi.txlcn.common.util.ApplicationInformation;
 import com.codingapi.txlcn.common.util.id.IdGenInit;
+import com.codingapi.txlcn.common.util.id.ModIdProvider;
+import com.codingapi.txlcn.tc.config.TxClientConfig;
+import com.codingapi.txlcn.tc.support.listener.RpcEnvStatusListener;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.dto.MessageDto;
 import com.codingapi.txlcn.txmsg.dto.RpcCmd;
@@ -24,14 +26,12 @@ import com.codingapi.txlcn.txmsg.exception.RpcException;
 import com.codingapi.txlcn.txmsg.listener.ClientInitCallBack;
 import com.codingapi.txlcn.txmsg.listener.HeartbeatListener;
 import com.codingapi.txlcn.txmsg.params.InitClientParams;
-import com.codingapi.txlcn.tc.config.TxClientConfig;
-import com.codingapi.txlcn.tc.support.listener.RpcEnvStatusListener;
 import com.codingapi.txlcn.txmsg.util.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -51,19 +51,22 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack, HeartbeatListe
 
     private final TxClientConfig txClientConfig;
 
-    private final String modId;
-
     private final List<RpcEnvStatusListener> rpcEnvStatusListeners;
+
+    private final ModIdProvider modIdProvider;
+
+    private final String applicationName;
 
     @Autowired
     public TCSideRpcInitCallBack(RpcClient rpcClient, TxClientConfig txClientConfig,
                                  ConfigurableEnvironment environment,
-                                 @Autowired(required = false) ServerProperties serverProperties,
-                                 List<RpcEnvStatusListener> rpcEnvStatusListeners) {
+                                 List<RpcEnvStatusListener> rpcEnvStatusListeners, ModIdProvider modIdProvider) {
         this.rpcClient = rpcClient;
         this.txClientConfig = txClientConfig;
-        this.modId = ApplicationInformation.modId(environment, serverProperties);
         this.rpcEnvStatusListeners = rpcEnvStatusListeners;
+        this.modIdProvider = modIdProvider;
+        String appName = environment.getProperty("spring.application.name");
+        this.applicationName = StringUtils.hasText(appName) ? appName : "application";
     }
 
     @Override
@@ -72,7 +75,8 @@ public class TCSideRpcInitCallBack implements ClientInitCallBack, HeartbeatListe
         new Thread(() -> {
             try {
                 log.info("Send init message to TM[{}]", remoteKey);
-                MessageDto msg = rpcClient.request(remoteKey, MessageCreator.initClient(modId), 5000);
+                MessageDto msg = rpcClient.request(
+                        remoteKey, MessageCreator.initClient(applicationName, modIdProvider.modId()), 5000);
                 if (MessageUtils.statusOk(msg)) {
                     //每一次建立连接时将会获取最新的时间
                     InitClientParams resParams = msg.loadBean(InitClientParams.class);

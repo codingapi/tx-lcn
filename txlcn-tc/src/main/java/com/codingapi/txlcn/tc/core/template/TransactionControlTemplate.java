@@ -15,7 +15,9 @@
  */
 package com.codingapi.txlcn.tc.core.template;
 
-import com.codingapi.txlcn.common.exception.*;
+import com.codingapi.txlcn.common.exception.LcnBusinessException;
+import com.codingapi.txlcn.common.exception.TransactionClearException;
+import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.tc.aspect.TransactionInfo;
@@ -26,7 +28,6 @@ import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
 import com.codingapi.txlcn.tc.txmsg.ReliableMessenger;
 import com.codingapi.txlcn.txmsg.exception.RpcException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,8 +40,9 @@ import java.util.Arrays;
  * @author ujued
  */
 @Component
-@Slf4j
 public class TransactionControlTemplate {
+
+    private static final TxLogger txLogger = TxLogger.newLogger(TransactionControlTemplate.class);
 
     private final AspectLogger aspectLogger;
 
@@ -50,14 +52,12 @@ public class TransactionControlTemplate {
 
     private final TransactionCleanTemplate transactionCleanTemplate;
 
-    private final TxLogger txLogger;
-
     private final ReliableMessenger reliableMessenger;
 
     private final TCGlobalContext globalContext;
 
     @Autowired
-    public TransactionControlTemplate(AspectLogger aspectLogger, DTXChecking dtxChecking, TxLogger txLogger,
+    public TransactionControlTemplate(AspectLogger aspectLogger, DTXChecking dtxChecking,
                                       DTXExceptionHandler dtxExceptionHandler,
                                       TransactionCleanTemplate transactionCleanTemplate,
                                       ReliableMessenger reliableMessenger, TCGlobalContext globalContext) {
@@ -65,7 +65,6 @@ public class TransactionControlTemplate {
         this.dtxChecking = dtxChecking;
         this.dtxExceptionHandler = dtxExceptionHandler;
         this.transactionCleanTemplate = transactionCleanTemplate;
-        this.txLogger = txLogger;
         this.reliableMessenger = reliableMessenger;
         this.globalContext = globalContext;
     }
@@ -75,7 +74,7 @@ public class TransactionControlTemplate {
      *
      * @param groupId         groupId
      * @param unitId          unitId
-     * @param transactionInfo transactionInfo
+     * @param transactionInfo txTrace
      * @param transactionType transactionType
      * @throws TransactionException 创建group失败时抛出
      */
@@ -84,8 +83,8 @@ public class TransactionControlTemplate {
         //创建事务组
         try {
             // 日志
-            txLogger.transactionInfo(groupId, unitId,
-                    "create group > {} > groupId: {xid}, unitId: {uid}", transactionType);
+            txLogger.txTrace(groupId, unitId,
+                    "create group > transaction type: {}", transactionType);
             // 创建事务组消息
             reliableMessenger.createGroup(groupId);
             // 缓存发起方切面信息
@@ -97,7 +96,7 @@ public class TransactionControlTemplate {
             // 创建事务组业务失败
             dtxExceptionHandler.handleCreateGroupBusinessException(groupId, e.getCause());
         }
-        txLogger.transactionInfo(groupId, unitId, "create group over");
+        txLogger.txTrace(groupId, unitId, "create group over");
     }
 
     /**
@@ -106,17 +105,17 @@ public class TransactionControlTemplate {
      * @param groupId         groupId
      * @param unitId          unitId
      * @param transactionType transactionType
-     * @param transactionInfo transactionInfo
+     * @param transactionInfo txTrace
      * @throws TransactionException 加入事务组失败时抛出
      */
     public void joinGroup(String groupId, String unitId, String transactionType, TransactionInfo transactionInfo)
             throws TransactionException {
         try {
-            txLogger.transactionInfo(groupId, unitId, "join group > {} > groupId: {xid}, unitId: {uid}", transactionType);
+            txLogger.txTrace(groupId, unitId, "join group > transaction type: {}", transactionType);
 
-            reliableMessenger.joinGroup(groupId, unitId, transactionType, DTXLocalContext.transactionState());
+            reliableMessenger.joinGroup(groupId, unitId, transactionType, DTXLocalContext.transactionState(globalContext.dtxState(groupId)));
 
-            txLogger.transactionInfo(groupId, unitId, "{xid} join group message over.");
+            txLogger.txTrace(groupId, unitId, "join group message over.");
 
             // 异步检测
             dtxChecking.startDelayCheckingAsync(groupId, unitId, transactionType);
@@ -128,7 +127,7 @@ public class TransactionControlTemplate {
         } catch (LcnBusinessException e) {
             dtxExceptionHandler.handleJoinGroupBusinessException(Arrays.asList(groupId, unitId, transactionType), e);
         }
-        txLogger.transactionInfo(groupId, unitId, "join logic group over");
+        txLogger.txTrace(groupId, unitId, "join group logic over");
     }
 
     /**
@@ -141,16 +140,14 @@ public class TransactionControlTemplate {
      */
     public void notifyGroup(String groupId, String unitId, String transactionType, int state) {
         try {
-            txLogger.transactionInfo(
-                    groupId, unitId, "notify group > {} > groupId: {xid}, unitId: {uid}, state: {}.", transactionType, state);
+            txLogger.txTrace(
+                    groupId, unitId, "notify group > transaction type: {}, state: {}.", transactionType, state);
             if (globalContext.isDTXTimeout()) {
                 throw new LcnBusinessException("dtx timeout.");
             }
-            reliableMessenger.notifyGroup(groupId, state);
+            state = reliableMessenger.notifyGroup(groupId, state);
             transactionCleanTemplate.clean(groupId, unitId, transactionType, state);
-            log.debug("{} > close transaction group.", transactionType);
         } catch (TransactionClearException e) {
-            log.error("clear exception", e);
             txLogger.trace(groupId, unitId, Transactions.TE, "clean transaction fail.");
         } catch (RpcException e) {
             dtxExceptionHandler.handleNotifyGroupMessageException(Arrays.asList(groupId, state, unitId, transactionType), e);
@@ -158,6 +155,6 @@ public class TransactionControlTemplate {
             // 关闭事务组失败
             dtxExceptionHandler.handleNotifyGroupBusinessException(Arrays.asList(groupId, state, unitId, transactionType), e.getCause());
         }
-        txLogger.transactionInfo(groupId, unitId, "notify group exception state {}.", state);
+        txLogger.txTrace(groupId, unitId, "notify group exception state {}.", state);
     }
 }

@@ -16,11 +16,14 @@
 package com.codingapi.txlcn.tc.core.transaction.tcc.control;
 
 import com.codingapi.txlcn.common.exception.TransactionClearException;
+import com.codingapi.txlcn.common.util.Maps;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.TccTransactionInfo;
 import com.codingapi.txlcn.tc.core.TransactionCleanService;
 import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
-import com.codingapi.txlcn.tc.txmsg.TxMangerReporter;
+import com.codingapi.txlcn.tc.txmsg.TMReporter;
+import com.codingapi.txlcn.tracing.TracingConstants;
+import com.codingapi.txlcn.tracing.TracingContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -41,27 +44,31 @@ public class TccTransactionCleanService implements TransactionCleanService {
 
     private final ApplicationContext applicationContext;
 
-    private final TxMangerReporter txMangerReporter;
+    private final TMReporter tmReporter;
 
     private final TCGlobalContext globalContext;
 
     @Autowired
     public TccTransactionCleanService(ApplicationContext applicationContext,
-                                      TxMangerReporter txMangerReporter, TCGlobalContext globalContext) {
+                                      TMReporter tmReporter, TCGlobalContext globalContext) {
         this.applicationContext = applicationContext;
-        this.txMangerReporter = txMangerReporter;
+        this.tmReporter = tmReporter;
         this.globalContext = globalContext;
     }
 
     @Override
     public void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException {
         Method exeMethod;
+        boolean shouldDestroy = !TracingContext.tracing().hasGroup();
         try {
             TccTransactionInfo tccInfo = globalContext.tccTransactionInfo(unitId, null);
             Object object = applicationContext.getBean(tccInfo.getExecuteClass());
-            // 用户的 confirm or cancel method 可以用到这个
+            // 将要移除。
             if (Objects.isNull(DTXLocalContext.cur())) {
                 DTXLocalContext.getOrNew().setJustNow(true);
+            }
+            if (shouldDestroy) {
+                TracingContext.init(Maps.of(TracingConstants.GROUP_ID, groupId, TracingConstants.APP_MAP, "{}"));
             }
             DTXLocalContext.getOrNew().setGroupId(groupId);
             DTXLocalContext.cur().setUnitId(unitId);
@@ -73,13 +80,16 @@ public class TccTransactionCleanService implements TransactionCleanService {
                 log.debug("User confirm/cancel logic over.");
             } catch (Throwable e) {
                 log.error("Tcc clean error.", e);
-                txMangerReporter.reportTccCleanException(groupId, unitId, state);
+                tmReporter.reportTccCleanException(groupId, unitId, state);
             }
         } catch (Throwable e) {
             throw new TransactionClearException(e.getMessage());
         } finally {
             if (DTXLocalContext.cur().isJustNow()) {
                 DTXLocalContext.makeNeverAppeared();
+            }
+            if (shouldDestroy) {
+                TracingContext.tracing().destroy();
             }
         }
     }

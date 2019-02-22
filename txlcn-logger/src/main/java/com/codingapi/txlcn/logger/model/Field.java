@@ -22,5 +22,9 @@ package com.codingapi.txlcn.logger.model;
  * @author ujued
  */
 public interface Field {
+    /**
+     * common is ok
+     * @return bool
+     */
     boolean ok();
 }

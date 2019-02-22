@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.codingapi.txlcn.tc;
+package com.codingapi.txlcn.tc.txmsg;
 
 import com.codingapi.txlcn.common.lock.DTXLocks;
+import com.codingapi.txlcn.tc.MiniConfiguration;
 import com.codingapi.txlcn.txmsg.dto.MessageDto;
 import com.codingapi.txlcn.txmsg.exception.RpcException;
 import com.codingapi.txlcn.tc.txmsg.ReliableMessenger;
@@ -93,9 +94,6 @@ public class RpcTest {
         messenger.request(new MessageDto());
     }
 
-    @Test
-    public void testTxc() {
 
-    }
 
 }

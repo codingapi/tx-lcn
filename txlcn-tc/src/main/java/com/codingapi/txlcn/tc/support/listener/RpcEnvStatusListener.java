@@ -22,9 +22,22 @@ package com.codingapi.txlcn.tc.support.listener;
  * @author ujued
  */
 public interface RpcEnvStatusListener {
+    /**
+     * on connect
+     * @param remoteKey remoteKey
+     */
     void onConnected(String remoteKey);
-
+    
+    /**
+     * on init
+     *
+     * @param remoteKey remoteKey
+     */
     void onInitialized(String remoteKey);
-
+    
+    /**
+     * on connect fail
+     * @param remoteKey remoteKey
+     */
     void onConnectFail(String remoteKey);
 }

@@ -41,8 +41,6 @@ public class TxManagerConfig {
     public TxManagerConfig(ServerProperties serverProperties) {
         this.port = Objects.requireNonNull(serverProperties.getPort(), "TM http port not configured?") +
                 PORT_CHANGE_VALUE;
-        this.adminKey = "codingapi";
-        this.exUrl = "/provider/email-to/ujued@qq.com";
     }
 
     /**
@@ -73,12 +71,12 @@ public class TxManagerConfig {
     /**
      * 分布式事务超时时间(ms)
      */
-    private long dtxTime = 36 * 1000;
+    private long dtxTime = 8 * 1000;
 
     /**
      * 后台密码
      */
-    private String adminKey;
+    private String adminKey = "codingapi";
 
     /**
      * 是否允许异常回调
@@ -88,12 +86,22 @@ public class TxManagerConfig {
     /**
      * 异常回调地址
      */
-    private String exUrl;
+    private String exUrl = "/provider/email-to/ujued@qq.com";
 
     /**
      * ID序列长度
      */
     private int seqLen = 12;
+
+    private long machineId;
+
+    private void setMachineId(long machineId) {
+        this.machineId = machineId;
+    }
+
+    public void applyMachineId(long machineId) {
+        setMachineId(machineId);
+    }
 
     public long getDtxLockTime() {
         return dtxLockTime == -1 ? dtxTime : dtxLockTime;

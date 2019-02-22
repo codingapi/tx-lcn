@@ -17,7 +17,6 @@ package com.codingapi.txlcn.tm.txmsg.transaction;
 
 import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.common.exception.TxManagerException;
-import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.tm.core.TransactionManager;
 import com.codingapi.txlcn.tm.txmsg.RpcExecuteService;
@@ -36,13 +35,12 @@ import java.io.Serializable;
 @Service("rpc_create-group")
 public class CreateGroupExecuteService implements RpcExecuteService {
 
-    private final TxLogger txLogger;
+    private static final TxLogger txLogger = TxLogger.newLogger(CreateGroupExecuteService.class);
 
     private final TransactionManager transactionManager;
 
     @Autowired
-    public CreateGroupExecuteService(TxLogger txLogger, TransactionManager transactionManager) {
-        this.txLogger = txLogger;
+    public CreateGroupExecuteService(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
 
@@ -53,7 +51,7 @@ public class CreateGroupExecuteService implements RpcExecuteService {
         } catch (TransactionException e) {
             throw new TxManagerException(e);
         }
-        txLogger.transactionInfo(transactionCmd.getGroupId(), null, "create group");
+        txLogger.txTrace(transactionCmd.getGroupId(), null, "created group");
         return null;
     }
 }

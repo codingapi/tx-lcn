@@ -36,18 +36,17 @@ import java.util.Set;
 @Slf4j
 public class DTXServiceExecutor {
 
-    private final TCGlobalContext globalContext;
+    private static final TxLogger txLogger = TxLogger.newLogger(DTXServiceExecutor.class);
 
-    private final TxLogger txLogger;
+    private final TCGlobalContext globalContext;
 
     private final TxLcnBeanHelper txLcnBeanHelper;
 
     private final DTXPropagationResolver propagationResolver;
 
     @Autowired
-    public DTXServiceExecutor(TxLogger txLogger, TxLcnBeanHelper txLcnBeanHelper,
-                              TCGlobalContext globalContext, DTXPropagationResolver propagationResolver) {
-        this.txLogger = txLogger;
+    public DTXServiceExecutor(TxLcnBeanHelper txLcnBeanHelper, TCGlobalContext globalContext,
+                              DTXPropagationResolver propagationResolver) {
         this.txLcnBeanHelper = txLcnBeanHelper;
         this.globalContext = globalContext;
         this.propagationResolver = propagationResolver;
@@ -85,14 +84,14 @@ public class DTXServiceExecutor {
             dtxLocalControl.preBusinessCode(info);
 
             // 4.2 业务执行前
-            txLogger.transactionInfo(
+            txLogger.txTrace(
                     info.getGroupId(), info.getUnitId(), "pre business code, unit type: {}", transactionType);
 
             // 4.3 执行业务
             Object result = dtxLocalControl.doBusinessCode(info);
 
             // 4.4 业务执行成功
-            txLogger.transactionInfo(info.getGroupId(), info.getUnitId(), "business success");
+            txLogger.txTrace(info.getGroupId(), info.getUnitId(), "business success");
             dtxLocalControl.onBusinessCodeSuccess(info, result);
             return result;
         } catch (TransactionException e) {

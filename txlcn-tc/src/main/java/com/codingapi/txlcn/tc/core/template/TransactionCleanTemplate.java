@@ -15,14 +15,12 @@
  */
 package com.codingapi.txlcn.tc.core.template;
 
+import com.codingapi.txlcn.common.exception.TransactionClearException;
+import com.codingapi.txlcn.logger.TxLogger;
+import com.codingapi.txlcn.tc.core.checking.DTXChecking;
+import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.corelog.aspect.AspectLogger;
 import com.codingapi.txlcn.tc.support.TxLcnBeanHelper;
-import com.codingapi.txlcn.tc.core.checking.DTXChecking;
-import com.codingapi.txlcn.common.exception.TransactionClearException;
-import com.codingapi.txlcn.common.util.Transactions;
-import com.codingapi.txlcn.logger.TxLogger;
-import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +31,6 @@ import org.springframework.stereotype.Component;
  * @author ujued
  */
 @Component
-@Slf4j
 public class TransactionCleanTemplate {
 
     private final TxLcnBeanHelper transactionBeanHelper;
@@ -42,19 +39,16 @@ public class TransactionCleanTemplate {
 
     private final AspectLogger aspectLogger;
 
-    private final TxLogger txLogger;
+    private static final TxLogger txLogger = TxLogger.newLogger(TransactionCleanTemplate.class);
 
     private final TCGlobalContext globalContext;
 
     @Autowired
-    public TransactionCleanTemplate(TxLcnBeanHelper transactionBeanHelper,
-                                    DTXChecking dtxChecking,
-                                    AspectLogger aspectLogger,
-                                    TxLogger txLogger, TCGlobalContext globalContext) {
+    public TransactionCleanTemplate(TxLcnBeanHelper transactionBeanHelper, DTXChecking dtxChecking,
+                                    AspectLogger aspectLogger, TCGlobalContext globalContext) {
         this.transactionBeanHelper = transactionBeanHelper;
         this.dtxChecking = dtxChecking;
         this.aspectLogger = aspectLogger;
-        this.txLogger = txLogger;
         this.globalContext = globalContext;
     }
 
@@ -68,19 +62,18 @@ public class TransactionCleanTemplate {
      * @throws TransactionClearException TransactionClearException
      */
     public void clean(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
-        txLogger.transactionInfo(groupId, unitId, "clean transaction");
+        txLogger.txTrace(groupId, unitId, "clean transaction");
         try {
-            transactionBeanHelper.loadTransactionCleanService(unitType).clear(
-                    groupId, state, unitId, unitType
-            );
-        } finally {
-            globalContext.clearGroup(groupId);
-
-            dtxChecking.stopDelayChecking(groupId, unitId);
-
+            cleanWithoutAspectLog(groupId, unitId, unitType, state);
+            aspectLogger.clearLog(groupId, unitId);
+        } catch (TransactionClearException e) {
+            if (!e.isNeedCompensation()) {
+                aspectLogger.clearLog(groupId, unitId);
+            }
+        } catch (Throwable throwable) {
             aspectLogger.clearLog(groupId, unitId);
         }
-        txLogger.transactionInfo(groupId, unitId, "clean transaction over");
+        txLogger.txTrace(groupId, unitId, "clean transaction over");
     }
 
     /**
@@ -92,8 +85,7 @@ public class TransactionCleanTemplate {
      * @param state    transactionState
      * @throws TransactionClearException TransactionClearException
      */
-    public void compensationClean(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
-        txLogger.transactionInfo(groupId, unitId, "clean compensation transaction");
+    public void cleanWithoutAspectLog(String groupId, String unitId, String unitType, int state) throws TransactionClearException {
         try {
             transactionBeanHelper.loadTransactionCleanService(unitType).clear(
                     groupId, state, unitId, unitType
@@ -103,6 +95,5 @@ public class TransactionCleanTemplate {
 
             dtxChecking.stopDelayChecking(groupId, unitId);
         }
-
     }
 }

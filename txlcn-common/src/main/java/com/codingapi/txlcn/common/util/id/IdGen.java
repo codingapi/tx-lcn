@@ -22,5 +22,10 @@ package com.codingapi.txlcn.common.util.id;
  * @author ujued
  */
 public interface IdGen {
+    /**
+     * get next id
+     *
+     * @return string type id
+     */
     String nextId();
 }

@@ -19,6 +19,7 @@ import com.codingapi.txlcn.common.exception.TransactionException;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 import com.codingapi.txlcn.tc.core.DTXLocalControl;
 import com.codingapi.txlcn.tc.core.TxTransactionInfo;
+import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.core.template.TransactionControlTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +37,12 @@ public class TxcStartingTransaction implements DTXLocalControl {
 
     private final TransactionControlTemplate transactionControlTemplate;
 
+    private final TCGlobalContext globalContext;
+
     @Autowired
-    public TxcStartingTransaction(TransactionControlTemplate transactionControlTemplate) {
+    public TxcStartingTransaction(TransactionControlTemplate transactionControlTemplate, TCGlobalContext globalContext) {
         this.transactionControlTemplate = transactionControlTemplate;
+        this.globalContext = globalContext;
     }
 
     @Override
@@ -70,7 +74,7 @@ public class TxcStartingTransaction implements DTXLocalControl {
 
     @Override
     public void postBusinessCode(TxTransactionInfo info) {
-        int state = DTXLocalContext.transactionState();
+        int state = DTXLocalContext.transactionState(globalContext.dtxState(info.getGroupId()));
 
         // 关闭事务组
         transactionControlTemplate.notifyGroup(info.getGroupId(), info.getUnitId(), info.getTransactionType(), state);

@@ -50,6 +50,7 @@ public interface DTXLocalControl {
      *
      * @param info info
      * @param throwable throwable
+     * @throws TransactionException TransactionException
      */
     default void onBusinessCodeError(TxTransactionInfo info, Throwable throwable) throws TransactionException {
 

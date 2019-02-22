@@ -30,6 +30,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Description:
@@ -71,8 +75,13 @@ public class NettyRpcServerInitializer implements RpcServerInitializer, Disposab
                     .childHandler(nettyRpcServerChannelInitializer);
 
             // Start the server.
-            b.bind(port);
-            log.info("Socket started on port(s): {} (socket)",port);
+            if (StringUtils.hasText(managerProperties.getRpcHost())) {
+                b.bind(managerProperties.getRpcHost(), managerProperties.getRpcPort());
+            } else {
+                b.bind(port);
+            }
+            log.info("Socket started on {}:{} ",
+                    StringUtils.hasText(managerProperties.getRpcHost()) ? managerProperties.getRpcHost() : "0.0.0.0", port);
 
         } catch (Exception e) {
             // Shut down all event loops to terminate all threads.

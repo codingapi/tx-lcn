@@ -18,18 +18,19 @@ package com.codingapi.txlcn.tc.support;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
 
 /**
- * Description:
+ * Description: 将会在未来版本废弃。推荐使用 {@link DTXUserControls}
  * Date: 19-1-16 下午4:21
  *
  * @author ujued
+ * @see DTXUserControls
  */
-
-public class DTXAspectSupport  {
+@Deprecated
+public class DTXAspectSupport {
 
     /**
      * 回滚分布式事务
      */
     public static void setRollbackOnly() {
-        DTXLocalContext.cur().setUserTransactionState(0);
+        DTXUserControls.rollbackCurrentGroup();
     }
 }

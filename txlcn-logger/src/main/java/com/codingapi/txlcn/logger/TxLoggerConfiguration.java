@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.logger;
 
+import com.codingapi.txlcn.common.util.SpringUtils;
 import com.codingapi.txlcn.logger.db.LogDbHelper;
 import com.codingapi.txlcn.logger.db.LogDbProperties;
 import com.codingapi.txlcn.logger.exception.TxLoggerException;
@@ -42,21 +43,9 @@ public class TxLoggerConfiguration {
     class LoggerEnabledTrueConfig {
 
         @Bean
-        @ConditionalOnMissingBean
-        public TxLogger txLogger(TxLcnLogDbHelper txlcnLogDbHelper) {
-            return new DefaultTxLogger(txlcnLogDbHelper);
-        }
-
-        @Bean
         public LogDbHelper logDbHelper(LogDbProperties logDbProperties) throws TxLoggerException {
             return new LogDbHelper(logDbProperties);
         }
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public TxLogger txLogger() {
-        return new Slf4jTxLogger();
     }
 
     @Bean
@@ -65,4 +54,8 @@ public class TxLoggerConfiguration {
         return new MysqlLoggerHelper();
     }
 
+    @Bean
+    public SpringUtils springUtils() {
+        return new SpringUtils();
+    }
 }

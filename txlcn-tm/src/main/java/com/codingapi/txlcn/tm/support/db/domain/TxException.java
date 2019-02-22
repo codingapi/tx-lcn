@@ -15,10 +15,12 @@
  */
 package com.codingapi.txlcn.tm.support.db.domain;
 
+import com.codingapi.txlcn.txmsg.params.TxExceptionParams;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -30,23 +32,30 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Entity
+@Table(name = "t_tx_exception")
 public class TxException {
-
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     /**
      * 事务组ID
      */
+    @Column(length = 60)
     private String groupId;
 
     /**
      * 事务单元ID
      */
+    @Column(length = 60)
     private String unitId;
 
     /**
      * 资源管理服务地址
      */
+    @Column(length = 100)
     private String modId;
 
     /**
@@ -55,7 +64,8 @@ public class TxException {
     private Integer transactionState;
 
     /**
-     * 上报方 -1 未知 0 Manager 通知事务失败， 1 client询问事务状态失败2 事务发起方关闭事务组失败
+     * 上报方
+     * @see TxExceptionParams
      */
     private short registrar;
 
@@ -68,4 +78,9 @@ public class TxException {
      * 发生时间
      */
     private Date createTime;
+
+    /**
+     * 备注
+     */
+    private String remark;
 }

@@ -19,9 +19,13 @@ import com.codingapi.txlcn.tc.core.transaction.txc.analy.def.TxcService;
 import com.codingapi.txlcn.tc.core.TransactionCleanService;
 import com.codingapi.txlcn.common.exception.TransactionClearException;
 import com.codingapi.txlcn.common.exception.TxcLogicException;
+import com.codingapi.txlcn.tc.core.transaction.txc.analy.def.bean.StatementInfo;
+import com.codingapi.txlcn.tc.txmsg.TMReporter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Description:
@@ -35,23 +39,39 @@ public class TxcTransactionCleanService implements TransactionCleanService {
 
     private final TxcService txcService;
 
+    private final TMReporter tmReporter;
+
     @Autowired
-    public TxcTransactionCleanService(TxcService txcService) {
+    public TxcTransactionCleanService(TxcService txcService, TMReporter tmReporter) {
         this.txcService = txcService;
+        this.tmReporter = tmReporter;
     }
 
     @Override
     public void clear(String groupId, int state, String unitId, String unitType) throws TransactionClearException {
+        boolean rethrowTxcException = false;
         try {
             // 若需要回滚读undo_log，进行回滚
             if (state == 0) {
                 txcService.undo(groupId, unitId);
             }
+        } catch (TxcLogicException e) {
+            @SuppressWarnings("unchecked")
+            List<StatementInfo> statementInfoList = (List<StatementInfo>) e.getAttachment();
+            tmReporter.reportTxcUndoException(groupId, unitId, statementInfoList);
+            rethrowTxcException = true;
+            log.debug("need compensation !");
+        }
 
+        try {
             // 清理TXC
             txcService.cleanTxc(groupId, unitId);
         } catch (TxcLogicException e) {
             throw new TransactionClearException(e);
+        }
+
+        if (rethrowTxcException) {
+            throw TransactionClearException.needCompensation();
         }
     }
 }

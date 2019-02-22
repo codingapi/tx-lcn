@@ -24,6 +24,8 @@ import java.util.Objects;
 
 /**
  * 分布式事务远程调用控制对象
+ * ！！！不推荐用户业务使用，API变更性大，使用不当有可能造成事务流程出错 ！！！
+ * <p>
  * Created by lorne on 2017/6/5.
  */
 @Data
@@ -90,6 +92,7 @@ public class DTXLocalContext {
      *
      * @see TccTransactionCleanService#clear(java.lang.String, int, java.lang.String, java.lang.String)
      */
+    @Deprecated
     private boolean justNow;
 
     //////// private     ///////////////////////
@@ -171,11 +174,11 @@ public class DTXLocalContext {
 
     /**
      * 事务状态
-     *
+     * @param userDtxState state
      * @return 1 commit 0 rollback
      */
-    public static int transactionState() {
+    public static int transactionState(int userDtxState) {
         DTXLocalContext dtxLocalContext = Objects.requireNonNull(currentLocal.get(), "DTX can't be null.");
-        return dtxLocalContext.userTransactionState == -1 ? dtxLocalContext.sysTransactionState : dtxLocalContext.userTransactionState;
+        return userDtxState == 1 ? dtxLocalContext.sysTransactionState : userDtxState;
     }
 }

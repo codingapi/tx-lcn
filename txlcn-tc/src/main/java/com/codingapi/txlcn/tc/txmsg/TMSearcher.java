@@ -17,6 +17,7 @@ package com.codingapi.txlcn.tc.txmsg;
 
 import com.codingapi.txlcn.common.util.ApplicationInformation;
 import com.codingapi.txlcn.common.util.Transactions;
+import com.codingapi.txlcn.common.util.id.ModIdProvider;
 import com.codingapi.txlcn.txmsg.RpcClientInitializer;
 import com.codingapi.txlcn.txmsg.dto.TxManagerHost;
 import com.codingapi.txlcn.txmsg.exception.RpcException;
@@ -53,10 +54,9 @@ public class TMSearcher {
 
     @Autowired
     public TMSearcher(RpcClientInitializer rpcClientInitializer, TxClientConfig clientConfig,
-                      ReliableMessenger reliableMessenger, ConfigurableEnvironment environment,
-                      @Autowired(required = false) ServerProperties serverProperties) {
+                      ReliableMessenger reliableMessenger, ModIdProvider modIdProvider) {
         // 1. util class init
-        Transactions.setApplicationIdWhenRunning(ApplicationInformation.modId(environment, serverProperties));
+        Transactions.setApplicationIdWhenRunning(modIdProvider.modId());
 
         // 2. TMSearcher init
         RPC_CLIENT_INITIALIZER = rpcClientInitializer;
@@ -78,6 +78,7 @@ public class TMSearcher {
                 return;
             }
             clusterCountLatch = new CountDownLatch(cluster.size() - knownTMClusterSize);
+            log.debug("wait connect size is {}", cluster.size() - knownTMClusterSize);
             RPC_CLIENT_INITIALIZER.init(TxManagerHost.parserList(new ArrayList<>(cluster)), true);
             clusterCountLatch.await(10, TimeUnit.SECONDS);
             echoTMClusterSuccessful();
@@ -88,13 +89,14 @@ public class TMSearcher {
 
     /**
      * 搜索到一个
+     * @return is searched one
      */
     public static boolean searchedOne() {
         if (Objects.nonNull(clusterCountLatch)) {
             if (clusterCountLatch.getCount() == 0) {
-                clusterCountLatch.countDown();
                 return false;
             }
+            clusterCountLatch.countDown();
             return true;
         }
         return false;

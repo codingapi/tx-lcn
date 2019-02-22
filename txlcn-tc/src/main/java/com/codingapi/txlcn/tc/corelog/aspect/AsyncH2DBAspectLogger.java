@@ -61,7 +61,6 @@ public class AsyncH2DBAspectLogger implements AspectLogger {
     public void trace(String groupId, String unitId, TransactionInfo transactionInfo) {
         executorService.submit(() -> {
             long t1 = System.currentTimeMillis();
-            log.debug("event-save-start->{}", groupId);
             byte[] bytes;
             try {
                 bytes = SerializerContext.getInstance().serialize(transactionInfo);
@@ -80,7 +79,7 @@ public class AsyncH2DBAspectLogger implements AspectLogger {
 
             boolean res = txLogHelper.save(txLog);
             long t2 = System.currentTimeMillis();
-            log.debug("event-save-over ok:{} ->{},time:{}", res, groupId, (t2 - t1));
+            log.debug("async save aspect log. result: {} groupId: {}, used time: {}ms", res, groupId, (t2 - t1));
         });
     }
 
@@ -88,10 +87,9 @@ public class AsyncH2DBAspectLogger implements AspectLogger {
     public void clearLog(String groupId, String unitId) {
         executorService.submit(() -> {
             long t1 = System.currentTimeMillis();
-            log.debug("event-clear-start->{}", groupId);
             boolean res = txLogHelper.delete(groupId.hashCode(), unitId.hashCode());
             long t2 = System.currentTimeMillis();
-            log.debug("event-clear-over ok:{} ->{},time:{}", res, groupId, (t2 - t1));
+            log.debug("async clear aspect log. result:{}, groupId: {}, used time: {}ms", res, groupId, (t2 - t1));
         });
     }
 }

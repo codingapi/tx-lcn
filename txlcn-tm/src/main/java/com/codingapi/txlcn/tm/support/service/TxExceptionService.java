@@ -77,4 +77,14 @@ public interface TxExceptionService {
      * @throws TxManagerException ex
      */
     void deleteExceptions(List<Long> ids) throws TxManagerException;
+
+    /**
+     * 删除异常事务信息
+     *
+     * @param groupId groupId
+     * @param unitId  unitId
+     * @param modId   modId
+     * @throws TxManagerException TxManagerException
+     */
+    void deleteTransactionInfo(String groupId, String unitId, String modId) throws TxManagerException;
 }

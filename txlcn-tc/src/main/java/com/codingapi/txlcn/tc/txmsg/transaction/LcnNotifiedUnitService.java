@@ -33,8 +33,7 @@ import org.springframework.stereotype.Service;
 public class LcnNotifiedUnitService extends DefaultNotifiedUnitService {
 
     @Autowired
-    public LcnNotifiedUnitService(TransactionCleanTemplate transactionCleanTemplate,
-                                  TCGlobalContext context, TxLogger txLogger) {
-        super(transactionCleanTemplate, txLogger, context);
+    public LcnNotifiedUnitService(TransactionCleanTemplate transactionCleanTemplate, TCGlobalContext context) {
+        super(transactionCleanTemplate, context);
     }
 }

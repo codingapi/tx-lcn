@@ -29,7 +29,16 @@ import java.util.Date;
 @Data
 public class AppInfo {
 
-    private String name;
+    /**
+     * 应用名称
+     */
+    private String appName;
+
+    /**
+     *  TC标识名称
+     */
+    private String labelName;
+
 
     private Date createTime;
 

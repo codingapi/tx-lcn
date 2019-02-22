@@ -66,7 +66,7 @@ public class LoopMessenger implements ReliableMessenger {
     }
 
     @Override
-    public void notifyGroup(String groupId, int transactionState) throws RpcException, LcnBusinessException {
+    public int notifyGroup(String groupId, int transactionState) throws RpcException, LcnBusinessException {
         NotifyGroupParams notifyGroupParams = new NotifyGroupParams();
         notifyGroupParams.setGroupId(groupId);
         notifyGroupParams.setState(transactionState);
@@ -76,6 +76,7 @@ public class LoopMessenger implements ReliableMessenger {
         if (!MessageUtils.statusOk(messageDto)) {
             throw new LcnBusinessException(messageDto.loadBean(Throwable.class));
         }
+        return messageDto.loadBean(Integer.class);
     }
 
     @Override

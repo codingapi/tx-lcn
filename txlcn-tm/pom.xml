@@ -6,11 +6,11 @@
     <parent>
         <groupId>com.codingapi.txlcn</groupId>
         <artifactId>tx-lcn</artifactId>
-        <version>5.0.1.RELEASE</version>
+        <version>5.0.2.RELEASE</version>
     </parent>
 
     <artifactId>txlcn-tm</artifactId>
-    <version>5.0.1.RELEASE</version>
+    <version>5.0.2.RELEASE</version>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -30,7 +30,6 @@
             <artifactId>txlcn-txmsg-netty</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -47,18 +46,13 @@
         </dependency>
 
         <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
     </dependencies>
@@ -107,10 +101,30 @@
                 <!--</executions>-->
             <!--</plugin>-->
 
+            <!--docker 构建-->
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <configuration>
+                    <imageName>codingapi/txlcn-tm</imageName>
+                    <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                    <imageTags>
+                        <imageTag>5.0.2</imageTag>
+                    </imageTags>
+
+                    <serverId>docker-hub</serverId>
+                    <registryUrl>https://index.docker.io/v1/</registryUrl>
+                </configuration>
             </plugin>
+
         </plugins>
     </build>
 </project>

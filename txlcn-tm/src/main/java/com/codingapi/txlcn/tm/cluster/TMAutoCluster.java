@@ -27,11 +27,13 @@ import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.ConnectException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -66,7 +68,10 @@ public class TMAutoCluster implements TxLcnInitializer {
     public void init() throws Exception {
 
         // 1. 通知 TC 建立连接
-        List<TMProperties> tmList = fastStorage.findTMProperties();
+        List<TMProperties> tmList = fastStorage.findTMProperties().stream()
+                .filter(tmProperties ->
+                        !tmProperties.getHost().equals(txManagerConfig.getHost()) || !tmProperties.getTransactionPort().equals(txManagerConfig.getPort()))
+                .collect(Collectors.toList());
         for (TMProperties properties : tmList) {
             NotifyConnectParams notifyConnectParams = new NotifyConnectParams();
             notifyConnectParams.setHost(txManagerConfig.getHost());
@@ -94,11 +99,18 @@ public class TMAutoCluster implements TxLcnInitializer {
         }
 
         // 2. 保存TM 到快速存储
-        TMProperties tmProperties = new TMProperties();
-        tmProperties.setHttpPort(ApplicationInformation.serverPort(serverProperties));
-        tmProperties.setHost(txManagerConfig.getHost());
-        tmProperties.setTransactionPort(txManagerConfig.getPort());
-        fastStorage.saveTMProperties(tmProperties);
+        if (StringUtils.hasText(txManagerConfig.getHost())) {
+            TMProperties tmProperties = new TMProperties();
+            tmProperties.setHttpPort(ApplicationInformation.serverPort(serverProperties));
+            tmProperties.setHost(txManagerConfig.getHost());
+            tmProperties.setTransactionPort(txManagerConfig.getPort());
+            fastStorage.saveTMProperties(tmProperties);
+        }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        fastStorage.removeTMProperties(txManagerConfig.getHost(), txManagerConfig.getPort());
     }
 
     @Override

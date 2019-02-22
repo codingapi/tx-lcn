@@ -5,7 +5,7 @@
     <parent>
         <artifactId>tx-lcn</artifactId>
         <groupId>com.codingapi.txlcn</groupId>
-        <version>5.0.1.RELEASE</version>
+        <version>5.0.2.RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -55,6 +55,14 @@
             <artifactId>spring-cloud-commons</artifactId>
             <scope>compile</scope>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.netflix.hystrix/hystrix-core -->
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
 
     </dependencies>
 

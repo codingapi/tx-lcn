@@ -17,7 +17,6 @@ package com.codingapi.txlcn.tc.core.transaction.txc.control;
 
 import com.codingapi.txlcn.common.exception.TransactionClearException;
 import com.codingapi.txlcn.common.exception.TransactionException;
-import com.codingapi.txlcn.common.exception.TxClientException;
 import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.tc.core.DTXLocalContext;
@@ -43,14 +42,13 @@ public class TxcRunningTransaction implements DTXLocalControl {
 
     private final TransactionControlTemplate transactionControlTemplate;
 
-    private final TxLogger txLogger;
+    private static final TxLogger txLogger = TxLogger.newLogger(TxcRunningTransaction.class);
 
     @Autowired
     public TxcRunningTransaction(TransactionCleanTemplate transactionCleanTemplate,
-                                 TransactionControlTemplate transactionControlTemplate, TxLogger txLogger) {
+                                 TransactionControlTemplate transactionControlTemplate) {
         this.transactionCleanTemplate = transactionCleanTemplate;
         this.transactionControlTemplate = transactionControlTemplate;
-        this.txLogger = txLogger;
     }
 
     @Override

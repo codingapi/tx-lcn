@@ -15,7 +15,6 @@
  */
 package com.codingapi.txlcn.tc.txmsg.transaction;
 
-import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.tc.core.context.TCGlobalContext;
 import com.codingapi.txlcn.tc.core.template.TransactionCleanTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,7 @@ import org.springframework.stereotype.Service;
 public class TxcNotifiedUnitService extends DefaultNotifiedUnitService {
 
     @Autowired
-    public TxcNotifiedUnitService(TransactionCleanTemplate transactionCleanTemplate,
-                                  TCGlobalContext context, TxLogger txLogger) {
-        super(transactionCleanTemplate, txLogger, context);
+    public TxcNotifiedUnitService(TransactionCleanTemplate transactionCleanTemplate, TCGlobalContext context) {
+        super(transactionCleanTemplate, context);
     }
 }

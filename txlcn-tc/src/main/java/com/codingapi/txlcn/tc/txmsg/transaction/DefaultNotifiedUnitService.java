@@ -17,7 +17,6 @@ package com.codingapi.txlcn.tc.txmsg.transaction;
 
 import com.codingapi.txlcn.common.exception.TransactionClearException;
 import com.codingapi.txlcn.common.exception.TxClientException;
-import com.codingapi.txlcn.common.util.Transactions;
 import com.codingapi.txlcn.logger.TxLogger;
 import com.codingapi.txlcn.txmsg.params.NotifyUnitParams;
 import com.codingapi.txlcn.tc.txmsg.RpcExecuteService;
@@ -37,16 +36,14 @@ import java.util.Objects;
  */
 public class DefaultNotifiedUnitService implements RpcExecuteService {
 
-    private final TransactionCleanTemplate transactionCleanTemplate;
+    private static final TxLogger txLogger = TxLogger.newLogger(DefaultNotifiedUnitService.class);
 
-    private final TxLogger txLogger;
+    private final TransactionCleanTemplate transactionCleanTemplate;
 
     private TCGlobalContext globalContext;
 
-    public DefaultNotifiedUnitService(TransactionCleanTemplate transactionCleanTemplate,
-                                      TxLogger txLogger, TCGlobalContext globalContext) {
+    public DefaultNotifiedUnitService(TransactionCleanTemplate transactionCleanTemplate, TCGlobalContext globalContext) {
         this.transactionCleanTemplate = transactionCleanTemplate;
-        this.txLogger = txLogger;
         this.globalContext = globalContext;
     }
 
@@ -58,7 +55,7 @@ public class DefaultNotifiedUnitService implements RpcExecuteService {
             TxContext txContext = globalContext.txContext(transactionCmd.getGroupId());
             if (Objects.nonNull(txContext)) {
                 synchronized (txContext.getLock()) {
-                    txLogger.transactionInfo(transactionCmd.getGroupId(), notifyUnitParams.getUnitId(),
+                    txLogger.txTrace(transactionCmd.getGroupId(), notifyUnitParams.getUnitId(),
                             "clean transaction cmd waiting for business code finish.");
                     txContext.getLock().wait();
                 }

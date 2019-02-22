@@ -25,7 +25,7 @@ import java.lang.annotation.*;
  * Date: 1/19/19
  *
  * @author ujued
- * @since 5.0.1.RELEASE
+ * @since 5.0.2.RELEASE
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

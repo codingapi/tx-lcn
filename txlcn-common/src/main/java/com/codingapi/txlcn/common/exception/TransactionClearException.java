@@ -25,6 +25,21 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 public class TransactionClearException extends Exception {
+
+    private static final int NEED_COMPENSATION = 1;
+
+    private int code;
+
+    public static TransactionClearException needCompensation() {
+        TransactionClearException clearException = new TransactionClearException("need compensation");
+        clearException.code = NEED_COMPENSATION;
+        return clearException;
+    }
+
+    public boolean isNeedCompensation() {
+        return this.code == NEED_COMPENSATION;
+    }
+
     public TransactionClearException(String message) {
         super(message);
     }

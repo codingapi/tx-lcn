@@ -32,20 +32,43 @@ import java.io.Serializable;
 @Data
 public class TxExceptionParams implements Serializable {
 
+    /**
+     * 未知错误
+     */
+    public static final short UNKNOWN_ERROR = -1;
+
+    /**
+     * 通知事务单元失败
+     */
     public static final short NOTIFY_UNIT_ERROR = 0;
 
+    /**
+     * 询问事务状态失败
+     */
     public static final short ASK_ERROR = 1;
 
+    /**
+     * 通知事务组失败（TC Starter）
+     */
     public static final short NOTIFY_GROUP_ERROR = 2;
 
+    /**
+     * TCC 清理事务失败
+     */
     public static final short TCC_CLEAN_ERROR = 3;
+
+    /**
+     * TXC 撤销日志失败
+     */
+    public static final Short TXC_UNDO_ERROR = 4;
+
 
     private String groupId;
 
     private String unitId;
 
     /**
-     * 异常情况。-1 【未知】 0 【TxManager通知事务】， 1 【TxClient查询事务状态】 2 【事务发起方通知事务组】3【TCC模式事务清理失败】
+     * 异常情况
      */
     private Short registrar;
 
@@ -53,4 +76,9 @@ public class TxExceptionParams implements Serializable {
      * 事务状态 0 回滚 1提交
      */
     private Integer transactionState;
+
+    /**
+     * 备注
+     */
+    private String remark;
 }

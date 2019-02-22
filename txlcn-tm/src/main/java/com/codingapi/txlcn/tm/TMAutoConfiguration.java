@@ -16,6 +16,8 @@
 package com.codingapi.txlcn.tm;
 
 import com.codingapi.txlcn.common.runner.TxLcnApplicationRunner;
+import com.codingapi.txlcn.common.util.ApplicationInformation;
+import com.codingapi.txlcn.common.util.id.ModIdProvider;
 import com.codingapi.txlcn.logger.TxLoggerConfiguration;
 import com.codingapi.txlcn.txmsg.MessageConfiguration;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
@@ -23,11 +25,16 @@ import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.tm.core.storage.FastStorageProvider;
 import com.codingapi.txlcn.tm.core.storage.redis.RedisStorage;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.client.RestTemplate;
@@ -44,7 +51,10 @@ import java.util.concurrent.TimeUnit;
  * @author ujued
  */
 @Configuration
+@ComponentScan
 @Import({TxLoggerConfiguration.class, MessageConfiguration.class})
+@EnableJpaRepositories("com.codingapi.txlcn.tm.support.db.jpa")
+@EntityScan("com.codingapi.txlcn.tm.support.db.domain")
 public class TMAutoConfiguration {
 
     @Bean(destroyMethod = "shutdown")
@@ -83,5 +93,11 @@ public class TMAutoConfiguration {
     @Bean
     public TxLcnApplicationRunner txLcnApplicationRunner(ApplicationContext applicationContext) {
         return new TxLcnApplicationRunner(applicationContext);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ModIdProvider modIdProvider(ConfigurableEnvironment environment, ServerProperties serverProperties) {
+        return () -> ApplicationInformation.modId(environment, serverProperties);
     }
 }

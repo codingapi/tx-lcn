@@ -147,6 +147,8 @@ public class RedisStorage implements FastStorage {
             redisTemplate.opsForValue().multiSet(lockIds);
         }
 
+        // 锁超时时间设置
+        lockIds.forEach((k, v) -> redisTemplate.expire(k, managerConfig.getDtxTime(), TimeUnit.MILLISECONDS));
     }
 
     @Override
@@ -229,33 +231,44 @@ public class RedisStorage implements FastStorage {
     }
 
     @Override
-    public int acquireOrRefreshMachineId(int machineId, long machineMaxSize, long timeout) throws FastStorageException {
+    public long acquireMachineId(long machineMaxSize, long timeout) throws FastStorageException {
         try {
             acquireGlobalXLock();
-            if (machineId < 0) {
-                stringRedisTemplate.opsForValue().setIfAbsent(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", "-1");
-                for (int i = 0; i < machineMaxSize; i++) {
-                    int curId = Math.toIntExact(
-                            Objects.requireNonNull(
-                                    stringRedisTemplate.opsForValue().increment(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", 1)));
-                    if (curId > machineMaxSize) {
-                        stringRedisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", "0");
-                        curId = 0;
-                    }
-                    if (Optional
-                            .ofNullable(stringRedisTemplate.hasKey(REDIS_MACHINE_ID_MAP_PREFIX + curId))
-                            .orElse(true)) {
-                        continue;
-                    }
-                    stringRedisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + curId, "", timeout, TimeUnit.MILLISECONDS);
-                    return curId;
+            stringRedisTemplate.opsForValue().setIfAbsent(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", "-1");
+            for (int i = 0; i < machineMaxSize; i++) {
+                long curId = Objects.requireNonNull(
+                        stringRedisTemplate.opsForValue().increment(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", 1));
+                if (curId > machineMaxSize) {
+                    stringRedisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + "cur_id", "0");
+                    curId = 0;
                 }
-                throw new FastStorageException("non can used machine id", FastStorageException.EX_CODE_NON_MACHINE_ID);
+                if (Optional
+                        .ofNullable(stringRedisTemplate.hasKey(REDIS_MACHINE_ID_MAP_PREFIX + curId))
+                        .orElse(true)) {
+                    continue;
+                }
+                stringRedisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + curId, "", timeout, TimeUnit.MILLISECONDS);
+                return curId;
             }
-            stringRedisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + machineId, "", timeout, TimeUnit.MILLISECONDS);
-            return -1;
+            throw new FastStorageException("non can used machine id", FastStorageException.EX_CODE_NON_MACHINE_ID);
         } finally {
             releaseGlobalXLock();
+        }
+    }
+
+    @Override
+    public void refreshMachines(long timeout, long... machines) {
+        try {
+            stringRedisTemplate.setEnableTransactionSupport(true);
+            stringRedisTemplate.multi();
+            for (long mac : machines) {
+                stringRedisTemplate.opsForValue().set(REDIS_MACHINE_ID_MAP_PREFIX + mac, "", timeout, TimeUnit.MILLISECONDS);
+            }
+            stringRedisTemplate.exec();
+        } catch (Throwable e) {
+            stringRedisTemplate.discard();
+        } finally {
+            stringRedisTemplate.setEnableTransactionSupport(false);
         }
     }
 }

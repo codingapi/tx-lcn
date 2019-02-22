@@ -16,18 +16,17 @@
 package com.codingapi.txlcn.tm.txmsg.transaction;
 
 import com.codingapi.txlcn.common.exception.TxManagerException;
-import com.codingapi.txlcn.common.util.ApplicationInformation;
+import com.codingapi.txlcn.common.util.id.ModIdProvider;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.support.service.ManagerService;
 import com.codingapi.txlcn.tm.txmsg.RpcExecuteService;
 import com.codingapi.txlcn.tm.txmsg.TransactionCmd;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.RpcConfig;
+import com.codingapi.txlcn.txmsg.exception.RpcException;
 import com.codingapi.txlcn.txmsg.params.InitClientParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -47,32 +46,32 @@ public class InitClientService implements RpcExecuteService {
 
     private final TxManagerConfig txManagerConfig;
 
-    private final ConfigurableEnvironment environment;
-
-    private final ServerProperties serverProperties;
-
     private final RpcConfig rpcConfig;
 
     private final ManagerService managerService;
 
+    private final ModIdProvider modIdProvider;
+
     @Autowired
-    public InitClientService(RpcClient rpcClient, TxManagerConfig txManagerConfig, ConfigurableEnvironment environment,
-                             @Autowired(required = false) ServerProperties serverProperties, RpcConfig rpcConfig,
-                             ManagerService managerService) {
+    public InitClientService(RpcClient rpcClient, TxManagerConfig txManagerConfig, RpcConfig rpcConfig,
+                             ManagerService managerService, ModIdProvider modIdProvider) {
         this.rpcClient = rpcClient;
         this.txManagerConfig = txManagerConfig;
-        this.environment = environment;
-        this.serverProperties = serverProperties;
         this.rpcConfig = rpcConfig;
         this.managerService = managerService;
+        this.modIdProvider = modIdProvider;
     }
 
 
     @Override
     public Serializable execute(TransactionCmd transactionCmd) throws TxManagerException {
-        log.info("init client - >{}", transactionCmd);
         InitClientParams initClientParams = transactionCmd.getMsg().loadBean(InitClientParams.class);
-        rpcClient.bindAppName(transactionCmd.getRemoteKey(), initClientParams.getAppName());
+        log.info("Registered TC: {}", initClientParams.getLabelName());
+        try {
+            rpcClient.bindAppName(transactionCmd.getRemoteKey(), initClientParams.getAppName(), initClientParams.getLabelName());
+        } catch (RpcException e) {
+            throw new TxManagerException(e);
+        }
         // Machine len and id
         initClientParams.setSeqLen(txManagerConfig.getSeqLen());
         initClientParams.setMachineId(managerService.machineIdSync());
@@ -80,7 +79,7 @@ public class InitClientService implements RpcExecuteService {
         initClientParams.setDtxTime(txManagerConfig.getDtxTime());
         initClientParams.setTmRpcTimeout(rpcConfig.getWaitTime());
         // TM Name
-        initClientParams.setAppName(ApplicationInformation.modId(environment, serverProperties));
+        initClientParams.setAppName(modIdProvider.modId());
         return initClientParams;
     }
 }

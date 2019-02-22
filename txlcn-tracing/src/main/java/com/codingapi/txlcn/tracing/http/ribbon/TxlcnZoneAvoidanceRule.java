@@ -50,18 +50,18 @@ public class TxlcnZoneAvoidanceRule extends ZoneAvoidanceRule {
 
     @Override
     public Server choose(Object key) {
-        //非分布式事务直接执行默认业务.
-        if(!TracingContext.tracing().hasGroup()){
+        // 0. 非分布式事务直接执行默认业务.
+        if (!TracingContext.tracing().hasGroup()) {
             return super.choose(key);
         }
 
         // 1. 自己加入此事务组调用链
-        assert registration != null;
+        assert Objects.nonNull(registration);
         TracingContext.tracing().addApp(registration.getServiceId(), registration.getHost() + ":" + registration.getPort());
 
         // 2. 获取所有要访问服务的实例
         List<Server> servers = getLoadBalancer().getAllServers();
-        assert servers.size() > 0;
+        assert !servers.isEmpty();
 
         JSONObject appMap = TracingContext.tracing().appMap();
         log.debug("load balanced rule servers: {}, txGroup[{}]'s server map:{}",
@@ -71,7 +71,7 @@ public class TxlcnZoneAvoidanceRule extends ZoneAvoidanceRule {
         if (appMap.containsKey(serviceId)) {
             for (Server server : servers) {
                 if (server.getHostPort().equals(appMap.getString(serviceId))) {
-                    log.debug("txlcn choosed server [{}] in txGroup: {}", server, TracingContext.tracing().groupId());
+                    log.debug("txlcn chosen server [{}] in txGroup: {}", server, TracingContext.tracing().groupId());
                     balanceServer = server;
                 }
             }

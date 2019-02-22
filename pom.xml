@@ -6,7 +6,7 @@
 
     <groupId>com.codingapi.txlcn</groupId>
     <artifactId>tx-lcn</artifactId>
-    <version>5.0.1.RELEASE</version>
+    <version>5.0.2.RELEASE</version>
     <packaging>pom</packaging>
 
 
@@ -43,7 +43,7 @@
         <maven.javadoc.plugin>2.10.3</maven.javadoc.plugin>
         <maven.gpg.plugin>1.6</maven.gpg.plugin>
 
-        <codingapi.txlcn.version>5.0.1.RELEASE</codingapi.txlcn.version>
+        <codingapi.txlcn.version>5.0.2.RELEASE</codingapi.txlcn.version>
 
         <txlcn-org.projectlombok.version>1.18.0</txlcn-org.projectlombok.version>
         <txlcn-spring-cloud.version>Finchley.SR2</txlcn-spring-cloud.version>
@@ -51,7 +51,7 @@
         <txlcn-com.alibaba.fastjson.version>1.2.34</txlcn-com.alibaba.fastjson.version>
         <txlcn-guava.version>19.0</txlcn-guava.version>
         <txlcn-hessian.version>4.0.38</txlcn-hessian.version>
-        <txlcn-protostuff.version>1.1.3</txlcn-protostuff.version>
+        <txlcn-protostuff.version>1.6.0</txlcn-protostuff.version>
         <txlcn-kryo.version>4.0.0</txlcn-kryo.version>
 
         <txlcn-com.lmax.disruptor.version>3.4.2</txlcn-com.lmax.disruptor.version>
@@ -59,8 +59,8 @@
         <txlcn-com.github.jsqlparser.version>1.3</txlcn-com.github.jsqlparser.version>
         <txlcn-com.h2database.version>1.4.197</txlcn-com.h2database.version>
         <txlcn-hikari-cp.version>3.1.0</txlcn-hikari-cp.version>
-        <txlcn-com.github.pagehelper.version>1.2.10</txlcn-com.github.pagehelper.version>
-        <txlcn-org.mybatis.spring.boot.version>1.3.2</txlcn-org.mybatis.spring.boot.version>
+
+
         <txlcn-com.alibaba.dubbo.verion>2.6.5</txlcn-com.alibaba.dubbo.verion>
         <txlcn-com.netflix.feign.core.verison>8.18.0</txlcn-com.netflix.feign.core.verison>
         <txlcn-com.netflix.ribbon.loadbalancer.version>2.3.0</txlcn-com.netflix.ribbon.loadbalancer.version>
@@ -112,14 +112,15 @@
         </dependency>
 
         <dependency>
-            <groupId>com.dyuproject.protostuff</groupId>
+            <groupId>io.protostuff</groupId>
             <artifactId>protostuff-core</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.dyuproject.protostuff</groupId>
+            <groupId>io.protostuff</groupId>
             <artifactId>protostuff-runtime</artifactId>
         </dependency>
+
 
         <dependency>
             <groupId>com.esotericsoftware</groupId>
@@ -137,12 +138,6 @@
 
     <dependencyManagement>
         <dependencies>
-
-            <dependency>
-                <groupId>com.codingapi.txlcn</groupId>
-                <artifactId>txlcn-tc</artifactId>
-                <version>${codingapi.txlcn.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>com.codingapi.txlcn</groupId>
@@ -172,18 +167,6 @@
                 <groupId>com.codingapi.txlcn</groupId>
                 <artifactId>txlcn-tracing</artifactId>
                 <version>${codingapi.txlcn.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper-spring-boot-starter</artifactId>
-                <version>${txlcn-com.github.pagehelper.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mybatis.spring.boot</groupId>
-                <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>${txlcn-org.mybatis.spring.boot.version}</version>
             </dependency>
 
             <dependency>
@@ -235,13 +218,13 @@
             </dependency>
 
             <dependency>
-                <groupId>com.dyuproject.protostuff</groupId>
+                <groupId>io.protostuff</groupId>
                 <artifactId>protostuff-core</artifactId>
                 <version>${txlcn-protostuff.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.dyuproject.protostuff</groupId>
+                <groupId>io.protostuff</groupId>
                 <artifactId>protostuff-runtime</artifactId>
                 <version>${txlcn-protostuff.version}</version>
             </dependency>
@@ -281,6 +264,13 @@
                 <artifactId>spring-cloud-commons</artifactId>
                 <version>${txlcn-org.springframework.cloud.commons.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.netflix.hystrix</groupId>
+                <artifactId>hystrix-core</artifactId>
+                <version>1.5.18</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>

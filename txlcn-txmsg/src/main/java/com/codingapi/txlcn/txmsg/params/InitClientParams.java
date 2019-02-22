@@ -35,6 +35,11 @@ public class InitClientParams implements Serializable {
     private String appName;
 
     /**
+     * TC标识名称
+     */
+    private String labelName;
+
+    /**
      * 分布式事务执行最大时间
      */
     private long dtxTime;
@@ -52,5 +57,5 @@ public class InitClientParams implements Serializable {
     /**
      * 分配的机器ID
      */
-    private int machineId;
+    private long machineId;
 }

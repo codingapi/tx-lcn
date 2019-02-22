@@ -23,7 +23,6 @@ import com.codingapi.txlcn.logger.exception.TxLoggerException;
 import com.codingapi.txlcn.logger.helper.TxLcnLogDbHelper;
 import com.codingapi.txlcn.logger.model.*;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
-import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.tm.support.TxLcnManagerBanner;
 import com.codingapi.txlcn.tm.support.restapi.auth.DefaultTokenStorage;
 import com.codingapi.txlcn.tm.support.restapi.vo.*;
@@ -61,19 +60,16 @@ public class AdminServiceImpl implements AdminService {
 
     private final RpcClient rpcClient;
 
-    private final FastStorage fastStorage;
-
     @Autowired
     public AdminServiceImpl(TxManagerConfig managerConfig,
                             DefaultTokenStorage defaultTokenStorage,
                             TxLcnLogDbHelper txLoggerHelper,
-                            RpcClient rpcClient, LogDbProperties logDbProperties, FastStorage fastStorage) {
+                            RpcClient rpcClient, LogDbProperties logDbProperties) {
         this.managerConfig = managerConfig;
         this.defaultTokenStorage = defaultTokenStorage;
         this.txLoggerHelper = txLoggerHelper;
         this.rpcClient = rpcClient;
         this.logDbProperties = logDbProperties;
-        this.fastStorage = fastStorage;
     }
 
     @Override
@@ -177,7 +173,8 @@ public class AdminServiceImpl implements AdminService {
             }
             AppInfo appInfo = apps.get(i);
             ListAppMods.AppMod appMod = new ListAppMods.AppMod();
-            PropertyMapper.get().from(appInfo::getName).to(appMod::setModId);
+            PropertyMapper.get().from(appInfo::getAppName).to(appMod::setModName);
+            PropertyMapper.get().from(appInfo::getLabelName).to(appMod::setModId);
             PropertyMapper.get().from(appInfo::getCreateTime).to(t -> appMod.setRegisterTime(dateFormat.format(t)));
             appMods.add(appMod);
         }

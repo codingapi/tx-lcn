@@ -30,10 +30,7 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -178,7 +175,7 @@ public class SocketManager {
     public List<String> removeKeys(String moduleName) {
         List<String> allKeys = new ArrayList<>();
         for (Channel channel : channels) {
-            if (getModuleName(channel).equals(moduleName)) {
+            if (moduleName.equals(getModuleName(channel))) {
                 allKeys.add(channel.remoteAddress().toString());
             }
         }
@@ -190,13 +187,29 @@ public class SocketManager {
      * 绑定连接数据
      *
      * @param remoteKey  远程标识
-     * @param moduleName 模块名称
+     * @param appName  模块名称
+     * @param labelName TC标识名称
      */
-    public void bindModuleName(String remoteKey, String moduleName) {
+    public void bindModuleName(String remoteKey, String appName,String labelName) throws RpcException{
         AppInfo appInfo = new AppInfo();
-        appInfo.setName(moduleName);
+        appInfo.setAppName(appName);
+        appInfo.setLabelName(labelName);
         appInfo.setCreateTime(new Date());
+        if(containsLabelName(labelName)){
+            throw new RpcException("labelName:"+labelName+" has exist.");
+        }
         appNames.put(remoteKey, appInfo);
+    }
+
+    public boolean containsLabelName(String moduleName){
+        Set<String> keys =  appNames.keySet();
+        for(String key:keys){
+            AppInfo appInfo = appNames.get(key);
+            if(moduleName.equals(appInfo.getAppName())){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setRpcConfig(RpcConfig rpcConfig) {
@@ -222,7 +235,7 @@ public class SocketManager {
      */
     public String getModuleName(String remoteKey) {
         AppInfo appInfo = appNames.get(remoteKey);
-        return appInfo == null ? null : appInfo.getName();
+        return appInfo == null ? null : appInfo.getAppName();
     }
 
     public List<AppInfo> appInfos() {

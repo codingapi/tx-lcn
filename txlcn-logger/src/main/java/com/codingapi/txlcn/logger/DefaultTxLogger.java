@@ -15,9 +15,12 @@
  */
 package com.codingapi.txlcn.logger;
 
+import com.codingapi.txlcn.common.util.SpringUtils;
 import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.helper.TxLcnLogDbHelper;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Objects;
 
 /**
  * Description:
@@ -29,15 +32,28 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DefaultTxLogger extends AbstractTxLogger {
 
-    private final TxLcnLogDbHelper txLcnLogDbHelper;
+    private TxLcnLogDbHelper txLcnLogDbHelper;
 
-    public DefaultTxLogger(TxLcnLogDbHelper txLcnLogDbHelper) {
+    private boolean needAware = true;
+
+    public DefaultTxLogger(Class<?> className) {
+        super(className);
+    }
+
+    public void setTxLcnLogDbHelper(TxLcnLogDbHelper txLcnLogDbHelper) {
         this.txLcnLogDbHelper = txLcnLogDbHelper;
     }
 
-
     @Override
-    public void saveTrace(TxLog txLog) {
-        txLcnLogDbHelper.insert(txLog);
+    public void saveLog(TxLog txLog) {
+        if (needAware && Objects.isNull(txLcnLogDbHelper)) {
+            txLcnLogDbHelper = SpringUtils.getBean(TxLcnLogDbHelper.class);
+            needAware = false;
+        }
+        if (Objects.nonNull(txLcnLogDbHelper)) {
+            txLcnLogDbHelper.insert(txLog);
+            return;
+        }
+        log.warn("tx-logger db configure fail.");
     }
 }

@@ -27,14 +27,32 @@ import java.util.List;
  * @author ujued
  */
 public interface SAuthLogic {
-
+    
+    /**
+     * ignore path
+     *
+     * @return list
+     */
     default List<String> ignoreUrls() {
         return Collections.emptyList();
     }
-
+    
+    /**
+     * is ignore
+     *
+     * @param request request
+     * @return bool
+     * @throws SAuthHandleException SAuthHandleException
+     */
     default boolean isIgnored(HttpServletRequest request) throws SAuthHandleException {
         return false;
     }
-
+    
+    /**
+     * verify token
+     *
+     * @param token token
+     * @return bool
+     */
     boolean verify(String token);
 }
