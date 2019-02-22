@@ -14,6 +14,6 @@
 7. txlcn-tracing: *Distributed Transaction Tracing*
 
 ## The Authority
-Website: [https://txlcn.org](https://txlcn.org/en-us/)  
+Website: [https://www.txlcn.org](https://www.txlcn.org/en-us/)  
 Statistics: [Leave your company messages](https://github.com/codingapi/tx-lcn/issues/7)  
 QQ：554855843 (Hot) 970071379(Normal)
