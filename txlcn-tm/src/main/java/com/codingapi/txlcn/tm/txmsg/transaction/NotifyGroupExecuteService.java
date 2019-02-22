@@ -75,7 +75,7 @@ public class NotifyGroupExecuteService implements RpcExecuteService {
             if (transactionState == 0) {
                 txLogger.txTrace(transactionCmd.getGroupId(), "", "mandatory rollback for user.");
             }
-            return transactionState;
+            return commitState;
         } catch (TransactionException e) {
             throw new TxManagerException(e);
         } finally {
