@@ -15,19 +15,27 @@
  */
 package com.codingapi.txlcn.tc;
 
+import com.codingapi.txlcn.common.exception.TxClientException;
 import com.codingapi.txlcn.common.runner.TxLcnApplicationRunner;
 import com.codingapi.txlcn.common.util.ApplicationInformation;
 import com.codingapi.txlcn.common.util.id.ModIdProvider;
 import com.codingapi.txlcn.logger.TxLoggerConfiguration;
 import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
+import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.tracing.TracingAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -61,5 +69,24 @@ public class TCAutoConfiguration {
     public ModIdProvider modIdProvider(ConfigurableEnvironment environment,
                                        @Autowired(required = false) ServerProperties serverProperties) {
         return () -> ApplicationInformation.modId(environment, serverProperties);
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "tx-lcn.client")
+    public TxClientConfig txClientConfig(@Autowired StringRedisTemplate stringRedisTemplate) throws TxClientException {
+        TxClientConfig txClientConfig = new TxClientConfig();
+
+        String REDIS_TM_LIST = "tm.instances";
+
+        List<String> managerAddress = stringRedisTemplate.opsForHash().entries(REDIS_TM_LIST).entrySet().stream()
+                .map(entry -> entry.getKey().toString()).collect(Collectors.toList());
+
+        if(CollectionUtils.isEmpty(managerAddress)){
+            throw new TxClientException("在redis没有找到可用的tx-manager地址");
+        }
+
+        txClientConfig.setManagerAddress(managerAddress);
+
+        return txClientConfig;
     }
 }
