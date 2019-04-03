@@ -53,6 +53,8 @@ import java.util.stream.Collectors;
 @Import({TxLoggerConfiguration.class, TracingAutoConfiguration.class})
 public class TCAutoConfiguration {
 
+    private static final String REDIS_TM_LIST = "tm.instances";
+
     /**
      * All initialization about TX-LCN
      *
@@ -75,8 +77,6 @@ public class TCAutoConfiguration {
     @ConfigurationProperties(prefix = "tx-lcn.client")
     public TxClientConfig txClientConfig(@Autowired StringRedisTemplate stringRedisTemplate) throws TxClientException {
         TxClientConfig txClientConfig = new TxClientConfig();
-
-        String REDIS_TM_LIST = "tm.instances";
 
         List<String> managerAddress = stringRedisTemplate.opsForHash().entries(REDIS_TM_LIST).entrySet().stream()
                 .map(entry -> entry.getKey().toString()).collect(Collectors.toList());
