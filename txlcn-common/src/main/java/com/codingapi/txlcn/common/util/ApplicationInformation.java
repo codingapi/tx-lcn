@@ -15,7 +15,6 @@
  */
 package com.codingapi.txlcn.common.util;
 
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.util.StringUtils;
@@ -39,9 +38,10 @@ public class ApplicationInformation {
      */
     public static String modId(ConfigurableEnvironment environment, ServerProperties serverProperties) {
 
+        String host = environment.getProperty("spring.cloud.client.ip-address");
         String applicationName = environment.getProperty("spring.application.name");
         applicationName = StringUtils.hasText(applicationName) ? applicationName : "application";
-        return applicationName + ":" + serverPort(serverProperties);
+        return host + ":" + applicationName + ":" + serverPort(serverProperties);
     }
 
     /**
