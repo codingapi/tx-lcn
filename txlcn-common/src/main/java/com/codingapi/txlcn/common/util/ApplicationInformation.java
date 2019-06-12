@@ -15,9 +15,11 @@
  */
 package com.codingapi.txlcn.common.util;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -41,14 +43,41 @@ public class ApplicationInformation {
      * @return 标识
      */
     public static String modId(ConfigurableEnvironment environment, ServerProperties serverProperties) {
-
-        InetAddress localHost = null;
         try {
-            localHost = Inet4Address.getLocalHost();
-        } catch (UnknownHostException e) {
-            log.error(e.getMessage(),e);
+            return getIpAddess() + ":" + serverPort(serverProperties);
+        } catch (SocketException | UnknownHostException e) {
+            log.error(e.getMessage(), e);
         }
-        return localHost.getHostAddress() + ":" + serverPort(serverProperties);
+        return null;
+    }
+
+    /**
+     * 根据网卡获得IP地址
+     * @return
+     * @throws SocketException
+     * @throws UnknownHostException
+     */
+    public static String getIpAddess() throws SocketException, UnknownHostException{
+        String ip="";
+        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+            NetworkInterface intf = en.nextElement();
+            String name = intf.getName();
+            if (!name.contains("docker") && !name.contains("lo")) {
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    //获得IP
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()) {
+                        String ipAddress = inetAddress.getHostAddress();
+                        if (!ipAddress.contains("::") && !ipAddress.contains("0:0:") && !ipAddress.contains("fe80")) {
+                            if(!"127.0.0.1".equals(ip)){
+                                ip = ipAddress;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return ip;
     }
 
     /**
