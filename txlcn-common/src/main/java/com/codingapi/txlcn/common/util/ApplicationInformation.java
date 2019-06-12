@@ -60,10 +60,10 @@ public class ApplicationInformation {
     public static String getIpAddress() throws SocketException, UnknownHostException{
         String ip="";
         for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
-            NetworkInterface intf = en.nextElement();
-            String name = intf.getName();
+            NetworkInterface network = en.nextElement();
+            String name = network.getName();
             if (!name.contains("docker") && !name.contains("lo")) {
-                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                for (Enumeration<InetAddress> enumIpAddr = network.getInetAddresses(); enumIpAddr.hasMoreElements();) {
                     //获得IP
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress()) {
