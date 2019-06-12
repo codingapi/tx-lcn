@@ -15,11 +15,14 @@
  */
 package com.codingapi.txlcn.common.util;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.util.StringUtils;
-
-import java.util.Objects;
 
 /**
  * Description:
@@ -27,6 +30,7 @@ import java.util.Objects;
  *
  * @author ujued
  */
+@Slf4j
 public class ApplicationInformation {
 
     /**
@@ -38,10 +42,13 @@ public class ApplicationInformation {
      */
     public static String modId(ConfigurableEnvironment environment, ServerProperties serverProperties) {
 
-        String host = environment.getProperty("spring.cloud.client.ip-address");
-        String applicationName = environment.getProperty("spring.application.name");
-        applicationName = StringUtils.hasText(applicationName) ? applicationName : "application";
-        return host + ":" + applicationName + ":" + serverPort(serverProperties);
+        InetAddress localHost = null;
+        try {
+            localHost = Inet4Address.getLocalHost();
+        } catch (UnknownHostException e) {
+            log.error(e.getMessage(),e);
+        }
+        return localHost.getHostAddress() + ":" + serverPort(serverProperties);
     }
 
     /**
