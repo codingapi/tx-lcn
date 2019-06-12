@@ -44,7 +44,7 @@ public class ApplicationInformation {
      */
     public static String modId(ConfigurableEnvironment environment, ServerProperties serverProperties) {
         try {
-            return getIpAddess() + ":" + serverPort(serverProperties);
+            return getIpAddress() + ":" + serverPort(serverProperties);
         } catch (SocketException | UnknownHostException e) {
             log.error(e.getMessage(), e);
         }
@@ -57,7 +57,7 @@ public class ApplicationInformation {
      * @throws SocketException
      * @throws UnknownHostException
      */
-    public static String getIpAddess() throws SocketException, UnknownHostException{
+    public static String getIpAddress() throws SocketException, UnknownHostException{
         String ip="";
         for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
             NetworkInterface intf = en.nextElement();
