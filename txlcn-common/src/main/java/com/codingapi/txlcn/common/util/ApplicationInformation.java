@@ -27,8 +27,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.util.StringUtils;
 
 /**
- * Description:
- * Date: 19-1-24 下午1:44
+ * Description: Date: 19-1-24 下午1:44
  *
  * @author ujued
  */
@@ -38,7 +37,7 @@ public class ApplicationInformation {
     /**
      * 模块标识
      *
-     * @param environment      Spring Env
+     * @param environment Spring Env
      * @param serverProperties serverProperties
      * @return 标识
      */
@@ -53,23 +52,23 @@ public class ApplicationInformation {
 
     /**
      * 根据网卡获得IP地址
-     * @return
+     *
      * @throws SocketException
      * @throws UnknownHostException
      */
-    public static String getIpAddress() throws SocketException, UnknownHostException{
-        String ip="";
-        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+    public static String getIpAddress() throws SocketException, UnknownHostException {
+        String ip = "";
+        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
             NetworkInterface network = en.nextElement();
             String name = network.getName();
-            if (!name.contains("docker") && !name.contains("lo")) {
-                for (Enumeration<InetAddress> enumIpAddr = network.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+            if (!name.contains("docker") && !name.contains("lo") && !name.contains("br-")) {
+                for (Enumeration<InetAddress> enumIpAddr = network.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                     //获得IP
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress()) {
                         String ipAddress = inetAddress.getHostAddress();
                         if (!ipAddress.contains("::") && !ipAddress.contains("0:0:") && !ipAddress.contains("fe80")) {
-                            if(!"127.0.0.1".equals(ip)){
+                            if (!"127.0.0.1".equals(ip)) {
                                 ip = ipAddress;
                             }
                         }
@@ -112,4 +111,5 @@ public class ApplicationInformation {
         return Objects.isNull(serverProperties) ? 0 : (Objects.isNull(serverProperties.getPort()) ? 8080 :
                 serverProperties.getPort());
     }
+
 }
