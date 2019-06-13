@@ -15,18 +15,15 @@
  */
 package com.codingapi.txlcn.tm.config;
 
+import com.codingapi.txlcn.common.util.ApplicationInformation;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 /**
- * Description:
- * Company: CodingApi
- * Date: 2018/11/29
+ * Description: Company: CodingApi Date: 2018/11/29
  *
  * @author ujued
  */
@@ -37,21 +34,15 @@ public class TxManagerConfig {
 
     public static final int PORT_CHANGE_VALUE = 100;
 
-    @Autowired
-    public TxManagerConfig(ServerProperties serverProperties) {
-        this.port = Objects.requireNonNull(serverProperties.getPort(), "TM http port not configured?") +
-                PORT_CHANGE_VALUE;
-    }
-
     /**
      * manager host
      */
-    private String host = "127.0.0.1";
+    private String host;
 
     /**
      * support  port
      */
-    private int port;
+    private int port = 8070;
 
     /**
      * netty heart check time (ms)
@@ -94,6 +85,17 @@ public class TxManagerConfig {
     private int seqLen = 12;
 
     private long machineId;
+
+    public String getHost() {
+        if(this.host == null){
+            try {
+                this.host = ApplicationInformation.getIpAddress();
+            } catch (SocketException | UnknownHostException e) {
+                e.printStackTrace();
+            }
+        }
+        return this.host;
+    }
 
     private void setMachineId(long machineId) {
         this.machineId = machineId;
