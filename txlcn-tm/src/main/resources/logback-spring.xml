@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="120 seconds" debug="false">
+
+    <!-- 读取spring.application.name中的属性来生成日志文件名 -->
+    <springProperty scope="context" name="springAppName" source="spring.application.name" defaultValue="demo"/>
+
+    <!-- 日志路径: 尽量别用绝对路径，如果带参数不同容器路径解释可能不同,以下配置参数在pom.xml里 -->
+    <springProperty scope="context" name="logPath" source="logging.path" defaultValue="logs"/>
+
+    <!-- 日志文件大小,超过这个大小将被压缩 -->
+    <springProperty scope="context" name="logMaxSize" source="logging.file.max-size" defaultValue="10MB"/>
+
+    <!-- 日志文件保存时间：天 -->
+    <springProperty scope="context" name="logMaxHistory" source="logging.file.max-history" defaultValue="120"/>
+
+    <!-- elasticsearch地址 -->
+    <springProperty scope="context" name="logStashAddress" source="logger.logStash.address" defaultValue="localhost:5000"/>
+
+    <!-- 业务日志级别 -->
+    <springProperty scope="context" name="logBusinessLevel" source="logger.business.level" defaultValue="DEBUG"/>
+
+    <!--控制台输出样式-->
+    <springProperty scope="context" name="pattern.console" source="logging.pattern.console" defaultValue="%blue(%d{MM-dd HH:mm:ss.SSS}) [%boldYellow(%thread)] | %highlight(%-5level) | %boldGreen(%logger):[%L] %X{clientIp} %X{operateId} - %highlight(%msg) %n"/>
+
+    <!--<conversionRule conversionWord="msg" converterClass="com.yizhishang.demo.SensitiveDataConverter"></conversionRule>-->
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${pattern.console}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="errorRollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logPath}/${springAppName}/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/${springAppName}/archive/error.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${logMaxSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+
+    <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logPath}/${springAppName}/server.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/${springAppName}/archive/server.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${logMaxSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="sqlFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logPath}/${springAppName}/sql.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/${springAppName}/archive/sql.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${logMaxSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="notifyFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logPath}/${springAppName}/notify.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/${springAppName}/archive/notify.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${logMaxSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="async-console" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="console" />
+        <includeCallerData>true</includeCallerData>
+    </appender>
+    <appender name="async-rollingFile" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="rollingFile" />
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+    <appender name="async-errorRollingFile" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="errorRollingFile" />
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+    <appender name="async-sqlFile" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="sqlFile" />
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+    <appender name="async-notifyFile" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="notifyFile" />
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+    <!--<appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
+        <!--<destination>${logStashAddress}</destination>-->
+        <!--<encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">-->
+            <!--<customFields>{"appName":"${springAppName}"}</customFields>-->
+        <!--</encoder>-->
+        <!--<connectionStrategy>-->
+            <!--<roundRobin>-->
+                <!--<connectionTTL>5 minutes</connectionTTL>-->
+            <!--</roundRobin>-->
+        <!--</connectionStrategy>-->
+    <!--</appender>-->
+
+    <logger name="com.codingapi.txlcn.tm" additivity="false">
+        <level value="${logBusinessLevel}"/>
+        <appender-ref ref="console"/>
+        <appender-ref ref="rollingFile"/>
+    </logger>
+
+    <logger name="java.sql.Connection" level="OFF" />
+    <logger name="java.sql.Statement" level="OFF" />
+    <logger name="java.sql.PreparedStatement" level="OFF" />
+    <logger name="java.sql.ResultSet" level="OFF" />
+
+    <logger name="jdbc.sqltiming" level="INFO" />
+    <logger name="jdbc.sqlonly" level="OFF" />
+    <logger name="jdbc.audit" level="OFF" />
+    <logger name="jdbc.connection" level="OFF" />
+    <logger name="jdbc.resultset" level="OFF" />
+    <logger name="org.mybatis" level="OFF" />
+
+    <root level="DEBUG">
+        <appender-ref ref="async-console" />
+        <appender-ref ref="async-rollingFile" />
+        <appender-ref ref="async-errorRollingFile" />
+        <!--<appender-ref ref="logstash" />-->
+    </root>
+    <root level="INFO">
+        <appender-ref ref="async-console" />
+    </root>
+</configuration>
