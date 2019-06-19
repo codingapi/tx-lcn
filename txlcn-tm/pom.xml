@@ -13,6 +13,11 @@
     <version>5.0.2.RELEASE</version>
     <packaging>jar</packaging>
 
+    <properties>
+        <docker.repository>119.yizhishang.com:5000</docker.repository>
+        <docker.image.prefix>yizhishang</docker.image.prefix>
+    </properties>
+
     <dependencies>
 
         <dependency>
@@ -55,10 +60,19 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.ctrip.framework.apollo</groupId>
+            <artifactId>apollo-client</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+
     </dependencies>
 
     <!-- deploy 注释掉下 -->
     <build>
+
+        <finalName>tx-manager</finalName>
+
         <plugins>
 
             <plugin>
@@ -110,10 +124,30 @@
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>1.2.0</version>
+                <executions>
+                    <execution>
+                        <id>build-image</id><!-- 要绑定到的生命周期的阶段 -->
+                        <phase>package</phase><!-- 要绑定到的生命周期的阶段 -->
+                        <goals> <!-- 要绑定的插件的目标 -->
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
                 <configuration>
-                    <imageName>codingapi/txlcn-tm</imageName>
-                    <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
+                    <serverId>docker-local</serverId>
+                    <registryUrl>${docker.repository}</registryUrl>
+
+                    <imageName>${docker.repository}/${docker.image.prefix}/${project.build.finalName}</imageName>
+                    <forceTags>true</forceTags>
+
+                    <!-- 指定Dockerfile所在的路径 -->
+                    <dockerDirectory>src/main/docker</dockerDirectory>
+                    <buildArgs>
+                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+                    </buildArgs>
                     <resources>
                         <resource>
                             <targetPath>/</targetPath>
@@ -121,12 +155,7 @@
                             <include>${project.build.finalName}.jar</include>
                         </resource>
                     </resources>
-                    <imageTags>
-                        <imageTag>5.0.2</imageTag>
-                    </imageTags>
 
-                    <serverId>docker-hub</serverId>
-                    <registryUrl>https://index.docker.io/v1/</registryUrl>
                 </configuration>
             </plugin>
 

@@ -21,6 +21,7 @@ import java.net.UnknownHostException;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /**
  * Description: Company: CodingApi Date: 2018/11/29
@@ -87,7 +88,7 @@ public class TxManagerConfig {
     private long machineId;
 
     public String getHost() {
-        if(this.host == null){
+        if(StringUtils.isEmpty(this.host)){
             try {
                 this.host = ApplicationInformation.getIpAddress();
             } catch (SocketException | UnknownHostException e) {

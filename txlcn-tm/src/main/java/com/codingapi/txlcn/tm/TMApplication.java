@@ -27,6 +27,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author lorne
  */
 @SpringBootApplication
+//@EnableApolloConfig
 public class TMApplication {
 
     public static void main(String[] args) {
