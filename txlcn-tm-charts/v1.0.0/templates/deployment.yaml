@@ -24,10 +24,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: serverPort
+            - name: server-port
               containerPort: {{ .Values.service.serverPort.internalPort }}
               protocol: TCP
-            - name: txManagePort
+            - name: tx-manage-port
               containerPort: {{ .Values.service.txManagePort.internalPort }}
               protocol: TCP
           env:
@@ -36,11 +36,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: http
+              port: 7970
           readinessProbe:
             httpGet:
               path: /
-              port: http
+              port: 7970
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
