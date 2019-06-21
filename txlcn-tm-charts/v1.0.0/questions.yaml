@@ -1,0 +1,29 @@
+categories:
+- LCN
+questions:
+- variable: defaultImage
+  default: true
+  description: "Use default Docker image"
+  label: Use Default Image
+  type: boolean
+  show_subquestion_if: false
+  group: "Container Images"
+  subquestions:
+  - variable: images.repository
+    default: "119.yizhishang.com:5000/yizhishang/tx-manager"
+    description: "tx-manager image name"
+    type: string
+    label: tx-manager image name
+  - variable: images.tag
+    default: "latest"
+    description: "tx-manager image tag"
+    type: string
+    label: tx-manager Image Tag
+- variable: service.params
+  default: "--spring.redis.host=192.168.110.119 --spring.redis.database=0 --tx-lcn.manager.host=192.168.110.119"
+  description: "redis/mysql configruation"
+  type: string
+  required: true
+  group: "tx-manager Settings"
+  label: service.params
+
