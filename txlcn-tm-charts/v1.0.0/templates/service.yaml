@@ -7,12 +7,12 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.externalPort}}
-      targetPort: {{ .Values.service.internalPort}}
+    - port: {{ .Values.service.serverPort.externalPort}}
+      targetPort: {{ .Values.service.serverPort.internalPort}}
       protocol: TCP
       name: http
-    - port: {{ .Values.service.externalPort}}
-      targetPort: {{ .Values.service.internalPort}}
+    - port: {{ .Values.service.txManagePort.externalPort}}
+      targetPort: {{ .Values.service.txManagePort.internalPort}}
       protocol: TCP
       name: http
   selector:
