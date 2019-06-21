@@ -24,10 +24,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
+            - name: serverPort
               containerPort: {{ .Values.service.serverPort.internalPort }}
               protocol: TCP
-            - name: http
+            - name: txManagePort
               containerPort: {{ .Values.service.txManagePort.internalPort }}
               protocol: TCP
           env:

@@ -10,11 +10,11 @@ spec:
     - port: {{ .Values.service.serverPort.externalPort}}
       targetPort: {{ .Values.service.serverPort.internalPort}}
       protocol: TCP
-      name: http
+      name: serverPort
     - port: {{ .Values.service.txManagePort.externalPort}}
       targetPort: {{ .Values.service.txManagePort.internalPort}}
       protocol: TCP
-      name: http
+      name: txManagePort
   selector:
     app.kubernetes.io/name: {{ include "tx-manager-charts.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
