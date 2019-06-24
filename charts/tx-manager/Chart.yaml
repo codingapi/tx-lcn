@@ -1,7 +1,7 @@
 apiVersion: v1
 icon: http://www.txlcn.org/img/txlcn.png
 description: A Helm chart for Kubernetes
-name: tx-manager-charts
+name: tx-manager
 version: 1.0.0
 maintainers:
   - email: 285206405@qq.com

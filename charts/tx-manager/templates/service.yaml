@@ -16,5 +16,5 @@ spec:
       protocol: TCP
       name: tx-manage-port
   selector:
-    app.kubernetes.io/name: {{ include "tx-manager-charts.name" . }}
+    app.kubernetes.io/name: {{ include "tx-manager.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

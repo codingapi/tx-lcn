@@ -3,20 +3,20 @@ kind: Deployment
 metadata:
   name: {{ .Chart.Name }}
   labels:
-    app.kubernetes.io/name: {{ include "tx-manager-charts.name" . }}
-    helm.sh/chart: {{ include "tx-manager-charts.chart" . }}
+    app.kubernetes.io/name: {{ include "tx-manager.name" . }}
+    helm.sh/chart: {{ include "tx-manager.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "tx-manager-charts.name" . }}
+      app.kubernetes.io/name: {{ include "tx-manager.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "tx-manager-charts.name" . }}
+        app.kubernetes.io/name: {{ include "tx-manager.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:

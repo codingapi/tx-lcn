@@ -12,7 +12,7 @@ By default this chart install one master pod containing redis master container a
 
 ## Introduction
 
-This chart bootstraps a [Redis](https://github.com/bitnami/bitnami-docker-redis) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [tx-manager](https://github.com/yizhishang/tx-lcn) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 

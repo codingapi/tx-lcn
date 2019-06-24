@@ -1,13 +1,13 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "tx-manager-charts.fullname" . -}}
+{{- $fullName := include "tx-manager.fullname" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app.kubernetes.io/name: {{ include "tx-manager-charts.name" . }}
-    helm.sh/chart: {{ include "tx-manager-charts.chart" . }}
+    app.kubernetes.io/name: {{ include "tx-manager.name" . }}
+    helm.sh/chart: {{ include "tx-manager.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- with .Values.ingress.annotations }}
