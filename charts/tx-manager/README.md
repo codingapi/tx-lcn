@@ -21,7 +21,7 @@ To install the chart
 $ helm install yizhishang/tx-manager --name tx-manager
 ```
 
-The command deploys tx-manager on the Kubernetes cluster in the default configuration. By default this chart install one master pod containing redis master container and sentinel container, 2 sentinels and 1 redis slave. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys tx-manager on the Kubernetes cluster in the default configuration. By default this chart install a pod containing. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -50,9 +50,9 @@ $ helm install set="--spring.redis.host=192.168.110.119 --tx-lcn.manager.host=19
 
 The following table lists the configurable parameters of the Redis chart and their default values.
 
-| Parameter                        | Description                                                                                                                  | Default                                                                                                       |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `service.parmas`                 | Application parameter                                                                                                        | `--spring.redis.host=192.168.110.119 --spring.redis.database=0 --tx-lcn.manager.host=192.168.110.119`         |
+| Parameter                        | Description                                      | Default                                                                             |
+| -------------------------------- | -------------------------------------------------| ----------------------------------------------------------------------------------- |
+| `service.parmas`                 | Application parameter                            | `--spring.redis.host=192.168.110.119 --tx-lcn.manager.host=192.168.110.119`         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
