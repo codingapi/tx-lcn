@@ -2,14 +2,6 @@
 
 [tx-lcn](http://www.txlcn.org/) is one of the best distributed transaction framework and at least in China. Easy playing with SpringCloud、Dubbo and other RPC frameworks by useful rpc extensions，and support any JDBC transaction.
 
-## TL;DR;
-
-```bash
-$ helm install yizhishang/tx-manager
-```
-
-By default this chart install one master pod containing redis master container and sentinel container, 2 sentinels and 1 redis slave.
-
 ## Introduction
 
 This chart bootstraps a [tx-manager](https://github.com/yizhishang/tx-lcn) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
