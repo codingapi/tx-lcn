@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install yizhishang/redis-ha
+$ helm install yizhishang/tx-manager
 ```
 
 By default this chart install one master pod containing redis master container and sentinel container, 2 sentinels and 1 redis slave.
@@ -26,7 +26,7 @@ This chart bootstraps a [tx-manager](https://github.com/yizhishang/tx-lcn) deplo
 To install the chart
 
 ```bash
-helm install yizhishang/tx-manager --name tx-manager
+$ helm install yizhishang/tx-manager --name tx-manager
 ```
 
 The command deploys Redis on the Kubernetes cluster in the default configuration. By default this chart install one master pod containing redis master container and sentinel container, 2 sentinels and 1 redis slave. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -38,7 +38,7 @@ The command deploys Redis on the Kubernetes cluster in the default configuration
 To uninstall/delete the deployment:
 
 ```bash
-helm del --purge tx-manager
+$ helm del --purge tx-manager
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -60,9 +60,9 @@ $ helm install \
 
 The following table lists the configurable parameters of the Redis chart and their default values.
 
-| Parameter                        | Description                                                                                                                  | Default                                                   |
-| -------------------------------- | -----------------------------------------------------                                                                        | --------------------------------------------------------- |
-| `service.parmas`                 | Application parameter                                                                                                                 | `--spring.redis.host=192.168.110.119 --spring.redis.database=0 --tx-lcn.manager.host=192.168.110.119`                             |
+| Parameter                        | Description                                                                                                                  | Default                                                                                                       |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `service.parmas`                 | Application parameter                                                                                                        | `--spring.redis.host=192.168.110.119 --spring.redis.database=0 --tx-lcn.manager.host=192.168.110.119`         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
