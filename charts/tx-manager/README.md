@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install stable/redis-ha
+$ helm install yizhishang/redis-ha
 ```
 
 By default this chart install one master pod containing redis master container and sentinel container, 2 sentinels and 1 redis slave.
@@ -26,7 +26,7 @@ This chart bootstraps a [tx-manager](https://github.com/yizhishang/tx-lcn) deplo
 To install the chart
 
 ```bash
-$ helm install stable/redis-ha
+helm install yizhishang/tx-manager --name tx-manager
 ```
 
 The command deploys Redis on the Kubernetes cluster in the default configuration. By default this chart install one master pod containing redis master container and sentinel container, 2 sentinels and 1 redis slave. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -38,7 +38,7 @@ The command deploys Redis on the Kubernetes cluster in the default configuration
 To uninstall/delete the deployment:
 
 ```bash
-$ helm delete <chart-name>
+helm del --purge tx-manager
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -52,8 +52,8 @@ To launch in VPC-only appliance mode, set appliance.serviceType to "LoadBalancer
 
 ```bash
 $ helm install \
-  --set="servers.annotations.cloud\.google\.com/load-balancer-type=Internal,servers.serviceType=LoadBalancer" \
-    stable/redis-ha
+  --set="--spring.redis.host=192.168.110.119 --tx-lcn.manager.host=192.168.110.119" \
+    yizhishang/tx-manager
 ```
 
 ## Configuration
@@ -62,27 +62,14 @@ The following table lists the configurable parameters of the Redis chart and the
 
 | Parameter                        | Description                                                                                                                  | Default                                                   |
 | -------------------------------- | -----------------------------------------------------                                                                        | --------------------------------------------------------- |
-| `redis_image`                    | Redis image                                                                                                                  | `quay.io/smile/redis:4.0.6r2`                             |
-| `resources.master`               | CPU/Memory for master nodes resource requests/limits                                                                         | Memory: `200Mi`, CPU: `100m`                              |
-| `resources.slave`                | CPU/Memory for slave nodes  resource requests/limits                                                                         | Memory: `200Mi`, CPU: `100m`                              |
-| `resources.sentinel`             | CPU/Memory for sentinel node resource requests/limits                                                                        | Memory: `200Mi`, CPU: `100m`                              |
-| `replicas.servers`               | Number of redis master/slave pods                                                                                            | 3                                                         |
-| `replicas.sentinels`             | Number of sentinel pods                                                                                                      | 3                                                         |
-| `nodeSelector`                   | Node labels for pod assignment                                                                                               | {}                                                        |
-| `tolerations`                    | Toleration labels for pod assignment                                                                                         | []                                                        |
-| `servers.serviceType`            | Set to "LoadBalancer" to enable access from the VPC                                                                          | ClusterIP                                                 |
-| `servers.annotations`            | See Appliance mode                                                                                                           | ``                                                        |
-| `rbac.create`                    |  whether RBAC resources should be created                                                                                    | true                                                      |
-| `serviceAccount.create`          | whether a new service account name that the agent will use should be created.                                                | true                                                      |
-| `serviceAccount.name`            | service account to be used.  If not set and serviceAccount.create is `true` a name is generated using the fullname template. | ``                                                        |
-
+| `service.parmas`                 | Application parameter                                                                                                                 | `--spring.redis.host=192.168.110.119 --spring.redis.database=0 --tx-lcn.manager.host=192.168.110.119`                             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install \
   --set redis_image=quay.io/smile/redis:4.0.6r2 \
-    stable/redis-ha
+    yizhishang/tx-manager
 ```
 
 The above command sets the Redis server within  `default` namespace.
@@ -90,7 +77,7 @@ The above command sets the Redis server within  `default` namespace.
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install -f values.yaml stable/redis-ha
+$ helm install -f values.yaml yizhishang/tx-manager
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
