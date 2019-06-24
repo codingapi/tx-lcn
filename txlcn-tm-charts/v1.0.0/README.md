@@ -1,6 +1,6 @@
-# Redis
+# tx-lcn
 
-[Redis](http://redis.io/) is an advanced key-value cache and store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets, sorted sets, bitmaps and hyperloglogs.
+[tx-lcn](http://www.txlcn.org/) is one of the best distributed transaction framework and at least in China. Easy playing with SpringCloud、Dubbo and other RPC frameworks by useful rpc extensions，and support any JDBC transaction.
 
 ## TL;DR;
 
@@ -16,8 +16,10 @@ This chart bootstraps a [Redis](https://github.com/bitnami/bitnami-docker-redis)
 
 ## Prerequisites
 
-- Kubernetes 1.5+ with Beta APIs enabled
-- PV provisioner support in the underlying infrastructure
+- Consistency
+- High Availability
+- High Accessibility
+- High Expansibility
 
 ## Installing the Chart
 
