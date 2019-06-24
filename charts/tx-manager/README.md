@@ -21,7 +21,7 @@ To install the chart
 $ helm install yizhishang/tx-manager --name tx-manager
 ```
 
-The command deploys Redis on the Kubernetes cluster in the default configuration. By default this chart install one master pod containing redis master container and sentinel container, 2 sentinels and 1 redis slave. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys tx-manager on the Kubernetes cluster in the default configuration. By default this chart install one master pod containing redis master container and sentinel container, 2 sentinels and 1 redis slave. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -37,7 +37,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Appliance mode
 
-This chart can be used to launch Redis in a black box appliance mode that you can think of like a managed service. To run as an appliance, change the service type for the master and slave LBs to enable local access from within the K8S cluster.
+This chart can be used to launch tx-manager in a black box appliance mode that you can think of like a managed service. To run as an appliance, change the service type for the master and slave LBs to enable local access from within the K8S cluster.
 
 To launch in VPC-only appliance mode, set appliance.serviceType to "LoadBalancer". If using appliance mode in Google Cloud, set appliance.annotations to:
 `cloud.google.com/load-balancer-type:Internal`
@@ -60,7 +60,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 $ helm install yizhishang/tx-manager --name tx-manager
 ```
 
-The above command sets the Redis server within  `default` namespace.
+The above command sets the tx-manager service within  `default` namespace.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
