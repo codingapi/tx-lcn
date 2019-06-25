@@ -1,0 +1,13 @@
+version: '3'
+services:
+  tx-manager:
+    image: 119.yizhishang.com:5000/yizhishang/tx-manager:latest
+    ports:
+      - 7970:7970
+      - 8070:8070
+    extra_hosts:
+      - "119.yizhishang.com:192.168.110.119"
+    environment:
+      - TZ=Asia/Shanghai
+      - tx-lcn.manager.host=192.168.110.119
+      - spring.redis.host=192.168.110.119  
