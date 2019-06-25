@@ -140,6 +140,8 @@
     <logger name="jdbc.resultset" level="OFF" />
     <logger name="org.mybatis" level="OFF" />
 
+    <!--<logger name="io.lettuce.core.protocol.ReconnectionHandler" level="ERROR" />-->
+
     <root level="DEBUG">
         <appender-ref ref="async-console" />
         <appender-ref ref="async-rollingFile" />
