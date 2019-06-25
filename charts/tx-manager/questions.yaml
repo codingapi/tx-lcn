@@ -19,11 +19,69 @@ questions:
     description: "tx-manager image tag"
     type: string
     label: tx-manager Image Tag
-#- variable: service.params
-#  default: "--spring.redis.host=192.168.110.119 --spring.redis.database=0 --tx-lcn.manager.host=192.168.110.119"
-#  description: "redis/mysql configruation"
-#  type: string
-#  required: true
-#  group: "tx-manager Settings"
-#  label: service.params
 
+- variable: environment.txLcn.manager.host
+  default: "192.168.110.119"
+  description: "宿主机ip"
+  type: string
+  required: true
+  group: "tx-manager Settings"
+  label: environment.txLcn.manager.host
+
+- variable: environment.txLcn.manager.adminKey
+  default: "root"
+  description: "后台登录密码"
+  type: string
+  required: true
+  group: "tx-manager Settings"
+  label: environment.txLcn.manager.adminKey
+
+- variable: environment.spring.redis.host
+  default: "192.168.110.119"
+  description: "redis服务ip"
+  type: string
+  required: true
+  group: "Redis Settings"
+  label: environment.spring.redis.host
+
+- variable: environment.spring.redis.port
+  default: "6379"
+  description: "redis服务端口"
+  type: string
+  required: true
+  group: "Redis Settings"
+  label: environment.spring.redis.port
+
+- variable: environment.spring.redis.database
+  default: 0
+  description: "redis服务数据库"
+  type: int
+  required: true
+  min: 0
+  max: 16
+  group: "Redis Settings"
+  label: environment.spring.redis.database
+
+- variable: environment.spring.datasource.url
+  default: "jdbc:mysql://192.168.110.1:3306/tx-manager?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false"
+  description: "mysql数据库url"
+  type: string
+  required: true
+  group: "MySQL Settings"
+  label: environment.spring.datasource.url
+
+- variable: environment.spring.datasource.username
+  default: "root"
+  description: "mysql数据库username"
+  type: string
+  required: true
+  group: "MySQL Settings"
+  label: environment.spring.datasource.username
+
+- variable: environment.spring.datasource.password
+  default: "root"
+  description: "mysql数据库password"
+  type: string
+  required: true
+  group: "MySQL Settings"
+  label: environment.spring.datasource.password
