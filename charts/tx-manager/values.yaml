@@ -16,12 +16,11 @@ service:
   name: tx-manager
   type: ClusterIP
   serverPort:
-    externalPort: 7970
-    internalPort: 7970
+    externalPort: 8080
+    internalPort: 8080
   txManagePort:
-    externalPort: 8070
-    internalPort: 8070
-  params: --spring.redis.host=192.168.110.119 --tx-lcn.manager.host=192.168.110.119
+    externalPort: 8180
+    internalPort: 8180
 
 environment:
   txLcn:
