@@ -137,6 +137,7 @@
                 </executions>
 
                 <configuration>
+                    <dockerHost>http://192.168.110.119:2375</dockerHost>
                     <serverId>docker-local</serverId>
                     <registryUrl>${docker.repository}</registryUrl>
 
