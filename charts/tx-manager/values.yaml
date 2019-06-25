@@ -21,8 +21,17 @@ service:
   txManagePort:
     externalPort: 8070
     internalPort: 8070
-  params: --spring.redis.host=192.168.110.119 --spring.redis.database=0 --tx-lcn.manager.host=192.168.110.119
+  params: --spring.redis.host=192.168.110.119 --tx-lcn.manager.host=192.168.110.119
 
+
+environment:
+  tx:
+    manager:
+      host: 192.168.110.119
+  spring:
+    redis:
+      host: 192.168.110.119
+      database: 3
 
 ingress:
   enabled: false

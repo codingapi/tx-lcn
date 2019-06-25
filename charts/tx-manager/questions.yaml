@@ -19,11 +19,11 @@ questions:
     description: "tx-manager image tag"
     type: string
     label: tx-manager Image Tag
-- variable: service.params
-  default: "--spring.redis.host=192.168.110.119 --spring.redis.database=0 --tx-lcn.manager.host=192.168.110.119"
-  description: "redis/mysql configruation"
-  type: string
-  required: true
-  group: "tx-manager Settings"
-  label: service.params
+#- variable: service.params
+#  default: "--spring.redis.host=192.168.110.119 --spring.redis.database=0 --tx-lcn.manager.host=192.168.110.119"
+#  description: "redis/mysql configruation"
+#  type: string
+#  required: true
+#  group: "tx-manager Settings"
+#  label: service.params
 

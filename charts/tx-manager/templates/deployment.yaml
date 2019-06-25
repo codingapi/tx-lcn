@@ -31,8 +31,12 @@ spec:
               containerPort: {{ .Values.service.txManagePort.internalPort }}
               protocol: TCP
           env:
-            - name: PARAMS
-              value: {{ .Values.service.params }}
+            - name: tx-lcn.manager.host
+              value: {{ .Values.environment.tx.manager.host | quote }}
+            - name: spring.redis.host
+              value: {{ .Values.environment.spring.redis.host | quote }}
+            - name: spring.redis.database
+              value: {{ .Values.environment.spring.redis.database | quote }}
           livenessProbe:
             httpGet:
               path: /
