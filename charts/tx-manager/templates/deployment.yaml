@@ -52,11 +52,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: 7970
+              port: {{ .Values.service.serverPort.internalPort }}
           readinessProbe:
             httpGet:
               path: /
-              port: 7970
+              port: {{ .Values.service.serverPort.internalPort }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
