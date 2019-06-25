@@ -56,7 +56,7 @@ public class TxLcnManagerBanner implements Banner {
         if (managerPortProperty != null) {
             managerPort = Integer.parseInt(managerPortProperty);
         } else {
-            managerPort = httpPort + TxManagerConfig.PORT_CHANGE_VALUE;
+            managerPort = TxManagerConfig.DTX_PORT;
         }
         String string = String.format(SERVER_INFO, VERSION, httpPort, managerPort);
         printStream.println();

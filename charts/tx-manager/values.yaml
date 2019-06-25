@@ -19,8 +19,8 @@ service:
     externalPort: 8080
     internalPort: 8080
   txManagePort:
-    externalPort: 8180
-    internalPort: 8180
+    externalPort: 8070
+    internalPort: 8070
 
 environment:
   txLcn:

@@ -33,7 +33,7 @@ import org.springframework.util.StringUtils;
 @Data
 public class TxManagerConfig {
 
-    public static final int PORT_CHANGE_VALUE = 100;
+    public static final int DTX_PORT = 8070;
 
     /**
      * manager host
@@ -43,7 +43,7 @@ public class TxManagerConfig {
     /**
      * support  port
      */
-    private int port = 8070;
+    private int port = DTX_PORT;
 
     /**
      * netty heart check time (ms)
