@@ -37,8 +37,8 @@ public class AsyncTxExceptionListener implements TxExceptionListener {
 
     private final RestTemplate restTemplate;
 
-    @Value("${server.port}")
-    private Integer managerServicePort = 8083;
+    @Value("${server.port:7970}")
+    private Integer managerServicePort;
 
     private final ExecutorService executorService;
 

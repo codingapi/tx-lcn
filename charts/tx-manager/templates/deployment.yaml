@@ -32,11 +32,23 @@ spec:
               protocol: TCP
           env:
             - name: tx-lcn.manager.host
-              value: {{ .Values.environment.tx.manager.host | quote }}
+              value: {{ .Values.environment.txLcn.manager.host | quote }}
+            - name: tx-lcn.manager.adminKey
+              value: {{ .Values.environment.txLcn.manager.adminKey | quote }}
             - name: spring.redis.host
               value: {{ .Values.environment.spring.redis.host | quote }}
+            - name: spring.redis.port
+              value: {{ .Values.environment.spring.redis.port | quote }}
             - name: spring.redis.database
               value: {{ .Values.environment.spring.redis.database | quote }}
+            - name: spring.datasource.driver-class-name
+              value: {{ .Values.environment.spring.datasource.driverClassName | quote }}
+            - name: spring.datasource.url
+              value: {{ .Values.environment.spring.datasource.url | quote }}
+            - name: spring.datasource.username
+              value: {{ .Values.environment.spring.datasource.username | quote }}
+            - name: spring.datasource.password
+              value: {{ .Values.environment.spring.datasource.password | quote }}
           livenessProbe:
             httpGet:
               path: /

@@ -23,15 +23,21 @@ service:
     internalPort: 8070
   params: --spring.redis.host=192.168.110.119 --tx-lcn.manager.host=192.168.110.119
 
-
 environment:
-  tx:
+  txLcn:
     manager:
       host: 192.168.110.119
+      adminKey: root
   spring:
     redis:
       host: 192.168.110.119
+      port: 6379
       database: 3
+    datasource:
+      driverClassName: com.mysql.jdbc.Driver
+      url: jdbc:mysql://192.168.110.1:3306/tx-manager?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
+      username: root
+      password: root
 
 ingress:
   enabled: false
