@@ -21,25 +21,34 @@ import com.codingapi.txlcn.logger.db.LogDbProperties;
 import com.codingapi.txlcn.logger.db.TxLog;
 import com.codingapi.txlcn.logger.exception.TxLoggerException;
 import com.codingapi.txlcn.logger.helper.TxLcnLogDbHelper;
-import com.codingapi.txlcn.logger.model.*;
+import com.codingapi.txlcn.logger.model.Field;
+import com.codingapi.txlcn.logger.model.GroupId;
+import com.codingapi.txlcn.logger.model.LogList;
+import com.codingapi.txlcn.logger.model.StartTime;
+import com.codingapi.txlcn.logger.model.StopTime;
+import com.codingapi.txlcn.logger.model.Tag;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
-import com.codingapi.txlcn.tm.support.TxLcnManagerBanner;
 import com.codingapi.txlcn.tm.support.restapi.auth.DefaultTokenStorage;
-import com.codingapi.txlcn.tm.support.restapi.vo.*;
+import com.codingapi.txlcn.tm.support.restapi.vo.DTXInfo;
+import com.codingapi.txlcn.tm.support.restapi.vo.DeleteLogsReq;
+import com.codingapi.txlcn.tm.support.restapi.vo.ListAppMods;
+import com.codingapi.txlcn.tm.support.restapi.vo.TxLogList;
+import com.codingapi.txlcn.tm.support.restapi.vo.TxManagerInfo;
+import com.codingapi.txlcn.tm.support.restapi.vo.TxManagerLog;
 import com.codingapi.txlcn.tm.support.service.AdminService;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.dto.AppInfo;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.PropertyMapper;
-import org.springframework.stereotype.Service;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.PropertyMapper;
+import org.springframework.stereotype.Service;
 
 /**
  * Description:
@@ -59,6 +68,9 @@ public class AdminServiceImpl implements AdminService {
     private final TxLcnLogDbHelper txLoggerHelper;
 
     private final RpcClient rpcClient;
+
+    @Value("${version}")
+    private String version;
 
     @Autowired
     public AdminServiceImpl(TxManagerConfig managerConfig,
@@ -148,7 +160,7 @@ public class AdminServiceImpl implements AdminService {
         txManagerInfo.setSocketPort(managerConfig.getPort());
         txManagerInfo.setExUrl(managerConfig.isExUrlEnabled() ? managerConfig.getExUrl() : "disabled");
         txManagerInfo.setEnableTxLogger(String.valueOf(logDbProperties.isEnabled()));
-        txManagerInfo.setTmVersion(TxLcnManagerBanner.VERSION);
+        txManagerInfo.setTmVersion(version);
         return txManagerInfo;
     }
 
