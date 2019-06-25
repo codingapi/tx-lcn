@@ -20,22 +20,6 @@ questions:
     type: string
     label: tx-manager Image Tag
 
-- variable: environment.txLcn.manager.host
-  default: "192.168.110.119"
-  description: "宿主机ip"
-  type: string
-  required: true
-  group: "tx-manager Settings"
-  label: environment.txLcn.manager.host
-
-- variable: environment.txLcn.manager.adminKey
-  default: "root"
-  description: "后台登录密码"
-  type: string
-  required: true
-  group: "tx-manager Settings"
-  label: environment.txLcn.manager.adminKey
-
 - variable: environment.spring.redis.host
   default: "192.168.110.119"
   description: "redis服务ip"
@@ -85,3 +69,19 @@ questions:
   required: true
   group: "MySQL Settings"
   label: environment.spring.datasource.password
+
+- variable: environment.txLcn.manager.host
+  default: ""
+  description: "宿主机ip"
+  type: string
+  required: false
+  group: "tx-manager Settings"
+  label: environment.txLcn.manager.host
+
+- variable: environment.txLcn.manager.adminKey
+  default: "root"
+  description: "后台登录密码"
+  type: string
+  required: true
+  group: "tx-manager Settings"
+  label: environment.txLcn.manager.adminKey

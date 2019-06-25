@@ -25,7 +25,7 @@ service:
 environment:
   txLcn:
     manager:
-      host: 192.168.110.119
+      host:
       adminKey: root
   spring:
     redis:
