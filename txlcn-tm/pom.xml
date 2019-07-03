@@ -14,7 +14,8 @@
     <packaging>jar</packaging>
 
     <properties>
-        <docker.repository>119.yizhishang.com:5000</docker.repository>
+        <docker.host>192.168.110.119</docker.host>
+        <docker.port>5000</docker.port>
         <docker.image.prefix>yizhishang</docker.image.prefix>
     </properties>
 
@@ -137,11 +138,11 @@
                 </executions>
 
                 <configuration>
-                    <dockerHost>http://192.168.110.119:2375</dockerHost>
+                    <dockerHost>http://${docker.host}:2375</dockerHost>
                     <serverId>docker-local</serverId>
-                    <registryUrl>${docker.repository}</registryUrl>
+                    <registryUrl>${docker.host}:${docker.port}</registryUrl>
 
-                    <imageName>${docker.repository}/${docker.image.prefix}/${project.build.finalName}</imageName>
+                    <imageName>${docker.host}:${docker.port}/${docker.image.prefix}/${project.build.finalName}</imageName>
                     <forceTags>true</forceTags>
 
                     <!-- 指定Dockerfile所在的路径 -->
