@@ -7,4 +7,4 @@ ${AnsiColor.BRIGHT_GREEN}
          | | / /^\ \     | |___| \__/\| |\  |
          \_/ \/   \/     \_____/\____/\_| \_/
 
-               TC  version:${application.version}
+               TC  version: 1.0.0.RELEASE
