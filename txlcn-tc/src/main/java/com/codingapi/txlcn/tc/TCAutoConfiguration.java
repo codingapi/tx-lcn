@@ -82,7 +82,7 @@ public class TCAutoConfiguration {
                 .map(entry -> entry.getKey().toString()).collect(Collectors.toList());
 
         if(CollectionUtils.isEmpty(managerAddress)){
-            throw new TxClientException("在redis没有找到可用的tx-manager地址");
+            throw new TxClientException("there is no tx-manager found in redis");
         }
 
         txClientConfig.setManagerAddress(managerAddress);
