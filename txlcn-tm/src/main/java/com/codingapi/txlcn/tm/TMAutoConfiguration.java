@@ -19,15 +19,22 @@ import com.codingapi.txlcn.common.runner.TxLcnApplicationRunner;
 import com.codingapi.txlcn.common.util.ApplicationInformation;
 import com.codingapi.txlcn.common.util.id.ModIdProvider;
 import com.codingapi.txlcn.logger.TxLoggerConfiguration;
-import com.codingapi.txlcn.txmsg.MessageConfiguration;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.tm.core.storage.FastStorageProvider;
 import com.codingapi.txlcn.tm.core.storage.redis.RedisStorage;
+import com.codingapi.txlcn.txmsg.MessageConfiguration;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cloud.commons.util.InetUtils;
+import org.springframework.cloud.commons.util.InetUtils.HostInfo;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -38,11 +45,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Description:
@@ -56,6 +58,9 @@ import java.util.concurrent.TimeUnit;
 @EnableJpaRepositories("com.codingapi.txlcn.tm.support.db.jpa")
 @EntityScan("com.codingapi.txlcn.tm.support.db.domain")
 public class TMAutoConfiguration {
+
+    @Autowired
+    private InetUtils inet;
 
     @Bean(destroyMethod = "shutdown")
     public ExecutorService executorService() {
@@ -98,6 +103,7 @@ public class TMAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ModIdProvider modIdProvider(ConfigurableEnvironment environment, ServerProperties serverProperties) {
-        return () -> ApplicationInformation.modId(environment, serverProperties);
+        HostInfo hostInfo = inet.findFirstNonLoopbackHostInfo();
+        return () -> hostInfo.getIpAddress() + ":" + ApplicationInformation.serverPort(serverProperties);
     }
 }

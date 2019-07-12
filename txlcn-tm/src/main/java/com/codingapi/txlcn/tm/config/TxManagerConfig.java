@@ -15,11 +15,10 @@
  */
 package com.codingapi.txlcn.tm.config;
 
-import com.codingapi.txlcn.common.util.ApplicationInformation;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -32,6 +31,9 @@ import org.springframework.util.StringUtils;
 @Component
 @Data
 public class TxManagerConfig {
+
+    @Autowired
+    private InetUtils inet;
 
     public static final int DTX_PORT = 8070;
 
@@ -89,11 +91,7 @@ public class TxManagerConfig {
 
     public String getHost() {
         if(StringUtils.isEmpty(this.host)){
-            try {
-                this.host = ApplicationInformation.getIpAddress();
-            } catch (SocketException | UnknownHostException e) {
-                e.printStackTrace();
-            }
+            return inet.findFirstNonLoopbackHostInfo().getIpAddress();
         }
         return this.host;
     }

@@ -18,7 +18,6 @@ package com.codingapi.txlcn.common.util;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +43,7 @@ public class ApplicationInformation {
     public static String modId(ConfigurableEnvironment environment, ServerProperties serverProperties) {
         try {
             return getIpAddress() + ":" + serverPort(serverProperties);
-        } catch (SocketException | UnknownHostException e) {
+        } catch (SocketException e) {
             log.error(e.getMessage(), e);
         }
         return null;
@@ -54,9 +53,8 @@ public class ApplicationInformation {
      * 根据网卡获得IP地址
      *
      * @throws SocketException
-     * @throws UnknownHostException
      */
-    public static String getIpAddress() throws SocketException, UnknownHostException {
+    public static String getIpAddress() throws SocketException {
         String ip = "";
         for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
             NetworkInterface network = en.nextElement();

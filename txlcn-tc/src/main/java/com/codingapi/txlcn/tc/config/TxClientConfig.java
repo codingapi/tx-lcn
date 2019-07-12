@@ -15,19 +15,30 @@
  */
 package com.codingapi.txlcn.tc.config;
 
-import lombok.Data;
-
+import com.codingapi.txlcn.common.exception.TxClientException;
 import java.util.List;
+import java.util.stream.Collectors;
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 /**
- * Description:
- * Company: CodingApi
- * Date: 2018/11/29
+ * Description: Company: CodingApi Date: 2018/11/29
  *
  * @author lorne
  */
 @Data
+@Component
+@ConfigurationProperties(prefix = "tx-lcn.client")
 public class TxClientConfig {
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    private static final String REDIS_TM_LIST = "tm.instances";
 
     public TxClientConfig() {
         this.dtxAspectOrder = 0;
@@ -94,5 +105,24 @@ public class TxClientConfig {
 
     public void applyMachineId(long machineId) {
         setMachineId(machineId);
+    }
+
+    public List<String> getManagerAddress() {
+
+        if (!CollectionUtils.isEmpty(this.managerAddress)) {
+            return managerAddress;
+        }
+
+        managerAddress = stringRedisTemplate.opsForHash().entries(REDIS_TM_LIST).entrySet().stream()
+                .map(entry -> entry.getKey().toString()).collect(Collectors.toList());
+
+        if (CollectionUtils.isEmpty(managerAddress)) {
+            try {
+                throw new TxClientException("there is no tx-manager found in redis");
+            } catch (TxClientException e) {
+                e.printStackTrace();
+            }
+        }
+        return managerAddress;
     }
 }
