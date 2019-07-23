@@ -172,7 +172,7 @@ public class SocketManager {
      * @param moduleName 模块名称
      * @return remoteKeys
      */
-    public List<String> removeKeys(String moduleName) {
+    public List<String> remoteKeys(String moduleName) {
         List<String> allKeys = new ArrayList<>();
         for (Channel channel : channels) {
             if (moduleName.equals(getModuleName(channel))) {

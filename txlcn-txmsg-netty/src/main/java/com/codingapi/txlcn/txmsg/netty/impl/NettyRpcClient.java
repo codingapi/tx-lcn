@@ -93,7 +93,7 @@ public class NettyRpcClient extends RpcClient {
 
     @Override
     public List<String> remoteKeys(String moduleName) {
-        return SocketManager.getInstance().removeKeys(moduleName);
+        return SocketManager.getInstance().remoteKeys(moduleName);
     }
 
 
