@@ -76,8 +76,14 @@ public class PrimaryKeyListVisitor implements ItemsListVisitor {
         Map<String, Object> keyValues = new HashMap<>();
         for (int i = 0; i < columns.size(); i++) {
             columns.get(i).setTable(table);
+            //解决Long类型字段作为主键空指针异常
             if (primaryKeys.contains(columns.get(i).getFullyQualifiedName())) {
-                Object expression = expressions.get(i).getASTNode().jjtGetValue();
+                Object expression = null;
+                if (expressions.get(i).getASTNode() != null) {
+                    expressions.get(i).getASTNode().jjtGetValue();
+                } else {
+                    expression = expressions.get(i);
+                }
                 keyValues.put(columns.get(i).getFullyQualifiedName(),
                         Reflection.invokeN(expression.getClass(), "getValue", expression, new Object[0]));
             }
