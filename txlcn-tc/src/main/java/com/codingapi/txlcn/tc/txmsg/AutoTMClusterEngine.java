@@ -15,15 +15,19 @@
  */
 package com.codingapi.txlcn.tc.txmsg;
 
-import com.codingapi.txlcn.txmsg.exception.RpcException;
+import com.codingapi.txlcn.common.util.ApplicationInformation;
 import com.codingapi.txlcn.tc.config.TxClientConfig;
 import com.codingapi.txlcn.tc.support.listener.RpcEnvStatusListener;
+import com.codingapi.txlcn.txmsg.exception.RpcException;
 import com.google.common.collect.Sets;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.cloud.commons.util.InetUtils;
+import org.springframework.cloud.commons.util.InetUtils.HostInfo;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Description:
@@ -41,10 +45,22 @@ public class AutoTMClusterEngine implements RpcEnvStatusListener {
 
     private final ReliableMessenger reliableMessenger;
 
+    private final RedisTemplate<String, String> stringRedisTemplate;
+
+    private final InetUtils inet;
+
+    private final ServerProperties serverProperties;
+
+    private final String REDIS_TC_LIST = "tc.instances";
+
     @Autowired
-    public AutoTMClusterEngine(TxClientConfig txClientConfig, ReliableMessenger reliableMessenger) {
+    public AutoTMClusterEngine(TxClientConfig txClientConfig, ReliableMessenger reliableMessenger,
+            RedisTemplate<String, String> stringRedisTemplate, InetUtils inet, ServerProperties serverProperties) {
         this.txClientConfig = txClientConfig;
         this.reliableMessenger = reliableMessenger;
+        this.stringRedisTemplate = stringRedisTemplate;
+        this.inet = inet;
+        this.serverProperties = serverProperties;
     }
 
     @Override
@@ -77,6 +93,12 @@ public class AutoTMClusterEngine implements RpcEnvStatusListener {
      * @return true 搜索结束
      */
     private boolean prepareToResearchTMCluster() {
+
+        HostInfo hostInfo = inet.findFirstNonLoopbackHostInfo();
+        String ipPort = hostInfo.getIpAddress() + ":" + ApplicationInformation.serverPort(serverProperties);
+        stringRedisTemplate.opsForSet().add(REDIS_TC_LIST, ipPort);
+        log.info("save the tc-instances to redis: {}", ipPort);
+
         int count = tryConnectCount.incrementAndGet();
         int size = txClientConfig.getManagerAddress().size();
         if (count == size) {
