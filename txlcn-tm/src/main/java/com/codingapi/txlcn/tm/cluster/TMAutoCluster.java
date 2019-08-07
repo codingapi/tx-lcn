@@ -18,22 +18,25 @@ package com.codingapi.txlcn.tm.cluster;
 import com.codingapi.txlcn.common.runner.TxLcnInitializer;
 import com.codingapi.txlcn.common.runner.TxLcnRunnerOrders;
 import com.codingapi.txlcn.common.util.ApplicationInformation;
-import com.codingapi.txlcn.txmsg.params.NotifyConnectParams;
 import com.codingapi.txlcn.tm.config.TxManagerConfig;
 import com.codingapi.txlcn.tm.core.storage.FastStorage;
+import com.codingapi.txlcn.txmsg.RpcClient;
+import com.codingapi.txlcn.txmsg.dto.AppInfo;
+import com.codingapi.txlcn.txmsg.params.NotifyConnectParams;
+import java.net.ConnectException;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
-
-import java.net.ConnectException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -55,13 +58,22 @@ public class TMAutoCluster implements TxLcnInitializer {
 
     private final ServerProperties serverProperties;
 
+    private final RpcClient rpcClient;
+
+    private RedisTemplate<String, String> stringRedisTemplate;
+
+    private static final String REDIS_TC_LIST = "tc.instances";
+
     @Autowired
     public TMAutoCluster(FastStorage fastStorage, RestTemplate restTemplate, TxManagerConfig txManagerConfig,
-                         ServerProperties serverProperties) {
+                         ServerProperties serverProperties, RpcClient rpcClient,
+            RedisTemplate<String, String> stringRedisTemplate) {
         this.fastStorage = fastStorage;
         this.restTemplate = restTemplate;
         this.txManagerConfig = txManagerConfig;
         this.serverProperties = serverProperties;
+        this.rpcClient = rpcClient;
+        this.stringRedisTemplate= stringRedisTemplate;
     }
 
     @Override
@@ -105,6 +117,23 @@ public class TMAutoCluster implements TxLcnInitializer {
             tmProperties.setHost(txManagerConfig.getHost());
             tmProperties.setTransactionPort(txManagerConfig.getPort());
             fastStorage.saveTMProperties(tmProperties);
+        }
+
+        // 3. 通知TC 重新连接
+        List<AppInfo> apps = rpcClient.apps();
+        Set<String> labelSet = stringRedisTemplate.opsForSet().members(REDIS_TC_LIST);
+        for (int i = 0; i < apps.size(); i++) {
+
+            AppInfo appInfo = apps.get(i);
+            String labelName = appInfo.getLabelName();
+            // 已经连上的不用通知
+            if(labelSet.contains(labelName)){
+                continue;
+            }
+            String url = String.format("http://%s/notify/reconnect", labelName);
+            System.out.println(url);
+            Boolean result = restTemplate.postForObject(url, null, Boolean.class);
+            System.out.println(result);
         }
     }
 
