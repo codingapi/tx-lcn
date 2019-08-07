@@ -23,6 +23,7 @@ import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.dto.AppInfo;
 import com.codingapi.txlcn.txmsg.params.NotifyConnectParams;
+import com.google.common.collect.Sets;
 import java.net.ConnectException;
 import java.util.List;
 import java.util.Set;
@@ -39,8 +40,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Description:
- * Date: 1/24/19
+ * Description: Date: 1/24/19
  *
  * @author codingapi
  */
@@ -66,14 +66,14 @@ public class TMAutoCluster implements TxLcnInitializer {
 
     @Autowired
     public TMAutoCluster(FastStorage fastStorage, RestTemplate restTemplate, TxManagerConfig txManagerConfig,
-                         ServerProperties serverProperties, RpcClient rpcClient,
+            ServerProperties serverProperties, RpcClient rpcClient,
             RedisTemplate<String, String> stringRedisTemplate) {
         this.fastStorage = fastStorage;
         this.restTemplate = restTemplate;
         this.txManagerConfig = txManagerConfig;
         this.serverProperties = serverProperties;
         this.rpcClient = rpcClient;
-        this.stringRedisTemplate= stringRedisTemplate;
+        this.stringRedisTemplate = stringRedisTemplate;
     }
 
     @Override
@@ -121,20 +121,20 @@ public class TMAutoCluster implements TxLcnInitializer {
 
         // 3. 通知TC 重新连接
         List<AppInfo> apps = rpcClient.apps();
-        Set<String> labelSet = stringRedisTemplate.opsForSet().members(REDIS_TC_LIST);
-        for (int i = 0; i < apps.size(); i++) {
+        Set<String> appSet = Sets.newHashSet();
+        apps.forEach(appInfo -> appSet.add(appInfo.getLabelName()));
 
-            AppInfo appInfo = apps.get(i);
-            String labelName = appInfo.getLabelName();
+        Set<String> redisLabelSet = stringRedisTemplate.opsForSet().members(REDIS_TC_LIST);
+        for (String label : redisLabelSet) {
             // 已经连上的不用通知
-            if(labelSet.contains(labelName)){
+            if (appSet.contains(label)) {
                 continue;
             }
-            String url = String.format("http://%s/notify/reconnect", labelName);
-            System.out.println(url);
+            String url = String.format("http://%s/notify/reconnect", label);
             Boolean result = restTemplate.postForObject(url, null, Boolean.class);
-            System.out.println(result);
+            log.info("notify {} {}", label, result ? "successful" : "failed");
         }
+
     }
 
     @Override
