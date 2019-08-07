@@ -13,12 +13,6 @@
     <version>1.0.0.RELEASE</version>
     <packaging>jar</packaging>
 
-    <!--<properties>-->
-        <!--<docker.host>192.168.110.117</docker.host>-->
-        <!--<docker.port>5000</docker.port>-->
-        <!--<docker.image.prefix>yizhishang</docker.image.prefix>-->
-    <!--</properties>-->
-
     <dependencies>
 
         <dependency>
@@ -132,27 +126,18 @@
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>1.2.0</version>
-                <executions>
-                    <execution>
-                        <id>build-image</id><!-- 要绑定到的生命周期的阶段 -->
-                        <phase>package</phase><!-- 要绑定到的生命周期的阶段 -->
-                        <goals> <!-- 要绑定的插件的目标 -->
-                            <goal>build</goal>
-                            <goal>push</goal>
-                        </goals>
-                    </execution>
-                </executions>
 
                 <configuration>
-                    <dockerHost>http://${docker.host}:2375</dockerHost>
-                    <serverId>docker-local</serverId>
-                    <registryUrl>${docker.host}:${docker.port}</registryUrl>
+                    <!-- 以下两行是为了docker push到DockerHub使用的。 -->
+                    <serverId>docker-registry</serverId>
+                    <dockerHost>${dockerHost}</dockerHost>
 
-                    <imageName>${docker.host}:${docker.port}/${docker.image.prefix}/${project.build.finalName}</imageName>
+                    <!-- 如果要将docker镜像push到DockerHub上去的话，这边的路径要和repo路径一致 -->
+                    <imageName>${registryUrl}/${registryPrefix}/${project.artifactId}</imageName>
                     <forceTags>true</forceTags>
 
                     <!-- 指定Dockerfile所在的路径 -->
-                    <dockerDirectory>src/main/docker</dockerDirectory>
+                    <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
                     <buildArgs>
                         <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
                     </buildArgs>
@@ -163,7 +148,6 @@
                             <include>${project.build.finalName}.jar</include>
                         </resource>
                     </resources>
-
                 </configuration>
             </plugin>
 

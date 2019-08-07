@@ -1,4 +1,4 @@
-FROM gtavali/alpine-oraclejdk8:latest
+FROM openjdk:8-jdk-alpine
 
 VOLUME /tmp
 ENV TZ=Asia/Shanghai
