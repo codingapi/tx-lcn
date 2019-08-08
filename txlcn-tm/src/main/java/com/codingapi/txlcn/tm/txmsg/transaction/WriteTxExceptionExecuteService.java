@@ -59,7 +59,7 @@ public class WriteTxExceptionExecuteService implements RpcExecuteService {
         try {
             TxExceptionParams txExceptionParams = transactionCmd.getMsg().loadBean(TxExceptionParams.class);
             WriteTxExceptionDTO writeTxExceptionReq = new WriteTxExceptionDTO();
-            writeTxExceptionReq.setModId(rpcClient.getAppName(transactionCmd.getRemoteKey()));
+            writeTxExceptionReq.setModId(rpcClient.getModuleName(transactionCmd.getRemoteKey()));
 
             //获取事务状态（可能存在设置了手动回滚）
             int transactionState = transactionManager.transactionStateFromFastStorage(transactionCmd.getGroupId());

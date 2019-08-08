@@ -135,7 +135,7 @@ public abstract class RpcClient {
      * @param remoteKey 远程标识
      * @return 应用名称
      */
-    public abstract String getAppName(String remoteKey);
+    public abstract String getModuleName(String remoteKey);
 
 
     /**

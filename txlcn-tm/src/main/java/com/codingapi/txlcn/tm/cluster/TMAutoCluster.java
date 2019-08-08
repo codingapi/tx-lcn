@@ -156,9 +156,9 @@ public class TMAutoCluster implements TxLcnInitializer {
             return true;
         }
         if(result == false && --count > 0){
-            log.warn("Notify client({}) fail. 6s latter try again.", label);
+            log.warn("Notify client({}) fail. 3s latter try again.", label);
             try {
-                Thread.sleep(6000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -103,7 +103,7 @@ public class NettyRpcClient extends RpcClient {
     }
 
     @Override
-    public String getAppName(String remoteKey) {
+    public String getModuleName(String remoteKey) {
         return SocketManager.getInstance().getModuleName(remoteKey);
     }
 
