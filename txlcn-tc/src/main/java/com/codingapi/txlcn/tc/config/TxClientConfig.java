@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tc.config;
 
+import com.codingapi.txlcn.common.base.Consts;
 import com.codingapi.txlcn.common.exception.TxClientException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,8 +38,6 @@ public class TxClientConfig {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
-
-    private static final String REDIS_TM_LIST = "tm.instances";
 
     public TxClientConfig() {
         this.dtxAspectOrder = 0;
@@ -109,11 +108,7 @@ public class TxClientConfig {
 
     public List<String> getManagerAddress() {
 
-        if (!CollectionUtils.isEmpty(this.managerAddress)) {
-            return managerAddress;
-        }
-
-        managerAddress = stringRedisTemplate.opsForHash().entries(REDIS_TM_LIST).entrySet().stream()
+        managerAddress = stringRedisTemplate.opsForHash().entries(Consts.REDIS_TM_LIST).entrySet().stream()
                 .map(entry -> entry.getKey().toString()).collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(managerAddress)) {

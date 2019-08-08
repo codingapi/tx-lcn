@@ -65,7 +65,7 @@ public class JoinGroupExecuteService implements RpcExecuteService {
             txLogger.txTrace(transactionCmd.getGroupId(), joinGroupParams.getUnitId(), "unit:{} try join group:{}",
                     joinGroupParams.getUnitId(), transactionCmd.getGroupId());
             transactionManager.join(dtxContext, joinGroupParams.getUnitId(), joinGroupParams.getUnitType(),
-                    rpcClient.getAppName(transactionCmd.getRemoteKey()), joinGroupParams.getTransactionState());
+                    rpcClient.getModuleName(transactionCmd.getRemoteKey()), joinGroupParams.getTransactionState());
             txLogger.txTrace(transactionCmd.getGroupId(), joinGroupParams.getUnitId(), "unit:{} joined.",
                     joinGroupParams.getUnitId());
         } catch (TransactionException e) {

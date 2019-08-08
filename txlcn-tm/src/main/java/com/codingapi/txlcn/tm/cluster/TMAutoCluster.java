@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tm.cluster;
 
+import com.codingapi.txlcn.common.base.Consts;
 import com.codingapi.txlcn.common.runner.TxLcnInitializer;
 import com.codingapi.txlcn.common.runner.TxLcnRunnerOrders;
 import com.codingapi.txlcn.common.util.ApplicationInformation;
@@ -23,6 +24,7 @@ import com.codingapi.txlcn.tm.core.storage.FastStorage;
 import com.codingapi.txlcn.txmsg.RpcClient;
 import com.codingapi.txlcn.txmsg.dto.AppInfo;
 import com.codingapi.txlcn.txmsg.params.NotifyConnectParams;
+import com.google.common.collect.Sets;
 import java.net.ConnectException;
 import java.util.List;
 import java.util.Set;
@@ -39,8 +41,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Description:
- * Date: 1/24/19
+ * Description: Date: 1/24/19
  *
  * @author codingapi
  */
@@ -62,18 +63,16 @@ public class TMAutoCluster implements TxLcnInitializer {
 
     private RedisTemplate<String, String> stringRedisTemplate;
 
-    private static final String REDIS_TC_LIST = "tc.instances";
-
     @Autowired
     public TMAutoCluster(FastStorage fastStorage, RestTemplate restTemplate, TxManagerConfig txManagerConfig,
-                         ServerProperties serverProperties, RpcClient rpcClient,
+            ServerProperties serverProperties, RpcClient rpcClient,
             RedisTemplate<String, String> stringRedisTemplate) {
         this.fastStorage = fastStorage;
         this.restTemplate = restTemplate;
         this.txManagerConfig = txManagerConfig;
         this.serverProperties = serverProperties;
         this.rpcClient = rpcClient;
-        this.stringRedisTemplate= stringRedisTemplate;
+        this.stringRedisTemplate = stringRedisTemplate;
     }
 
     @Override
@@ -121,20 +120,53 @@ public class TMAutoCluster implements TxLcnInitializer {
 
         // 3. 通知TC 重新连接
         List<AppInfo> apps = rpcClient.apps();
-        Set<String> labelSet = stringRedisTemplate.opsForSet().members(REDIS_TC_LIST);
-        for (int i = 0; i < apps.size(); i++) {
+        Set<String> appSet = Sets.newHashSet();
+        apps.forEach(appInfo -> appSet.add(appInfo.getLabelName()));
 
-            AppInfo appInfo = apps.get(i);
-            String labelName = appInfo.getLabelName();
+        Set<String> redisLabelSet = stringRedisTemplate.opsForSet().members(Consts.REDIS_TC_LIST);
+        for (String label : redisLabelSet) {
             // 已经连上的不用通知
-            if(labelSet.contains(labelName)){
+            if (appSet.contains(label)) {
                 continue;
             }
-            String url = String.format("http://%s/notify/reconnect", labelName);
-            System.out.println(url);
-            Boolean result = restTemplate.postForObject(url, null, Boolean.class);
-            System.out.println(result);
+
+            new Thread(()-> notifyClient(label, 3)).start();
         }
+    }
+
+    public boolean notifyClient(String label, int count){
+        log.info("Try notify client({}) - count {}", label, count);
+        String url = String.format("http://%s/notify/reconnect", label);
+        Boolean result = false;
+        try{
+            result = restTemplate.postForObject(url, null, Boolean.class);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            if (e instanceof ResourceAccessException) {
+                ResourceAccessException resourceAccessException = (ResourceAccessException) e;
+                if (resourceAccessException.getCause() != null && resourceAccessException.getCause() instanceof ConnectException) {
+                    //can't access .
+                    stringRedisTemplate.opsForSet().remove(Consts.REDIS_TC_LIST, label);
+                    return false;
+                }
+            }
+        }
+        if(result){
+            log.info("Notify client({}) successfully!", label);
+            return true;
+        }
+        if(result == false && --count > 0){
+            log.warn("Notify client({}) fail. 3s latter try again.", label);
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return notifyClient(label, count);
+        }
+        log.error("Finally, notify client({}) fail!!!", label);
+        log.info("remove the tc-instances from redis: {}", label);
+        return false;
     }
 
     @Override

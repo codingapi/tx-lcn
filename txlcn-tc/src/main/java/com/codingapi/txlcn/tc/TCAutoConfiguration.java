@@ -21,6 +21,7 @@ import com.codingapi.txlcn.common.util.id.ModIdProvider;
 import com.codingapi.txlcn.logger.TxLoggerConfiguration;
 import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import com.codingapi.txlcn.tracing.TracingAutoConfiguration;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -33,7 +34,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
  * Description:
@@ -42,6 +42,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
  * @author ujued
  * @see EnableDistributedTransaction
  */
+@Slf4j
 @Configuration
 @ComponentScan(
         excludeFilters = @ComponentScan.Filter(
@@ -53,6 +54,11 @@ public class TCAutoConfiguration {
 
     @Autowired
     private InetUtils inet;
+
+    @Autowired
+    private ServerProperties serverProperties;
+
+    private String labelName;
 
     /**
      * All initialization about TX-LCN
@@ -67,10 +73,10 @@ public class TCAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ModIdProvider modIdProvider(ConfigurableEnvironment environment,
-                                       @Autowired(required = false) ServerProperties serverProperties) {
+    public ModIdProvider modIdProvider() {
         HostInfo hostInfo = inet.findFirstNonLoopbackHostInfo();
-        return () -> hostInfo.getIpAddress() + ":" + ApplicationInformation.serverPort(serverProperties);
+        labelName = hostInfo.getIpAddress() + ":" + ApplicationInformation.serverPort(serverProperties);
+        return () -> labelName;
     }
 
 }
