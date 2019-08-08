@@ -15,6 +15,7 @@
  */
 package com.codingapi.txlcn.tm.cluster;
 
+import com.codingapi.txlcn.common.base.Consts;
 import com.codingapi.txlcn.common.runner.TxLcnInitializer;
 import com.codingapi.txlcn.common.runner.TxLcnRunnerOrders;
 import com.codingapi.txlcn.common.util.ApplicationInformation;
@@ -61,8 +62,6 @@ public class TMAutoCluster implements TxLcnInitializer {
     private final RpcClient rpcClient;
 
     private RedisTemplate<String, String> stringRedisTemplate;
-
-    private static final String REDIS_TC_LIST = "tc.instances";
 
     @Autowired
     public TMAutoCluster(FastStorage fastStorage, RestTemplate restTemplate, TxManagerConfig txManagerConfig,
@@ -124,17 +123,50 @@ public class TMAutoCluster implements TxLcnInitializer {
         Set<String> appSet = Sets.newHashSet();
         apps.forEach(appInfo -> appSet.add(appInfo.getLabelName()));
 
-        Set<String> redisLabelSet = stringRedisTemplate.opsForSet().members(REDIS_TC_LIST);
+        Set<String> redisLabelSet = stringRedisTemplate.opsForSet().members(Consts.REDIS_TC_LIST);
         for (String label : redisLabelSet) {
             // 已经连上的不用通知
             if (appSet.contains(label)) {
                 continue;
             }
-            String url = String.format("http://%s/notify/reconnect", label);
-            Boolean result = restTemplate.postForObject(url, null, Boolean.class);
-            log.info("notify {} {}", label, result ? "successful" : "failed");
-        }
 
+            new Thread(()-> notifyClient(label, 3)).start();
+        }
+    }
+
+    public boolean notifyClient(String label, int count){
+        log.info("Try notify client({}) - count {}", label, count);
+        String url = String.format("http://%s/notify/reconnect", label);
+        Boolean result = false;
+        try{
+            result = restTemplate.postForObject(url, null, Boolean.class);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            if (e instanceof ResourceAccessException) {
+                ResourceAccessException resourceAccessException = (ResourceAccessException) e;
+                if (resourceAccessException.getCause() != null && resourceAccessException.getCause() instanceof ConnectException) {
+                    //can't access .
+                    stringRedisTemplate.opsForSet().remove(Consts.REDIS_TC_LIST, label);
+                    return false;
+                }
+            }
+        }
+        if(result){
+            log.info("Notify client({}) successfully!", label);
+            return true;
+        }
+        if(result == false && --count > 0){
+            log.warn("Notify client({}) fail. 6s latter try again.", label);
+            try {
+                Thread.sleep(6000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return notifyClient(label, count);
+        }
+        log.error("Finally, notify client({}) fail!!!", label);
+        log.info("remove the tc-instances from redis: {}", label);
+        return false;
     }
 
     @Override
