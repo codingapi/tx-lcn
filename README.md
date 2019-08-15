@@ -1,6 +1,8 @@
 # Distributed Transaction Framework - LCN (5.0.2.RELEASE)
 
-[![Maven](https://img.shields.io/badge/endpoint.svg?url=https://bbs.txlcn.org/maven-central)](https://bbs.txlcn.org/maven-list)
+[![Build Status](https://travis-ci.org/codingapi/tx-lcn.svg?branch=lorne)](https://travis-ci.org/codingapi/tx-lcn)
+[![codecov](https://codecov.io/gh/codingapi/tx-lcn/branch/lorne/graph/badge.svg)](https://codecov.io/gh/codingapi/tx-lcn)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.codingapi.txlcn/tx-lcn/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.codingapi.txlcn/tx-lcn)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/codingapi/tx-lcn/blob/master/LICENSE)
 [![Gitter](https://badges.gitter.im/codingapi/tx-lcn.svg)](https://gitter.im/codingapi/tx-lcn?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
