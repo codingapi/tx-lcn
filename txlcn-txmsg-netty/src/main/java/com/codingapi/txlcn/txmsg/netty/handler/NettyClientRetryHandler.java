@@ -15,24 +15,24 @@
  */
 package com.codingapi.txlcn.txmsg.netty.handler;
 
-import com.codingapi.txlcn.txmsg.MessageConstants;
 import com.codingapi.txlcn.common.util.id.RandomUtils;
-import com.codingapi.txlcn.txmsg.listener.ClientInitCallBack;
+import com.codingapi.txlcn.txmsg.MessageConstants;
+import com.codingapi.txlcn.txmsg.RpcConfig;
 import com.codingapi.txlcn.txmsg.dto.MessageDto;
-import com.codingapi.txlcn.txmsg.netty.bean.SocketManager;
+import com.codingapi.txlcn.txmsg.listener.ClientInitCallBack;
 import com.codingapi.txlcn.txmsg.netty.bean.NettyRpcCmd;
+import com.codingapi.txlcn.txmsg.netty.bean.SocketManager;
 import com.codingapi.txlcn.txmsg.netty.impl.NettyContext;
 import com.codingapi.txlcn.txmsg.netty.impl.NettyRpcClientInitializer;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.net.ConnectException;
 import java.net.SocketAddress;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Description:
@@ -51,13 +51,17 @@ public class NettyClientRetryHandler extends ChannelInboundHandlerAdapter {
 
     private NettyRpcCmd heartCmd;
 
+    private final RpcConfig rpcConfig;
+    private static int attempts = 0;
+
     @Autowired
-    public NettyClientRetryHandler(ClientInitCallBack clientInitCallBack) {
+    public NettyClientRetryHandler(ClientInitCallBack clientInitCallBack, RpcConfig rpcConfig) {
         MessageDto messageDto = new MessageDto();
         messageDto.setAction(MessageConstants.ACTION_HEART_CHECK);
         heartCmd = new NettyRpcCmd();
         heartCmd.setMsg(messageDto);
         heartCmd.setKey(RandomUtils.simpleKey());
+        this.rpcConfig = rpcConfig;
         this.clientInitCallBack = clientInitCallBack;
     }
 
@@ -76,7 +80,15 @@ public class NettyClientRetryHandler extends ChannelInboundHandlerAdapter {
 
         SocketAddress socketAddress = ctx.channel().remoteAddress();
         log.error("socketAddress:{} ", socketAddress);
-        NettyRpcClientInitializer.reConnect(socketAddress);
+
+        if(attempts++ < rpcConfig.getReconnectCount()){
+            Thread.sleep(3000);
+            log.info("Try connect socket({}) - count {}", socketAddress, attempts);
+            NettyRpcClientInitializer.reConnect(socketAddress);
+            return ;
+        }
+        clientInitCallBack.connectFail(socketAddress.toString());
+        log.error("Finally, netty connection fail , socket is {}", socketAddress);
     }
 
 

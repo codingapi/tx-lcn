@@ -110,7 +110,7 @@ public class RpcCmdContext {
     }
     
     private RpcContent createRpcContent() {
-        if (cacheList.size() < cacheSize) {
+        if (cacheList.size() < cacheSize || freeList.size() == 0) {
             RpcContent rpcContent = new RpcContent(getWaitTime());
             rpcContent.init();
             cacheList.add(rpcContent);

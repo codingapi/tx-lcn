@@ -59,15 +59,12 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
 
     private final RpcConfig rpcConfig;
 
-    private final ClientInitCallBack clientInitCallBack;
-
     private EventLoopGroup workerGroup;
 
     @Autowired
     public NettyRpcClientInitializer(NettyRpcClientChannelInitializer nettyRpcClientChannelInitializer, RpcConfig rpcConfig, ClientInitCallBack clientInitCallBack) {
         this.nettyRpcClientChannelInitializer = nettyRpcClientChannelInitializer;
         this.rpcConfig = rpcConfig;
-        this.clientInitCallBack = clientInitCallBack;
         INSTANCE = this;
     }
 
@@ -81,7 +78,9 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
         NettyContext.type = NettyType.client;
         NettyContext.params = hosts;
         workerGroup = new NioEventLoopGroup();
+        log.debug("TM size: {}", hosts.size());
         for (TxManagerHost host : hosts) {
+            log.debug("TM: {}:{}", host.getHost(),host.getPort());
             Optional<Future> future = connect(new InetSocketAddress(host.getHost(), host.getPort()));
             if (sync && future.isPresent()) {
                 try {
@@ -96,33 +95,25 @@ public class NettyRpcClientInitializer implements RpcClientInitializer, Disposab
 
     @Override
     public synchronized Optional<Future> connect(SocketAddress socketAddress) {
-        for (int i = 0; i < rpcConfig.getReconnectCount(); i++) {
-            if (SocketManager.getInstance().noConnect(socketAddress)) {
+        if (SocketManager.getInstance().noConnect(socketAddress)) {
+            try {
+                Bootstrap b = new Bootstrap();
+                b.group(workerGroup);
+                b.channel(NioSocketChannel.class);
+                b.option(ChannelOption.SO_KEEPALIVE, true);
+                b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
+                b.handler(nettyRpcClientChannelInitializer);
+                return Optional.of(b.connect(socketAddress).syncUninterruptibly());
+            } catch (Exception e) {
+                log.warn("Connect socket({}) fail. {}ms latter try again.", socketAddress, rpcConfig.getReconnectDelay());
                 try {
-                    log.info("Try connect socket({}) - count {}", socketAddress, i + 1);
-                    Bootstrap b = new Bootstrap();
-                    b.group(workerGroup);
-                    b.channel(NioSocketChannel.class);
-                    b.option(ChannelOption.SO_KEEPALIVE, true);
-                    b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
-                    b.handler(nettyRpcClientChannelInitializer);
-                    return Optional.of(b.connect(socketAddress).syncUninterruptibly());
-                } catch (Exception e) {
-                    log.warn("Connect socket({}) fail. {}ms latter try again.", socketAddress, rpcConfig.getReconnectDelay());
-                    try {
-                        Thread.sleep(rpcConfig.getReconnectDelay());
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    }
-                    continue;
+                    Thread.sleep(rpcConfig.getReconnectDelay());
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
                 }
             }
-            // 忽略已连接的连接
-            return Optional.empty();
         }
-
-        log.warn("Finally, netty connection fail , socket is {}", socketAddress);
-        clientInitCallBack.connectFail(socketAddress.toString());
+        // 忽略已连接的连接
         return Optional.empty();
     }
 

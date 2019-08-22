@@ -16,10 +16,10 @@
 package com.codingapi.txlcn.tc.config;
 
 import com.codingapi.txlcn.common.base.Consts;
-import com.codingapi.txlcn.common.exception.TxClientException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -32,6 +32,7 @@ import org.springframework.util.CollectionUtils;
  * @author lorne
  */
 @Data
+@Slf4j
 @Component
 @ConfigurationProperties(prefix = "tx-lcn.client")
 public class TxClientConfig {
@@ -108,15 +109,16 @@ public class TxClientConfig {
 
     public List<String> getManagerAddress() {
 
+        if(!CollectionUtils.isEmpty(managerAddress)){
+            log.info("{}", managerAddress);
+            return managerAddress;
+        }
+
         managerAddress = stringRedisTemplate.opsForHash().entries(Consts.REDIS_TM_LIST).entrySet().stream()
                 .map(entry -> entry.getKey().toString()).collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(managerAddress)) {
-            try {
-                throw new TxClientException("there is no tx-manager found in redis");
-            } catch (TxClientException e) {
-                e.printStackTrace();
-            }
+            log.error("there is no tx-manager found in redis");
         }
         return managerAddress;
     }
