@@ -96,7 +96,7 @@ steps:
     settings:
       skip_tls_verify: true
       chart: ./charts/tx-manager
-      recreate_pods: true
+#      recreate_pods: true
       wait: true
       stable_repo_url: http://192.168.110.1/
       release: tx-manager
