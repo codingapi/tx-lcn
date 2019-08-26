@@ -9,13 +9,14 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
+imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
 service:
   name: tx-manager
   type: ClusterIP
-  serverPort: 8080
+  port: 8080
   txManagePort: 8070
 
 environment:
@@ -41,7 +42,6 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  path: /
   hosts:
     -  tx-manager-ui.yizhishang.com
   tls: []
@@ -55,11 +55,11 @@ resources: {}
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
+  #   cpu: 100m
+  #   memory: 128Mi
   # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+  #   cpu: 100m
+  #   memory: 128Mi
 
 nodeSelector: {}
 
