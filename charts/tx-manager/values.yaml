@@ -43,7 +43,8 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    -  tx-manager-ui.yizhishang.com
+    - host: tx-manager-ui.yizhishang.com
+      paths: []
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
