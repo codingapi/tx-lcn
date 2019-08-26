@@ -94,7 +94,7 @@ steps:
         from_secret: kubernetes_token
     settings:
       skip_tls_verify: true
-      chart: ./charts/k8s-demo
+      chart: ./charts/tx-manager
       recreate_pods: true
       wait: true
       stable_repo_url: http://192.168.110.1/
