@@ -102,6 +102,7 @@ steps:
       release: tx-manager
       prefix: STAGING
       namespace: default
+      dry-run: true
       debug: true
       service_account: tiller
     when:
