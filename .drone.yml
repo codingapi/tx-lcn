@@ -81,7 +81,7 @@ steps:
       password:
         from_secret: password
       repo: 192.168.110.119:5000/yizhishang/tx-manager
-      auto_tag: true
+      auto_tag: 1.0
       dockerfile: ./txlcn-tm/src/main/docker/Dockerfile
     when:
       event: push
