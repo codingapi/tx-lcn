@@ -45,7 +45,7 @@ ingress:
   hosts:
     - host: tx-manager-ui.yizhishang.com
       paths:
-        - "/"
+        - /
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
