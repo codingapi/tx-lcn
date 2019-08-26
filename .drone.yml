@@ -4,6 +4,7 @@ name: default
 trigger:
   branch:
     - master
+    - gpo-tx-lcn
     - feature/*
   event:
     - tag
