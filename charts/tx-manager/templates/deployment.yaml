@@ -32,7 +32,7 @@ spec:
               protocol: TCP
           envFrom:
             - configMapRef:
-                name: special-config
+                name: tx-config
           livenessProbe:
             httpGet:
               path: /
