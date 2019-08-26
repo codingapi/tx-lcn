@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: 119.yizhishang.com:5000/yizhishang/tx-manager
+  repository: 192.168.110.119:5000/yizhishang/tx-manager
   tag: latest
   pullPolicy: IfNotPresent
 
