@@ -61,13 +61,23 @@
             <version>1.4.0</version>
         </dependency>
 
-    </dependencies>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sndyuk</groupId>
+            <artifactId>logback-more-appenders</artifactId>
+            <version>1.5.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fluentd</groupId>
+            <artifactId>fluent-logger</artifactId>
+            <version>0.3.3</version>
+        </dependency>
 
-    <profiles>
-        <profile>
-            <id>dev</id>
-        </profile>
-    </profiles>
+    </dependencies>
 
     <!-- deploy 注释掉下 -->
     <build>
