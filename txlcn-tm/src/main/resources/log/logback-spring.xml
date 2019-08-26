@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="120 seconds" debug="false">
+
+    <!--<include resource="org/springframework/boot/logging/logback/base.xml"/>-->
+    <!--<include resource="org/springframework/boot/logging/logback/console-appender.xml" />-->
+
+    <!-- 读取spring.application.name中的属性来生成日志文件名 -->
+    <springProperty scope="context" name="springAppName" source="spring.application.name" defaultValue="springboot-demo"/>
+    <springProperty scope="context" name="fluentHost" source="logging.fluent.host" defaultValue="192.168.110.119"/>
+    <springProperty scope="context" name="fluentPort" source="logging.fluent.port" defaultValue="32693"/>
+
+    <!-- 业务日志级别 -->
+    <springProperty scope="context" name="logBusinessLevel" source="logger.business.level" defaultValue="DEBUG"/>
+
+    <!--控制台输出样式-->
+    <springProperty scope="context" name="pattern.console" source="logging.pattern.console" defaultValue="%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+    <springProfile name="default">
+        <springProperty scope="context" name="pattern.console" source="logging.pattern.console" defaultValue="%blue(%d{YYYY-MM-dd HH:mm:ss.SSS}) [%boldYellow(%thread)] | %highlight(%-5level) | %boldGreen(%logger):[%L] %X{clientIp} %X{operateId} - %highlight(%msg) %n"/>
+    </springProfile>
+
+    <conversionRule conversionWord="msg" converterClass="com.example.demo.util.SensitiveDataConverter"></conversionRule>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!--<encoder>-->
+            <!--<pattern>${pattern.console}</pattern>-->
+        <!--</encoder>-->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+
+    <appender name="fluent" class="ch.qos.logback.more.appenders.DataFluentAppender">
+        <tag>${springAppName}</tag>
+        <label>normal</label>
+        <remoteHost>${fluentHost}</remoteHost>
+        <port>${fluentPort}</port>
+        <useEventTime>true</useEventTime>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+        <!--<encoder>-->
+            <!--<pattern>%d{YYYY-MM-dd HH:mm:ss.SSS}.[%thread] %-5level %logger{36} - %msg%n</pattern>-->
+        <!--</encoder>-->
+    </appender>
+
+    <logger name="com.example.demo" additivity="false">
+        <level value="${logBusinessLevel}"/>
+        <appender-ref ref="console" />
+        <appender-ref ref="fluent"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="console" />
+        <appender-ref ref="fluent" />
+    </root>
+</configuration>

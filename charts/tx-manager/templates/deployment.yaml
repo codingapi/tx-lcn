@@ -25,30 +25,14 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: server-port
-              containerPort: {{ .Values.service.serverPort.internalPort }}
+              containerPort: {{ .Values.service.serverPort }}
               protocol: TCP
             - name: tx-manage-port
-              containerPort: {{ .Values.service.txManagePort.internalPort }}
+              containerPort: {{ .Values.service.txManagePort }}
               protocol: TCP
-          env:
-            - name: tx-lcn.manager.host
-              value: {{ .Values.environment.txLcn.manager.host | quote }}
-            - name: tx-lcn.manager.adminKey
-              value: {{ .Values.environment.txLcn.manager.adminKey | quote }}
-            - name: spring.redis.host
-              value: {{ .Values.environment.spring.redis.host | quote }}
-            - name: spring.redis.port
-              value: {{ .Values.environment.spring.redis.port | quote }}
-            - name: spring.redis.database
-              value: {{ .Values.environment.spring.redis.database | quote }}
-            - name: spring.datasource.driver-class-name
-              value: {{ .Values.environment.spring.datasource.driverClassName | quote }}
-            - name: spring.datasource.url
-              value: {{ .Values.environment.spring.datasource.url | quote }}
-            - name: spring.datasource.username
-              value: {{ .Values.environment.spring.datasource.username | quote }}
-            - name: spring.datasource.password
-              value: {{ .Values.environment.spring.datasource.password | quote }}
+          envFrom:
+            - configMapRef:
+                name: special-config
           livenessProbe:
             httpGet:
               path: /

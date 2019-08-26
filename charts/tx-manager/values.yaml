@@ -15,12 +15,8 @@ fullnameOverride: ""
 service:
   name: tx-manager
   type: ClusterIP
-  serverPort:
-    externalPort: 8080
-    internalPort: 8080
-  txManagePort:
-    externalPort: 8070
-    internalPort: 8070
+  serverPort: 8080
+  txManagePort: 8070
 
 environment:
   txLcn:
@@ -28,6 +24,8 @@ environment:
       host:
       adminKey: root
   spring:
+    profiles:
+      active: dev
     redis:
       host: 192.168.110.119
       port: 6379
