@@ -44,7 +44,8 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host: tx-manager-ui.yizhishang.com
-      paths: []
+      paths:
+        - "/"
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
