@@ -5,7 +5,7 @@ metadata:
 data:
   server.port: {{ .Values.service.serverPort }}
   tx-lcn.manager.host: {{ .Values.environment.txLcn.manager.host | quote }}
-  tx-lcn.manager.port: {{ .Values.service.manager.txManagePort | quote }}
+  tx-lcn.manager.port: {{ .Values.service.txManagePort | quote }}
   tx-lcn.manager.adminKey: {{ .Values.environment.txLcn.manager.adminKey | quote }}
   spring.redis.host: {{ .Values.environment.spring.redis.host | quote }}
   spring.redis.port: {{ .Values.environment.spring.redis.port | quote }}
