@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: tx-config
 data:
-  server.port: {{ .Values.service.serverPort }}
+  server.port: {{ .Values.service.serverPort | quote }}
   tx-lcn.manager.host: {{ .Values.environment.txLcn.manager.host | quote }}
   tx-lcn.manager.port: {{ .Values.service.txManagePort | quote }}
   tx-lcn.manager.adminKey: {{ .Values.environment.txLcn.manager.adminKey | quote }}
