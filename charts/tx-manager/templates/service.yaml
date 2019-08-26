@@ -7,14 +7,12 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.serverPort.externalPort}}
-      targetPort: {{ .Values.service.serverPort.internalPort}}
+    - port: {{ .Values.service.serverPort}}
       protocol: TCP
-      name: server-port
-    - port: {{ .Values.service.txManagePort.externalPort}}
-      targetPort: {{ .Values.service.txManagePort.internalPort}}
+      name: http-web
+    - port: {{ .Values.service.txManagePort}}
       protocol: TCP
-      name: tx-manage-port
+      name: tcp-tx
   selector:
     app.kubernetes.io/name: {{ include "tx-manager.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
