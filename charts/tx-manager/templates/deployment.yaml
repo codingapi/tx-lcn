@@ -26,7 +26,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.serverPort }}
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
             - name: tx-manage-port
               containerPort: {{ .Values.service.txManagePort }}
