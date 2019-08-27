@@ -22,7 +22,6 @@
         <encoder>
             <pattern>${pattern.console}</pattern>
         </encoder>
-        <!--<encoder class="net.logstash.logback.encoder.LogstashEncoder"/>-->
     </appender>
 
     <appender name="fluent" class="ch.qos.logback.more.appenders.DataFluentAppender">
@@ -32,9 +31,6 @@
         <port>${fluentPort}</port>
         <useEventTime>true</useEventTime>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
-        <!--<encoder>-->
-            <!--<pattern>%d{YYYY-MM-dd HH:mm:ss.SSS}.[%thread] %-5level %logger{36} - %msg%n</pattern>-->
-        <!--</encoder>-->
     </appender>
 
     <logger name="com.codingapi.txlcn.tm" additivity="false">
