@@ -6,8 +6,8 @@
 
     <!-- 读取spring.application.name中的属性来生成日志文件名 -->
     <springProperty scope="context" name="springAppName" source="spring.application.name" defaultValue="springboot-demo"/>
-    <springProperty scope="context" name="fluentHost" source="logging.fluent.host" defaultValue="192.168.110.119"/>
-    <springProperty scope="context" name="fluentPort" source="logging.fluent.port" defaultValue="32749"/>
+    <springProperty scope="context" name="fluentHost" source="logging.fluent.host" />
+    <springProperty scope="context" name="fluentPort" source="logging.fluent.port" />
 
     <!-- 业务日志级别 -->
     <springProperty scope="context" name="logBusinessLevel" source="logger.business.level" defaultValue="DEBUG"/>
