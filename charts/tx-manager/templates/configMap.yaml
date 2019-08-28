@@ -15,3 +15,5 @@ data:
   spring.datasource.username: {{ .Values.environment.spring.datasource.username | quote }}
   spring.datasource.password: {{ .Values.environment.spring.datasource.password | quote }}
   spring.profiles.active: {{ .Values.environment.spring.profiles.active }}
+  logging.fluent.host: {{ .Values.environment.logging.fluent.host | quote  }}
+  logging.fluent.port: {{ .Values.environment.logging.fluent.port | quote  }}

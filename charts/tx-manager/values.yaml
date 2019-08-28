@@ -36,6 +36,10 @@ environment:
       url: jdbc:mysql://192.168.110.1:3306/tx-manager?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
       username: root
       password: root
+  logging:
+    fluent:
+      host: fluentd-es.logging.svc.cluster.local
+      port: 24224
 
 ingress:
   enabled: true
