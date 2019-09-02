@@ -3,100 +3,97 @@ name: default
 
 trigger:
   branch:
-    - master
-    - gpo-tx-lcn
-    - feature/*
+  - master
+  - gpo-tx-lcn
+  - feature/*
   event:
-    - tag
-    - push
+  - tag
+  - push
 
 steps:
 
-  - name: build-settings
-    image: 192.168.110.119:5000/library/knives/drone-maven-setting:latest
-    settings:
-      servers:
-        - id: maven-public
-          username: admin
-          password: root
-        - id: maven-releases
-          username: ${env.USERNAME}
-          password: ${env.PASSWORD}
-        - id: maven-snapshots
-          username: admin
-          password: root
-      profiles:
-        - id: drone
-          properties:
-            dockerHost: http://192.168.110.119:2375
-            registryPrefix: yizhishang
-            registryUrl: 192.168.110.119:5000
-      mirrors:
-        - id: maven-public
-          url: http://192.168.110.119:8091/repository/maven-public/
-          mirrorOf: central
-      active_profiles:
-        - drone
-    when:
-      event: push
+- name: build-settings
+  image: 192.168.110.119:5000/library/knives/drone-maven-setting:latest
+  settings:
+    servers:
+    - id: maven-public
+      username: admin
+      password: root
+    - id: maven-releases
+      username: ${env.USERNAME}
+      password: ${env.PASSWORD}
+    - id: maven-snapshots
+      username: admin
+      password: root
+    profiles:
+    - id: drone
+      properties:
+        dockerHost: http://192.168.110.119:2375
+        registryPrefix: yizhishang
+        registryUrl: 192.168.110.119:5000
+    mirrors:
+    - id: maven-public
+      url: http://192.168.110.119:8091/repository/maven-public/
+      mirrorOf: central
+    active_profiles:
+      - drone
+  when:
+    event: push
 
-  - name: maven
-    image: 192.168.110.119:5000/library/maven:3-jdk-8
-    environment:
-      USERNAME:
-        from_secret: username
-      PASSWORD:
-        from_secret: password
-    volumes:
-      - name: MavenCache
-        path: /drone/src/repo
-    commands:
-      - mvn clean package -s settings.xml -DskipTests -pl txlcn-tm
-    when:
-      event: push
+- name: maven
+  image: 192.168.110.119:5000/library/maven:3-jdk-8
+  environment:
+    USERNAME:
+      from_secret: username
+    PASSWORD:
+      from_secret: password
+  volumes:
+  - name: MavenCache
+    path: /drone/src/repo
+  commands:
+    - mvn clean package -s settings.xml -DskipTests -pl txlcn-tm
+  when:
+    event: push
 #
-  - name: docker
-    image: 192.168.110.119:5000/library/plugins/docker:latest
-    privileged: true
-    settings:
-      registry: 192.168.110.119:5000
-      insecure: true
-      username:
-        from_secret: username
-      password:
-        from_secret: password
-      repo: 192.168.110.119:5000/yizhishang/tx-manager
+- name: docker
+  image: 192.168.110.119:5000/library/plugins/docker:latest
+  privileged: true
+  settings:
+    registry: 192.168.110.119:5000
+    insecure: true
+    username:
+      from_secret: username
+    password:
+      from_secret: password
+    repo: 192.168.110.119:5000/yizhishang/tx-manager
 #      auto_tag: 1.0
-      dockerfile: ./Dockerfile
-    when:
-      event: push
+    dockerfile: ./Dockerfile
+  when:
+    event: push
 
-  - name: helm
-    image: 192.168.110.119:5000/library/kayuii/drone-helm:latest
-    environment:
-      STAGING_API_SERVER:
-        from_secret: api_server
-      STAGING_KUBERNETES_TOKEN:
-        from_secret: kubernetes_token
-    settings:
-      skip_tls_verify: true
-      chart: ./charts/tx-manager
-      recreate_pods: true
-      wait: true
-      stable_repo_url: http://192.168.110.1/
-      release: tx-manager
-      prefix: STAGING
-      namespace: default
+- name: helm
+  image: 192.168.110.119:5000/library/kayuii/drone-helm:latest
+  environment:
+    STAGING_API_SERVER:
+      from_secret: api_server
+    STAGING_KUBERNETES_TOKEN:
+      from_secret: kubernetes_token
+  settings:
+    skip_tls_verify: true
+    chart: ./charts/tx-manager
+    recreate_pods: true
+    wait: true
+    stable_repo_url: http://192.168.110.1/
+    release: tx-manager
+    prefix: STAGING
+    namespace: default
 #      dry-run: true
 #      debug: true
-      service_account: tiller
-    when:
-      event: push
+    service_account: tiller
+  when:
+    event: push
 
 volumes:
-  - name: cache
-    host:
-      path: /mnt/tmp/project
-  - name: MavenCache
-    host:
-      path: /mnt/tmp/maven
+- name: MavenCache
+  host:
+    path: /mnt/tmp/maven
