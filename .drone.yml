@@ -55,7 +55,7 @@ steps:
     - mvn clean package -s settings.xml -DskipTests -pl txlcn-tm
   when:
     event: push
-#
+
 - name: docker
   image: 192.168.110.129:5000/plugins/docker:latest
   pull: IfNotPresent
@@ -68,7 +68,6 @@ steps:
     password:
       from_secret: password
     repo: 192.168.110.129:5000/yizhishang/tx-manager
-#      auto_tag: 1.0
     dockerfile: ./Dockerfile
   when:
     event: push
@@ -90,8 +89,6 @@ steps:
     release: tx-manager
     prefix: STAGING
     namespace: default
-#      dry-run: true
-#      debug: true
     service_account: tiller
   when:
     event: push
