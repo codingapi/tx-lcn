@@ -20,11 +20,11 @@ steps:
       username: admin
       password: root
     - id: maven-releases
-      username: $${env.USERNAME}
-      password: $${env.PASSWORD}
-    - id: maven-snapshots
       username: admin
       password: root
+    - id: maven-snapshots
+      username: $${env.USERNAME}
+      password: $${env.PASSWORD}
     profiles:
     - id: drone
       properties:
