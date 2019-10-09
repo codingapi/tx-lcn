@@ -7,7 +7,7 @@ trigger:
   - gpo-tx-lcn
   - feature/*
   event:
-  - tag
+#  - tag
   - push
 
 steps:
