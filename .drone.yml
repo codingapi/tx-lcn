@@ -43,6 +43,8 @@ steps:
 - name: maven
   image: 192.168.110.129:5000/maven:3-jdk-8
   pull: IfNotPresent
+  extra_hosts:
+    - "nexus.yizhishang.com:192.168.110.129"
   environment:
     USERNAME:
       from_secret: username
