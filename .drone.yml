@@ -14,19 +14,14 @@ steps:
 
 - name: build-settings
   image: 192.168.110.129:5000/knives/drone-maven-setting:latest
-  environment:
-    USERNAME:
-      from_secret: username
-    PASSWORD:
-      from_secret: password
   settings:
     servers:
     - id: maven-public
       username: admin
       password: root
     - id: maven-releases
-      username: ${env.USERNAME}
-      password: ${env.PASSWORD}
+      username: ${USERNAME}
+      password: ${PASSWORD}
     - id: maven-snapshots
       username: admin
       password: root
@@ -50,6 +45,11 @@ steps:
   pull: IfNotPresent
   extra_hosts:
     - "nexus.yizhishang.com:192.168.110.129"
+  environment:
+    USERNAME:
+      from_secret: username
+    PASSWORD:
+      from_secret: password
   volumes:
   - name: MavenCache
     path: /drone/src/repo
