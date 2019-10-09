@@ -20,8 +20,8 @@ steps:
       username: admin
       password: root
     - id: maven-releases
-      username: ${env.USERNAME}
-      password: ${env.PASSWORD}
+      username: ${USERNAME}
+      password: ${PASSWORD}
     - id: maven-snapshots
       username: admin
       password: root
@@ -88,7 +88,7 @@ steps:
     recreate_pods: true
     wait: true
     stable_repo_url: http://192.168.110.1/
-    release: tx-manager
+    release: tx-manager-${DRONE_BRANCH}
     prefix: STAGING
     namespace: default
     service_account: tiller
