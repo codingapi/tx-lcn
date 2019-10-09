@@ -9,7 +9,8 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: registrykey
 nameOverride: ""
 fullnameOverride: ""
 

@@ -88,9 +88,9 @@ steps:
     recreate_pods: true
     wait: true
     stable_repo_url: http://192.168.110.1/
-    release: tx-manager-${DRONE_BRANCH}
+    release: tx-manager
     prefix: STAGING
-    namespace: default
+    namespace: tx-manager
     service_account: tiller
   when:
     event: push

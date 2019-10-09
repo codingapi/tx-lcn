@@ -109,11 +109,6 @@ public class TxClientConfig {
 
     public List<String> getManagerAddress() {
 
-        if(!CollectionUtils.isEmpty(managerAddress)){
-            log.info("{}", managerAddress);
-            return managerAddress;
-        }
-
         managerAddress = stringRedisTemplate.opsForHash().entries(Consts.REDIS_TM_LIST).entrySet().stream()
                 .map(entry -> entry.getKey().toString()).collect(Collectors.toList());
 
