@@ -36,11 +36,11 @@ spec:
                 name: tx-config
           livenessProbe:
             httpGet:
-              path: /actuator/health
+              path: /healthz
               port: http
           readinessProbe:
             httpGet:
-              path: /actuator/health
+              path: /healthz
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

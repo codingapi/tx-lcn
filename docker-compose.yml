@@ -6,8 +6,8 @@ services:
       - 7970:7970
       - 8070:8070
     extra_hosts:
-      - "119.yizhishang.com:192.168.110.119"
+      - "119.yizhishang.com:192.168.110.129"
     environment:
       - TZ=Asia/Shanghai
-      - tx-lcn.manager.host=192.168.110.119
-      - spring.redis.host=192.168.110.119  
+      - tx-lcn.manager.host=192.168.110.129
+      - spring.redis.host=192.168.110.129

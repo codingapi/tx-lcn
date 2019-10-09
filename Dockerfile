@@ -1,4 +1,4 @@
-FROM 192.168.110.119:5000/library/openjdk:8-jdk-alpine
+FROM 192.168.110.129:5000/library/openjdk:8-jdk-alpine
 
 VOLUME /tmp
 ENV TZ=Asia/Shanghai

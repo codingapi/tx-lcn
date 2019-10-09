@@ -13,7 +13,7 @@ trigger:
 steps:
 
 - name: build-settings
-  image: 192.168.110.119:5000/library/knives/drone-maven-setting:latest
+  image: 192.168.110.129:5000/knives/drone-maven-setting:latest
   settings:
     servers:
     - id: maven-public
@@ -28,12 +28,12 @@ steps:
     profiles:
     - id: drone
       properties:
-        dockerHost: http://192.168.110.119:2375
+        dockerHost: http://192.168.110.129:2375
         registryPrefix: yizhishang
-        registryUrl: 192.168.110.119:5000
+        registryUrl: 192.168.110.129:5000
     mirrors:
     - id: maven-public
-      url: http://192.168.110.119:8091/repository/maven-public/
+      url: http://192.168.110.129:8091/repository/maven-public/
       mirrorOf: central
     active_profiles:
       - drone
@@ -41,7 +41,8 @@ steps:
     event: push
 
 - name: maven
-  image: 192.168.110.119:5000/library/maven:3-jdk-8
+  image: 192.168.110.129:5000/maven:3-jdk-8
+  pull: IfNotPresent
   environment:
     USERNAME:
       from_secret: username
@@ -56,23 +57,25 @@ steps:
     event: push
 #
 - name: docker
-  image: 192.168.110.119:5000/library/plugins/docker:latest
+  image: 192.168.110.129:5000/plugins/docker:latest
+  pull: IfNotPresent
   privileged: true
   settings:
-    registry: 192.168.110.119:5000
+    registry: 192.168.110.129:5000
     insecure: true
     username:
       from_secret: username
     password:
       from_secret: password
-    repo: 192.168.110.119:5000/yizhishang/tx-manager
+    repo: 192.168.110.129:5000/yizhishang/tx-manager
 #      auto_tag: 1.0
     dockerfile: ./Dockerfile
   when:
     event: push
 
 - name: helm
-  image: 192.168.110.119:5000/library/kayuii/drone-helm:latest
+  image: 192.168.110.129:5000/kayuii/drone-helm:latest
+  pull: IfNotPresent
   environment:
     STAGING_API_SERVER:
       from_secret: api_server

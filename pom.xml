@@ -354,11 +354,11 @@
     <distributionManagement>
         <repository>
             <id>maven-releases</id>
-            <url>http://192.168.110.119:8091/repository/maven-releases/</url>
+            <url>http://192.168.110.129:8091/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
             <id>maven-snapshots</id>
-            <url>http://192.168.110.119:8091/repository/maven-snapshots/</url>
+            <url>http://192.168.110.129:8091/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 

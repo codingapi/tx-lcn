@@ -21,7 +21,7 @@ questions:
     label: tx-manager Image Tag
 
 - variable: environment.spring.redis.host
-  default: "192.168.110.119"
+  default: "192.168.110.129"
   description: "redis服务ip"
   type: string
   required: true

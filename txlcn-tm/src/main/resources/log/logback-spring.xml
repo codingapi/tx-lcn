@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="120 seconds" debug="false">
 
-    <!--<include resource="org/springframework/boot/logging/logback/base.xml"/>-->
-    <!--<include resource="org/springframework/boot/logging/logback/console-appender.xml" />-->
-
     <!-- 读取spring.application.name中的属性来生成日志文件名 -->
-    <springProperty scope="context" name="springAppName" source="spring.application.name" defaultValue="springboot-demo"/>
+    <springProperty scope="context" name="springAppName" source="spring.application.name" defaultValue="tx-manager"/>
+    <springProperty scope="context" name="springProfile" source="spring.profiles.active" />
+    <springProperty scope="context" name="collect" source="logging.collect" defaultValue="0"/>
     <springProperty scope="context" name="fluentHost" source="logging.fluent.host" />
     <springProperty scope="context" name="fluentPort" source="logging.fluent.port" />
 
@@ -14,7 +13,7 @@
 
     <!--控制台输出样式-->
     <springProperty scope="context" name="pattern.console" source="logging.pattern.console" defaultValue="%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
-    <springProfile name="default">
+    <springProfile name="loc">
         <springProperty scope="context" name="pattern.console" source="logging.pattern.console" defaultValue="%blue(%d{YYYY-MM-dd HH:mm:ss.SSS}) [%boldYellow(%thread)] | %highlight(%-5level) | %boldGreen(%logger):[%L] %X{clientIp} %X{operateId} - %highlight(%msg) %n"/>
     </springProfile>
 
@@ -24,23 +23,37 @@
         </encoder>
     </appender>
 
-    <appender name="fluent" class="ch.qos.logback.more.appenders.DataFluentAppender">
-        <tag>${springAppName}</tag>
-        <label>normal</label>
-        <remoteHost>${fluentHost}</remoteHost>
-        <port>${fluentPort}</port>
-        <useEventTime>true</useEventTime>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
-    </appender>
-
-    <logger name="com.codingapi.txlcn.tm" additivity="false">
-        <level value="${logBusinessLevel}"/>
+    <logger name="com.codingapi.txlcn.tm" additivity="false" level="${logBusinessLevel}">
         <appender-ref ref="console" />
-        <appender-ref ref="fluent"/>
     </logger>
 
     <root level="INFO">
         <appender-ref ref="console" />
-        <appender-ref ref="fluent" />
     </root>
+
+    <if condition='"2".equals(property("collect")) || "1".equals(property("collect"))'>
+        <then>
+            <property name="springProfile" value="1"/>
+
+            <appender name="fluent" class="ch.qos.logback.more.appenders.DataFluentAppender">
+                <tag>${springAppName}</tag>
+                <label>${springProfile}</label>
+                <remoteHost>${fluentHost}</remoteHost>
+                <port>${fluentPort}</port>
+                <useEventTime>true</useEventTime>
+                <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+            </appender>
+
+            <root>
+                <appender-ref ref="fluent" />
+            </root>
+            <logger name="com.codingapi.txlcn.tm" additivity="false" level="${logBusinessLevel}">
+                <appender-ref ref="fluent"/>
+            </logger>
+        </then>
+        <else>
+            <property name="springProfile" value="0"/>
+        </else>
+    </if>
+
 </configuration>

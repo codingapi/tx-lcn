@@ -43,7 +43,7 @@ To launch in VPC-only appliance mode, set appliance.serviceType to "LoadBalancer
 `cloud.google.com/load-balancer-type:Internal`
 
 ```bash
-$ helm install set="--spring.redis.host=192.168.110.119 --tx-lcn.manager.host=192.168.110.119" yizhishang/tx-manager
+$ helm install set="--spring.redis.host=192.168.110.129 --tx-lcn.manager.host=192.168.110.129" yizhishang/tx-manager
 ```
 
 ## Configuration
@@ -52,7 +52,7 @@ The following table lists the configurable parameters of the Redis chart and the
 
 | Parameter                        | Description                                      | Default                                                                             |
 | -------------------------------- | -------------------------------------------------| ----------------------------------------------------------------------------------- |
-| `service.parmas`                 | Application parameter                            | `--spring.redis.host=192.168.110.119 --tx-lcn.manager.host=192.168.110.119`         |
+| `service.parmas`                 | Application parameter                            | `--spring.redis.host=192.168.110.129 --tx-lcn.manager.host=192.168.110.129`         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: 192.168.110.119:5000/yizhishang/tx-manager
+  repository: 192.168.110.129:5000/yizhishang/tx-manager
   tag: latest
   pullPolicy: IfNotPresent
 
@@ -28,7 +28,7 @@ environment:
     profiles:
       active: dev
     redis:
-      host: 192.168.110.119
+      host: 192.168.110.129
       port: 6379
       database: 3
     datasource:
@@ -37,8 +37,9 @@ environment:
       username: root
       password: root
   logging:
+    collect: 0
     fluent:
-      host: fluentd-es.logging.svc.cluster.local
+      host: fluentd-elasticsearch.efk
       port: 24224
 
 ingress:
@@ -47,7 +48,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: tx-manager-ui.yizhishang.com
+    - host: tx-manager.yizhishang.com
       paths:
         - /
   tls: []
