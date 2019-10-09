@@ -55,7 +55,7 @@ steps:
     path: /drone/src/repo
   commands:
     - cat settings.xml
-    - mvn clean deploy -s settings.xml -DskipTests
+    - mvn clean deploy -s settings.xml -DskipTests -U
   when:
     event: push
 
