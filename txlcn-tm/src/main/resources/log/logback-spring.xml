@@ -31,10 +31,8 @@
         <appender-ref ref="console" />
     </root>
 
-    <if condition='"2".equals(property("collect")) || "1".equals(property("collect"))'>
+    <if condition='"1".equals(property("collect"))'>
         <then>
-            <property name="springProfile" value="1"/>
-
             <appender name="fluent" class="ch.qos.logback.more.appenders.DataFluentAppender">
                 <tag>${springAppName}</tag>
                 <label>${springProfile}</label>
@@ -51,9 +49,6 @@
                 <appender-ref ref="fluent"/>
             </logger>
         </then>
-        <else>
-            <property name="springProfile" value="0"/>
-        </else>
     </if>
 
 </configuration>
