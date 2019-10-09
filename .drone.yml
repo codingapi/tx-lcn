@@ -54,7 +54,7 @@ steps:
   - name: MavenCache
     path: /drone/src/repo
   commands:
-    - mvn clean package -s settings.xml -DskipTests -pl txlcn-tm
+    - mvn clean deploy -s settings.xml -DskipTests
   when:
     event: push
 
@@ -71,27 +71,6 @@ steps:
       from_secret: password
     repo: 192.168.110.129:5000/yizhishang/tx-manager
     dockerfile: ./Dockerfile
-  when:
-    event: push
-
-- name: helm
-  image: 192.168.110.129:5000/kayuii/drone-helm:latest
-  pull: IfNotPresent
-  environment:
-    STAGING_API_SERVER:
-      from_secret: api_server
-    STAGING_KUBERNETES_TOKEN:
-      from_secret: kubernetes_token
-  settings:
-    skip_tls_verify: true
-    chart: ./charts/tx-manager
-    recreate_pods: true
-    wait: true
-    stable_repo_url: http://192.168.110.1/
-    release: tx-manager
-    prefix: STAGING
-    namespace: tx-manager
-    service_account: tiller
   when:
     event: push
 
