@@ -54,6 +54,7 @@ steps:
   - name: MavenCache
     path: /drone/src/repo
   commands:
+    - cat settings.xml
     - mvn clean deploy -s settings.xml -DskipTests
   when:
     event: push
