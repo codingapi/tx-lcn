@@ -1,4 +1,5 @@
 kind: pipeline
+type: exec
 name: default
 
 trigger:
@@ -11,6 +12,16 @@ trigger:
   - push
 
 steps:
+
+- name: code-analysis
+  image: 192.168.110.129:5000/aosapps/drone-sonar-plugin
+  settings:
+    sonar_host:
+      from_secret: sonar_host
+    sonar_token:
+      from_secret: sonar_token
+    level: debug
+    showProfiling: true
 
 - name: build-settings
   image: 192.168.110.129:5000/knives/drone-maven-setting:latest
@@ -58,6 +69,8 @@ steps:
     - mvn clean deploy -s settings.xml -DskipTests -U
   when:
     event: push
+  depends_on:
+    - build-settings
 
 - name: docker
   image: 192.168.110.129:5000/plugins/docker:latest
@@ -74,6 +87,8 @@ steps:
     dockerfile: ./Dockerfile
   when:
     event: push
+  depends_on:
+    - maven
 
 volumes:
 - name: MavenCache
