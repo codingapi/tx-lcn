@@ -19,10 +19,10 @@ steps:
   extra_hosts:
     - "sonar.yizhishang.com:192.168.110.129"
   settings:
-    sonar_host:
-      from_secret: sonar_host
-    sonar_token:
-      from_secret: sonar_token
+    sonar_host: http://sonar.yizhishang.com
+#      from_secret: sonar_host
+    sonar_token: ada6ccaff5dcceba7b896080603c44c0f358305b
+#      from_secret: sonar_token
     level: debug
     showProfiling: true
 
