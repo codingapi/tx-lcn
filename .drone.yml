@@ -15,6 +15,7 @@ steps:
 
 - name: code-analysis
   image: 192.168.110.129:5000/aosapps/drone-sonar-plugin:latest
+  pull: IfNotPresent
   settings:
     sonar_host:
       from_secret: sonar_host
