@@ -21,7 +21,7 @@ steps:
   settings:
     sonar_host: http://sonar.yizhishang.com
 #      from_secret: sonar_host
-    sonar_token: ada6ccaff5dcceba7b896080603c44c0f358305b
+    sonar_token: 2015c55e0e65f0d4145dd1b8a9d8fff4d8b73be5
 #      from_secret: sonar_token
     level: debug
     showProfiling: true
