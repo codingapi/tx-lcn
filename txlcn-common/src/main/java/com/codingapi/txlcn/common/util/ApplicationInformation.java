@@ -54,7 +54,10 @@ public class ApplicationInformation {
         if (hostAndPort.indexOf(':') == -1) {
             throw new IllegalStateException("non exists port");
         }
-        String[] result = hostAndPort.split(":");
+        int index = hostAndPort.lastIndexOf(":");
+        String host = hostAndPort.substring(0, index);
+        String port = hostAndPort.substring(index + 1);
+        String[] result = {host, port};
         if (StringUtils.isEmpty(result[0])) {
             result[0] = "0.0.0.0";
             return result;
