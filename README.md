@@ -11,7 +11,16 @@
 
 若你对分布式事务感兴趣，有时间也想参与开源事业，请加群(维护者群):421324785 ,若只是技术交流请加下面的交流群。
 
+## 从0到1实现分布式事务 公开课
 
+### 第一节课     
+分布式事务从0到1-认识分布式事务    
+[原文](https://www.codingapi.com/docs/txlcn-lesson01/) [B站](https://www.bilibili.com/video/av80626430/)  
+### 第二节课
+分布式事务从0到1-了解TX-LCN原理
+[原文](https://www.codingapi.com/docs/txlcn-lesson02/) 
+[B站-原理一](https://www.bilibili.com/video/av80676649)
+[B站-原理二](https://www.bilibili.com/video/av80676836)
 
 ## Modules
 1. txlcn-tc: *Distributed Transaction Client*
