@@ -1,4 +1,4 @@
-# Distributed Transaction Framework - LCN (5.0.2.RELEASE)
+# Distributed Transaction Framework - LCN (6.0.0)
 
 [![Maven](https://img.shields.io/badge/endpoint.svg?url=https://bbs.txlcn.org/maven-central)](https://bbs.txlcn.org/maven-list)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/codingapi/tx-lcn/blob/master/LICENSE)
@@ -19,6 +19,12 @@
 ### 第二节课
 分布式事务从0到1-了解TX-LCN原理    
 [原文](https://www.codingapi.com/docs/txlcn-lesson02/)  [B站-原理一](https://www.bilibili.com/video/av80676649)  [B站-原理二](https://www.bilibili.com/video/av80676836)
+
+B站地址   
+https://space.bilibili.com/386239614  
+
+CSDN学院  
+https://edu.csdn.net/course/detail/27244     
 
 ## Modules
 1. txlcn-tc: *Distributed Transaction Client*
