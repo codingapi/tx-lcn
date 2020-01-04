@@ -9,21 +9,17 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>txlcn-txmsg-netty</artifactId>
+    <groupId>com.codingapi.txlcn</groupId>
+    <artifactId>starter-txlcn-protocol</artifactId>
+    <version>6.0.0.SNAPSHOT</version>
+
 
     <dependencies>
-
         <dependency>
             <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>txlcn-txmsg</artifactId>
+            <artifactId>txlcn-protocol</artifactId>
+            <version>6.0.0.SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-        </dependency>
-
     </dependencies>
-
 
 </project>

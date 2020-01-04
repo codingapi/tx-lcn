@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.codingapi.txlcn</groupId>
         <artifactId>tx-lcn</artifactId>
-        <version>5.0.2.RELEASE</version>
+        <version>6.0.0.SNAPSHOT</version>
     </parent>
 
     <artifactId>txlcn-tc</artifactId>
