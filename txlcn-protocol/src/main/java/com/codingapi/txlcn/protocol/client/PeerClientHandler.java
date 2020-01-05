@@ -35,15 +35,15 @@ public class PeerClientHandler extends SimpleChannelInboundHandler<Message> {
     public void channelActive(final ChannelHandlerContext ctx) throws Exception {
         LOGGER.debug("Channel active {}", ctx.channel().remoteAddress());
         final Connection connection = new Connection(ctx);
-        getSessionAttribute(ctx).set(connection);
         peerClient.bindConnection(connection);
+        getSessionAttribute(ctx).set(connection);
         peerClientConnectionService.add(peerClient);
     }
 
     @Override
     public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
         LOGGER.debug("Channel inactive {}", ctx.channel().remoteAddress());
-        final Connection connection = new Connection(ctx);
+        final Connection connection = getSessionAttribute(ctx).get();
         peerClientConnectionService.remove(connection);
     }
 

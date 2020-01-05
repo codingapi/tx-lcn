@@ -5,6 +5,8 @@ import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.Message;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class PeerClient implements IPeer {
 
@@ -22,24 +24,25 @@ public class PeerClient implements IPeer {
      */
     private int port;
     /**
-     * TM peer name
+     * netty primary key
      */
-    private String peerName;
+    private String key;
 
     /**
-     * peer primary id
+     * application name
      */
-    private String id;
+    private String applicationName;
 
 
-    public PeerClient(String host, int port, String peerName) {
+    public PeerClient(String applicationName,String host, int port) {
+        this.applicationName = applicationName;
         this.host = host;
         this.port = port;
-        this.peerName = peerName;
+        this.key = UUID.randomUUID().toString();
     }
 
     public void bindConnection(Connection connection) {
-        connection.setPeerName(peerName);
+        connection.setPeerName(key);
         this.connection = connection;
     }
 
@@ -47,4 +50,17 @@ public class PeerClient implements IPeer {
         connection.send(msg);
     }
 
+    @Override
+    public String toString() {
+        return "PeerClient{" +
+                "host='" + host + '\'' +
+                ", port=" + port +
+                ", key='" + key + '\'' +
+                ", applicationName='" + applicationName + '\'' +
+                '}';
+    }
+
+    public void close() {
+        connection.close();
+    }
 }

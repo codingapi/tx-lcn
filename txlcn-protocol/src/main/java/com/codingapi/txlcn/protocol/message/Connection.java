@@ -18,6 +18,9 @@ public class Connection {
 
     private ChannelHandlerContext ctx;
 
+    /**
+     * peer name is an connection label.
+     */
     private String peerName;
 
     public Connection(ChannelHandlerContext ctx) {

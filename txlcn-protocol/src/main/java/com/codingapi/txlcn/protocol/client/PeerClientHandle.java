@@ -11,6 +11,7 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class PeerClientHandle {
@@ -31,9 +32,9 @@ public class PeerClientHandle {
         this.encoder = peerEventLoopGroup.getEncoder();
     }
 
-    public void connectTo(String host,int port,String peerName) {
+    public void connectTo(String applicationName,String host,int port) {
         final CompletableFuture<Void> futureToNotify = new CompletableFuture<>();
-        PeerClient peerClient = new PeerClient(host, port, peerName);
+        PeerClient peerClient = new PeerClient(applicationName,host, port);
         connectTo(peerClient,futureToNotify);
     }
 
@@ -53,7 +54,7 @@ public class PeerClientHandle {
             connectFuture.addListener((ChannelFuture future)->{
                         if (future.isSuccess()) {
                             futureToNotify.complete(null);
-                            LOGGER.info("Successfully connect to {}:{}", host, port);
+                            LOGGER.info("Successfully connect to {}:{}, key:{} ", host, port,peerClient.getKey());
                         } else {
                             futureToNotify.completeExceptionally(future.cause());
                             LOGGER.error("Could not connect to " + host + ":" + port, future.cause());
@@ -63,6 +64,8 @@ public class PeerClientHandle {
         }
     }
 
-
+    public List<PeerClient> list(){
+        return peerClientConnectionService.clients();
+    }
 
 }
