@@ -1,8 +1,9 @@
 package com.codingapi.txlcn.protocol.client;
 
 
-import com.codingapi.txlcn.protocol.network.Connection;
-import com.codingapi.txlcn.protocol.network.message.Message;
+import com.codingapi.txlcn.protocol.client.service.PeerClientConnectionService;
+import com.codingapi.txlcn.protocol.message.Connection;
+import com.codingapi.txlcn.protocol.message.Message;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -23,9 +24,11 @@ public class PeerClientHandler extends SimpleChannelInboundHandler<Message> {
     }
 
     private PeerClient peerClient;
+    private PeerClientConnectionService peerClientConnectionService;
 
-    public PeerClientHandler(PeerClient peerClient) {
+    public PeerClientHandler(PeerClient peerClient,PeerClientConnectionService peerClientConnectionService ) {
         this.peerClient = peerClient;
+        this.peerClientConnectionService = peerClientConnectionService;
     }
 
     @Override
@@ -33,11 +36,15 @@ public class PeerClientHandler extends SimpleChannelInboundHandler<Message> {
         LOGGER.debug("Channel active {}", ctx.channel().remoteAddress());
         final Connection connection = new Connection(ctx);
         getSessionAttribute(ctx).set(connection);
+        peerClient.bindConnection(connection);
+        peerClientConnectionService.add(peerClient);
     }
 
     @Override
     public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
         LOGGER.debug("Channel inactive {}", ctx.channel().remoteAddress());
+        final Connection connection = new Connection(ctx);
+        peerClientConnectionService.remove(connection);
     }
 
     @Override

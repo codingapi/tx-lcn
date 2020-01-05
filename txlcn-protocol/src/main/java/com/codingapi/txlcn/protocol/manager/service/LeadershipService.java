@@ -1,13 +1,13 @@
-package com.codingapi.txlcn.protocol.service;
+package com.codingapi.txlcn.protocol.manager.service;
 
 
 import com.codingapi.txlcn.protocol.Config;
-import com.codingapi.txlcn.protocol.Peer;
+import com.codingapi.txlcn.protocol.manager.Peer;
 import com.codingapi.txlcn.protocol.PeerEventLoopGroup;
-import com.codingapi.txlcn.protocol.network.Connection;
-import com.codingapi.txlcn.protocol.network.message.leader.AnnounceLeader;
-import com.codingapi.txlcn.protocol.network.message.leader.Election;
-import com.codingapi.txlcn.protocol.network.message.leader.Rejection;
+import com.codingapi.txlcn.protocol.message.Connection;
+import com.codingapi.txlcn.protocol.manager.network.message.leader.AnnounceLeader;
+import com.codingapi.txlcn.protocol.manager.network.message.leader.Election;
+import com.codingapi.txlcn.protocol.manager.network.message.leader.Rejection;
 import io.netty.channel.EventLoopGroup;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ScheduledFuture;

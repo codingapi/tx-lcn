@@ -1,15 +1,17 @@
 package com.codingapi.txlcn.protocol.client;
 
 import com.codingapi.txlcn.protocol.IPeer;
+import com.codingapi.txlcn.protocol.message.Connection;
+import com.codingapi.txlcn.protocol.message.Message;
 import lombok.Data;
 
 @Data
 public class PeerClient implements IPeer {
 
-    public PeerClient(String host, int port) {
-        this.host = host;
-        this.port = port;
-    }
+    /**
+     * netty connection
+     */
+    private Connection connection;
 
     /**
      * TM server host name
@@ -20,13 +22,29 @@ public class PeerClient implements IPeer {
      */
     private int port;
     /**
-     * self application name
+     * TM peer name
      */
-    private String applicationName;
+    private String peerName;
 
     /**
      * peer primary id
      */
     private String id;
+
+
+    public PeerClient(String host, int port, String peerName) {
+        this.host = host;
+        this.port = port;
+        this.peerName = peerName;
+    }
+
+    public void bindConnection(Connection connection) {
+        connection.setPeerName(peerName);
+        this.connection = connection;
+    }
+
+    public void send(Message msg){
+        connection.send(msg);
+    }
 
 }

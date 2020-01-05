@@ -1,14 +1,16 @@
-package com.codingapi.txlcn.protocol;
+package com.codingapi.txlcn.protocol.manager;
 
 
-import com.codingapi.txlcn.protocol.network.Connection;
-import com.codingapi.txlcn.protocol.network.message.Message;
-import com.codingapi.txlcn.protocol.network.message.ping.CancelPongs;
-import com.codingapi.txlcn.protocol.network.message.ping.Ping;
-import com.codingapi.txlcn.protocol.network.message.ping.Pong;
-import com.codingapi.txlcn.protocol.service.ConnectionService;
-import com.codingapi.txlcn.protocol.service.IPingService;
-import com.codingapi.txlcn.protocol.service.LeadershipService;
+import com.codingapi.txlcn.protocol.Config;
+import com.codingapi.txlcn.protocol.IPeer;
+import com.codingapi.txlcn.protocol.message.Connection;
+import com.codingapi.txlcn.protocol.message.Message;
+import com.codingapi.txlcn.protocol.manager.network.message.ping.CancelPongs;
+import com.codingapi.txlcn.protocol.manager.network.message.ping.Ping;
+import com.codingapi.txlcn.protocol.manager.network.message.ping.Pong;
+import com.codingapi.txlcn.protocol.manager.service.ConnectionService;
+import com.codingapi.txlcn.protocol.manager.service.IPingService;
+import com.codingapi.txlcn.protocol.manager.service.LeadershipService;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static java.lang.Math.min;
 
-public class Peer implements IPeer{
+public class Peer implements IPeer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Peer.class);
 

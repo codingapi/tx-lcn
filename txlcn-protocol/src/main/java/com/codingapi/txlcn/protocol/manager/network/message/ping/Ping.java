@@ -1,9 +1,9 @@
-package com.codingapi.txlcn.protocol.network.message.ping;
+package com.codingapi.txlcn.protocol.manager.network.message.ping;
 
 import com.codingapi.txlcn.protocol.IPeer;
-import com.codingapi.txlcn.protocol.Peer;
-import com.codingapi.txlcn.protocol.network.Connection;
-import com.codingapi.txlcn.protocol.network.message.Message;
+import com.codingapi.txlcn.protocol.manager.Peer;
+import com.codingapi.txlcn.protocol.message.Connection;
+import com.codingapi.txlcn.protocol.message.Message;
 
 /**
  * Contains information about a Ping operation initiated by a peer

@@ -1,10 +1,10 @@
-package com.codingapi.txlcn.protocol.service;
+package com.codingapi.txlcn.protocol.manager.service;
 
 
 
-import com.codingapi.txlcn.protocol.network.Connection;
-import com.codingapi.txlcn.protocol.network.message.ping.Ping;
-import com.codingapi.txlcn.protocol.network.message.ping.Pong;
+import com.codingapi.txlcn.protocol.message.Connection;
+import com.codingapi.txlcn.protocol.manager.network.message.ping.Ping;
+import com.codingapi.txlcn.protocol.manager.network.message.ping.Pong;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;

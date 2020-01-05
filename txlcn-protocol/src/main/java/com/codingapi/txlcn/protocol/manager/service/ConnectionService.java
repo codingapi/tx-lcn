@@ -1,12 +1,12 @@
-package com.codingapi.txlcn.protocol.service;
+package com.codingapi.txlcn.protocol.manager.service;
 
 
 import com.codingapi.txlcn.protocol.Config;
-import com.codingapi.txlcn.protocol.Peer;
+import com.codingapi.txlcn.protocol.manager.Peer;
 import com.codingapi.txlcn.protocol.PeerEventLoopGroup;
-import com.codingapi.txlcn.protocol.network.Connection;
-import com.codingapi.txlcn.protocol.network.PeerChannelHandler;
-import com.codingapi.txlcn.protocol.network.PeerChannelInitializer;
+import com.codingapi.txlcn.protocol.message.Connection;
+import com.codingapi.txlcn.protocol.manager.network.PeerChannelHandler;
+import com.codingapi.txlcn.protocol.manager.network.PeerChannelInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;

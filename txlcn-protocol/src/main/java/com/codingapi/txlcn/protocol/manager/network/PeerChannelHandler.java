@@ -1,10 +1,11 @@
-package com.codingapi.txlcn.protocol.network;
+package com.codingapi.txlcn.protocol.manager.network;
 
 
 import com.codingapi.txlcn.protocol.Config;
-import com.codingapi.txlcn.protocol.Peer;
-import com.codingapi.txlcn.protocol.network.message.Handshake;
-import com.codingapi.txlcn.protocol.network.message.Message;
+import com.codingapi.txlcn.protocol.manager.Peer;
+import com.codingapi.txlcn.protocol.manager.network.message.Handshake;
+import com.codingapi.txlcn.protocol.message.Connection;
+import com.codingapi.txlcn.protocol.message.Message;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

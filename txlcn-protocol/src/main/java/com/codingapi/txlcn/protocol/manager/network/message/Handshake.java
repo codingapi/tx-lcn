@@ -1,13 +1,11 @@
-package com.codingapi.txlcn.protocol.network.message;
+package com.codingapi.txlcn.protocol.manager.network.message;
 
 import com.codingapi.txlcn.protocol.IPeer;
-import com.codingapi.txlcn.protocol.Peer;
-import com.codingapi.txlcn.protocol.network.Connection;
+import com.codingapi.txlcn.protocol.manager.Peer;
+import com.codingapi.txlcn.protocol.message.Connection;
+import com.codingapi.txlcn.protocol.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * Informs the new peer about this peer

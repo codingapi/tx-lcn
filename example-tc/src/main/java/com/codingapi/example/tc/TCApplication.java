@@ -1,6 +1,5 @@
 package com.codingapi.example.tc;
 
-import com.codingapi.txlcn.protocol.client.PeerClient;
 import com.codingapi.txlcn.protocol.client.PeerClientHandle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -20,7 +19,6 @@ public class TCApplication {
 
     @PostConstruct
     public void init() throws InterruptedException{
-        PeerClient peerClient = new PeerClient("127.0.0.1",8070);
-        cliet.connectTo(peerClient,"TM");
+        cliet.connectTo("127.0.0.1",8070,"TM");
     }
 }

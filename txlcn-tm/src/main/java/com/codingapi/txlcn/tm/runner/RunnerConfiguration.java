@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tm.runner;
 
-import com.codingapi.txlcn.protocol.PeerHandle;
+import com.codingapi.txlcn.protocol.manager.PeerHandle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

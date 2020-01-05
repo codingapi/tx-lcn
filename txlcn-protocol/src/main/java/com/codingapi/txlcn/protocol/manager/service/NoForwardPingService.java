@@ -1,14 +1,14 @@
-package com.codingapi.txlcn.protocol.service;
+package com.codingapi.txlcn.protocol.manager.service;
 
 
 import com.codingapi.txlcn.protocol.Config;
 import com.codingapi.txlcn.protocol.PeerEventLoopGroup;
-import com.codingapi.txlcn.protocol.network.Connection;
-import com.codingapi.txlcn.protocol.network.message.KeepAlive;
-import com.codingapi.txlcn.protocol.network.message.ping.CancelPings;
-import com.codingapi.txlcn.protocol.network.message.ping.CancelPongs;
-import com.codingapi.txlcn.protocol.network.message.ping.Ping;
-import com.codingapi.txlcn.protocol.network.message.ping.Pong;
+import com.codingapi.txlcn.protocol.message.Connection;
+import com.codingapi.txlcn.protocol.manager.network.message.KeepAlive;
+import com.codingapi.txlcn.protocol.manager.network.message.ping.CancelPings;
+import com.codingapi.txlcn.protocol.manager.network.message.ping.CancelPongs;
+import com.codingapi.txlcn.protocol.manager.network.message.ping.Ping;
+import com.codingapi.txlcn.protocol.manager.network.message.ping.Pong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,9 +20,9 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Maintains all of the ongoing Ping operations either initiated by this peer or other peers in the network
  */
-public class ForwardPingService implements IPingService{
+public class NoForwardPingService implements IPingService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ForwardPingService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NoForwardPingService.class);
 
     private final ConnectionService connectionService;
 
@@ -34,8 +34,7 @@ public class ForwardPingService implements IPingService{
 
     private int autoPingCount;
 
-
-    public ForwardPingService(ConnectionService connectionService, LeadershipService leadershipService, PeerEventLoopGroup peerEventLoopGroup) {
+    public NoForwardPingService(ConnectionService connectionService, LeadershipService leadershipService, PeerEventLoopGroup peerEventLoopGroup) {
         this.connectionService = connectionService;
         this.leadershipService = leadershipService;
         this.config = peerEventLoopGroup.getConfig();
@@ -84,8 +83,7 @@ public class ForwardPingService implements IPingService{
 
     /**
      * Handles a Ping operation initiated by another node. If the received {@link Ping} message is allowed to be
-     * propagated, this peer also propagates it to its own neighbours. Additionally, it sends a {@link Pong} message
-     * back to the neighbour that has sent the {@link Ping} message to this peer.
+     * propagated,it sends a {@link Pong} message back to the neighbour that has sent the {@link Ping} message to this peer.
      *
      * @param bindAddress Network address that this peer bind
      * @param connection  Connection of the neighbour that sent the Ping message
@@ -113,17 +111,6 @@ public class ForwardPingService implements IPingService{
         final Pong pong = new Pong(pingPeerName, config.getPeerName(), config.getPeerName(),
                 bindAddress.getAddress().getHostAddress(), bindAddress.getPort(), ping.getHops() + 1, 0);
         connection.send(pong);
-
-        final Ping next = ping.next();
-        if (next != null) {
-            for (Connection neighbour : connectionService.getConnections()) {
-                if (!neighbour.equals(connection) && !neighbour.getPeerName().equals(ping.getPeerName())) {
-                    LOGGER.info("Forwarding {} to {} for initiator {}", next, neighbour.getPeerName(),
-                            ping.getPeerName());
-                    neighbour.send(next);
-                }
-            }
-        }
     }
 
     /**

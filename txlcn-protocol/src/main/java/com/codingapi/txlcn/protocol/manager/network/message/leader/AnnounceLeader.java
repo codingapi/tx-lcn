@@ -1,10 +1,10 @@
-package com.codingapi.txlcn.protocol.network.message.leader;
+package com.codingapi.txlcn.protocol.manager.network.message.leader;
 
 
 import com.codingapi.txlcn.protocol.IPeer;
-import com.codingapi.txlcn.protocol.Peer;
-import com.codingapi.txlcn.protocol.network.Connection;
-import com.codingapi.txlcn.protocol.network.message.Message;
+import com.codingapi.txlcn.protocol.manager.Peer;
+import com.codingapi.txlcn.protocol.message.Connection;
+import com.codingapi.txlcn.protocol.message.Message;
 
 /**
  * Notifies neighbours about announced leader

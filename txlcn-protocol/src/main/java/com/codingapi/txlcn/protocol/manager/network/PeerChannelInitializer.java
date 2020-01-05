@@ -1,4 +1,4 @@
-package com.codingapi.txlcn.protocol.network;
+package com.codingapi.txlcn.protocol.manager.network;
 
 
 import com.codingapi.txlcn.protocol.Config;

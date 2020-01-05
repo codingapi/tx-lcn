@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.protocol.client;
 
 import com.codingapi.txlcn.protocol.PeerEventLoopGroup;
+import com.codingapi.txlcn.protocol.client.service.PeerClientConnectionService;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -10,8 +11,6 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class PeerClientHandle {
@@ -24,7 +23,7 @@ public class PeerClientHandle {
 
     private final ObjectEncoder encoder;
 
-    private final Map<String, PeerClient> clients = new HashMap<String, PeerClient>();
+    private PeerClientConnectionService peerClientConnectionService = new PeerClientConnectionService();
 
     public PeerClientHandle(PeerEventLoopGroup peerEventLoopGroup){
         this.networkEventLoopGroup = peerEventLoopGroup.getNetworkEventLoopGroup();
@@ -32,17 +31,16 @@ public class PeerClientHandle {
         this.encoder = peerEventLoopGroup.getEncoder();
     }
 
-
-    public void connectTo(PeerClient peerClient,String peerName) {
+    public void connectTo(String host,int port,String peerName) {
         final CompletableFuture<Void> futureToNotify = new CompletableFuture<>();
-        connectTo(peerClient,peerName,futureToNotify);
+        PeerClient peerClient = new PeerClient(host, port, peerName);
+        connectTo(peerClient,futureToNotify);
     }
 
-    public void connectTo(PeerClient peerClient,String peerName, final CompletableFuture<Void> futureToNotify) {
+    private void connectTo(PeerClient peerClient, final CompletableFuture<Void> futureToNotify) {
         String host = peerClient.getHost();
         int port = peerClient.getPort();
-        clients.put(peerName,peerClient);
-        final PeerClientHandler peerClientHandler = new PeerClientHandler(peerClient);
+        final PeerClientHandler peerClientHandler = new PeerClientHandler(peerClient,peerClientConnectionService);
         final PeerClientInitializer initializer = new PeerClientInitializer(encoder,peerEventLoopGroup,peerClientHandler);
         final Bootstrap clientBootstrap = new Bootstrap();
         clientBootstrap.group(networkEventLoopGroup)

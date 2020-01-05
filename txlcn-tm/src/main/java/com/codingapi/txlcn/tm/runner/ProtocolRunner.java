@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tm.runner;
 
-import com.codingapi.txlcn.protocol.PeerHandle;
+import com.codingapi.txlcn.protocol.manager.PeerHandle;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

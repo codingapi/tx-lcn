@@ -1,11 +1,13 @@
-package com.codingapi.txlcn.protocol;
+package com.codingapi.txlcn.protocol.manager;
 
-import com.codingapi.txlcn.protocol.network.Connection;
-import com.codingapi.txlcn.protocol.network.PeerChannelHandler;
-import com.codingapi.txlcn.protocol.network.PeerChannelInitializer;
-import com.codingapi.txlcn.protocol.service.ConnectionService;
-import com.codingapi.txlcn.protocol.service.IPingService;
-import com.codingapi.txlcn.protocol.service.LeadershipService;
+import com.codingapi.txlcn.protocol.Config;
+import com.codingapi.txlcn.protocol.PeerEventLoopGroup;
+import com.codingapi.txlcn.protocol.message.Connection;
+import com.codingapi.txlcn.protocol.manager.network.PeerChannelHandler;
+import com.codingapi.txlcn.protocol.manager.network.PeerChannelInitializer;
+import com.codingapi.txlcn.protocol.manager.service.ConnectionService;
+import com.codingapi.txlcn.protocol.manager.service.IPingService;
+import com.codingapi.txlcn.protocol.manager.service.LeadershipService;
 import com.google.common.util.concurrent.SettableFuture;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -48,7 +50,7 @@ public class PeerHandle {
 
     private Future timeoutPingsFuture;
 
-    public PeerHandle(Config config,int port, PeerEventLoopGroup peerEventLoopGroupBean, ConnectionService connectionService, LeadershipService leadershipService, IPingService pingService){
+    public PeerHandle(Config config, int port, PeerEventLoopGroup peerEventLoopGroupBean, ConnectionService connectionService, LeadershipService leadershipService, IPingService pingService){
         this.config = config;
         this.portToBind = port;
         acceptorEventLoopGroup = peerEventLoopGroupBean.getAcceptorEventLoopGroup();

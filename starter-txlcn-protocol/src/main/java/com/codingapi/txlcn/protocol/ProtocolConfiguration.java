@@ -2,10 +2,11 @@ package com.codingapi.txlcn.protocol;
 
 import com.codingapi.txlcn.protocol.client.PeerClientHandle;
 import com.codingapi.txlcn.protocol.config.PeerConfig;
-import com.codingapi.txlcn.protocol.service.ConnectionService;
-import com.codingapi.txlcn.protocol.service.IPingService;
-import com.codingapi.txlcn.protocol.service.LeadershipService;
-import com.codingapi.txlcn.protocol.service.NoForwardPingService;
+import com.codingapi.txlcn.protocol.manager.PeerHandle;
+import com.codingapi.txlcn.protocol.manager.service.ConnectionService;
+import com.codingapi.txlcn.protocol.manager.service.IPingService;
+import com.codingapi.txlcn.protocol.manager.service.LeadershipService;
+import com.codingapi.txlcn.protocol.manager.service.NoForwardPingService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;

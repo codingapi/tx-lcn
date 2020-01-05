@@ -1,7 +1,8 @@
-package com.codingapi.txlcn.protocol.network.message;
+package com.codingapi.txlcn.protocol.manager.network.message;
 
 import com.codingapi.txlcn.protocol.IPeer;
-import com.codingapi.txlcn.protocol.network.Connection;
+import com.codingapi.txlcn.protocol.message.Connection;
+import com.codingapi.txlcn.protocol.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
