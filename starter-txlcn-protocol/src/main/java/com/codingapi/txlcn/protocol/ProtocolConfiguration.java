@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.protocol;
 
+import com.codingapi.txlcn.protocol.client.PeerClientHandle;
 import com.codingapi.txlcn.protocol.config.PeerConfig;
 import com.codingapi.txlcn.protocol.service.ConnectionService;
 import com.codingapi.txlcn.protocol.service.IPingService;
@@ -50,5 +51,11 @@ public class ProtocolConfiguration {
     @ConditionalOnMissingBean
     public PeerHandle peerHandle(PeerConfig peerConfig, PeerEventLoopGroup peerEventLoopGroupBean, ConnectionService connectionService, LeadershipService leadershipService, IPingService pingService){
         return new PeerHandle(new Config(peerConfig.getName()),peerConfig.getPort(),peerEventLoopGroupBean,connectionService,leadershipService,pingService);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public PeerClientHandle peerClientHandle(PeerEventLoopGroup peerEventLoopGroup){
+        return new PeerClientHandle(peerEventLoopGroup);
     }
 }

@@ -15,7 +15,6 @@
  */
 package com.codingapi.txlcn.tm;
 
-import com.codingapi.txlcn.tm.support.TxLcnManagerBanner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -31,7 +30,6 @@ public class TMApplication {
 
     public static void main(String[] args) {
         SpringApplication springApplication = new SpringApplication(TMApplication.class);
-        springApplication.setBanner(new TxLcnManagerBanner());
         springApplication.run(args);
     }
 }

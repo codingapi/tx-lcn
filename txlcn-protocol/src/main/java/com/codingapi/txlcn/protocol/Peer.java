@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static java.lang.Math.min;
 
-public class Peer {
+public class Peer implements IPeer{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Peer.class);
 

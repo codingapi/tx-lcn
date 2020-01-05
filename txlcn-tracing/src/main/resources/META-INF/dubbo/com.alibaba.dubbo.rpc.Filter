@@ -1,2 +1,0 @@
-tracingHandleFilter=com.codingapi.txlcn.tracing.dubbo.DubboTracingApplier
-tracingRequestFilter=com.codingapi.txlcn.tracing.dubbo.DubboTracingTransmitter

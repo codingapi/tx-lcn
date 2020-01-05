@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.protocol.network.message.ping;
 
+import com.codingapi.txlcn.protocol.IPeer;
 import com.codingapi.txlcn.protocol.Peer;
 import com.codingapi.txlcn.protocol.network.Connection;
 import com.codingapi.txlcn.protocol.network.message.Message;
@@ -15,8 +16,8 @@ public class CancelPongs implements Message {
     }
 
     @Override
-    public void handle(Peer peer, Connection connection) {
-        peer.cancelPongs(peerName);
+    public void handle(IPeer peer, Connection connection) {
+        peer.optional(Peer.class).ifPresent((p)->p.cancelPongs(peerName));
     }
 
     @Override

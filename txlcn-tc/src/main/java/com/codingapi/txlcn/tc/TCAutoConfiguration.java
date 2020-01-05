@@ -15,51 +15,12 @@
  */
 package com.codingapi.txlcn.tc;
 
-import com.codingapi.txlcn.common.runner.TxLcnApplicationRunner;
-import com.codingapi.txlcn.common.util.ApplicationInformation;
-import com.codingapi.txlcn.common.util.id.ModIdProvider;
-import com.codingapi.txlcn.logger.TxLoggerConfiguration;
-import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
-import com.codingapi.txlcn.tracing.TracingAutoConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.*;
-import org.springframework.core.env.ConfigurableEnvironment;
 
-/**
- * Description:
- * Date: 1/19/19
- *
- * @author ujued
- * @see EnableDistributedTransaction
- */
+import org.springframework.context.annotation.Configuration;
+
+
 @Configuration
-@ComponentScan(
-        excludeFilters = @ComponentScan.Filter(
-                type = FilterType.ASPECTJ, pattern = "com.codingapi.txlcn.tc.core.transaction.txc..*"
-        )
-)
-@Import({TxLoggerConfiguration.class, TracingAutoConfiguration.class})
 public class TCAutoConfiguration {
 
-    /**
-     * All initialization about TX-LCN
-     *
-     * @param applicationContext Spring ApplicationContext
-     * @return TX-LCN custom runner
-     */
-    @Bean
-    public ApplicationRunner txLcnApplicationRunner(ApplicationContext applicationContext) {
-        return new TxLcnApplicationRunner(applicationContext);
-    }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public ModIdProvider modIdProvider(ConfigurableEnvironment environment,
-                                       @Autowired(required = false) ServerProperties serverProperties) {
-        return () -> ApplicationInformation.modId(environment, serverProperties);
-    }
 }
