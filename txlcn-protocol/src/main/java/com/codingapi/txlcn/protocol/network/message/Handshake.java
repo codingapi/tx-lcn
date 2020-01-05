@@ -1,9 +1,13 @@
 package com.codingapi.txlcn.protocol.network.message;
 
+import com.codingapi.txlcn.protocol.IPeer;
 import com.codingapi.txlcn.protocol.Peer;
 import com.codingapi.txlcn.protocol.network.Connection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Informs the new peer about this peer
@@ -24,11 +28,11 @@ public class Handshake implements Message {
     }
 
     @Override
-    public void handle(Peer peer, Connection connection) {
+    public void handle(IPeer peer, Connection connection) {
         final String peerName = connection.getPeerName();
         if (peerName == null) {
             connection.setPeerName(this.peerName);
-            peer.handleConnectionOpened(connection, leaderName);
+            peer.optional(Peer.class).ifPresent(p -> p.handleConnectionOpened(connection, leaderName));
         } else if (!peerName.equals(this.peerName)) {
             LOGGER.warn(
                     "Mismatching peer name received from connection! Existing: " + this.peerName + " Received: " + this.peerName);

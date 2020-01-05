@@ -13,20 +13,6 @@
     <description>LCN project for Spring Boot</description>
 
     <dependencies>
-        <dependency>
-            <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>txlcn-logger</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>txlcn-tracing</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>txlcn-txmsg</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
@@ -47,13 +33,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
             <scope>provided</scope>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.codingapi.txlcn</groupId>
-            <artifactId>txlcn-txmsg-netty</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>

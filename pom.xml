@@ -16,15 +16,11 @@
 
 
     <modules>
-        <module>txlcn-common</module>
-        <module>txlcn-logger</module>
         <module>txlcn-tc</module>
         <module>txlcn-tm</module>
-        <module>txlcn-tracing</module>
-        <module>txlcn-txmsg</module>
-        <module>txlcn-txmsg-netty</module>
         <module>txlcn-protocol</module>
         <module>starter-txlcn-protocol</module>
+        <module>example-tc</module>
     </modules>
 
     <properties>

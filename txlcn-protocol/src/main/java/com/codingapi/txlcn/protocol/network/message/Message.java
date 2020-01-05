@@ -1,8 +1,7 @@
 package com.codingapi.txlcn.protocol.network.message;
 
 
-
-import com.codingapi.txlcn.protocol.Peer;
+import com.codingapi.txlcn.protocol.IPeer;
 import com.codingapi.txlcn.protocol.network.Connection;
 
 import java.io.Serializable;
@@ -17,6 +16,6 @@ public interface Message extends Serializable {
      * @param peer self peer
      * @param connection remote connection
      */
-    void handle(Peer peer, Connection connection);
+    void handle(IPeer peer, Connection connection);
 
 }
