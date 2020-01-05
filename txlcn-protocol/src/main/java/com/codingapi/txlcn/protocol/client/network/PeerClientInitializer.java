@@ -1,12 +1,14 @@
-package com.codingapi.txlcn.protocol.client;
+package com.codingapi.txlcn.protocol.client.network;
 
 
+import com.codingapi.txlcn.protocol.Config;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.EventExecutorGroup;
 
 public class PeerClientInitializer extends ChannelInitializer<SocketChannel> {
@@ -17,8 +19,11 @@ public class PeerClientInitializer extends ChannelInitializer<SocketChannel> {
 
     private final PeerClientHandler peerClientHandler;
 
-    public PeerClientInitializer(ObjectEncoder encoder, EventExecutorGroup peerChannelHandlerExecutorGroup,
+    private final Config config;
+
+    public PeerClientInitializer(Config config, ObjectEncoder encoder, EventExecutorGroup peerChannelHandlerExecutorGroup,
                                  PeerClientHandler peerClientHandler) {
+        this.config = config;
         this.encoder = encoder;
         this.peerChannelHandlerExecutorGroup = peerChannelHandlerExecutorGroup;
         this.peerClientHandler = peerClientHandler;
@@ -29,6 +34,8 @@ public class PeerClientInitializer extends ChannelInitializer<SocketChannel> {
         final ChannelPipeline pipeline = ch.pipeline();
         pipeline.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
         pipeline.addLast(encoder);
+        pipeline.addLast(new IdleStateHandler(config.getMaxReadIdleSeconds(),
+                config.getMaxWriteIdleSeconds(), 0));
         pipeline.addLast(peerChannelHandlerExecutorGroup, peerClientHandler);
     }
 

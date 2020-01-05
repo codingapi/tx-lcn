@@ -1,12 +1,16 @@
-package com.codingapi.txlcn.protocol.client;
+package com.codingapi.txlcn.protocol.client.network;
 
 
+import com.codingapi.txlcn.protocol.client.PeerClient;
+import com.codingapi.txlcn.protocol.client.network.message.Heartbeat;
 import com.codingapi.txlcn.protocol.client.service.PeerClientConnectionService;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.Message;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import org.slf4j.Logger;
@@ -63,6 +67,19 @@ public class PeerClientHandler extends SimpleChannelInboundHandler<Message> {
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
         LOGGER.error("Channel failure " + ctx.channel().remoteAddress(), cause);
         ctx.close();
+    }
+
+
+    @Override
+    public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
+        if (evt instanceof IdleStateEvent) {
+            final IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
+            if (idleStateEvent.state() == IdleState.WRITER_IDLE) {
+                final Connection connection = getSessionAttribute(ctx).get();
+                connection.send(new Heartbeat());
+                LOGGER.debug("send heartbeat to {}",connection.getRemoteAddress());
+            }
+        }
     }
 
 

@@ -6,6 +6,8 @@ public class Config {
 
     public static final int DEFAULT_MIN_NUMBER_OF_ACTIVE_CONNECTIONS = 5;
 
+    public static final int DEFAULT_MAX_WRITE_IDLE_SECONDS = 30;
+
     public static final int DEFAULT_MAX_READ_IDLE_SECONDS = 120;
 
     public static final int DEFAULT_KEEP_ALIVE_SECONDS = 15;
@@ -44,6 +46,12 @@ public class Config {
      */
     private int maxReadIdleSeconds = DEFAULT_MAX_READ_IDLE_SECONDS;
 
+
+    /**
+     * when a peer does not send ant message for the specified amount of seconds.it will send heartbeat message
+     */
+    private int maxWriteIdleSeconds = DEFAULT_MAX_WRITE_IDLE_SECONDS;
+
     /**
      * Amount of time that a peer will send periodic keep-alive messages to its neighbours to indicate that it is alive
      */
@@ -77,6 +85,7 @@ public class Config {
      * starts a new election.
      */
     private int leaderRejectionTimeoutSeconds = DEFAULT_LEADER_REJECTION_TIMEOUT_SECONDS;
+
 
     public String getPeerName() {
         return peerName;
@@ -152,6 +161,14 @@ public class Config {
 
     public void setLeaderRejectionTimeoutSeconds(int leaderRejectionTimeoutSeconds) {
         this.leaderRejectionTimeoutSeconds = leaderRejectionTimeoutSeconds;
+    }
+
+    public int getMaxWriteIdleSeconds() {
+        return maxWriteIdleSeconds;
+    }
+
+    public void setMaxWriteIdleSeconds(int maxWriteIdleSeconds) {
+        this.maxWriteIdleSeconds = maxWriteIdleSeconds;
     }
 
     @Override

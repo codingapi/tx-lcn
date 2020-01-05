@@ -1,6 +1,9 @@
 package com.codingapi.txlcn.protocol.client;
 
+import com.codingapi.txlcn.protocol.Config;
 import com.codingapi.txlcn.protocol.PeerEventLoopGroup;
+import com.codingapi.txlcn.protocol.client.network.PeerClientHandler;
+import com.codingapi.txlcn.protocol.client.network.PeerClientInitializer;
 import com.codingapi.txlcn.protocol.client.service.PeerClientConnectionService;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -24,15 +27,22 @@ public class PeerClientHandle {
 
     private final ObjectEncoder encoder;
 
+    private Config config;
+
     private PeerClientConnectionService peerClientConnectionService = new PeerClientConnectionService();
 
     public PeerClientHandle(PeerEventLoopGroup peerEventLoopGroup){
         this.networkEventLoopGroup = peerEventLoopGroup.getNetworkEventLoopGroup();
         this.peerEventLoopGroup = peerEventLoopGroup.getPeerEventLoopGroup();
         this.encoder = peerEventLoopGroup.getEncoder();
+        this.config = new Config();
     }
 
-    public void connectTo(String applicationName,String host,int port) {
+    public void setConfig(Config config) {
+        this.config = config;
+    }
+
+    public void connectTo(String applicationName, String host, int port) {
         final CompletableFuture<Void> futureToNotify = new CompletableFuture<>();
         PeerClient peerClient = new PeerClient(applicationName,host, port);
         connectTo(peerClient,futureToNotify);
@@ -42,7 +52,7 @@ public class PeerClientHandle {
         String host = peerClient.getHost();
         int port = peerClient.getPort();
         final PeerClientHandler peerClientHandler = new PeerClientHandler(peerClient,peerClientConnectionService);
-        final PeerClientInitializer initializer = new PeerClientInitializer(encoder,peerEventLoopGroup,peerClientHandler);
+        final PeerClientInitializer initializer = new PeerClientInitializer(config,encoder,peerEventLoopGroup,peerClientHandler);
         final Bootstrap clientBootstrap = new Bootstrap();
         clientBootstrap.group(networkEventLoopGroup)
                 .channel(NioSocketChannel.class)
