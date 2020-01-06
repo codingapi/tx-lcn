@@ -15,6 +15,13 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>txlcn-protocol</artifactId>
+            <version>6.0.0.SNAPSHOT</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
@@ -44,17 +51,4 @@
     </dependencies>
 
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${maven.compile.source}</source>
-                    <target>${maven.compile.target}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

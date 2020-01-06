@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.codingapi.txlcn.tc.TCAutoConfiguration,\
+com.codingapi.txlcn.tc.config.TcConfigConfiguration,\
+com.codingapi.txlcn.tc.runner.TcRunnerConfiguration

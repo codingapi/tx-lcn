@@ -1,34 +1,19 @@
-package com.codingapi.txlcn.protocol;
+package com.codingapi.txlcn.protocol.manager;
 
-import com.codingapi.txlcn.protocol.client.PeerClientHandle;
+import com.codingapi.txlcn.protocol.Config;
+import com.codingapi.txlcn.protocol.PeerEventLoopGroup;
 import com.codingapi.txlcn.protocol.config.PeerConfig;
-import com.codingapi.txlcn.protocol.manager.PeerHandle;
 import com.codingapi.txlcn.protocol.manager.service.ConnectionService;
 import com.codingapi.txlcn.protocol.manager.service.IPingService;
 import com.codingapi.txlcn.protocol.manager.service.LeadershipService;
 import com.codingapi.txlcn.protocol.manager.service.NoForwardPingService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-@ComponentScan
 @Configuration
-public class ProtocolConfiguration {
+public class ProtocolManagerConfiguration {
 
-    @Bean
-    @ConfigurationProperties(prefix = "txlcn.protocol")
-    @ConditionalOnMissingBean
-    public PeerConfig peerConfig(){
-        return new PeerConfig();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public PeerEventLoopGroup peerEventLoopGroup(PeerConfig peerConfig){
-        return new PeerEventLoopGroup(peerConfig.getName(),peerConfig.getPort());
-    }
 
     @Bean
     @ConditionalOnMissingBean
@@ -54,9 +39,4 @@ public class ProtocolConfiguration {
         return new PeerHandle(new Config(peerConfig.getName()),peerConfig.getPort(),peerEventLoopGroupBean,connectionService,leadershipService,pingService);
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public PeerClientHandle peerClientHandle(PeerEventLoopGroup peerEventLoopGroup){
-        return new PeerClientHandle(peerEventLoopGroup);
-    }
 }

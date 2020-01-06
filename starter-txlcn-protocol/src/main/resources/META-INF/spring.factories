@@ -1,1 +1,5 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.codingapi.txlcn.protocol.ProtocolConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.codingapi.txlcn.protocol.ProtocolConfiguration,\
+com.codingapi.txlcn.protocol.config.ProtocolConfigConfiguration,\
+com.codingapi.txlcn.protocol.client.ProtocolClientConfiguration,\
+com.codingapi.txlcn.protocol.manager.ProtocolManagerConfiguration

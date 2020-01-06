@@ -24,6 +24,12 @@ public class PeerEventLoopGroup {
 
     private final ObjectEncoder encoder = new ObjectEncoder();
 
+    public void destroy(){
+        acceptorEventLoopGroup.shutdownGracefully();
+        networkEventLoopGroup.shutdownGracefully();
+        peerEventLoopGroup.shutdownGracefully();
+    }
+
     public PeerEventLoopGroup(String peerName,int port){
         this(new Config(peerName),port);
     }

@@ -20,7 +20,10 @@
         <module>txlcn-tm</module>
         <module>txlcn-protocol</module>
         <module>starter-txlcn-protocol</module>
+        <module>starter-txlcn-tc</module>
+
         <module>example-tc</module>
+
     </modules>
 
     <properties>
@@ -136,36 +139,6 @@
 
     <dependencyManagement>
         <dependencies>
-
-            <dependency>
-                <groupId>com.codingapi.txlcn</groupId>
-                <artifactId>txlcn-txmsg-netty</artifactId>
-                <version>${codingapi.txlcn.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.codingapi.txlcn</groupId>
-                <artifactId>txlcn-common</artifactId>
-                <version>${codingapi.txlcn.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.codingapi.txlcn</groupId>
-                <artifactId>txlcn-logger</artifactId>
-                <version>${codingapi.txlcn.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.codingapi.txlcn</groupId>
-                <artifactId>txlcn-txmsg</artifactId>
-                <version>${codingapi.txlcn.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.codingapi.txlcn</groupId>
-                <artifactId>txlcn-tracing</artifactId>
-                <version>${codingapi.txlcn.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>com.h2database</groupId>
