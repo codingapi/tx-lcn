@@ -22,9 +22,9 @@
         <module>starter-txlcn-protocol</module>
         <module>starter-txlcn-tc</module>
 
-        <module>example-tc</module>
-        <module>example-tc-2</module>
-      <module>example-tc-t2-client</module>
+        <module>example/example-tc</module>
+        <module>example/example-tc-2</module>
+        <module>example/example-tc-t2-client</module>
 
     </modules>
 
