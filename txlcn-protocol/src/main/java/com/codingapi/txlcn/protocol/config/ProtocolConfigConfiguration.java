@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ProtocolConfigConfiguration {
 
-    @Bean
-    @ConfigurationProperties(prefix = "txlcn.protocol")
-    @ConditionalOnMissingBean
-    public PeerConfig peerConfig(){
-        return new PeerConfig();
-    }
+  @Bean
+  @ConfigurationProperties(prefix = "txlcn.protocol")
+  @ConditionalOnMissingBean
+  public PeerConfig peerConfig() {
+    return new PeerConfig();
+  }
 
 }

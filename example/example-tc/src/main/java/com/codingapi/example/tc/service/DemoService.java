@@ -28,7 +28,7 @@ public class DemoService {
     demoReq.setName(name);
     demoReq.setModule("tc2");
     DemoRes demoRes = tc2Client.save(demoReq);
-    log.info("tc2-client=>{}",demoRes);
+    log.info("tc2-client=>{}", demoRes);
     Demo demo = new Demo();
     demo.setName(name);
     demo.setModule("tc");

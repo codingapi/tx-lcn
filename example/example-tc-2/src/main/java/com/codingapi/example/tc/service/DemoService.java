@@ -23,7 +23,7 @@ public class DemoService {
     demo.setName(demoReq.getName());
     demo.setModule(demoReq.getModule());
     demoMapper.save(demo);
-    return new DemoRes(demo.getId(),new Date());
+    return new DemoRes(demo.getId(), new Date());
   }
 
 }

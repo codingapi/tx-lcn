@@ -1,26 +1,25 @@
 package com.codingapi.txlcn.tm.runner;
 
 import com.codingapi.txlcn.protocol.manager.PeerHandle;
+import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
-
 @Configuration
 public class RunnerConfiguration {
 
-    @Bean
-    public ProtocolRunner protocolRunner(PeerHandle peerHandle){
-        return new ProtocolRunner(peerHandle);
-    }
+  @Autowired
+  private ProtocolRunner protocolRunner;
 
-    @Autowired
-    private ProtocolRunner protocolRunner;
+  @Bean
+  public ProtocolRunner protocolRunner(PeerHandle peerHandle) {
+    return new ProtocolRunner(peerHandle);
+  }
 
-    @PostConstruct
-    public void start(){
-        protocolRunner.start();
-    }
+  @PostConstruct
+  public void start() {
+    protocolRunner.start();
+  }
 
 }

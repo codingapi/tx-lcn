@@ -10,11 +10,11 @@ import com.codingapi.txlcn.protocol.message.Message;
  */
 public class Rejection implements Message {
 
-    private static final long serialVersionUID = -4458007227538796558L;
+  private static final long serialVersionUID = -4458007227538796558L;
 
-    @Override
-    public void handle(IPeer peer, Connection connection) {
-        peer.optional(Peer.class).ifPresent((p)->p.handleRejection(connection));
-    }
+  @Override
+  public void handle(IPeer peer, Connection connection) {
+    peer.optional(Peer.class).ifPresent((p) -> p.handleRejection(connection));
+  }
 
 }

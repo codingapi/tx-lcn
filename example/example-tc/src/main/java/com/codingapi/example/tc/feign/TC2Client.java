@@ -12,8 +12,8 @@ public class TC2Client {
   @Autowired
   private RestTemplate restTemplate;
 
-  public DemoRes save(DemoReq demoReq){
-    return restTemplate.postForObject("http://127.0.0.1:8099/save",demoReq,DemoRes.class);
+  public DemoRes save(DemoReq demoReq) {
+    return restTemplate.postForObject("http://127.0.0.1:8099/save", demoReq, DemoRes.class);
   }
 
 }

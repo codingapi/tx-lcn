@@ -11,13 +11,13 @@ import org.slf4j.LoggerFactory;
  */
 public class KeepAlive implements Message {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KeepAlive.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(KeepAlive.class);
 
-    private static final long serialVersionUID = -4998803925489492616L;
+  private static final long serialVersionUID = -4998803925489492616L;
 
-    @Override
-    public void handle(IPeer peer, Connection connection) {
-        LOGGER.debug("Keep alive ping received from {}", connection);
-    }
+  @Override
+  public void handle(IPeer peer, Connection connection) {
+    LOGGER.debug("Keep alive ping received from {}", connection);
+  }
 
 }

@@ -26,7 +26,7 @@ public class TransactionAspect implements Ordered {
     Class<?> targetClass = point.getTarget().getClass();
     Method thisMethod = targetClass.getMethod(method.getName(), method.getParameterTypes());
     LcnTransaction lcnTransaction = thisMethod.getAnnotation(LcnTransaction.class);
-    log.info("run with lcn :{}",lcnTransaction);
+    log.info("run with lcn :{}", lcnTransaction);
     Object res = point.proceed();
     log.info("run with lcn over");
     return res;

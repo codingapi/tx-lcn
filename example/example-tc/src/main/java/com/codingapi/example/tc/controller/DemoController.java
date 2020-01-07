@@ -13,8 +13,8 @@ public class DemoController {
   private DemoService demoService;
 
   @GetMapping("/save")
-  public boolean save(@RequestParam("name") String name){
-     return demoService.save(name);
+  public boolean save(@RequestParam("name") String name) {
+    return demoService.save(name);
   }
 
 }

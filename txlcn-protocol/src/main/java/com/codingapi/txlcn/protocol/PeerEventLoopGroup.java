@@ -12,54 +12,54 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
  */
 public class PeerEventLoopGroup {
 
-    private final Config config;
+  private final Config config;
 
-    private final int portToBind;
+  private final int portToBind;
 
-    private final EventLoopGroup acceptorEventLoopGroup = new NioEventLoopGroup(1);
+  private final EventLoopGroup acceptorEventLoopGroup = new NioEventLoopGroup(1);
 
-    private final EventLoopGroup networkEventLoopGroup = new NioEventLoopGroup(6);
+  private final EventLoopGroup networkEventLoopGroup = new NioEventLoopGroup(6);
 
-    private final EventLoopGroup peerEventLoopGroup = new NioEventLoopGroup(1);
+  private final EventLoopGroup peerEventLoopGroup = new NioEventLoopGroup(1);
 
-    private final ObjectEncoder encoder = new ObjectEncoder();
+  private final ObjectEncoder encoder = new ObjectEncoder();
 
-    public void destroy(){
-        acceptorEventLoopGroup.shutdownGracefully();
-        networkEventLoopGroup.shutdownGracefully();
-        peerEventLoopGroup.shutdownGracefully();
-    }
+  public PeerEventLoopGroup(String peerName, int port) {
+    this(new Config(peerName), port);
+  }
 
-    public PeerEventLoopGroup(String peerName,int port){
-        this(new Config(peerName),port);
-    }
+  private PeerEventLoopGroup(Config config, int portToBind) {
+    this.config = config;
+    this.portToBind = portToBind;
+  }
 
-    private PeerEventLoopGroup(Config config, int portToBind) {
-        this.config = config;
-        this.portToBind = portToBind;
-    }
+  public void destroy() {
+    acceptorEventLoopGroup.shutdownGracefully();
+    networkEventLoopGroup.shutdownGracefully();
+    peerEventLoopGroup.shutdownGracefully();
+  }
 
-    public Config getConfig() {
-        return config;
-    }
+  public Config getConfig() {
+    return config;
+  }
 
-    public int getPortToBind() {
-        return portToBind;
-    }
+  public int getPortToBind() {
+    return portToBind;
+  }
 
-    public EventLoopGroup getAcceptorEventLoopGroup() {
-        return acceptorEventLoopGroup;
-    }
+  public EventLoopGroup getAcceptorEventLoopGroup() {
+    return acceptorEventLoopGroup;
+  }
 
-    public EventLoopGroup getNetworkEventLoopGroup() {
-        return networkEventLoopGroup;
-    }
+  public EventLoopGroup getNetworkEventLoopGroup() {
+    return networkEventLoopGroup;
+  }
 
-    public EventLoopGroup getPeerEventLoopGroup() {
-        return peerEventLoopGroup;
-    }
+  public EventLoopGroup getPeerEventLoopGroup() {
+    return peerEventLoopGroup;
+  }
 
-    public ObjectEncoder getEncoder() {
-        return encoder;
-    }
+  public ObjectEncoder getEncoder() {
+    return encoder;
+  }
 }

@@ -9,8 +9,8 @@ import com.codingapi.txlcn.protocol.message.Message;
  */
 public class Heartbeat implements Message {
 
-    @Override
-    public void handle(IPeer peer, Connection connection) {
-        //TM no any message to response.
-    }
+  @Override
+  public void handle(IPeer peer, Connection connection) {
+    //TM no any message to response.
+  }
 }

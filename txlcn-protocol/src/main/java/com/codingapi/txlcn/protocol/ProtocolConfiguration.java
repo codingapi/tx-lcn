@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ProtocolConfiguration {
 
-    @Bean(destroyMethod = "destroy")
-    @ConditionalOnMissingBean
-    public PeerEventLoopGroup peerEventLoopGroup(PeerConfig peerConfig){
-        return new PeerEventLoopGroup(peerConfig.getName(),peerConfig.getPort());
-    }
+  @Bean(destroyMethod = "destroy")
+  @ConditionalOnMissingBean
+  public PeerEventLoopGroup peerEventLoopGroup(PeerConfig peerConfig) {
+    return new PeerEventLoopGroup(peerConfig.getName(), peerConfig.getPort());
+  }
 }

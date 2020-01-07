@@ -10,12 +10,13 @@ class EventConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public TransactionCoordinatorListener transactionCoordinatorListener(List<CoordinatorListener> coordinatorListeners){
+  public TransactionCoordinatorListener transactionCoordinatorListener(
+      List<CoordinatorListener> coordinatorListeners) {
     return new TransactionCoordinatorListener(coordinatorListeners);
   }
 
   @Bean("defaultCoordinatorListener")
-  public CoordinatorListener defaultCoordinatorListener(){
+  public CoordinatorListener defaultCoordinatorListener() {
     return new DefaultCoordinatorListener();
   }
 

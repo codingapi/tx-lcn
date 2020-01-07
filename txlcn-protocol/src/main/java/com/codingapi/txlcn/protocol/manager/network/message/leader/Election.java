@@ -11,11 +11,11 @@ import com.codingapi.txlcn.protocol.message.Message;
  */
 public class Election implements Message {
 
-    private static final long serialVersionUID = 3025595002500496571L;
+  private static final long serialVersionUID = 3025595002500496571L;
 
-    @Override
-    public void handle(IPeer peer, Connection connection) {
-        peer.optional(Peer.class).ifPresent((p)->p.handleElection(connection));
-    }
+  @Override
+  public void handle(IPeer peer, Connection connection) {
+    peer.optional(Peer.class).ifPresent((p) -> p.handleElection(connection));
+  }
 
 }

@@ -5,14 +5,14 @@ import lombok.Data;
 @Data
 public class PeerConfig {
 
-    /**
-     * peer name
-     */
-    private String name;
+  /**
+   * peer name
+   */
+  private String name;
 
-    /**
-     * peer port
-     */
-    private int port;
+  /**
+   * peer port
+   */
+  private int port;
 
 }

@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ProtocolClientConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public PeerClientHandle peerClientHandle(PeerEventLoopGroup peerEventLoopGroup){
-        return new PeerClientHandle(peerEventLoopGroup);
-    }
+  @Bean
+  @ConditionalOnMissingBean
+  public PeerClientHandle peerClientHandle(PeerEventLoopGroup peerEventLoopGroup) {
+    return new PeerClientHandle(peerEventLoopGroup);
+  }
 
 }

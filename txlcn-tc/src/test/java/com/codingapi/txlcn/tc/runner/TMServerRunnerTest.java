@@ -11,23 +11,23 @@ import org.mockito.Mockito;
 
 public class TMServerRunnerTest {
 
-    private TxConfig txConfig;
+  private TxConfig txConfig;
 
-    private PeerClientHandle peerClientHandle;
+  private PeerClientHandle peerClientHandle;
 
-    private TMServerRunner serverRunner;
+  private TMServerRunner serverRunner;
 
-    @Before
-    public void before(){
-        txConfig = new TxConfig(new Config());
-        txConfig.setTms(Lists.newArrayList("127.0.0.1:8070,127.0.0.1:8072"));
-        peerClientHandle = Mockito.mock(PeerClientHandle.class);
-        serverRunner = new TMServerRunner(txConfig,peerClientHandle);
-    }
+  @Before
+  public void before() {
+    txConfig = new TxConfig(new Config());
+    txConfig.setTms(Lists.newArrayList("127.0.0.1:8070,127.0.0.1:8072"));
+    peerClientHandle = Mockito.mock(PeerClientHandle.class);
+    serverRunner = new TMServerRunner(txConfig, peerClientHandle);
+  }
 
-    @Test
-    public void init() throws Exception {
-        serverRunner.init();
-    }
+  @Test
+  public void init() throws Exception {
+    serverRunner.init();
+  }
 
 }

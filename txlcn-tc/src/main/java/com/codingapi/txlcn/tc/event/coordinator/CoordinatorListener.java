@@ -8,32 +8,35 @@ public interface CoordinatorListener {
 
   /**
    * 创建事务之前
+   *
    * @param event 事务消息
    */
   void onBeforeCreateTransaction(TransactionalEvent event);
 
   /**
    * 创建事务之后
-   * @param event
    */
-  void onAfterCreateTransaction(TransactionalEvent event,Exception exp) throws Exception;
+  void onAfterCreateTransaction(TransactionalEvent event, Exception exp) throws Exception;
 
 
   /**
    * 加入事务之前
+   *
    * @param event 事务消息
    */
   void onBeforeJoinTransaction(TransactionalEvent event);
 
   /**
    * 加入事务之后
+   *
    * @param event 事务消息
    */
-  void onAfterJoinTransaction(TransactionalEvent event,Exception exp) throws Exception;
+  void onAfterJoinTransaction(TransactionalEvent event, Exception exp) throws Exception;
 
 
   /**
    * 通知事务之前
+   *
    * @param event 事务消息
    */
   void onBeforeNotifyTransaction(TransactionalEvent event);
@@ -41,11 +44,10 @@ public interface CoordinatorListener {
 
   /**
    * 通知事务之后
+   *
    * @param event 事务消息
    */
-  void onAfterNotifyTransaction(TransactionalEvent event,Exception exp) throws Exception;
-
-
+  void onAfterNotifyTransaction(TransactionalEvent event, Exception exp) throws Exception;
 
 
 }

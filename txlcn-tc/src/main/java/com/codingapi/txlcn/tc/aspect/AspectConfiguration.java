@@ -9,7 +9,7 @@ public class AspectConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public TransactionAspect transactionAspect(){
+  public TransactionAspect transactionAspect() {
     return new TransactionAspect();
   }
 
