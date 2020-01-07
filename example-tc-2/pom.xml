@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.codingapi.txlcn</groupId>
-    <artifactId>example-tc</artifactId>
+    <artifactId>example-tc-2</artifactId>
     <version>6.0.0.SNAPSHOT</version>
 
     <dependencies>
@@ -20,7 +20,6 @@
             <artifactId>example-tc-t2-client</artifactId>
             <version>6.0.0.SNAPSHOT</version>
         </dependency>
-
 
         <dependency>
             <groupId>com.codingapi.txlcn</groupId>
