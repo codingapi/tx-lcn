@@ -37,10 +37,10 @@ public class ProtocolManagerConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public PeerHandle peerHandle(PeerConfig peerConfig, PeerEventLoopGroup peerEventLoopGroupBean,
+  public TMHandle peerHandle(PeerConfig peerConfig, PeerEventLoopGroup peerEventLoopGroupBean,
       ConnectionService connectionService, LeadershipService leadershipService,
       IPingService pingService) {
-    return new PeerHandle(new Config(peerConfig.getName()), peerConfig.getPort(),
+    return new TMHandle(new Config(peerConfig.getName()), peerConfig.getPort(),
         peerEventLoopGroupBean, connectionService, leadershipService, pingService);
   }
 

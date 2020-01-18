@@ -1,15 +1,14 @@
 package com.codingapi.txlcn.protocol.manager.network.message.leader;
 
 
-import com.codingapi.txlcn.protocol.IPeer;
-import com.codingapi.txlcn.protocol.manager.Peer;
+import com.codingapi.txlcn.protocol.manager.TMPeer;
 import com.codingapi.txlcn.protocol.message.Connection;
-import com.codingapi.txlcn.protocol.message.Message;
+import com.codingapi.txlcn.protocol.message.TMMessage;
 
 /**
  * Notifies neighbours about announced leader
  */
-public class AnnounceLeader implements Message {
+public class AnnounceLeader implements TMMessage {
 
   private static final long serialVersionUID = 81362517392480723L;
 
@@ -20,8 +19,8 @@ public class AnnounceLeader implements Message {
   }
 
   @Override
-  public void handle(IPeer peer, Connection connection) {
-    peer.optional(Peer.class).ifPresent((p) -> p.handleLeader(connection, leaderName));
+  public void handle(TMPeer peer, Connection connection) {
+    peer.handleLeader(connection, leaderName);
   }
 
 }

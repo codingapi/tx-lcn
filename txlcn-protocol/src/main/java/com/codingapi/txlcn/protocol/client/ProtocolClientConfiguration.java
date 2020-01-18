@@ -10,8 +10,8 @@ public class ProtocolClientConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public PeerClientHandle peerClientHandle(PeerEventLoopGroup peerEventLoopGroup) {
-    return new PeerClientHandle(peerEventLoopGroup);
+  public TCHandle peerClientHandle(PeerEventLoopGroup peerEventLoopGroup) {
+    return new TCHandle(peerEventLoopGroup);
   }
 
 }

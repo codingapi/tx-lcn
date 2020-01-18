@@ -6,7 +6,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.codingapi.txlcn.protocol.Config;
 import com.codingapi.txlcn.protocol.PeerEventLoopGroup;
-import com.codingapi.txlcn.protocol.manager.Peer;
+import com.codingapi.txlcn.protocol.manager.TMPeer;
 import com.codingapi.txlcn.protocol.manager.network.message.leader.AnnounceLeader;
 import com.codingapi.txlcn.protocol.manager.network.message.leader.Election;
 import com.codingapi.txlcn.protocol.manager.network.message.leader.Rejection;
@@ -144,7 +144,7 @@ public class LeadershipService {
    */
   public void scheduleElection() {
     peerEventLoopGroup
-        .schedule((Runnable) this::startElection, Peer.RANDOM.nextInt(100), MILLISECONDS);
+        .schedule((Runnable) this::startElection, TMPeer.RANDOM.nextInt(100), MILLISECONDS);
   }
 
   /**

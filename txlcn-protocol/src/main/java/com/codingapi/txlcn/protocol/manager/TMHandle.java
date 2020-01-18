@@ -4,8 +4,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.codingapi.txlcn.protocol.Config;
 import com.codingapi.txlcn.protocol.PeerEventLoopGroup;
-import com.codingapi.txlcn.protocol.manager.network.PeerChannelHandler;
-import com.codingapi.txlcn.protocol.manager.network.PeerChannelInitializer;
+import com.codingapi.txlcn.protocol.manager.network.TMChannelHandler;
+import com.codingapi.txlcn.protocol.manager.network.ChannelInitializer;
 import com.codingapi.txlcn.protocol.manager.service.ConnectionService;
 import com.codingapi.txlcn.protocol.manager.service.IPingService;
 import com.codingapi.txlcn.protocol.manager.service.LeadershipService;
@@ -27,9 +27,9 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PeerHandle {
+public class TMHandle {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PeerHandle.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TMHandle.class);
 
   private final Config config;
 
@@ -43,13 +43,13 @@ public class PeerHandle {
 
   private final ObjectEncoder encoder;
 
-  private final Peer peer;
+  private final TMPeer peer;
 
   private Future keepAliveFuture;
 
   private Future timeoutPingsFuture;
 
-  public PeerHandle(Config config, int port, PeerEventLoopGroup peerEventLoopGroupBean,
+  public TMHandle(Config config, int port, PeerEventLoopGroup peerEventLoopGroupBean,
       ConnectionService connectionService, LeadershipService leadershipService,
       IPingService pingService) {
     this.config = config;
@@ -58,7 +58,7 @@ public class PeerHandle {
     networkEventLoopGroup = peerEventLoopGroupBean.getNetworkEventLoopGroup();
     peerEventLoopGroup = peerEventLoopGroupBean.getPeerEventLoopGroup();
     encoder = peerEventLoopGroupBean.getEncoder();
-    this.peer = new Peer(config, connectionService, pingService, leadershipService);
+    this.peer = new TMPeer(config, connectionService, pingService, leadershipService);
   }
 
 
@@ -70,8 +70,8 @@ public class PeerHandle {
 
     ChannelFuture closeFuture = null;
 
-    final PeerChannelHandler peerChannelHandler = new PeerChannelHandler(config, peer);
-    final PeerChannelInitializer peerChannelInitializer = new PeerChannelInitializer(config,
+    final TMChannelHandler peerChannelHandler = new TMChannelHandler(config, peer);
+    final ChannelInitializer peerChannelInitializer = new ChannelInitializer(config,
         encoder,
         peerEventLoopGroup, peerChannelHandler);
     final ServerBootstrap peerBootstrap = new ServerBootstrap();
@@ -106,7 +106,7 @@ public class PeerHandle {
         System.exit(-1);
       }
 
-      final int initialDelay = Peer.RANDOM.nextInt(config.getKeepAlivePeriodSeconds());
+      final int initialDelay = TMPeer.RANDOM.nextInt(config.getKeepAlivePeriodSeconds());
 
       this.keepAliveFuture = peerEventLoopGroup
           .scheduleAtFixedRate((Runnable) peer::keepAlivePing, initialDelay,

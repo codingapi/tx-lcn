@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tc.runner;
 
-import com.codingapi.txlcn.protocol.client.PeerClientHandle;
+import com.codingapi.txlcn.protocol.client.TCHandle;
 import com.codingapi.txlcn.tc.config.TxConfig;
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -14,7 +14,7 @@ public class TMServerRunner {
 
   private TxConfig txConfig;
 
-  private PeerClientHandle peerClientHandle;
+  private TCHandle peerClientHandle;
 
   public void init() {
     peerClientHandle.setConfig(txConfig.getProtocol());

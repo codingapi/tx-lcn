@@ -1,9 +1,6 @@
-package com.codingapi.txlcn.protocol.client.network;
+package com.codingapi.txlcn.protocol.manager.network;
 
 
-import com.codingapi.txlcn.protocol.client.TCPeer;
-import com.codingapi.txlcn.protocol.client.network.message.Heartbeat;
-import com.codingapi.txlcn.protocol.client.service.PeerClientConnectionService;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.TCMessage;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -17,18 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Sharable
-public class PeerClientHandler extends SimpleChannelInboundHandler<TCMessage> {
+public class TCChannelHandler extends SimpleChannelInboundHandler<TCMessage> {
 
   static final String SESSION_ATTRIBUTE_KEY = "session";
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PeerClientHandler.class);
-  private TCPeer peerClient;
-  private PeerClientConnectionService peerClientConnectionService;
-  public PeerClientHandler(TCPeer peerClient,
-      PeerClientConnectionService peerClientConnectionService) {
-    this.peerClient = peerClient;
-    this.peerClientConnectionService = peerClientConnectionService;
-  }
+  private static final Logger LOGGER = LoggerFactory.getLogger(TCChannelHandler.class);
 
   static Attribute<Connection> getSessionAttribute(ChannelHandlerContext ctx) {
     return ctx.channel().attr(AttributeKey.<Connection>valueOf(SESSION_ATTRIBUTE_KEY));
@@ -38,16 +28,13 @@ public class PeerClientHandler extends SimpleChannelInboundHandler<TCMessage> {
   public void channelActive(final ChannelHandlerContext ctx) throws Exception {
     LOGGER.debug("Channel active {}", ctx.channel().remoteAddress());
     final Connection connection = new Connection(ctx);
-    peerClient.bindConnection(connection);
     getSessionAttribute(ctx).set(connection);
-    peerClientConnectionService.add(peerClient);
   }
 
   @Override
   public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
     LOGGER.debug("Channel inactive {}", ctx.channel().remoteAddress());
     final Connection connection = getSessionAttribute(ctx).get();
-    peerClientConnectionService.remove(connection);
   }
 
   @Override
@@ -55,7 +42,7 @@ public class PeerClientHandler extends SimpleChannelInboundHandler<TCMessage> {
       throws Exception {
     LOGGER.debug("Message {} received from {}", message.getClass(), ctx.channel().remoteAddress());
     final Connection connection = getSessionAttribute(ctx).get();
-    message.handle( connection);
+    message.handle(connection);
   }
 
   @Override
@@ -69,18 +56,15 @@ public class PeerClientHandler extends SimpleChannelInboundHandler<TCMessage> {
     ctx.close();
   }
 
-
   @Override
   public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
     if (evt instanceof IdleStateEvent) {
       final IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
-      if (idleStateEvent.state() == IdleState.WRITER_IDLE) {
-        final Connection connection = getSessionAttribute(ctx).get();
-        connection.send(new Heartbeat(peerClient.getApplicationName()));
-        LOGGER.debug("send heartbeat to {}", connection.getRemoteAddress());
+      if (idleStateEvent.state() == IdleState.READER_IDLE) {
+        LOGGER.warn("Channel idle {}", ctx.channel().remoteAddress());
+        ctx.close();
       }
     }
   }
-
 
 }

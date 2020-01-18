@@ -2,10 +2,10 @@ package com.codingapi.txlcn.protocol.manager.network;
 
 
 import com.codingapi.txlcn.protocol.Config;
-import com.codingapi.txlcn.protocol.manager.Peer;
+import com.codingapi.txlcn.protocol.manager.TMPeer;
 import com.codingapi.txlcn.protocol.manager.network.message.Handshake;
 import com.codingapi.txlcn.protocol.message.Connection;
-import com.codingapi.txlcn.protocol.message.Message;
+import com.codingapi.txlcn.protocol.message.TMMessage;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -17,15 +17,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Sharable
-public class PeerChannelHandler extends SimpleChannelInboundHandler<Message> {
+public class TMChannelHandler extends SimpleChannelInboundHandler<TMMessage> {
 
   static final String SESSION_ATTRIBUTE_KEY = "session";
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PeerChannelHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TMChannelHandler.class);
   private final Config config;
-  private final Peer peer;
+  private final TMPeer peer;
 
-  public PeerChannelHandler(Config config, Peer peer) {
+  public TMChannelHandler(Config config, TMPeer peer) {
     this.config = config;
     this.peer = peer;
   }
@@ -50,7 +50,7 @@ public class PeerChannelHandler extends SimpleChannelInboundHandler<Message> {
   }
 
   @Override
-  public void channelRead0(final ChannelHandlerContext ctx, final Message message)
+  public void channelRead0(final ChannelHandlerContext ctx, final TMMessage message)
       throws Exception {
     LOGGER.debug("Message {} received from {}", message.getClass(), ctx.channel().remoteAddress());
     final Connection connection = getSessionAttribute(ctx).get();

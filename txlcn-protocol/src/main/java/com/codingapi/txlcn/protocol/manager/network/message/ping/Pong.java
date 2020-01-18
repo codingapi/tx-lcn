@@ -1,15 +1,14 @@
 package com.codingapi.txlcn.protocol.manager.network.message.ping;
 
 
-import com.codingapi.txlcn.protocol.IPeer;
-import com.codingapi.txlcn.protocol.manager.Peer;
+import com.codingapi.txlcn.protocol.manager.TMPeer;
 import com.codingapi.txlcn.protocol.message.Connection;
-import com.codingapi.txlcn.protocol.message.Message;
+import com.codingapi.txlcn.protocol.message.TMMessage;
 
 /**
  * Contains information about a peer which responds to an incoming Ping message
  */
-public class Pong implements Message {
+public class Pong implements TMMessage {
 
   private static final long serialVersionUID = 2748377163219868853L;
 
@@ -73,8 +72,8 @@ public class Pong implements Message {
   }
 
   @Override
-  public void handle(IPeer peer, Connection connection) {
-    peer.optional(Peer.class).ifPresent(p -> p.handlePong(connection, this));
+  public void handle(TMPeer peer, Connection connection) {
+    peer.handlePong(connection, this);
   }
 
   @Override

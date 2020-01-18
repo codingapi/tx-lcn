@@ -1,11 +1,10 @@
 package com.codingapi.txlcn.protocol.manager.network.message.ping;
 
-import com.codingapi.txlcn.protocol.IPeer;
-import com.codingapi.txlcn.protocol.manager.Peer;
+import com.codingapi.txlcn.protocol.manager.TMPeer;
 import com.codingapi.txlcn.protocol.message.Connection;
-import com.codingapi.txlcn.protocol.message.Message;
+import com.codingapi.txlcn.protocol.message.TMMessage;
 
-public class CancelPongs implements Message {
+public class CancelPongs implements TMMessage {
 
   private static final long serialVersionUID = 5147827390577329607L;
 
@@ -16,8 +15,8 @@ public class CancelPongs implements Message {
   }
 
   @Override
-  public void handle(IPeer peer, Connection connection) {
-    peer.optional(Peer.class).ifPresent((p) -> p.cancelPongs(peerName));
+  public void handle(TMPeer peer, Connection connection) {
+    peer.cancelPongs(peerName);
   }
 
   @Override

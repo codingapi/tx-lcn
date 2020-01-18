@@ -1,16 +1,15 @@
 package com.codingapi.txlcn.protocol.manager.network.message;
 
-import com.codingapi.txlcn.protocol.IPeer;
-import com.codingapi.txlcn.protocol.manager.Peer;
+import com.codingapi.txlcn.protocol.manager.TMPeer;
 import com.codingapi.txlcn.protocol.message.Connection;
-import com.codingapi.txlcn.protocol.message.Message;
+import com.codingapi.txlcn.protocol.message.TMMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Informs the new peer about this peer
  */
-public class Handshake implements Message {
+public class Handshake implements TMMessage {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Handshake.class);
 
@@ -26,11 +25,11 @@ public class Handshake implements Message {
   }
 
   @Override
-  public void handle(IPeer peer, Connection connection) {
+  public void handle(TMPeer peer, Connection connection) {
     final String peerName = connection.getPeerName();
     if (peerName == null) {
       connection.setPeerName(this.peerName);
-      peer.optional(Peer.class).ifPresent(p -> p.handleConnectionOpened(connection, leaderName));
+      peer.handleConnectionOpened(connection, leaderName);
     } else if (!peerName.equals(this.peerName)) {
       LOGGER.warn(
           "Mismatching peer name received from connection! Existing: " + this.peerName

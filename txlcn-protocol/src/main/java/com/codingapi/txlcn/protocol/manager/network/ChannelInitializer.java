@@ -2,7 +2,6 @@ package com.codingapi.txlcn.protocol.manager.network;
 
 
 import com.codingapi.txlcn.protocol.Config;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
@@ -11,7 +10,7 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.EventExecutorGroup;
 
-public class PeerChannelInitializer extends ChannelInitializer<SocketChannel> {
+public class ChannelInitializer extends io.netty.channel.ChannelInitializer<SocketChannel> {
 
   private final Config config;
 
@@ -19,15 +18,18 @@ public class PeerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
   private final EventExecutorGroup peerChannelHandlerExecutorGroup;
 
-  private final PeerChannelHandler peerChannelHandler;
+  private final TMChannelHandler tmChannelHandler;
 
-  public PeerChannelInitializer(Config config, ObjectEncoder encoder,
+  private final TCChannelHandler tcChannelHandler;
+
+  public ChannelInitializer(Config config, ObjectEncoder encoder,
       EventExecutorGroup peerChannelHandlerExecutorGroup,
-      PeerChannelHandler peerChannelHandler) {
+      TMChannelHandler tmChannelHandler) {
     this.config = config;
     this.encoder = encoder;
     this.peerChannelHandlerExecutorGroup = peerChannelHandlerExecutorGroup;
-    this.peerChannelHandler = peerChannelHandler;
+    this.tmChannelHandler = tmChannelHandler;
+    tcChannelHandler = new TCChannelHandler();
   }
 
   @Override
@@ -38,7 +40,7 @@ public class PeerChannelInitializer extends ChannelInitializer<SocketChannel> {
     pipeline.addLast(encoder);
     pipeline.addLast(new IdleStateHandler(config.getMaxReadIdleSeconds(), 0, 0));
 
-    pipeline.addLast(peerChannelHandlerExecutorGroup, peerChannelHandler);
+    pipeline.addLast(peerChannelHandlerExecutorGroup, tmChannelHandler,tcChannelHandler);
   }
 
 }

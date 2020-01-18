@@ -4,7 +4,6 @@ package com.codingapi.txlcn.protocol.manager;
 import static java.lang.Math.min;
 
 import com.codingapi.txlcn.protocol.Config;
-import com.codingapi.txlcn.protocol.IPeer;
 import com.codingapi.txlcn.protocol.manager.network.message.ping.CancelPongs;
 import com.codingapi.txlcn.protocol.manager.network.message.ping.Ping;
 import com.codingapi.txlcn.protocol.manager.network.message.ping.Pong;
@@ -24,10 +23,10 @@ import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Peer implements IPeer {
+public class TMPeer {
 
   public static final Random RANDOM = new Random();
-  private static final Logger LOGGER = LoggerFactory.getLogger(Peer.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TMPeer.class);
   private final Config config;
 
   private final ConnectionService connectionService;
@@ -40,7 +39,7 @@ public class Peer implements IPeer {
 
   private boolean running = true;
 
-  public Peer(Config config, ConnectionService connectionService, IPingService pingService,
+  public TMPeer(Config config, ConnectionService connectionService, IPingService pingService,
       LeadershipService leadershipService) {
     this.config = config;
     this.connectionService = connectionService;

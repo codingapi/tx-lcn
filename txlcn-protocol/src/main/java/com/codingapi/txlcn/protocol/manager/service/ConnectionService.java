@@ -3,9 +3,9 @@ package com.codingapi.txlcn.protocol.manager.service;
 
 import com.codingapi.txlcn.protocol.Config;
 import com.codingapi.txlcn.protocol.PeerEventLoopGroup;
-import com.codingapi.txlcn.protocol.manager.Peer;
-import com.codingapi.txlcn.protocol.manager.network.PeerChannelHandler;
-import com.codingapi.txlcn.protocol.manager.network.PeerChannelInitializer;
+import com.codingapi.txlcn.protocol.manager.TMPeer;
+import com.codingapi.txlcn.protocol.manager.network.TMChannelHandler;
+import com.codingapi.txlcn.protocol.manager.network.ChannelInitializer;
 import com.codingapi.txlcn.protocol.message.Connection;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -95,10 +95,10 @@ public class ConnectionService {
     return Collections.unmodifiableCollection(connections.values());
   }
 
-  public void connectTo(final Peer peer, final String host, final int port,
+  public void connectTo(final TMPeer peer, final String host, final int port,
       final CompletableFuture<Void> futureToNotify) {
-    final PeerChannelHandler handler = new PeerChannelHandler(config, peer);
-    final PeerChannelInitializer initializer = new PeerChannelInitializer(config, encoder,
+    final TMChannelHandler handler = new TMChannelHandler(config, peer);
+    final ChannelInitializer initializer = new ChannelInitializer(config, encoder,
         peerEventLoopGroup, handler);
     final Bootstrap clientBootstrap = new Bootstrap();
     clientBootstrap.group(networkEventLoopGroup)

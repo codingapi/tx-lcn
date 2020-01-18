@@ -16,9 +16,9 @@ import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PeerClientHandle {
+public class TCHandle {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PeerClientHandle.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TCHandle.class);
 
   private final EventLoopGroup networkEventLoopGroup;
 
@@ -30,7 +30,7 @@ public class PeerClientHandle {
 
   private PeerClientConnectionService peerClientConnectionService = new PeerClientConnectionService();
 
-  public PeerClientHandle(PeerEventLoopGroup peerEventLoopGroup) {
+  public TCHandle(PeerEventLoopGroup peerEventLoopGroup) {
     this.networkEventLoopGroup = peerEventLoopGroup.getNetworkEventLoopGroup();
     this.peerEventLoopGroup = peerEventLoopGroup.getPeerEventLoopGroup();
     this.encoder = peerEventLoopGroup.getEncoder();
@@ -43,11 +43,11 @@ public class PeerClientHandle {
 
   public void connectTo(String applicationName, String host, int port) {
     final CompletableFuture<Void> futureToNotify = new CompletableFuture<>();
-    PeerClient peerClient = new PeerClient(applicationName, host, port);
+    TCPeer peerClient = new TCPeer(applicationName, host, port);
     connectTo(peerClient, futureToNotify);
   }
 
-  private void connectTo(PeerClient peerClient, final CompletableFuture<Void> futureToNotify) {
+  private void connectTo(TCPeer peerClient, final CompletableFuture<Void> futureToNotify) {
     String host = peerClient.getHost();
     int port = peerClient.getPort();
     final PeerClientHandler peerClientHandler = new PeerClientHandler(peerClient,
@@ -75,7 +75,7 @@ public class PeerClientHandle {
     }
   }
 
-  public List<PeerClient> list() {
+  public List<TCPeer> list() {
     return peerClientConnectionService.clients();
   }
 

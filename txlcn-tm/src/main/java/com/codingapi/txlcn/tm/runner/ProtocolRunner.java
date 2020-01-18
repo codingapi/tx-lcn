@@ -1,14 +1,14 @@
 package com.codingapi.txlcn.tm.runner;
 
-import com.codingapi.txlcn.protocol.manager.PeerHandle;
+import com.codingapi.txlcn.protocol.manager.TMHandle;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ProtocolRunner {
 
-  private final PeerHandle peerHandle;
+  private final TMHandle peerHandle;
 
-  public ProtocolRunner(PeerHandle peerHandle) {
+  public ProtocolRunner(TMHandle peerHandle) {
     this.peerHandle = peerHandle;
   }
 
