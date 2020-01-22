@@ -14,17 +14,17 @@ public class TMServerRunner {
 
   private TxConfig txConfig;
 
-  private TCHandle peerClientHandle;
+  private TCHandle tcHandle;
 
   public void init() {
-    peerClientHandle.setConfig(txConfig.getProtocol());
+    tcHandle.setConfig(txConfig.getProtocol());
     String applicationName = txConfig.getApplicationName();
     List<String> list = txConfig.getTms();
     log.info("TM servers:{}", list);
     if (list != null) {
       for (String item : list) {
         Optional<InetSocketAddress> optional = Optional.of(txConfig.addressFormat(item));
-        optional.ifPresent(address -> peerClientHandle
+        optional.ifPresent(address -> tcHandle
             .connectTo(applicationName, address.getHostString(), address.getPort()));
       }
     }

@@ -3,14 +3,12 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>tx-lcn</artifactId>
+    <artifactId>example-parent</artifactId>
     <groupId>com.codingapi.txlcn</groupId>
     <version>6.0.0.SNAPSHOT</version>
-    <relativePath>../../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.codingapi.txlcn</groupId>
   <artifactId>example-tc-2</artifactId>
   <version>6.0.0.SNAPSHOT</version>
 
@@ -20,29 +18,6 @@
       <groupId>com.codingapi.txlcn</groupId>
       <artifactId>example-tc-t2-client</artifactId>
       <version>6.0.0.SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.codingapi.txlcn</groupId>
-      <artifactId>starter-txlcn-tc</artifactId>
-      <version>6.0.0.SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mybatis.spring.boot</groupId>
-      <artifactId>mybatis-spring-boot-starter</artifactId>
-      <version>2.1.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <scope>runtime</scope>
     </dependency>
 
   </dependencies>
