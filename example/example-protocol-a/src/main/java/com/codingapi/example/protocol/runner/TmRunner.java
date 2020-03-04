@@ -1,6 +1,6 @@
 package com.codingapi.example.protocol.runner;
 
-import com.codingapi.txlcn.protocol.server.ProtocolServer;
+import com.codingapi.txlcn.protocol.ProtocolServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 

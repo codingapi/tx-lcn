@@ -1,6 +1,5 @@
-package com.codingapi.txlcn.protocol.server;
+package com.codingapi.txlcn.protocol;
 
-import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.config.Config;
 import com.codingapi.txlcn.protocol.handler.ProtocolChannelHandler;
 import com.codingapi.txlcn.protocol.handler.ProtocolChannelInitializer;

@@ -3,7 +3,7 @@ package com.codingapi.example.protocol.controller;
 import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.separate.AbsTxCreateGroupMsg;
-import com.codingapi.txlcn.protocol.server.ProtocolServer;
+import com.codingapi.txlcn.protocol.ProtocolServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

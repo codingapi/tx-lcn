@@ -1,7 +1,6 @@
 package com.codingapi.txlcn.protocol;
 
 import com.codingapi.txlcn.protocol.config.Config;
-import com.codingapi.txlcn.protocol.server.ProtocolServer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -17,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 public class ProtocolConfiguration {
 
     @Bean
-    @ConfigurationProperties(prefix = "tx.lcn.protocol")
+    @ConfigurationProperties(prefix = "txlcn.protocol")
     @ConditionalOnMissingBean
     public Config config(){
         return new Config();
