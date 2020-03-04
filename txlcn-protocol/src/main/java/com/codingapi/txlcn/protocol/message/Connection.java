@@ -3,6 +3,8 @@ package com.codingapi.txlcn.protocol.message;
 
 import io.netty.channel.ChannelHandlerContext;
 import java.net.InetSocketAddress;
+
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,26 +24,23 @@ public class Connection {
    */
   private String peerName;
 
+  @Getter
+  private final String remoteHost;
+
+  @Getter
+  private final int remotePort;
+
+  public String uniqueKey(){
+    return String.format("%s:%d",remoteHost,remotePort);
+  }
+
   public Connection(ChannelHandlerContext ctx) {
     this.remoteAddress = (InetSocketAddress) ctx.channel().remoteAddress();
     this.ctx = ctx;
+    this.remoteHost = remoteAddress.getAddress().getHostAddress();
+    this.remotePort = remoteAddress.getPort();
   }
 
-  public InetSocketAddress getRemoteAddress() {
-    return remoteAddress;
-  }
-
-  public String getPeerName() {
-    return peerName;
-  }
-
-  public void setPeerName(final String peerName) {
-    if (this.peerName == null) {
-      this.peerName = peerName;
-    } else {
-      LOGGER.warn("peer name {} set again for connection {}", peerName, this);
-    }
-  }
 
   public void send(final Message msg) {
     if (ctx != null) {

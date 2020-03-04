@@ -3,10 +3,16 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.2.0.RELEASE</version>
+    <relativePath/>
+  </parent>
 
   <groupId>com.codingapi.txlcn</groupId>
   <artifactId>tx-lcn</artifactId>
-  <version>6.0.0.SNAPSHOT</version>
+  <version>6.0.0</version>
   <packaging>pom</packaging>
 
 
@@ -14,14 +20,9 @@
   <url>https://github.com/codingapi/tx-lcn</url>
   <description>tx-lcn project for LCN</description>
 
-
   <modules>
-<!--    <module>txlcn-tc</module>-->
-<!--    <module>txlcn-tm</module>-->
     <module>txlcn-protocol</module>
     <module>starter-txlcn-protocol</module>
-<!--    <module>starter-txlcn-tc</module>-->
-
     <module>example</module>
 
   </modules>
@@ -64,19 +65,12 @@
 
     <txlcn-com.alibaba.dubbo.verion>2.6.5</txlcn-com.alibaba.dubbo.verion>
     <txlcn-com.netflix.feign.core.verison>8.18.0</txlcn-com.netflix.feign.core.verison>
-    <txlcn-com.netflix.ribbon.loadbalancer.version>2.3.0
-    </txlcn-com.netflix.ribbon.loadbalancer.version>
-    <txlcn-org.springframework.cloud.commons.version>2.1.0.RELEASE
-    </txlcn-org.springframework.cloud.commons.version>
+    <txlcn-com.netflix.ribbon.loadbalancer.version>2.3.0</txlcn-com.netflix.ribbon.loadbalancer.version>
+    <txlcn-org.springframework.cloud.commons.version>2.1.0.RELEASE</txlcn-org.springframework.cloud.commons.version>
   </properties>
 
 
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.0.5.RELEASE</version>
-    <relativePath/>
-  </parent>
+
 
 
   <dependencies>
