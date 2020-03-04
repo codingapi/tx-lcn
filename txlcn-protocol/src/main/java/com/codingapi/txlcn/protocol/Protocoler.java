@@ -2,10 +2,13 @@ package com.codingapi.txlcn.protocol;
 
 import com.codingapi.txlcn.protocol.config.Config;
 import com.codingapi.txlcn.protocol.message.Connection;
+import com.codingapi.txlcn.protocol.message.Message;
 import com.codingapi.txlcn.protocol.service.ConnectionService;
 import io.netty.channel.Channel;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -39,6 +42,7 @@ public class Protocoler {
 
     public void setBindChannel(Channel serverChannel) {
         this.serverChannel = serverChannel;
+        running = true;
     }
 
     public void handleConnectionOpened(Connection connection) {
@@ -53,9 +57,7 @@ public class Protocoler {
         if (connection == null) {
             return;
         }
-
         connectionService.removeConnection(connection);
-
     }
 
     public void leave(final CompletableFuture<Void> futureToNotify) {
@@ -63,6 +65,11 @@ public class Protocoler {
             log.warn("server already shut down!");
             futureToNotify.complete(null);
             return;
+        }
+
+        Collection<Connection> connections =  getConnections();
+        for(Connection connection:connections){
+            connection.close();
         }
 
         serverChannel.closeFuture().addListener(future -> {
@@ -76,9 +83,26 @@ public class Protocoler {
         running = false;
     }
 
-    private boolean isShutdown() {
+    public boolean isShutdown() {
         return !running;
     }
 
 
+    public Collection<Connection> getConnections() {
+        return connectionService.getConnections();
+    }
+
+    public void sendMsg(String uniqueKey, Message message) {
+        Connection connection = connectionService.getConnection(uniqueKey);
+        if (connection != null) {
+            connection.send(message);
+        } else {
+            log.warn("This key {} not connected. ", uniqueKey);
+        }
+    }
+
+
+    public boolean existConnect(String uniqueKey) {
+        return connectionService.existConnect(uniqueKey);
+    }
 }

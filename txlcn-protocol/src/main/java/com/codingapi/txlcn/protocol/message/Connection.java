@@ -1,6 +1,5 @@
 package com.codingapi.txlcn.protocol.message;
 
-
 import io.netty.channel.ChannelHandlerContext;
 import java.net.InetSocketAddress;
 
@@ -19,26 +18,21 @@ public class Connection {
 
   private ChannelHandlerContext ctx;
 
-  /**
-   * peer name is an connection label.
-   */
-  private String peerName;
-
   @Getter
   private final String remoteHost;
 
   @Getter
   private final int remotePort;
 
-  public String uniqueKey(){
-    return String.format("%s:%d",remoteHost,remotePort);
-  }
+  @Getter
+  private final String uniqueKey;
 
   public Connection(ChannelHandlerContext ctx) {
     this.remoteAddress = (InetSocketAddress) ctx.channel().remoteAddress();
     this.ctx = ctx;
     this.remoteHost = remoteAddress.getAddress().getHostAddress();
     this.remotePort = remoteAddress.getPort();
+    this.uniqueKey = String.format("%s:%d",remoteHost,remotePort);
   }
 
 
@@ -69,12 +63,12 @@ public class Connection {
 
     Connection that = (Connection) other;
 
-    return !(peerName != null ? !peerName.equals(that.peerName) : that.peerName != null);
+    return !(uniqueKey != null ? !uniqueKey.equals(that.uniqueKey) : that.uniqueKey != null);
   }
 
   @Override
   public int hashCode() {
-    return peerName != null ? peerName.hashCode() : 0;
+    return uniqueKey != null ? uniqueKey.hashCode() : 0;
   }
 
   @Override

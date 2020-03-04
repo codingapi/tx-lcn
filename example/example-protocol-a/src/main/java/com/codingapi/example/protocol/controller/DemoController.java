@@ -1,11 +1,17 @@
 package com.codingapi.example.protocol.controller;
 
+import com.codingapi.txlcn.protocol.Protocoler;
+import com.codingapi.txlcn.protocol.message.Connection;
+import com.codingapi.txlcn.protocol.message.CreateTxGroupMsg;
 import com.codingapi.txlcn.protocol.server.ProtocolServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author lorne
@@ -21,6 +27,28 @@ public class DemoController {
     @GetMapping("/connect")
     public int connect(@RequestParam("host") String host,@RequestParam("port") int port){
         protocolServer.connectTo(host, port);
+        return 1;
+    }
+
+    @GetMapping("/all")
+    public Collection<Connection> all(){
+        Protocoler protocoler =  protocolServer.getProtocoler();
+        return protocoler.getConnections();
+    }
+
+
+    @GetMapping("/send")
+    public int send(@RequestParam("uniqueKey")String uniqueKey,@RequestParam("msg")String msg){
+        Protocoler protocoler =  protocolServer.getProtocoler();
+        protocoler.sendMsg(uniqueKey,new CreateTxGroupMsg(msg));
+        return 1;
+    }
+
+
+    @GetMapping("/stop")
+    public int stop(){
+        Protocoler protocoler =  protocolServer.getProtocoler();
+        protocoler.leave(new CompletableFuture<>());
         return 1;
     }
 

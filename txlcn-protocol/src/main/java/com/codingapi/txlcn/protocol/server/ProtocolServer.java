@@ -17,6 +17,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.EventExecutorGroup;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CompletableFuture;
@@ -38,6 +39,7 @@ public class ProtocolServer {
 
     private final Config config;
 
+    @Getter
     private final Protocoler protocoler;
 
 
@@ -60,7 +62,6 @@ public class ProtocolServer {
         ProtocolChannelHandler protocolChannelHandler = new ProtocolChannelHandler(protocoler);
 
         ProtocolChannelInitializer protocolChannelInitializer = new ProtocolChannelInitializer(config,protocolChannelHandler,eventExecutorGroup);
-
 
         final ServerBootstrap peerBootstrap = new ServerBootstrap();
         peerBootstrap.group(acceptorEventLoopGroup, networkEventLoopGroup)
@@ -105,13 +106,23 @@ public class ProtocolServer {
 
 
 
-    public void connectTo(String host, int port) {
+    public boolean connectTo(String host, int port) {
         CompletableFuture<Void> futureToNotify = new CompletableFuture<>();
-        connectTo(host, port,futureToNotify);
+        return connectTo(host, port,futureToNotify);
     }
 
 
-    public void connectTo(String host, int port, CompletableFuture<Void> futureToNotify) {
+    public boolean connectTo(String host, int port, CompletableFuture<Void> futureToNotify) {
+        if(protocoler.isShutdown()){
+            log.warn("server already shut down!");
+            return false;
+        }
+        String uniqueKey = String.format("%s:%d",host,port);
+        if(protocoler.existConnect(uniqueKey)){
+            log.warn("Already existing connection to " + uniqueKey + " is closed.");
+            return false;
+        }
+
 
         ProtocolChannelHandler protocolChannelHandler = new ProtocolChannelHandler(protocoler);
         ProtocolChannelInitializer protocolChannelInitializer = new ProtocolChannelInitializer(config,protocolChannelHandler,eventExecutorGroup);
@@ -135,6 +146,7 @@ public class ProtocolServer {
                     }
             );
         }
+        return true;
     }
 
 

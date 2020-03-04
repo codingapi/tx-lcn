@@ -4,6 +4,7 @@ import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.Heartbeat;
 import com.codingapi.txlcn.protocol.message.Message;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
  * @description
  */
 @Slf4j
+@ChannelHandler.Sharable
 public class ProtocolChannelHandler  extends SimpleChannelInboundHandler<Message> {
 
     private final Protocoler protocoler;

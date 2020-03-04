@@ -20,23 +20,23 @@ public class ConnectionService {
     private final Map<String, Connection> connections = new HashMap<String, Connection>();
 
     public void addConnection(final Connection connection) {
-        final String uniqueKey = connection.uniqueKey();
-        final Connection previousConnection = connections.put(uniqueKey, connection);
-
-        log.info("Connection to " + uniqueKey + " is added.");
-
+        final String uniqueKey = connection.getUniqueKey();
+        final Connection previousConnection = connections.get(uniqueKey);
         if (previousConnection != null) {
-            previousConnection.close();
+            connection.close();
             log.warn("Already existing connection to " + uniqueKey + " is closed.");
+        }else{
+            connections.put(uniqueKey,connection);
+            log.info("Connection to " + uniqueKey + " is added.");
         }
     }
 
     public boolean removeConnection(final Connection connection) {
-        final boolean removed = connections.remove(connection.uniqueKey()) != null;
+        final boolean removed = connections.remove(connection.getUniqueKey()) != null;
         if (removed) {
             log.info(connection + " is removed from connections!");
         } else {
-            log.warn("Connection to " + connection.uniqueKey() + " is not removed since not found in connections!");
+            log.warn("Connection to " + connection.getUniqueKey() + " is not removed since not found in connections!");
         }
 
         return removed;
@@ -50,5 +50,11 @@ public class ConnectionService {
         return Collections.unmodifiableCollection(connections.values());
     }
 
+    public Connection getConnection(String uniqueKey) {
+        return connections.get(uniqueKey);
+    }
 
+    public boolean existConnect(String uniqueKey) {
+        return connections.get(uniqueKey)!=null;
+    }
 }
