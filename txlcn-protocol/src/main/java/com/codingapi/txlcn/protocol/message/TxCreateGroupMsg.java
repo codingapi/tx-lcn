@@ -4,6 +4,7 @@ import com.codingapi.txlcn.protocol.Protocoler;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author lorne
@@ -13,16 +14,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Data
 @NoArgsConstructor
-public class CreateTxGroupMsg implements Message {
+public class TxCreateGroupMsg implements Message {
 
-    public CreateTxGroupMsg(String groupId) {
+    public TxCreateGroupMsg(String groupId) {
         this.groupId = groupId;
     }
 
     private String groupId;
 
     @Override
-    public void handle(Protocoler protocoler, Connection connection) throws Exception {
+    public void handle(ApplicationContext springContext, Protocoler protocoler, Connection connection) throws Exception {
         log.info("groupId:{}",groupId);
     }
 }

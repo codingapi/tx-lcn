@@ -5,7 +5,6 @@ import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.Message;
 import com.codingapi.txlcn.protocol.service.ConnectionService;
 import io.netty.channel.Channel;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;

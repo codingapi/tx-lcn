@@ -11,7 +11,9 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author lorne
@@ -26,8 +28,12 @@ public class ProtocolChannelHandler  extends SimpleChannelInboundHandler<Message
 
     private static final String SESSION_ATTRIBUTE_KEY = "session";
 
-    public ProtocolChannelHandler(Protocoler protocoler) {
+    @Getter
+    private final ApplicationContext applicationContext;
+
+    public ProtocolChannelHandler(Protocoler protocoler,ApplicationContext applicationContext) {
         this.protocoler = protocoler;
+        this.applicationContext = applicationContext;
     }
 
     static Attribute<Connection> getSessionAttribute(ChannelHandlerContext ctx) {
@@ -55,7 +61,7 @@ public class ProtocolChannelHandler  extends SimpleChannelInboundHandler<Message
     public void channelRead0(final ChannelHandlerContext ctx, final Message message) throws Exception {
         log.debug("Message {} received from {}", message.getClass(), ctx.channel().remoteAddress());
         final Connection connection = getSessionAttribute(ctx).get();
-        message.handle(protocoler, connection);
+        message.handle(applicationContext,protocoler, connection);
     }
 
 

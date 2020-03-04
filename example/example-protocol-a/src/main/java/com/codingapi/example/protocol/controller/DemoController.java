@@ -2,11 +2,10 @@ package com.codingapi.example.protocol.controller;
 
 import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
-import com.codingapi.txlcn.protocol.message.CreateTxGroupMsg;
+import com.codingapi.txlcn.protocol.message.TxCreateGroupMsg;
 import com.codingapi.txlcn.protocol.server.ProtocolServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,7 +39,7 @@ public class DemoController {
     @GetMapping("/send")
     public int send(@RequestParam("uniqueKey")String uniqueKey,@RequestParam("msg")String msg){
         Protocoler protocoler =  protocolServer.getProtocoler();
-        protocoler.sendMsg(uniqueKey,new CreateTxGroupMsg(msg));
+        protocoler.sendMsg(uniqueKey,new TxCreateGroupMsg(msg));
         return 1;
     }
 

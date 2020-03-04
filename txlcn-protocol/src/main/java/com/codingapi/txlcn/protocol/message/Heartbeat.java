@@ -2,6 +2,7 @@ package com.codingapi.txlcn.protocol.message;
 
 import com.codingapi.txlcn.protocol.Protocoler;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author lorne
@@ -12,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 public class Heartbeat implements Message {
 
     @Override
-    public void handle(Protocoler protocoler, Connection connection) throws Exception {
+    public void handle(ApplicationContext springContext, Protocoler protocoler, Connection connection) throws Exception {
         log.debug("heartbeat message from {}",connection);
     }
 }

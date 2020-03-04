@@ -19,6 +19,7 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.EventExecutorGroup;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -39,12 +40,15 @@ public class ProtocolServer {
 
     private final Config config;
 
+    private final ApplicationContext applicationContext;
+
     @Getter
     private final Protocoler protocoler;
 
 
-    public ProtocolServer(Config config) {
+    public ProtocolServer(Config config,ApplicationContext applicationContext) {
         this.config = config;
+        this.applicationContext = applicationContext;
 
         protocoler = new Protocoler(config);
 
@@ -59,7 +63,7 @@ public class ProtocolServer {
 
         ChannelFuture closeFuture = null;
 
-        ProtocolChannelHandler protocolChannelHandler = new ProtocolChannelHandler(protocoler);
+        ProtocolChannelHandler protocolChannelHandler = new ProtocolChannelHandler(protocoler,applicationContext);
 
         ProtocolChannelInitializer protocolChannelInitializer = new ProtocolChannelInitializer(config,protocolChannelHandler,eventExecutorGroup);
 
@@ -124,7 +128,7 @@ public class ProtocolServer {
         }
 
 
-        ProtocolChannelHandler protocolChannelHandler = new ProtocolChannelHandler(protocoler);
+        ProtocolChannelHandler protocolChannelHandler = new ProtocolChannelHandler(protocoler,applicationContext);
         ProtocolChannelInitializer protocolChannelInitializer = new ProtocolChannelInitializer(config,protocolChannelHandler,eventExecutorGroup);
 
         final Bootstrap clientBootstrap = new Bootstrap();

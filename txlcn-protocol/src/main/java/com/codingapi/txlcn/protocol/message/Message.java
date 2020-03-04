@@ -2,6 +2,7 @@ package com.codingapi.txlcn.protocol.message;
 
 
 import com.codingapi.txlcn.protocol.Protocoler;
+import org.springframework.context.ApplicationContext;
 
 import java.io.Serializable;
 
@@ -13,10 +14,11 @@ public interface Message extends Serializable {
 
     /**
      * receive message handler, msg is this obj.
+     * @param springContext springContext.
      * @param protocoler self protocoler
      * @param connection remote connection
      */
-    void handle(Protocoler protocoler, Connection connection) throws Exception;;
+    void handle(ApplicationContext springContext, Protocoler protocoler, Connection connection) throws Exception;;
 
 
 }

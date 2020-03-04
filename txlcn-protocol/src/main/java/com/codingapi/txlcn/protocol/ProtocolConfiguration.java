@@ -4,6 +4,7 @@ import com.codingapi.txlcn.protocol.config.Config;
 import com.codingapi.txlcn.protocol.server.ProtocolServer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,8 +25,8 @@ public class ProtocolConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ProtocolServer protocolServer(Config config){
-        return new ProtocolServer(config);
+    public ProtocolServer protocolServer(Config config, ApplicationContext applicationContext){
+        return new ProtocolServer(config,applicationContext);
 
     }
 
