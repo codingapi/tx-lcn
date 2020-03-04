@@ -40,7 +40,7 @@ public class ProtocolChannelInitializer extends ChannelInitializer<SocketChannel
         pipeline.addLast(new ObjectEncoder());
         pipeline.addLast(new LengthFieldPrepender(4, false));
         pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
-        pipeline.addLast(new IdleStateHandler(config.getMaxReadIdleSeconds(), 0, 0));
+        pipeline.addLast(new IdleStateHandler(config.getMaxReadIdleSeconds(), config.getMaxWriteIdleSeconds(), 0));
 
         pipeline.addLast(eventExecutorGroup, protocolChannelHandler);
     }

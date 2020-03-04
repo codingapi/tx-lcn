@@ -14,9 +14,9 @@
     <artifactId>example-parent</artifactId>
     <version>6.0.0</version>
 
-
     <modules>
-        <module>example-protocol</module>
+        <module>example-protocol-a</module>
+        <module>example-protocol-b</module>
     </modules>
 
     <dependencies>

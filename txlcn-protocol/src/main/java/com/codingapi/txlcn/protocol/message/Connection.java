@@ -82,7 +82,6 @@ public class Connection {
     return "Connection{" +
         "remoteAddress=" + remoteAddress +
         ", isOpen=" + (ctx != null) +
-        ", peerName='" + peerName + '\'' +
         '}';
   }
 }

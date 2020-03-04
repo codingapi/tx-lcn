@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.protocol.config;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * @author lorne
@@ -8,10 +9,13 @@ import lombok.Data;
  * @description
  */
 @Data
+@ToString
 public class Config {
 
     private int port = 8888;
 
-    private int maxReadIdleSeconds = 10;
+    private int maxReadIdleSeconds = 60;
+
+    private int maxWriteIdleSeconds = 20;
 
 }

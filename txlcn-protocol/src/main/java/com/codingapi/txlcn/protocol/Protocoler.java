@@ -24,6 +24,14 @@ public class Protocoler {
 
     private boolean running = true;
 
+    @Override
+    public String toString() {
+        return "Protocoler{" +
+                ", config=" + config +
+                ", running=" + running +
+                '}';
+    }
+
     public Protocoler(Config config) {
         this.config =config;
         this.connectionService = new ConnectionService();
