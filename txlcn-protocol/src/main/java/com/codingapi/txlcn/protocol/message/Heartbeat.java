@@ -13,6 +13,6 @@ public class Heartbeat implements Message {
 
     @Override
     public void handle(Protocoler protocoler, Connection connection) throws Exception {
-        log.debug("heartbeat self:{},connection:{}",protocoler,connection);
+        log.debug("heartbeat message from {}",connection);
     }
 }

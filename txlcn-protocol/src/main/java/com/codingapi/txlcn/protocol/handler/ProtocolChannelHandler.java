@@ -67,6 +67,7 @@ public class ProtocolChannelHandler  extends SimpleChannelInboundHandler<Message
             }
 
             if(idleStateEvent.state() == IdleState.WRITER_IDLE){
+                log.debug("seed heart message to {} ", ctx.channel().remoteAddress());
                 ctx.writeAndFlush(new Heartbeat());
             }
         }
