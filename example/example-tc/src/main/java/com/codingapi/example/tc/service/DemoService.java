@@ -6,19 +6,18 @@ import com.codingapi.example.tc.feign.TC2Client;
 import com.codingapi.example.tc2.vo.DemoReq;
 import com.codingapi.example.tc2.vo.DemoRes;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class DemoService {
 
-  @Autowired
   private DemoMapper demoMapper;
 
-  @Autowired
   private TC2Client tc2Client;
 
   @Transactional
