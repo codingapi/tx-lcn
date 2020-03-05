@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tc.runner;
 
-import com.codingapi.txlcn.protocol.client.TCHandle;
+import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.tc.config.TxConfig;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,8 @@ public class TcRunnerConfiguration {
   private TMServerRunner tmServerRunner;
 
   @Bean
-  public TMServerRunner tmServerRunner(TxConfig txConfig, TCHandle peerClientHandle) {
-    return new TMServerRunner(txConfig, peerClientHandle);
+  public TMServerRunner tmServerRunner(TxConfig txConfig, ProtocolServer protocolServer) {
+    return new TMServerRunner(txConfig, protocolServer);
   }
 
   @PostConstruct

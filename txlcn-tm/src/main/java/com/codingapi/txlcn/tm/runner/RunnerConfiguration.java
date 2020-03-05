@@ -1,10 +1,11 @@
 package com.codingapi.txlcn.tm.runner;
 
-import com.codingapi.txlcn.protocol.manager.TMHandle;
-import javax.annotation.PostConstruct;
+import com.codingapi.txlcn.protocol.ProtocolServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.PostConstruct;
 
 @Configuration
 public class RunnerConfiguration {
@@ -13,8 +14,8 @@ public class RunnerConfiguration {
   private ProtocolRunner protocolRunner;
 
   @Bean
-  public ProtocolRunner protocolRunner(TMHandle peerHandle) {
-    return new ProtocolRunner(peerHandle);
+  public ProtocolRunner protocolRunner(ProtocolServer protocolServer) {
+    return new ProtocolRunner(protocolServer);
   }
 
   @PostConstruct

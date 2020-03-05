@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tc.runner;
 
-import com.codingapi.txlcn.protocol.client.TCHandle;
+import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.tc.config.TxConfig;
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -14,18 +14,16 @@ public class TMServerRunner {
 
   private TxConfig txConfig;
 
-  private TCHandle tcHandle;
+  private ProtocolServer protocolServer;
 
   public void init() {
-    tcHandle.setConfig(txConfig.getProtocol());
-    String applicationName = txConfig.getApplicationName();
     List<String> list = txConfig.getTms();
     log.info("TM servers:{}", list);
     if (list != null) {
       for (String item : list) {
         Optional<InetSocketAddress> optional = Optional.of(txConfig.addressFormat(item));
-        optional.ifPresent(address -> tcHandle
-            .connectTo(applicationName, address.getHostString(), address.getPort()));
+        optional.ifPresent(address -> protocolServer
+            .connectTo(address.getHostString(), address.getPort()));
       }
     }
   }

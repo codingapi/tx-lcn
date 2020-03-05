@@ -22,7 +22,12 @@
 
   <modules>
     <module>txlcn-protocol</module>
+    <module>txlcn-tc</module>
+    <module>txlcn-tm</module>
+
     <module>starter-txlcn-protocol</module>
+    <module>starter-txlcn-tc</module>
+
     <module>example</module>
 
   </modules>

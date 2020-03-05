@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tc.config;
 
-import com.codingapi.txlcn.protocol.Config;
+import com.codingapi.txlcn.protocol.config.Config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +14,5 @@ public class TcConfigConfiguration {
     return new TxConfig(config);
   }
 
-  @Bean
-  @ConfigurationProperties(prefix = "txlcn.tc.protocol")
-  public Config config() {
-    return new Config();
-  }
+
 }

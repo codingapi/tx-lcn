@@ -6,11 +6,11 @@
   <parent>
     <groupId>com.codingapi.txlcn</groupId>
     <artifactId>tx-lcn</artifactId>
-    <version>6.0.0.SNAPSHOT</version>
+    <version>6.0.0</version>
   </parent>
 
   <artifactId>txlcn-tm</artifactId>
-  <version>6.0.0.SNAPSHOT</version>
+  <version>6.0.0</version>
   <packaging>jar</packaging>
 
   <dependencies>
@@ -18,7 +18,7 @@
     <dependency>
       <groupId>com.codingapi.txlcn</groupId>
       <artifactId>starter-txlcn-protocol</artifactId>
-      <version>6.0.0.SNAPSHOT</version>
+      <version>6.0.0</version>
     </dependency>
 
     <dependency>

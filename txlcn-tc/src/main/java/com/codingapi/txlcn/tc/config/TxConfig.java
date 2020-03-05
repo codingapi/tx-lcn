@@ -1,10 +1,11 @@
 package com.codingapi.txlcn.tc.config;
 
-import com.codingapi.txlcn.protocol.Config;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.codingapi.txlcn.protocol.config.Config;
 import lombok.Data;
 
 /**

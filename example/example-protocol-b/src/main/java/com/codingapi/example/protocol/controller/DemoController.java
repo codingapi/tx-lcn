@@ -1,9 +1,8 @@
 package com.codingapi.example.protocol.controller;
 
+import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
-import com.codingapi.txlcn.protocol.message.separate.AbsTxCreateGroupMsg;
-import com.codingapi.txlcn.protocol.ProtocolServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,19 +28,10 @@ public class DemoController {
         return 1;
     }
 
-
     @GetMapping("/all")
     public Collection<Connection> all(){
         Protocoler protocoler =  protocolServer.getProtocoler();
         return protocoler.getConnections();
-    }
-
-
-    @GetMapping("/send")
-    public int send(@RequestParam("uniqueKey")String uniqueKey,@RequestParam("msg")String msg){
-        Protocoler protocoler =  protocolServer.getProtocoler();
-        protocoler.sendMsg(uniqueKey,new AbsTxCreateGroupMsg(msg));
-        return 1;
     }
 
     @GetMapping("/stop")
