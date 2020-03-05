@@ -1,6 +1,8 @@
 package com.codingapi.txlcn.tc.aspect;
 
 import com.codingapi.txlcn.tc.control.TransactionStateControl;
+import com.codingapi.txlcn.tc.parser.AnnotationParserHelper;
+import com.codingapi.txlcn.tc.parser.TxAnnotation;
 import com.codingapi.txlcn.tc.state.TransactionStateManager;
 import com.codingapi.txlcn.tc.utils.PointUtils;
 import lombok.AllArgsConstructor;
@@ -20,6 +22,8 @@ public class TransactionAspect implements Ordered {
 
   private TransactionStateControl transactionStateControl;
 
+  private AnnotationParserHelper annotationParserHelper;
+
   @Pointcut("@annotation(com.codingapi.txlcn.tc.annotation.LcnTransaction)")
   public void lcnTransactionPointcut() {
   }
@@ -28,7 +32,10 @@ public class TransactionAspect implements Ordered {
   public Object runWithLcnTransaction(ProceedingJoinPoint point) throws Throwable {
 
     Method targetMethod = PointUtils.targetMethod(point);
-    TransactionStateManager transactionStateManager = new TransactionStateManager(targetMethod);
+
+    TxAnnotation txAnnotation = annotationParserHelper.getAnnotation(targetMethod);
+
+    TransactionStateManager transactionStateManager = new TransactionStateManager(txAnnotation);
     if(!transactionStateManager.existTransactionState()){
         return point.proceed();
     }

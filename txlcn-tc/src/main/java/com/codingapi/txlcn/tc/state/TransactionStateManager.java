@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tc.state;
 
-import com.codingapi.txlcn.tc.parser.AnnotationParserUtils;
+import com.codingapi.txlcn.tc.parser.AnnotationParserHelper;
 import com.codingapi.txlcn.tc.parser.TxAnnotation;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,10 +17,9 @@ public class TransactionStateManager {
 
     private final TransactionState transactionState;
 
-    public TransactionStateManager(Method targetMethod){
+    public TransactionStateManager(TxAnnotation txAnnotation){
         TransactionState transactionState =  TransactionStateThreadLocal.current();
         if(transactionState==null){
-            TxAnnotation txAnnotation = AnnotationParserUtils.getAnnotation(targetMethod);
             if(txAnnotation!=null){
                 transactionState = new TransactionState();
                 transactionState.setTransactionType(txAnnotation.getType());
