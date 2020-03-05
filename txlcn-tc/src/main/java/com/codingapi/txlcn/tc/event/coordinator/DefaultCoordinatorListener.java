@@ -9,7 +9,7 @@ package com.codingapi.txlcn.tc.event.coordinator;
   }
 
   @Override
-  public void onAfterCreateTransaction(TransactionalEvent event, Exception exp) throws Exception {
+  public void onAfterCreateTransaction(TransactionalEvent event, Exception exp){
 
   }
 
@@ -19,7 +19,7 @@ package com.codingapi.txlcn.tc.event.coordinator;
   }
 
   @Override
-  public void onAfterJoinTransaction(TransactionalEvent event, Exception exp) throws Exception {
+  public void onAfterJoinTransaction(TransactionalEvent event, Exception exp) {
 
   }
 
@@ -29,7 +29,7 @@ package com.codingapi.txlcn.tc.event.coordinator;
   }
 
   @Override
-  public void onAfterNotifyTransaction(TransactionalEvent event, Exception exp) throws Exception {
+  public void onAfterNotifyTransaction(TransactionalEvent event, Exception exp) {
 
   }
 }

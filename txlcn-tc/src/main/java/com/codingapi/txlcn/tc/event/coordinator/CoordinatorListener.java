@@ -16,7 +16,7 @@ public interface CoordinatorListener {
   /**
    * 创建事务之后
    */
-  void onAfterCreateTransaction(TransactionalEvent event, Exception exp) throws Exception;
+  void onAfterCreateTransaction(TransactionalEvent event, Exception exp);
 
 
   /**
@@ -31,7 +31,7 @@ public interface CoordinatorListener {
    *
    * @param event 事务消息
    */
-  void onAfterJoinTransaction(TransactionalEvent event, Exception exp) throws Exception;
+  void onAfterJoinTransaction(TransactionalEvent event, Exception exp);
 
 
   /**
@@ -47,7 +47,7 @@ public interface CoordinatorListener {
    *
    * @param event 事务消息
    */
-  void onAfterNotifyTransaction(TransactionalEvent event, Exception exp) throws Exception;
+  void onAfterNotifyTransaction(TransactionalEvent event, Exception exp);
 
 
 }

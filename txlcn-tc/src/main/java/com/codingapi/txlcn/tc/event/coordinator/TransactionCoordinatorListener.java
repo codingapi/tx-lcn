@@ -20,7 +20,7 @@ public class TransactionCoordinatorListener implements CoordinatorListener {
   }
 
   @Override
-  public void onAfterCreateTransaction(TransactionalEvent event, Exception exp) throws Exception {
+  public void onAfterCreateTransaction(TransactionalEvent event, Exception exp) {
     for (CoordinatorListener listener : listeners) {
       listener.onAfterCreateTransaction(event, exp);
     }
@@ -34,7 +34,7 @@ public class TransactionCoordinatorListener implements CoordinatorListener {
   }
 
   @Override
-  public void onAfterJoinTransaction(TransactionalEvent event, Exception exp) throws Exception {
+  public void onAfterJoinTransaction(TransactionalEvent event, Exception exp)  {
     for (CoordinatorListener listener : listeners) {
       listener.onAfterJoinTransaction(event, exp);
     }
@@ -48,7 +48,7 @@ public class TransactionCoordinatorListener implements CoordinatorListener {
   }
 
   @Override
-  public void onAfterNotifyTransaction(TransactionalEvent event, Exception exp) throws Exception {
+  public void onAfterNotifyTransaction(TransactionalEvent event, Exception exp) {
     for (CoordinatorListener listener : listeners) {
       listener.onAfterNotifyTransaction(event, exp);
     }
