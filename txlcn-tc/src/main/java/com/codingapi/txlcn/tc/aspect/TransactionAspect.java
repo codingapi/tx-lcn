@@ -1,18 +1,24 @@
 package com.codingapi.txlcn.tc.aspect;
 
-import com.codingapi.txlcn.tc.annotation.LcnTransaction;
-import java.lang.reflect.Method;
+import com.codingapi.txlcn.tc.control.TransactionStateControl;
+import com.codingapi.txlcn.tc.state.TransactionStateManager;
+import com.codingapi.txlcn.tc.utils.PointUtils;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.Ordered;
+
+import java.lang.reflect.Method;
 
 @Slf4j
 @Aspect
+@AllArgsConstructor
 public class TransactionAspect implements Ordered {
+
+  private TransactionStateControl transactionStateControl;
 
   @Pointcut("@annotation(com.codingapi.txlcn.tc.annotation.LcnTransaction)")
   public void lcnTransactionPointcut() {
@@ -20,14 +26,17 @@ public class TransactionAspect implements Ordered {
 
   @Around("lcnTransactionPointcut()")
   public Object runWithLcnTransaction(ProceedingJoinPoint point) throws Throwable {
+
+    Method targetMethod = PointUtils.targetMethod(point);
+    TransactionStateManager transactionStateManager = new TransactionStateManager(targetMethod);
+    if(!transactionStateManager.existTransactionState()){
+        return point.proceed();
+    }
+
     log.info("run with lcn start...");
-    MethodSignature methodSignature = (MethodSignature) point.getSignature();
-    Method method = methodSignature.getMethod();
-    Class<?> targetClass = point.getTarget().getClass();
-    Method thisMethod = targetClass.getMethod(method.getName(), method.getParameterTypes());
-    LcnTransaction lcnTransaction = thisMethod.getAnnotation(LcnTransaction.class);
-    log.info("run with lcn :{}", lcnTransaction);
+    transactionStateControl.tryBeginTransaction(transactionStateManager.getTransactionState());
     Object res = point.proceed();
+    transactionStateControl.tryEndTransaction(transactionStateManager.getTransactionState());
     log.info("run with lcn over");
     return res;
   }
