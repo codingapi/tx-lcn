@@ -17,6 +17,10 @@
     <modules>
         <module>example-protocol-a</module>
         <module>example-protocol-b</module>
+
+        <module>example-tc</module>
+        <module>example-tc-2</module>
+        <module>example-tc-t2-client</module>
     </modules>
 
     <dependencies>
