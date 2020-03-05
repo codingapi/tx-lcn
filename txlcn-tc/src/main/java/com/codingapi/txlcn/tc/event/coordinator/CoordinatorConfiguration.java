@@ -17,8 +17,12 @@ public class CoordinatorConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public CoordinatorListener coordinatorListener(@Autowired(required = false) List<CoordinatorListener> listeners){
+    public TransactionCoordinatorListener coordinatorListener(@Autowired(required = false) List<CoordinatorListener> listeners){
         return new TransactionCoordinatorListener(listeners);
     }
 
+    @Bean
+    public CoordinatorListener defaultCoordinatorListener(){
+        return new DefaultCoordinatorListener();
+    }
 }

@@ -1,8 +1,7 @@
 package com.codingapi.txlcn.tc.event.coordinator;
 
 
-class DefaultCoordinatorListener implements CoordinatorListener {
-
+ class DefaultCoordinatorListener implements CoordinatorListener{
 
   @Override
   public void onBeforeCreateTransaction(TransactionalEvent event) {

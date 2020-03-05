@@ -2,6 +2,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.codingapi.txlcn.tc.TCAutoConfiguration,\
 com.codingapi.txlcn.tc.config.TcConfigConfiguration,\
 com.codingapi.txlcn.tc.control.ControlConfiguration,\
+com.codingapi.txlcn.tc.control.runer.RunnerConfiguration,\
 com.codingapi.txlcn.tc.event.coordinator.CoordinatorConfiguration,\
 com.codingapi.txlcn.tc.parser.ParserConfiguration,\
 com.codingapi.txlcn.tc.runner.TcRunnerConfiguration,\

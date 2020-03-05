@@ -14,9 +14,6 @@ public class TransactionCoordinatorListener implements CoordinatorListener {
 
   @Override
   public void onBeforeCreateTransaction(TransactionalEvent event) {
-    if(listeners==null) {
-      return;
-    }
     for (CoordinatorListener listener : listeners) {
       listener.onBeforeCreateTransaction(event);
     }
@@ -24,9 +21,6 @@ public class TransactionCoordinatorListener implements CoordinatorListener {
 
   @Override
   public void onAfterCreateTransaction(TransactionalEvent event, Exception exp) throws Exception {
-    if(listeners==null) {
-      return;
-    }
     for (CoordinatorListener listener : listeners) {
       listener.onAfterCreateTransaction(event, exp);
     }
@@ -34,9 +28,6 @@ public class TransactionCoordinatorListener implements CoordinatorListener {
 
   @Override
   public void onBeforeJoinTransaction(TransactionalEvent event) {
-    if(listeners==null) {
-      return;
-    }
     for (CoordinatorListener listener : listeners) {
       listener.onBeforeJoinTransaction(event);
     }
@@ -44,9 +35,6 @@ public class TransactionCoordinatorListener implements CoordinatorListener {
 
   @Override
   public void onAfterJoinTransaction(TransactionalEvent event, Exception exp) throws Exception {
-    if(listeners==null) {
-      return;
-    }
     for (CoordinatorListener listener : listeners) {
       listener.onAfterJoinTransaction(event, exp);
     }
@@ -54,9 +42,6 @@ public class TransactionCoordinatorListener implements CoordinatorListener {
 
   @Override
   public void onBeforeNotifyTransaction(TransactionalEvent event) {
-    if(listeners==null) {
-      return;
-    }
     for (CoordinatorListener listener : listeners) {
       listener.onBeforeNotifyTransaction(event);
     }
@@ -64,9 +49,6 @@ public class TransactionCoordinatorListener implements CoordinatorListener {
 
   @Override
   public void onAfterNotifyTransaction(TransactionalEvent event, Exception exp) throws Exception {
-    if(listeners==null) {
-      return;
-    }
     for (CoordinatorListener listener : listeners) {
       listener.onAfterNotifyTransaction(event, exp);
     }
