@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Options;
 @Mapper
 public interface DemoMapper {
 
-  @Insert("insert into t_demo(name,module) values(#{name},#{module})")
+  @Insert("insert into lcn_demo(name,module) values(#{name},#{module})")
   @Options(useGeneratedKeys = true, keyProperty = "id")
   int save(Demo demo);
 

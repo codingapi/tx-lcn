@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface DemoMapper {
 
-  @Insert("insert into t_demo(name,module) values(#{name},#{module})")
+  @Insert("insert into lcn_demo(name,module) values(#{name},#{module})")
   int save(Demo demo);
 
 }
