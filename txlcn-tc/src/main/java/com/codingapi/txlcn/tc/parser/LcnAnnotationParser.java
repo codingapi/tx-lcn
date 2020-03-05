@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tc.parser;
 
-import com.codingapi.txlcn.tc.Transactions;
+import com.codingapi.txlcn.tc.TransactionContent;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 
 import java.lang.reflect.Method;
@@ -16,7 +16,7 @@ public class LcnAnnotationParser implements AnnotationParser {
     public TxAnnotation getAnnotation(Method targetMethod) {
         LcnTransaction lcnTransaction =  targetMethod.getAnnotation(LcnTransaction.class);
         if(lcnTransaction!=null){
-            return new TxAnnotation(lcnTransaction, Transactions.LCN);
+            return new TxAnnotation(lcnTransaction, TransactionContent.LCN);
         }
         return null;
     }

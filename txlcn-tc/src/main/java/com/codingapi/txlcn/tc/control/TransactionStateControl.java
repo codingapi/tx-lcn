@@ -1,7 +1,7 @@
 package com.codingapi.txlcn.tc.control;
 
 import com.codingapi.txlcn.tc.event.coordinator.CoordinatorListener;
-import com.codingapi.txlcn.tc.state.TransactionState;
+import com.codingapi.txlcn.tc.info.TransactionInfo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,8 +18,8 @@ public class TransactionStateControl {
     private CoordinatorListener coordinatorListener;
 
 
-    public void tryBeginTransaction(TransactionState transactionState) throws Exception {
-        if(!transactionState.isTransmitTransaction()){
+    public void tryBeginTransaction(TransactionInfo transactionInfo) throws Exception {
+        if(!transactionInfo.isTransmitTransaction()){
             //创建事务
             log.info("create tx-transaction ");
             coordinatorListener.onBeforeCreateTransaction(null);
@@ -28,8 +28,8 @@ public class TransactionStateControl {
         }
     }
 
-    public void tryEndTransaction(TransactionState transactionState) throws Exception {
-        if(transactionState.isTransmitTransaction()){
+    public void tryEndTransaction(TransactionInfo transactionInfo) throws Exception {
+        if(transactionInfo.isTransmitTransaction()){
             // 加入事务
             log.info("join tx-transaction ");
             coordinatorListener.onBeforeJoinTransaction(null);

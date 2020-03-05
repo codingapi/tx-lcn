@@ -1,4 +1,4 @@
-package com.codingapi.txlcn.tc.state;
+package com.codingapi.txlcn.tc.info;
 
 import lombok.Data;
 
@@ -8,8 +8,11 @@ import lombok.Data;
  * @description
  */
 @Data
-public class TransactionState {
+public class TransactionInfo {
 
+    /**
+     * 事务类型
+     */
     private String TransactionType;
 
     /**
@@ -18,5 +21,6 @@ public class TransactionState {
      * false 自行创建的事务
      */
     private boolean transmitTransaction;
+
 
 }

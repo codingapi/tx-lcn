@@ -3,7 +3,7 @@ package com.codingapi.txlcn.tc.aspect;
 import com.codingapi.txlcn.tc.control.TransactionStateControl;
 import com.codingapi.txlcn.tc.parser.AnnotationParserHelper;
 import com.codingapi.txlcn.tc.parser.TxAnnotation;
-import com.codingapi.txlcn.tc.state.TransactionStateManager;
+import com.codingapi.txlcn.tc.info.TransactionInfoManager;
 import com.codingapi.txlcn.tc.utils.PointUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,15 +35,15 @@ public class TransactionAspect implements Ordered {
 
     TxAnnotation txAnnotation = annotationParserHelper.getAnnotation(targetMethod);
 
-    TransactionStateManager transactionStateManager = new TransactionStateManager(txAnnotation);
-    if(!transactionStateManager.existTransactionState()){
+    TransactionInfoManager transactionInfoManager = new TransactionInfoManager(txAnnotation);
+    if(!transactionInfoManager.existTransaction()){
         return point.proceed();
     }
 
     log.info("run with lcn start...");
-    transactionStateControl.tryBeginTransaction(transactionStateManager.getTransactionState());
+    transactionStateControl.tryBeginTransaction(transactionInfoManager.getTransactionInfo());
     Object res = point.proceed();
-    transactionStateControl.tryEndTransaction(transactionStateManager.getTransactionState());
+    transactionStateControl.tryEndTransaction(transactionInfoManager.getTransactionInfo());
     log.info("run with lcn over");
     return res;
   }
