@@ -1,35 +1,37 @@
 package com.codingapi.txlcn.tc.event.coordinator;
 
 
- class DefaultCoordinatorListener implements CoordinatorListener{
+import com.codingapi.txlcn.tc.info.TransactionInfo;
 
-  @Override
-  public void onBeforeCreateTransaction(TransactionalEvent event) {
+class DefaultCoordinatorListener implements CoordinatorListener{
 
-  }
+ @Override
+ public void onBeforeCreateTransaction(TransactionInfo transactionInfo) {
 
-  @Override
-  public void onAfterCreateTransaction(TransactionalEvent event, Exception exp){
+ }
 
-  }
+ @Override
+ public void onAfterCreateTransaction(TransactionInfo transactionInfo) {
 
-  @Override
-  public void onBeforeJoinTransaction(TransactionalEvent event) {
+ }
 
-  }
+ @Override
+ public void onBeforeJoinTransaction(TransactionInfo transactionInfo) {
 
-  @Override
-  public void onAfterJoinTransaction(TransactionalEvent event, Exception exp) {
+ }
 
-  }
+ @Override
+ public void onAfterJoinTransaction(TransactionInfo transactionInfo) {
 
-  @Override
-  public void onBeforeNotifyTransaction(TransactionalEvent event) {
+ }
 
-  }
+ @Override
+ public void onBeforeNotifyTransaction(TransactionInfo transactionInfo) {
 
-  @Override
-  public void onAfterNotifyTransaction(TransactionalEvent event, Exception exp) {
+ }
 
-  }
+ @Override
+ public void onAfterNotifyTransaction(TransactionInfo transactionInfo) {
+
+ }
 }

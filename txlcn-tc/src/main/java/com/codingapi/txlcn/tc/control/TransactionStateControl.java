@@ -23,9 +23,9 @@ public class TransactionStateControl {
         if(!transactionInfo.isTransmitTransaction()){
             //创建事务
             log.info("create tx-transaction ");
-            transactionCoordinatorListener.onBeforeCreateTransaction(null);
+            transactionCoordinatorListener.onBeforeCreateTransaction(transactionInfo);
             transactionStepExecuter.execute(new TransactionStep(transactionInfo, TransactionStep.Step.CREATE));
-            transactionCoordinatorListener.onAfterCreateTransaction(null,null);
+            transactionCoordinatorListener.onAfterCreateTransaction(transactionInfo);
         }
     }
 
@@ -33,15 +33,15 @@ public class TransactionStateControl {
         if(transactionInfo.isTransmitTransaction()){
             // 加入事务
             log.info("join tx-transaction ");
-            transactionCoordinatorListener.onBeforeJoinTransaction(null);
+            transactionCoordinatorListener.onBeforeJoinTransaction(transactionInfo);
             transactionStepExecuter.execute(new TransactionStep(transactionInfo, TransactionStep.Step.JOIN));
-            transactionCoordinatorListener.onAfterJoinTransaction(null,null);
+            transactionCoordinatorListener.onAfterJoinTransaction(transactionInfo);
         }else{
             // 提交事务
             log.info("notify tx-transaction ");
-            transactionCoordinatorListener.onBeforeNotifyTransaction(null);
+            transactionCoordinatorListener.onBeforeNotifyTransaction(transactionInfo);
             transactionStepExecuter.execute(new TransactionStep(transactionInfo, TransactionStep.Step.NOTIFY));
-            transactionCoordinatorListener.onAfterNotifyTransaction(null,null);
+            transactionCoordinatorListener.onAfterNotifyTransaction(transactionInfo);
 
         }
     }

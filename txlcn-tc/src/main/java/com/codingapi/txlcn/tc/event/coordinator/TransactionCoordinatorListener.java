@@ -1,5 +1,7 @@
 package com.codingapi.txlcn.tc.event.coordinator;
 
+import com.codingapi.txlcn.tc.info.TransactionInfo;
+
 import java.util.List;
 
 
@@ -13,44 +15,44 @@ public class TransactionCoordinatorListener implements CoordinatorListener {
   }
 
   @Override
-  public void onBeforeCreateTransaction(TransactionalEvent event) {
+  public void onBeforeCreateTransaction(TransactionInfo transactionInfo) {
     for (CoordinatorListener listener : listeners) {
-      listener.onBeforeCreateTransaction(event);
+      listener.onBeforeCreateTransaction(transactionInfo);
     }
   }
 
   @Override
-  public void onAfterCreateTransaction(TransactionalEvent event, Exception exp) {
+  public void onAfterCreateTransaction(TransactionInfo transactionInfo) {
     for (CoordinatorListener listener : listeners) {
-      listener.onAfterCreateTransaction(event, exp);
+      listener.onAfterCreateTransaction(transactionInfo);
     }
   }
 
   @Override
-  public void onBeforeJoinTransaction(TransactionalEvent event) {
+  public void onBeforeJoinTransaction(TransactionInfo transactionInfo) {
     for (CoordinatorListener listener : listeners) {
-      listener.onBeforeJoinTransaction(event);
+      listener.onBeforeJoinTransaction(transactionInfo);
     }
   }
 
   @Override
-  public void onAfterJoinTransaction(TransactionalEvent event, Exception exp)  {
+  public void onAfterJoinTransaction(TransactionInfo transactionInfo)  {
     for (CoordinatorListener listener : listeners) {
-      listener.onAfterJoinTransaction(event, exp);
+      listener.onAfterJoinTransaction(transactionInfo);
     }
   }
 
   @Override
-  public void onBeforeNotifyTransaction(TransactionalEvent event) {
+  public void onBeforeNotifyTransaction(TransactionInfo transactionInfo) {
     for (CoordinatorListener listener : listeners) {
-      listener.onBeforeNotifyTransaction(event);
+      listener.onBeforeNotifyTransaction(transactionInfo);
     }
   }
 
   @Override
-  public void onAfterNotifyTransaction(TransactionalEvent event, Exception exp) {
+  public void onAfterNotifyTransaction(TransactionInfo transactionInfo) {
     for (CoordinatorListener listener : listeners) {
-      listener.onAfterNotifyTransaction(event, exp);
+      listener.onAfterNotifyTransaction(transactionInfo);
     }
   }
 }
