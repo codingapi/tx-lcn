@@ -2,9 +2,6 @@ package com.codingapi.txlcn.tc.runner;
 
 import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.tc.config.TxConfig;
-import java.net.InetSocketAddress;
-import java.util.List;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,15 +13,13 @@ public class TMServerRunner {
 
   private ProtocolServer protocolServer;
 
+  /**
+   * 初始化连接
+   */
   public void init() {
-    List<String> list = txConfig.getTms();
-    log.info("TM servers:{}", list);
-    if (list != null) {
-      for (String item : list) {
-        Optional<InetSocketAddress> optional = Optional.of(txConfig.addressFormat(item));
-        optional.ifPresent(address -> protocolServer
-            .connectTo(address.getHostString(), address.getPort()));
-      }
-    }
+    txConfig.txManagerAddresses().forEach(address->{
+      protocolServer.connectTo(address.getHostString(),address.getPort());
+    });
   }
+
 }

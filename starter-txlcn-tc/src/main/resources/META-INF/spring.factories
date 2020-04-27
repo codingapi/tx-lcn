@@ -6,4 +6,5 @@ com.codingapi.txlcn.tc.control.ControlConfiguration,\
 com.codingapi.txlcn.tc.control.runer.RunnerConfiguration,\
 com.codingapi.txlcn.tc.event.coordinator.CoordinatorConfiguration,\
 com.codingapi.txlcn.tc.parser.ParserConfiguration,\
+com.codingapi.txlcn.tc.protocol.ProtocolerConfiguration,\
 com.codingapi.txlcn.tc.runner.TcRunnerConfiguration

@@ -1,17 +1,21 @@
 package com.codingapi.txlcn.tc.config;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.codingapi.txlcn.protocol.config.Config;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Tx config properties
  */
 @Data
+@Slf4j
 public class TxConfig {
 
   /**
@@ -39,7 +43,7 @@ public class TxConfig {
    * @param address ip:port
    * @return InetSocketAddress
    */
-  public InetSocketAddress addressFormat(String address) {
+  private InetSocketAddress addressFormat(String address) {
     Pattern p = Pattern.compile("^\\s*(.*?):(\\d+)\\s*$");
     Matcher m = p.matcher(address);
     if (m.matches()) {
@@ -49,5 +53,18 @@ public class TxConfig {
     }
     return null;
   }
+
+  public List<InetSocketAddress> txManagerAddresses() {
+    log.info("TM servers:{}", tms);
+    List<InetSocketAddress> addresses = new ArrayList<>();
+    if (tms != null) {
+      for (String item : tms) {
+        Optional<InetSocketAddress> optional = Optional.ofNullable(addressFormat(item));
+        optional.ifPresent(addresses::add);
+      }
+    }
+    return addresses;
+  }
+
 
 }
