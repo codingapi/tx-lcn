@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -20,25 +22,30 @@ public class TxManagerProtocoler {
 
     private Protocoler protocoler;
 
-    private List<Connection> connections;
+    private Collection<Connection> connections;
 
     private Connection leader;
 
     public TxManagerProtocoler(ProtocolServer protocolServer) {
         this.protocoler =  protocolServer.getProtocoler();
-        this.connections = new ArrayList<>(protocoler.getConnections());
-        selectLeader();
+        this.connections = protocoler.getConnections();
     }
 
     private void selectLeader(){
         if(connections.size()>0){
-            leader = connections.get(0);
+            Iterator<Connection> iterator = connections.iterator();
+            while (iterator.hasNext()) {
+                leader = iterator.next();
+                if(leader!=null){
+                    break;
+                }
+            }
         }
     }
 
 
     private void checkLeader(){
-        Assert.isNull(leader,"没有可用的连接.");
+        Assert.notNull(leader,"没有可用的TM资源.");
     }
 
     /**
@@ -46,6 +53,7 @@ public class TxManagerProtocoler {
      * @param message
      */
     public void sendMsg(Message message){
+        selectLeader();
         checkLeader();
         leader.send(message);
     }
