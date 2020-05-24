@@ -191,7 +191,7 @@ info::TransactionInfoThreadLocal .down.>info::TransactionInfo
 info::TransactionInfoManager -left-> info::TransactionInfo
 
 control::TransactionStateControl .right.> info::TransactionInfo
-control::TransactionStateControl -down-> event.coordinator::CoordinatorListener
+control::TransactionStateControl -down-> event.coordinator::TransactionCoordinatorListener
 control::TransactionStateControl -up-> control::TransactionStepExecuter
 control::TransactionStepExecuter o-up-> control::TransactionStepRunner
 control::TransactionStepRunner .right.> control::TransactionStep
@@ -199,7 +199,7 @@ control::TransactionStepRunner .right.> control::TransactionStep
 
 
 event.coordinator::DefaultCoordinatorListener .right.|> event.coordinator::CoordinatorListener
-event.coordinator::TransactionCoordinatorListener o-up-> event.coordinator::CoordinatorListener
+event.coordinator::TransactionCoordinatorListener o-down-> event.coordinator::CoordinatorListener
 
 
 @enduml
