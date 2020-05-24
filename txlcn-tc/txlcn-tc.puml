@@ -1,7 +1,10 @@
-@startuml
+@startuml LCN-TC模块UML图
+
 skinparam linetype polyline
 skinparam linetype ortho
 top to bottom direction
+
+title LCN-TC模块UML图
 
 set namespaceSeparator ::
 
