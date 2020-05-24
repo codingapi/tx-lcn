@@ -1,0 +1,205 @@
+@startuml
+skinparam linetype polyline
+skinparam linetype ortho
+top to bottom direction
+
+set namespaceSeparator ::
+
+'annotation
+interface annotation::LcnTransaction<<LCN切面注解>>{
+
+}
+
+hide annotation::LcnTransaction
+
+'aspect
+class aspect::TransactionAspectManager<<事务切面管理器>>{
+      -transactionStateControl:TransactionStateControl <事务状态控制器>
+      -annotationParserHelper:AnnotationParserHelper <事务注解解析器>
+
+      +runWithTransaction(ProceedingJoinPoint point) throws Throwable :Object <事务切面方法>
+}
+
+'config
+class config::TcConfig<<事务控制端配置文件>>{
+      -applicationName:String <应用名称>
+      -tms:List<String> <TM服务端端口配置>
+      -protocol:Config <P2P网络配置>
+
+      +txManagerAddresses(): List<InetSocketAddress> <获取TX配置地址>
+}
+
+hide config::TcConfig
+
+'control
+class control::TransactionStateControl{
+       - transactionCoordinatorListener:TransactionCoordinatorListener <事务事件监听器>
+       - transactionStepExecuter:TransactionStepExecuter <事务步骤执行器>
+       + tryBeginTransaction(TransactionInfo transactionInfo):void <开始事务>
+       + tryEndTransaction(TransactionInfo transactionInfo):void <结束事务>
+}
+
+class control::TransactionStep<<事务步骤>>{
+     - transactionInfo:TransactionInfo <事务信息>
+     - step:Step <<步骤>>
+}
+
+class control::TransactionStepExecuter<<事务步骤执行器>>{
+    -transactionStepRunners:List<TransactionStepRunner> <事务步骤Runner>
+
+    +execute(TransactionStep transactionStep):void <执行事务阶段>
+}
+
+interface control::TransactionStepRunner<<事务阶段执行>>{
+    +step():TransactionStep.Step <步骤>
+    +run(TransactionInfo transactionInfo):void <执行逻辑>
+}
+
+together {
+  class control::TransactionStateControl
+  class control::TransactionStep
+  class control::TransactionStepExecuter
+  class control::TransactionStepRunner
+}
+
+'event.coordinator
+interface event.coordinator::CoordinatorListener <<事务协调监听>>{
+  +onBeforeCreateTransaction(TransactionInfo transactionInfo):void <创建事务之前>
+  +onAfterCreateTransaction(TransactionInfo transactionInfo):void <创建事务之后>
+  +onBeforeJoinTransaction(TransactionInfo transactionInfo):void <加入事务之前>
+  +onAfterJoinTransaction(TransactionInfo transactionInfo):void <加入事务之后>
+  +onBeforeNotifyTransaction(TransactionInfo transactionInfo):void <通知事务之前>
+  +onAfterNotifyTransaction(TransactionInfo transactionInfo):void <通知事务之后>
+}
+
+class event.coordinator::DefaultCoordinatorListener <<默认事务协调监听器>>{
+  +onBeforeCreateTransaction(TransactionInfo transactionInfo):void <创建事务之前>
+  +onAfterCreateTransaction(TransactionInfo transactionInfo):void <创建事务之后>
+  +onBeforeJoinTransaction(TransactionInfo transactionInfo):void <加入事务之前>
+  +onAfterJoinTransaction(TransactionInfo transactionInfo):void <加入事务之后>
+  +onBeforeNotifyTransaction(TransactionInfo transactionInfo):void <通知事务之前>
+  +onAfterNotifyTransaction(TransactionInfo transactionInfo):void <通知事务之后>
+}
+
+class event.coordinator::TransactionCoordinatorListener<<事务协调监听>>{
+   -listeners:List<CoordinatorListener> <事务协调监听器>
+
+   +onBeforeCreateTransaction(TransactionInfo transactionInfo):void <创建事务之前>
+   +onAfterCreateTransaction(TransactionInfo transactionInfo):void <创建事务之后>
+   +onBeforeJoinTransaction(TransactionInfo transactionInfo):void <加入事务之前>
+   +onAfterJoinTransaction(TransactionInfo transactionInfo):void <加入事务之后>
+   +onBeforeNotifyTransaction(TransactionInfo transactionInfo):void <通知事务之前>
+   +onAfterNotifyTransaction(TransactionInfo transactionInfo):void <通知事务之后>
+}
+
+together {
+  class event.coordinator::TransactionCoordinatorListener
+  class event.coordinator::DefaultCoordinatorListener
+  class event.coordinator::CoordinatorListener
+}
+
+'exception
+class exception::TxException<<协调模块异常>>{
+
+}
+
+hide exception::TxException
+'info
+class info::TransactionInfo<<事务信息>>{
+    -transactionType:String <事务类型>
+    -transmitTransaction:boolean  <是否是传递过来的事务>
+}
+
+class info::TransactionInfoManager<<事务消息管理器>>{
+    -transactionInfo:TransactionInfo <事务消息>
+
+    +  existTransaction():boolean <是否存在事务>
+    +  getTransactionInfo():TransactionInfo <获取事务消息>
+}
+
+class info::TransactionInfoThreadLocal<<事务消息ThreadLocal>>{
+      -{static} threadLocal:ThreadLocal<TransactionInfo> <事务消息ThreadLocal>
+
+      +{static} current():TransactionInfo <当前事务信息>
+      +{static} push(TransactionInfo transactionInfo):void <设置事务消息>
+}
+
+together {
+  class info::TransactionInfo
+  class info::TransactionInfoManager
+  class info::TransactionInfoThreadLocal
+}
+
+'parser
+interface parser::AnnotationParser<<注解解析器>>{
+    + getAnnotation(Method targetMethod):TxAnnotation <获取方法注解>
+}
+class parser::AnnotationParserHelper<<注解解析助手>>{
+    - parsers:List<AnnotationParser> <注解解析器>
+
+    + getAnnotation(Method targetMethod):TxAnnotation <获取方法注解>
+}
+class parser::LcnAnnotationParser<<LCN注解解析器>>{
+     + getAnnotation(Method targetMethod):TxAnnotation <获取方法注解>
+}
+class parser::TxAnnotation<<事务注解>>{
+    -annotation:Object <注解>
+    -type:String <事务类型>
+}
+
+together {
+  class parser::AnnotationParser
+  class parser::AnnotationParserHelper
+  class parser::LcnAnnotationParser
+  class parser::TxAnnotation
+}
+
+'protocol
+class protocol::TxManagerProtocoler<<TM协议通讯者>>{
+      - protocoler:Protocoler <通讯协议>
+      - connections:Collection<Connection>  <连接数量>
+      - leader:Connection <选中的连接对象>
+
+      +sendMsg(Message message):void <发送消息>
+}
+
+hide protocol::TxManagerProtocoler
+
+'runner
+class runner::TMServerRunner<<TM服务Runner>>{
+  + init():void  初始化连接<>
+}
+
+hide runner::TMServerRunner
+
+'utils
+class utils::PointUtils<<切面工具>>{
+    +{static}targetMethod(ProceedingJoinPoint point):Method <获取执行的方法>
+}
+
+hide utils::PointUtils
+
+parser::AnnotationParserHelper o-left-> parser::LcnAnnotationParser
+parser::LcnAnnotationParser -up-|> parser::AnnotationParser
+parser::AnnotationParser .right.> parser::TxAnnotation
+
+aspect::TransactionAspectManager -right-> control::TransactionStateControl
+aspect::TransactionAspectManager -up-> parser::AnnotationParserHelper
+
+
+info::TransactionInfoThreadLocal .down.>info::TransactionInfo
+info::TransactionInfoManager -left-> info::TransactionInfo
+
+control::TransactionStateControl .right.> info::TransactionInfo
+control::TransactionStateControl -down-> event.coordinator::CoordinatorListener
+control::TransactionStateControl -up-> control::TransactionStepExecuter
+control::TransactionStepExecuter o-up-> control::TransactionStepRunner
+control::TransactionStepRunner .right.> control::TransactionStep
+
+
+
+event.coordinator::DefaultCoordinatorListener .right.|> event.coordinator::CoordinatorListener
+event.coordinator::TransactionCoordinatorListener o-up-> event.coordinator::CoordinatorListener
+
+
+@enduml

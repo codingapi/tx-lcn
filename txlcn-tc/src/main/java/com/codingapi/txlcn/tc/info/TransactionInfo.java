@@ -13,7 +13,7 @@ public class TransactionInfo {
     /**
      * 事务类型
      */
-    private String TransactionType;
+    private String transactionType;
 
     /**
      * 是否是传递过来的事务
