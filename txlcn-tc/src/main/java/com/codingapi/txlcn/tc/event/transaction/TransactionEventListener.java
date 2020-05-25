@@ -1,11 +1,11 @@
-package com.codingapi.txlcn.tc.event.coordinator;
+package com.codingapi.txlcn.tc.event.transaction;
 
 import com.codingapi.txlcn.tc.info.TransactionInfo;
 
 /**
  * 事务协调监听,TC与TM的通讯步骤监听.
  */
-public interface CoordinatorListener {
+public interface TransactionEventListener {
 
 
   /**

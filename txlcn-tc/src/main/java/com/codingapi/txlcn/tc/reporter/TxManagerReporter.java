@@ -1,4 +1,4 @@
-package com.codingapi.txlcn.tc.protocol;
+package com.codingapi.txlcn.tc.reporter;
 
 import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.protocol.Protocoler;
@@ -7,10 +7,8 @@ import com.codingapi.txlcn.protocol.message.Message;
 import lombok.AllArgsConstructor;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author lorne
@@ -18,7 +16,7 @@ import java.util.List;
  * @description
  */
 @AllArgsConstructor
-public class TxManagerProtocoler {
+public class TxManagerReporter {
 
     private Protocoler protocoler;
 
@@ -26,7 +24,7 @@ public class TxManagerProtocoler {
 
     private Connection leader;
 
-    public TxManagerProtocoler(ProtocolServer protocolServer) {
+    public TxManagerReporter(ProtocolServer protocolServer) {
         this.protocoler =  protocolServer.getProtocoler();
         this.connections = protocoler.getConnections();
     }

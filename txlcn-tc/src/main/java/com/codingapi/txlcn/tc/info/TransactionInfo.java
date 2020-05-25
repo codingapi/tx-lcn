@@ -1,6 +1,9 @@
 package com.codingapi.txlcn.tc.info;
 
+import com.codingapi.txlcn.tc.control.TransactionState;
 import lombok.Data;
+
+import java.util.UUID;
 
 /**
  * @author lorne
@@ -11,16 +14,34 @@ import lombok.Data;
 public class TransactionInfo {
 
     /**
+     * 事务组Id
+     */
+    private String groupId;
+
+    /**
      * 事务类型
      */
     private String transactionType;
 
     /**
-     * 是否是传递过来的事务
-     * true 是传递的事务
-     * false 自行创建的事务
+     * 事务状态
      */
-    private boolean transmitTransaction;
+    private TransactionState transactionState;
 
+    public boolean isState(TransactionState.State state){
+        return transactionState.getState().equals(state);
+    }
+
+    public TransactionInfo(String transactionType, TransactionState transactionState) {
+        this.groupId = UUID.randomUUID().toString();
+        this.transactionType = transactionType;
+        this.transactionState = transactionState;
+
+        TransactionInfoThreadLocal.push(this);
+    }
+
+    public static TransactionInfo current(){
+        return TransactionInfoThreadLocal.current();
+    }
 
 }

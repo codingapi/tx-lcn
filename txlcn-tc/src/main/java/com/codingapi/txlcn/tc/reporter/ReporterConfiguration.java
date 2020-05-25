@@ -1,4 +1,4 @@
-package com.codingapi.txlcn.tc.protocol;
+package com.codingapi.txlcn.tc.reporter;
 
 import com.codingapi.txlcn.protocol.ProtocolServer;
 import org.springframework.context.annotation.Bean;
@@ -10,11 +10,11 @@ import org.springframework.context.annotation.Configuration;
  * @description
  */
 @Configuration
-public class ProtocolerConfiguration {
+public class ReporterConfiguration {
 
     @Bean
-    public TxManagerProtocoler txManagerProtocoler(ProtocolServer protocolServer){
-        return new TxManagerProtocoler(protocolServer);
+    public TxManagerReporter txManagerProtocoler(ProtocolServer protocolServer){
+        return new TxManagerReporter(protocolServer);
     }
 
 

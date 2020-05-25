@@ -1,7 +1,7 @@
 package com.codingapi.txlcn.tc.aspect;
 
-import com.codingapi.txlcn.tc.control.TransactionStateControl;
-import com.codingapi.txlcn.tc.parser.AnnotationParserHelper;
+import com.codingapi.txlcn.tc.control.TransactionContext;
+import com.codingapi.txlcn.tc.resolver.AnnotationContext;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,15 +11,15 @@ public class AspectConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public TransactionAspectManager transactionAspectManager(TransactionStateControl transactionStateControl,
-                                                    AnnotationParserHelper annotationParserHelper) {
-    return new TransactionAspectManager(transactionStateControl,annotationParserHelper);
+  public TransactionAspectContext transactionAspectManager(TransactionContext transactionContext,
+                                                           AnnotationContext annotationContext) {
+    return new TransactionAspectContext(transactionContext, annotationContext);
   }
 
   @Bean
   @ConditionalOnMissingBean
-  public LcnTransactionAspect lcnTransactionAspect(TransactionAspectManager transactionAspectManager){
-    return new LcnTransactionAspect(transactionAspectManager);
+  public LcnTransactionAspect lcnTransactionAspect(TransactionAspectContext transactionAspectContext){
+    return new LcnTransactionAspect(transactionAspectContext);
   }
 
 }

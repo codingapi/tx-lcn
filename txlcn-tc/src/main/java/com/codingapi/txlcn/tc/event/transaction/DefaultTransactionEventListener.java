@@ -1,9 +1,9 @@
-package com.codingapi.txlcn.tc.event.coordinator;
+package com.codingapi.txlcn.tc.event.transaction;
 
 
 import com.codingapi.txlcn.tc.info.TransactionInfo;
 
-class DefaultCoordinatorListener implements CoordinatorListener{
+class DefaultTransactionEventListener implements TransactionEventListener {
 
  @Override
  public void onBeforeCreateTransaction(TransactionInfo transactionInfo) {

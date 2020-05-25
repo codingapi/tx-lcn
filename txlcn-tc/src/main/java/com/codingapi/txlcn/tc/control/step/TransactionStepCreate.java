@@ -1,10 +1,10 @@
-package com.codingapi.txlcn.tc.control.runer;
+package com.codingapi.txlcn.tc.control.step;
 
 import com.codingapi.txlcn.protocol.message.event.TransactionCreateEvent;
+import com.codingapi.txlcn.tc.control.TransactionState;
 import com.codingapi.txlcn.tc.control.TransactionStep;
-import com.codingapi.txlcn.tc.control.TransactionStepRunner;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
-import com.codingapi.txlcn.tc.protocol.TxManagerProtocoler;
+import com.codingapi.txlcn.tc.reporter.TxManagerReporter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,13 +16,13 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @AllArgsConstructor
-public class CreateTransaction implements TransactionStepRunner {
+public class TransactionStepCreate implements TransactionStep {
 
-    private TxManagerProtocoler managerProtocoler;
+    private TxManagerReporter managerProtocoler;
 
     @Override
-    public TransactionStep.Step step() {
-        return TransactionStep.Step.CREATE;
+    public TransactionState.State type() {
+        return TransactionState.State.CREATE;
     }
 
     @Override

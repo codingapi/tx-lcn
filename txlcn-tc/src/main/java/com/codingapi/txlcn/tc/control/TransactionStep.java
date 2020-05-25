@@ -1,25 +1,16 @@
 package com.codingapi.txlcn.tc.control;
 
 import com.codingapi.txlcn.tc.info.TransactionInfo;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @author lorne
  * @date 2020/3/5
  * @description
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class TransactionStep {
+public interface TransactionStep {
 
-     private TransactionInfo transactionInfo;
+    TransactionState.State type();
 
-     private Step step;
+    void run(TransactionInfo transactionInfo);
 
-     public enum Step{
-         CREATE,JOIN,NOTIFY
-     }
 }

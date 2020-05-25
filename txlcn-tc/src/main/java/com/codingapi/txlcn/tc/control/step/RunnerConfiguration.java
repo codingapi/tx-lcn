@@ -1,7 +1,7 @@
-package com.codingapi.txlcn.tc.control.runer;
+package com.codingapi.txlcn.tc.control.step;
 
-import com.codingapi.txlcn.tc.control.TransactionStepRunner;
-import com.codingapi.txlcn.tc.protocol.TxManagerProtocoler;
+import com.codingapi.txlcn.tc.control.TransactionStep;
+import com.codingapi.txlcn.tc.reporter.TxManagerReporter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,8 +16,8 @@ public class RunnerConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public TransactionStepRunner createTransaction(TxManagerProtocoler managerProtocoler){
-        return new CreateTransaction(managerProtocoler);
+    public TransactionStep transactionStepCreate(TxManagerReporter managerProtocoler){
+        return new TransactionStepCreate(managerProtocoler);
     }
 
 

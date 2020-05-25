@@ -1,19 +1,18 @@
 package com.codingapi.txlcn.tc.info;
 
 /**
- * @author lorne
- * @date 2020/3/5
- * @description
+ * 事务信息ThreadLocal
+ * @author lorne 2020-0305
  */
-public class TransactionInfoThreadLocal {
+class TransactionInfoThreadLocal {
 
-    private final static ThreadLocal<TransactionInfo> threadLocal = new ThreadLocal<>();
+    final static ThreadLocal<TransactionInfo> threadLocal = new ThreadLocal<>();
 
-    public static TransactionInfo current(){
+    static TransactionInfo current(){
         return threadLocal.get();
     }
 
-    public static void push(TransactionInfo transactionInfo){
+    static void push(TransactionInfo transactionInfo){
         threadLocal.set(transactionInfo);
     }
 

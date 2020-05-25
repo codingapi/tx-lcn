@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tc.control;
 
-import com.codingapi.txlcn.tc.event.coordinator.TransactionCoordinatorListener;
+import com.codingapi.txlcn.tc.event.transaction.TransactionEventContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -19,14 +19,14 @@ public class ControlConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public TransactionStateControl transactionStateControl(TransactionCoordinatorListener transactionCoordinatorListener,TransactionStepExecuter transactionStepExecuter){
-        return new TransactionStateControl(transactionCoordinatorListener,transactionStepExecuter);
+    public TransactionContext transactionStateControl(TransactionEventContext transactionCoordinatorListener, TransactionStepContext transactionStepContext){
+        return new TransactionContext(transactionCoordinatorListener, transactionStepContext);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public TransactionStepExecuter transactionStepExecuter( @Autowired(required = false) List<TransactionStepRunner> transactionStepRunners){
-        return new TransactionStepExecuter(transactionStepRunners);
+    public TransactionStepContext transactionStepExecuter(@Autowired(required = false) List<TransactionStep> transactionSteps){
+        return new TransactionStepContext(transactionSteps);
     }
 
 

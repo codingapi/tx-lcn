@@ -1,4 +1,4 @@
-package com.codingapi.txlcn.tc.parser;
+package com.codingapi.txlcn.tc.resolver;
 
 import com.codingapi.txlcn.tc.TransactionContent;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
  * @date 2020/3/5
  * @description
  */
-public class LcnAnnotationParser implements AnnotationParser {
+public class LcnAnnotationStrategy implements AnnotationStrategy {
 
     @Override
     public TxAnnotation getAnnotation(Method targetMethod) {

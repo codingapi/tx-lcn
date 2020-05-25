@@ -17,8 +17,8 @@ hide annotation::LcnTransaction
 
 'aspect
 class aspect::TransactionAspectManager<<事务切面管理器>>{
-      -transactionStateControl:TransactionStateControl <事务状态控制器>
-      -annotationParserHelper:AnnotationParserHelper <事务注解解析器>
+      -transactionContext:TransactionStateControl <事务状态控制器>
+      -annotationContext:AnnotationParserHelper <事务注解解析器>
 
       +runWithTransaction(ProceedingJoinPoint point) throws Throwable :Object <事务切面方法>
 }
@@ -37,7 +37,7 @@ hide config::TcConfig
 'control
 class control::TransactionStateControl{
        - transactionCoordinatorListener:TransactionCoordinatorListener <事务事件监听器>
-       - transactionStepExecuter:TransactionStepExecuter <事务步骤执行器>
+       - transactionStepContext:TransactionStepExecuter <事务步骤执行器>
        + tryBeginTransaction(TransactionInfo transactionInfo):void <开始事务>
        + tryEndTransaction(TransactionInfo transactionInfo):void <结束事务>
 }
@@ -48,9 +48,9 @@ class control::TransactionStep<<事务步骤>>{
 }
 
 class control::TransactionStepExecuter<<事务步骤执行器>>{
-    -transactionStepRunners:List<TransactionStepRunner> <事务步骤Runner>
+    -transactionSteps:List<TransactionStepRunner> <事务步骤Runner>
 
-    +execute(TransactionStep transactionStep):void <执行事务阶段>
+    +execute(TransactionStep transactionStepType):void <执行事务阶段>
 }
 
 interface control::TransactionStepRunner<<事务阶段执行>>{

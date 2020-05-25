@@ -13,7 +13,7 @@ import org.springframework.core.Ordered;
 @Aspect
 public class LcnTransactionAspect implements Ordered {
 
-  private TransactionAspectManager transactionAspectManager;
+  private TransactionAspectContext transactionAspectContext;
 
   @Pointcut("@annotation(com.codingapi.txlcn.tc.annotation.LcnTransaction)")
   public void lcnTransactionPointcut() {
@@ -22,7 +22,7 @@ public class LcnTransactionAspect implements Ordered {
 
   @Around("lcnTransactionPointcut()")
   public Object runWithLcnTransaction(ProceedingJoinPoint point) throws Throwable{
-    return transactionAspectManager.runWithTransaction(point);
+    return transactionAspectContext.runWithTransaction(point);
   }
 
   @Override
