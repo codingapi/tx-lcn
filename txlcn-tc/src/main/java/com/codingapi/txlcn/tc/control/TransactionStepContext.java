@@ -28,7 +28,7 @@ public class TransactionStepContext {
                 return Optional.of(transactionStep);
             }
         }
-        return Optional.ofNullable(null);
+        return Optional.empty();
     }
 
     @GraphRelation(value = "..>",type = TransactionInfo.class)
