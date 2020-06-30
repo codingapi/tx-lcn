@@ -1,0 +1,204 @@
+@startuml
+set namespaceSeparator ::
+
+skinparam linetype polyline
+skinparam linetype polyline
+skinparam linetype ortho
+top to bottom direction
+
+class com.codingapi.txlcn.tc::TransactionContent <<(C,#FF88EE)事务全局变量>> {
+	+LCN:String 
+
+}
+
+
+class aspect::LcnTransactionAspect <<(C,#FF88EE)LCN注解切面>> {
+	+log:Logger 
+	-transactionAspectContext:TransactionAspectContext 
+
+	+lcnTransactionPointcut(): void 
+	+runWithLcnTransaction(ProceedingJoinPoint): Object 
+	+getOrder(): int 
+}
+
+aspect::LcnTransactionAspect --> aspect::TransactionAspectContext
+
+class aspect::TransactionAspectContext <<(C,#FF88EE)注解执行时>> {
+	+log:Logger 
+	-transactionContext:TransactionContext 
+	-annotationContext:AnnotationContext 
+
+	+runWithTransaction(ProceedingJoinPoint): Object 
+}
+
+aspect::TransactionAspectContext --> control::TransactionContext
+aspect::TransactionAspectContext --> control::TransactionContext
+
+class config::TxConfig <<(C,#FF88EE)TC模块配置信息>> {
+	+log:Logger 
+	-applicationName:String 
+	-tms:List<String> 
+	-protocol:Config 
+
+	-addressFormat(String): InetSocketAddress 
+	+txManagerAddresses(): List<InetSocketAddress> 
+}
+
+
+class control::TransactionContext <<(C,#FF88EE)事务环境信息>> {
+	+log:Logger 
+	-transactionEventContext:TransactionEventContext 
+	-transactionStepContext:TransactionStepContext 
+
+	+tryBeginTransaction(TransactionInfo): void 
+	+tryEndTransaction(TransactionInfo): void 
+	+getState(): TransactionState 
+}
+
+control::TransactionContext --> event::TransactionEventContext
+control::TransactionContext --> control::TransactionStepContext
+control::TransactionContext ..> info::TransactionInfo
+control::TransactionContext ..> control::TransactionState
+
+class control::TransactionState <<(C,#FF88EE)事务状态>> {
+	-state:TransactionState$State 
+
+}
+
+
+class control::TransactionStep <<(I,#FF88EE)事务步骤>> {
+
+	+type(): TransactionState$State 
+	+run(TransactionInfo): void 
+}
+
+control::TransactionStep ..> control::TransactionState
+control::TransactionStep ..> info::TransactionInfo
+
+class control::TransactionStepContext <<(I,#FF88EE)事务步骤环境>> {
+	-transactionSteps:List<TransactionStep> 
+
+	-transactionStep(TransactionState): Optional<TransactionStep> 
+	+execute(TransactionInfo): void 
+}
+
+control::TransactionStepContext *--> control::TransactionStep
+control::TransactionStepContext ..> info::TransactionInfo
+
+class control::TransactionStepCreate <<(C,#FF88EE)事务步骤-创建事务>> {
+	+log:Logger 
+	-managerProtocoler:TxManagerReporter 
+
+	+type(): TransactionState$State 
+	+run(TransactionInfo): void 
+}
+
+control::TransactionStepCreate --> reporter::TxManagerReporter
+
+class event::TransactionEventContext <<(C,#FF88EE)事务事件监听处理>> {
+	-transactionEventListeners:List<TransactionEventListener> 
+
+	+onBeforeCreateTransaction(TransactionInfo): void 
+	+onAfterCreateTransaction(TransactionInfo): void 
+	+onBeforeJoinTransaction(TransactionInfo): void 
+	+onAfterJoinTransaction(TransactionInfo): void 
+	+onBeforeNotifyTransaction(TransactionInfo): void 
+	+onAfterNotifyTransaction(TransactionInfo): void 
+}
+
+event::TransactionEventContext *--> event::TransactionEventListener
+event::TransactionEventContext ..> info::TransactionInfo
+
+class event::TransactionEventListener <<(I,#FF88EE)事务事件监听>> {
+
+	+onBeforeCreateTransaction(TransactionInfo): void 
+	+onAfterCreateTransaction(TransactionInfo): void 
+	+onBeforeJoinTransaction(TransactionInfo): void 
+	+onAfterJoinTransaction(TransactionInfo): void 
+	+onBeforeNotifyTransaction(TransactionInfo): void 
+	+onAfterNotifyTransaction(TransactionInfo): void 
+}
+
+
+class exception::TxException <<(C,#FF88EE)事务异常>> {
+
+}
+
+
+class info::TransactionInfo <<(C,#FF88EE)事务信息>> {
+	-groupId:String 
+	-transactionType:String 
+	-transactionState:TransactionState 
+
+	+isState(TransactionState$State): boolean 
+	+current(): TransactionInfo 
+}
+
+info::TransactionInfo ..> control::TransactionState
+
+class info::TransactionInfoThreadLocal <<(C,#FF88EE)事务信息ThreadLocal>> {
+	+threadLocal:ThreadLocal<TransactionInfo> 
+
+	+current(): TransactionInfo 
+	+push(TransactionInfo): void 
+}
+
+
+class reporter::TxManagerReporter <<(C,#FF88EE)事务管理器通讯者>> {
+	-protocoler:Protocoler 
+	-connections:Collection<Connection> 
+	-leader:Connection 
+
+	-selectLeader(): void 
+	-checkLeader(): void 
+	+sendMsg(Message): void 
+}
+
+
+class resolver::AnnotationContext <<(C,#FF88EE)注解环境信息>> {
+	-strategies:List<AnnotationStrategy> 
+
+	+getAnnotation(Method): TxAnnotation 
+}
+
+resolver::AnnotationContext *--> resolver::AnnotationStrategy
+resolver::AnnotationContext ..> resolver::TxAnnotation
+
+class resolver::AnnotationStrategy <<(I,#FF88EE)事务注解解析器>> {
+
+	+getAnnotation(Method): TxAnnotation 
+}
+
+resolver::AnnotationStrategy ..> resolver::TxAnnotation
+
+class resolver::LcnAnnotationStrategy <<(C,#FF88EE)LCN注解解析器>> {
+
+	+getAnnotation(Method): TxAnnotation 
+}
+
+resolver::LcnAnnotationStrategy ..|> resolver::AnnotationStrategy
+
+class resolver::TxAnnotation <<(C,#FF88EE)事务注解信息>> {
+	-annotation:Object 
+	-type:String 
+
+}
+
+
+class runner::TMServerRunner <<(C,#FF88EE)TM服务初始化>> {
+	+log:Logger 
+	-txConfig:TxConfig 
+	-protocolServer:ProtocolServer 
+
+	+init(): void 
+}
+
+
+class utils::PointUtils <<(C,#FF88EE)切面工具类>> {
+
+	+targetMethod(ProceedingJoinPoint): Method 
+}
+
+
+
+@enduml

@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.resolver;
 
+import com.codingapi.maven.uml.annotation.GraphRelation;
 import com.codingapi.maven.uml.annotation.Model;
 
 import java.lang.reflect.Method;
@@ -11,6 +12,7 @@ import java.lang.reflect.Method;
 @Model(flag = "I",value = "事务注解解析器",color = "#FF88EE")
 public interface AnnotationStrategy {
 
+    @GraphRelation(value = "..>",type = TxAnnotation.class)
     TxAnnotation getAnnotation(Method targetMethod);
 
 }

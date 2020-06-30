@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.control;
 
+import com.codingapi.maven.uml.annotation.GraphRelation;
 import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.tc.event.transaction.TransactionEventContext;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
@@ -16,10 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 @Model(flag = "C",value = "事务环境信息",color = "#FF88EE")
 public class TransactionContext {
 
+    @GraphRelation(value = "-->",type = TransactionEventContext.class)
     private TransactionEventContext transactionEventContext;
 
+    @GraphRelation(value = "-->",type = TransactionStepContext.class)
     private TransactionStepContext transactionStepContext;
 
+    @GraphRelation(value = "..>",type = TransactionInfo.class)
     public void tryBeginTransaction(TransactionInfo transactionInfo) throws Exception {
         if(transactionInfo.isState(TransactionState.State.CREATE)){
             //创建事务
@@ -48,6 +52,7 @@ public class TransactionContext {
         }
     }
 
+    @GraphRelation(value = "..>",type = TransactionState.class)
     public TransactionState getState() {
         return null;
     }

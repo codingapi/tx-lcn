@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.info;
 
+import com.codingapi.maven.uml.annotation.GraphRelation;
 import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.tc.control.TransactionState;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class TransactionInfo {
      */
     private TransactionState transactionState;
 
+    @GraphRelation(value = "..>",type = TransactionState.class)
     public boolean isState(TransactionState.State state){
         return transactionState.getState().equals(state);
     }

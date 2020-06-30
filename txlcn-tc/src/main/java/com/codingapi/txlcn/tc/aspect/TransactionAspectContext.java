@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.aspect;
 
+import com.codingapi.maven.uml.annotation.GraphRelation;
 import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.tc.control.TransactionContext;
 import com.codingapi.txlcn.tc.control.TransactionState;
@@ -18,8 +19,10 @@ import java.lang.reflect.Method;
 @Model(flag = "C",value = "注解执行时",color = "#FF88EE")
 public class TransactionAspectContext {
 
+  @GraphRelation(value = "-->",type = TransactionContext.class)
   private TransactionContext transactionContext;
 
+  @GraphRelation(value = "-->",type = TransactionContext.class)
   private AnnotationContext annotationContext;
 
   public Object runWithTransaction(ProceedingJoinPoint point) throws Throwable {
