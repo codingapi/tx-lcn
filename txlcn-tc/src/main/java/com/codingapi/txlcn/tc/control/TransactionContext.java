@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.control;
 
+import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.tc.event.transaction.TransactionEventContext;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @AllArgsConstructor
+@Model(flag = "C",value = "事务环境信息",color = "#FF88EE")
 public class TransactionContext {
 
     private TransactionEventContext transactionEventContext;

@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.aspect;
 
+import com.codingapi.maven.uml.annotation.Model;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -11,6 +12,7 @@ import org.springframework.core.Ordered;
 @Slf4j
 @AllArgsConstructor
 @Aspect
+@Model(flag = "C",value = "LCN注解切面",color = "#FF88EE")
 public class LcnTransactionAspect implements Ordered {
 
   private TransactionAspectContext transactionAspectContext;

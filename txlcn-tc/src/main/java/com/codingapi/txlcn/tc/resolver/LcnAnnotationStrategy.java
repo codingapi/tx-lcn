@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.resolver;
 
+import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.tc.TransactionContent;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 
@@ -10,6 +11,7 @@ import java.lang.reflect.Method;
  * @date 2020/3/5
  * @description
  */
+@Model(flag = "C",value = "LCN注解解析器",color = "#FF88EE")
 public class LcnAnnotationStrategy implements AnnotationStrategy {
 
     @Override

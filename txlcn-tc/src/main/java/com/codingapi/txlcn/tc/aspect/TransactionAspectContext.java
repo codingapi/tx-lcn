@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.aspect;
 
+import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.tc.control.TransactionContext;
 import com.codingapi.txlcn.tc.control.TransactionState;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
@@ -14,6 +15,7 @@ import java.lang.reflect.Method;
 
 @Slf4j
 @AllArgsConstructor
+@Model(flag = "C",value = "注解执行时",color = "#FF88EE")
 public class TransactionAspectContext {
 
   private TransactionContext transactionContext;

@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.protocol.config.Config;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Data
 @Slf4j
+@Model(flag = "C",value = "TC模块配置信息",color = "#FF88EE")
 public class TxConfig {
 
   /**

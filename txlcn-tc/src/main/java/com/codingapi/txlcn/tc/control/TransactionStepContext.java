@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.control;
 
+import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Optional;
  * @date 2020/3/5
  * @description
  */
+@Model(flag = "I",value = "事务步骤环境",color = "#FF88EE")
 public class TransactionStepContext {
 
     private List<TransactionStep> transactionSteps;

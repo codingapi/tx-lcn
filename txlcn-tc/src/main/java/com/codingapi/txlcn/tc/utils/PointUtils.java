@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.utils;
 
+import com.codingapi.maven.uml.annotation.Model;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
@@ -10,6 +11,7 @@ import java.lang.reflect.Method;
  * @date 2020/3/5
  * @description
  */
+@Model(flag = "C",value = "切面工具类",color = "#FF88EE")
 public class PointUtils {
 
     public static Method targetMethod(ProceedingJoinPoint point) throws NoSuchMethodException {

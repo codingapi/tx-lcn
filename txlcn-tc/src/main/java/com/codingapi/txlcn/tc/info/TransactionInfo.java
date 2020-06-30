@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.info;
 
+import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.tc.control.TransactionState;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
  * @description
  */
 @Data
+@Model(flag = "C",value = "事务信息",color = "#FF88EE")
 public class TransactionInfo {
 
     /**

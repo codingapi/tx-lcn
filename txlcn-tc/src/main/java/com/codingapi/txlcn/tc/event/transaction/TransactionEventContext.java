@@ -1,10 +1,12 @@
 package com.codingapi.txlcn.tc.event.transaction;
 
+import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
 
 import java.util.List;
 
 
+@Model(flag = "I",value = "事务事件监听",color = "#FF88EE")
 public class TransactionEventContext implements TransactionEventListener {
 
   private List<TransactionEventListener> transactionEventListeners;

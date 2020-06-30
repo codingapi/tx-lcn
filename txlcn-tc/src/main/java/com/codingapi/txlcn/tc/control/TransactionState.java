@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.control;
 
+import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
 
 /**
@@ -7,6 +8,7 @@ import com.codingapi.txlcn.tc.info.TransactionInfo;
  * @date 2020/3/5
  * @description
  */
+@Model(flag = "C",value = "事务状态",color = "#FF88EE")
 public class TransactionState {
 
     private State state;
