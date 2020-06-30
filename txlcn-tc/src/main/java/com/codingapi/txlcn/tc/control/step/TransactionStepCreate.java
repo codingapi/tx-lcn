@@ -3,9 +3,9 @@ package com.codingapi.txlcn.tc.control.step;
 import com.codingapi.maven.uml.annotation.GraphRelation;
 import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.protocol.message.event.TransactionCreateEvent;
-import com.codingapi.txlcn.tc.control.TransactionContext;
 import com.codingapi.txlcn.tc.control.TransactionState;
 import com.codingapi.txlcn.tc.control.TransactionStep;
+import com.codingapi.txlcn.tc.exception.TxException;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
 import com.codingapi.txlcn.tc.reporter.TxManagerReporter;
 import lombok.AllArgsConstructor;
@@ -33,6 +33,9 @@ public class TransactionStepCreate implements TransactionStep {
     @Override
     public void run(TransactionInfo transactionInfo) {
         TransactionCreateEvent res = (TransactionCreateEvent) managerProtocoler.requestMsg(new TransactionCreateEvent(transactionInfo.getGroupId()));
+        if(res==null){
+            throw new TxException("create transaction fail.");
+        }
         log.info("create transaction ... {}",res.getResult());
     }
 }

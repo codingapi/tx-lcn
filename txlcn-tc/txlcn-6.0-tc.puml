@@ -60,15 +60,28 @@ control::TransactionContext --> control::TransactionStepContext
 control::TransactionContext ..> info::TransactionInfo
 control::TransactionContext ..> control::TransactionState
 
-class control::TransactionState <<(C,#FF88EE)事务状态>> {
-	-state:TransactionState$State 
+class control::TransactionState <<(E,#FF88EE)事务状态>> {
+	+CREATE:TransactionState 
+	+JOIN:TransactionState 
+	+NOTIFY:TransactionState 
+	+NO_TRANSACTION:TransactionState 
+	+$VALUES:TransactionState[] 
 
+	+values(): TransactionState[] 
+	+valueOf(String): TransactionState 
 }
 
 
+class control::TransactionStateStrategy <<(C,#FF88EE)事务状态策略>> {
+
+	+getTransactionState(): TransactionState 
+}
+
+control::TransactionStateStrategy ..> control::TransactionState
+
 class control::TransactionStep <<(I,#FF88EE)事务步骤>> {
 
-	+type(): TransactionState$State 
+	+type(): TransactionState 
 	+run(TransactionInfo): void 
 }
 
@@ -89,7 +102,7 @@ class control::TransactionStepCreate <<(C,#FF88EE)事务步骤-创建事务>> {
 	+log:Logger 
 	-managerProtocoler:TxManagerReporter 
 
-	+type(): TransactionState$State 
+	+type(): TransactionState 
 	+run(TransactionInfo): void 
 }
 
@@ -120,18 +133,15 @@ class event::TransactionEventListener <<(I,#FF88EE)事务事件监听>> {
 }
 
 
-class exception::TxException <<(C,#FF88EE)事务异常>> {
-
-}
-
-
 class info::TransactionInfo <<(C,#FF88EE)事务信息>> {
 	-groupId:String 
 	-transactionType:String 
 	-transactionState:TransactionState 
+	-successReturn:Boolean 
 
-	+isState(TransactionState$State): boolean 
+	+isState(TransactionState): boolean 
 	+current(): TransactionInfo 
+	+clear(): void 
 }
 
 info::TransactionInfo ..> control::TransactionState
@@ -152,6 +162,7 @@ class reporter::TxManagerReporter <<(C,#FF88EE)事务管理器通讯者>> {
 	-selectLeader(): void 
 	-checkLeader(): void 
 	+sendMsg(Message): void 
+	+requestMsg(TransactionMessage): TransactionMessage 
 }
 
 

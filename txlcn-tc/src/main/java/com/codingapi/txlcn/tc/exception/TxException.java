@@ -1,9 +1,19 @@
 package com.codingapi.txlcn.tc.exception;
 
-import com.codingapi.maven.uml.annotation.Model;
+public class TxException extends RuntimeException {
 
-@Model(flag = "C",value = "事务异常",color = "#FF88EE")
-public class TxException extends IllegalArgumentException {
+    public TxException() {
+    }
 
+    public TxException(String s) {
+        super(s);
+    }
 
+    public TxException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public TxException(Throwable cause) {
+        super(cause);
+    }
 }
