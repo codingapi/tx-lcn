@@ -4,6 +4,7 @@ import com.codingapi.maven.uml.annotation.GraphRelation;
 import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.tc.control.TransactionContext;
 import com.codingapi.txlcn.tc.control.TransactionState;
+import com.codingapi.txlcn.tc.control.TransactionStateStrategy;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
 import com.codingapi.txlcn.tc.resolver.AnnotationContext;
 import com.codingapi.txlcn.tc.resolver.TxAnnotation;
@@ -34,14 +35,22 @@ public class TransactionAspectContext {
       return point.proceed();
     }
 
-    TransactionState transactionState = new TransactionState();
+    TransactionState transactionState = TransactionStateStrategy.getTransactionState();
     TransactionInfo transactionInfo = new TransactionInfo(txAnnotation.getType(),transactionState);
 
-    log.info("run with lcn start...");
-    transactionContext.tryBeginTransaction(transactionInfo);
-    Object res = point.proceed();
-    transactionContext.tryEndTransaction(transactionInfo);
-    log.info("run with lcn over");
+    log.debug("run with tx-lcn start...");
+    Object res = null;
+    try {
+      transactionContext.tryBeginTransaction(transactionInfo);
+      res = point.proceed();
+      transactionInfo.setSuccessReturn(true);
+    }catch (Exception e){
+      transactionInfo.setSuccessReturn(false);
+      throw e;
+    }finally {
+      transactionContext.tryEndTransaction(transactionInfo);
+    }
+    log.debug("run with tx-lcn over.");
     return res;
   }
 

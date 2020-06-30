@@ -25,7 +25,7 @@ public class TransactionContext {
 
     @GraphRelation(value = "..>",type = TransactionInfo.class)
     public void tryBeginTransaction(TransactionInfo transactionInfo) throws Exception {
-        if(transactionInfo.isState(TransactionState.State.CREATE)){
+        if(transactionInfo.isState(TransactionState.CREATE)){
             //创建事务
             log.info("create tx-transaction ");
             transactionEventContext.onBeforeCreateTransaction(transactionInfo);
@@ -35,7 +35,12 @@ public class TransactionContext {
     }
 
     public void tryEndTransaction(TransactionInfo transactionInfo) throws Exception {
-        if(transactionInfo.isState(TransactionState.State.CREATE)){
+        //状态判定
+        if(transactionInfo.isState(TransactionState.CREATE)){
+            transactionInfo.setTransactionState(TransactionState.NOTIFY);
+        }
+
+        if(transactionInfo.isState(TransactionState.NOTIFY)){
 
             // 提交事务
             log.info("notify tx-transaction ");
@@ -50,6 +55,8 @@ public class TransactionContext {
             transactionStepContext.execute(transactionInfo);
             transactionEventContext.onAfterJoinTransaction(transactionInfo);
         }
+
+        transactionInfo.clear();
     }
 
     @GraphRelation(value = "..>",type = TransactionState.class)

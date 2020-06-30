@@ -5,6 +5,7 @@ import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.Message;
+import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.util.Assert;
 
@@ -56,6 +57,16 @@ public class TxManagerReporter {
         selectLeader();
         checkLeader();
         leader.send(message);
+    }
+
+    /**
+     * 请求消息
+     * @param message
+     */
+    public TransactionMessage requestMsg(TransactionMessage message){
+        selectLeader();
+        checkLeader();
+        return leader.request(message);
     }
 
 

@@ -13,7 +13,7 @@ import com.codingapi.txlcn.tc.info.TransactionInfo;
 public interface TransactionStep {
 
     @GraphRelation(value = "..>",type = TransactionState.class)
-    TransactionState.State type();
+    TransactionState type();
 
     @GraphRelation(value = "..>",type = TransactionInfo.class)
     void run(TransactionInfo transactionInfo);

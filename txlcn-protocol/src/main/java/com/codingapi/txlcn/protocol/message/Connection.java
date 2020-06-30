@@ -1,5 +1,9 @@
 package com.codingapi.txlcn.protocol.message;
 
+import com.codingapi.txlcn.protocol.exception.ProtocolException;
+import com.codingapi.txlcn.protocol.await.Lock;
+import com.codingapi.txlcn.protocol.await.LockContext;
+import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
 import io.netty.channel.ChannelHandlerContext;
 import java.net.InetSocketAddress;
 
@@ -41,6 +45,24 @@ public class Connection {
       ctx.writeAndFlush(msg);
     } else {
       LOGGER.error("Can not send message " + msg.getClass() + " to " + toString());
+    }
+  }
+
+  public TransactionMessage request(final TransactionMessage msg){
+    if (ctx != null) {
+      String groupId = msg.getGroupId();
+      Lock lock =  LockContext.getInstance().addKey(groupId);
+      try {
+        LOGGER.debug("send message {}",msg);
+        ctx.writeAndFlush(msg);
+        lock.await(1000);
+        return lock.getRes();
+      }finally {
+        lock.clear();
+      }
+    } else {
+      LOGGER.error("Can not send message " + msg.getClass() + " to " + toString());
+      throw new ProtocolException("can't send message . ");
     }
   }
 

@@ -26,13 +26,13 @@ public class TransactionStepCreate implements TransactionStep {
     private TxManagerReporter managerProtocoler;
 
     @Override
-    public TransactionState.State type() {
-        return TransactionState.State.CREATE;
+    public TransactionState type() {
+        return TransactionState.CREATE;
     }
 
     @Override
     public void run(TransactionInfo transactionInfo) {
-        managerProtocoler.sendMsg(new TransactionCreateEvent());
-        log.info("create transaction ... ");
+        TransactionCreateEvent res = (TransactionCreateEvent) managerProtocoler.requestMsg(new TransactionCreateEvent(transactionInfo.getGroupId()));
+        log.info("create transaction ... {}",res.getResult());
     }
 }

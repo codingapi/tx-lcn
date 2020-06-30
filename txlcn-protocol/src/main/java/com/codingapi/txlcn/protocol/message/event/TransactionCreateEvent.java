@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.protocol.message.event;
 
-import com.codingapi.txlcn.protocol.message.separate.AbsMessage;
+import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
 import lombok.Data;
 
 /**
@@ -9,12 +9,12 @@ import lombok.Data;
  * @description
  */
 @Data
-public class TransactionCreateEvent extends AbsMessage {
+public class TransactionCreateEvent extends TransactionMessage {
 
-    /**
-     * 事务Id
-     */
-    private Long groupId;
+    private String result;
 
+    public TransactionCreateEvent(String groupId) {
+        this.groupId = groupId;
+    }
 
 }

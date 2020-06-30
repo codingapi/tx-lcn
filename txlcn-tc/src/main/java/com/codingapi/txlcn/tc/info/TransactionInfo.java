@@ -31,9 +31,20 @@ public class TransactionInfo {
      */
     private TransactionState transactionState;
 
+    /**
+     * 业务执行状态
+     * null  未知
+     * true  成功响应
+     * false 失败响应
+     */
+    private Boolean successReturn;
+
     @GraphRelation(value = "..>",type = TransactionState.class)
-    public boolean isState(TransactionState.State state){
-        return transactionState.getState().equals(state);
+    public boolean isState(TransactionState state){
+        if(transactionState==null){
+            return false;
+        }
+        return transactionState.equals(state);
     }
 
     public TransactionInfo(String transactionType, TransactionState transactionState) {
@@ -48,4 +59,11 @@ public class TransactionInfo {
         return TransactionInfoThreadLocal.current();
     }
 
+    public void clear() {
+        TransactionInfoThreadLocal.push(null);
+    }
+
+    public void setSuccessReturn(boolean successReturn) {
+        this.successReturn = successReturn;
+    }
 }
