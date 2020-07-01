@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.protocol.handler;
 
 import com.codingapi.txlcn.protocol.Protocoler;
+import com.codingapi.txlcn.protocol.config.Config;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.Heartbeat;
 import com.codingapi.txlcn.protocol.message.Message;
@@ -14,6 +15,9 @@ import io.netty.util.AttributeKey;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * @author lorne
@@ -31,9 +35,18 @@ public class ProtocolChannelHandler  extends SimpleChannelInboundHandler<Message
     @Getter
     private final ApplicationContext applicationContext;
 
-    public ProtocolChannelHandler(Protocoler protocoler,ApplicationContext applicationContext) {
+    /**
+     * 异步处理消息，避免堵塞netty线程影响消息通讯.
+     */
+    private Executor executors;
+
+    private Config config;
+
+    public ProtocolChannelHandler(Protocoler protocoler, ApplicationContext applicationContext, Config config) {
         this.protocoler = protocoler;
         this.applicationContext = applicationContext;
+        this.config = config;
+        this.executors =  Executors.newFixedThreadPool(config.getHandleThreads());
     }
 
     static Attribute<Connection> getSessionAttribute(ChannelHandlerContext ctx) {
@@ -44,7 +57,7 @@ public class ProtocolChannelHandler  extends SimpleChannelInboundHandler<Message
     @Override
     public void channelActive(final ChannelHandlerContext ctx) throws Exception {
         log.debug("Channel active {}", ctx.channel().remoteAddress());
-        final Connection connection = new Connection(ctx);
+        final Connection connection = new Connection(ctx,config);
         getSessionAttribute(ctx).set(connection);
         protocoler.handleConnectionOpened(connection);
     }
@@ -61,7 +74,13 @@ public class ProtocolChannelHandler  extends SimpleChannelInboundHandler<Message
     public void channelRead0(final ChannelHandlerContext ctx, final Message message) throws Exception {
         log.debug("Message {} received from {}", message.getClass(), ctx.channel().remoteAddress());
         final Connection connection = getSessionAttribute(ctx).get();
-        message.handle(applicationContext,protocoler, connection);
+        executors.execute(()->{
+            try {
+                message.handle(applicationContext,protocoler, connection);
+            } catch (Exception e) {
+                log.error("message handle fail.",e);
+            }
+        });
     }
 
 

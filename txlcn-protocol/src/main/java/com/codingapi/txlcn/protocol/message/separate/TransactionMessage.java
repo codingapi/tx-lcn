@@ -17,15 +17,16 @@ public abstract class TransactionMessage extends AbsMessage {
 
     protected String groupId;
 
-
     @Override
     public void handle(ApplicationContext springContext, Protocoler protocoler, Connection connection) throws Exception {
         super.handle(springContext, protocoler, connection);
         //唤醒等待消息
-        Lock lock =  LockContext.getInstance().getKey(groupId);
-        if(lock!=null){
-            lock.setRes(this);
-            lock.signal();
+        if(groupId!=null) {
+            Lock lock = LockContext.getInstance().getKey(groupId);
+            if (lock != null) {
+                lock.setRes(this);
+                lock.signal();
+            }
         }
     }
 }

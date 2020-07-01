@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.protocol.message;
 
+import com.codingapi.txlcn.protocol.config.Config;
 import com.codingapi.txlcn.protocol.exception.ProtocolException;
 import com.codingapi.txlcn.protocol.await.Lock;
 import com.codingapi.txlcn.protocol.await.LockContext;
@@ -31,7 +32,10 @@ public class Connection {
   @Getter
   private final String uniqueKey;
 
-  public Connection(ChannelHandlerContext ctx) {
+  private final Config config;
+
+  public Connection(ChannelHandlerContext ctx,Config config) {
+    this.config = config;
     this.remoteAddress = (InetSocketAddress) ctx.channel().remoteAddress();
     this.ctx = ctx;
     this.remoteHost = remoteAddress.getAddress().getHostAddress();
@@ -55,7 +59,7 @@ public class Connection {
       try {
         LOGGER.debug("send message {}",msg);
         ctx.writeAndFlush(msg);
-        lock.await(1000);
+        lock.await(config.getAwaitTime());
         return lock.getRes();
       }finally {
         lock.clear();

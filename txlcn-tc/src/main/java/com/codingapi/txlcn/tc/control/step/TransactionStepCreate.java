@@ -32,10 +32,12 @@ public class TransactionStepCreate implements TransactionStep {
 
     @Override
     public void run(TransactionInfo transactionInfo) {
+        long t1 = System.currentTimeMillis();
         TransactionCreateEvent res = (TransactionCreateEvent) managerProtocoler.requestMsg(new TransactionCreateEvent(transactionInfo.getGroupId()));
         if(res==null){
             throw new TxException("create transaction fail.");
         }
-        log.info("create transaction ... {}",res.getResult());
+        long t2 = System.currentTimeMillis();
+        log.info("create transaction result:{},time:{}",res.getResult(),(t2-t1));
     }
 }

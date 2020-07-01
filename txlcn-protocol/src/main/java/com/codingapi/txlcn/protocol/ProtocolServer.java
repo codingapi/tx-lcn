@@ -62,7 +62,7 @@ public class ProtocolServer {
 
         ChannelFuture closeFuture = null;
 
-        ProtocolChannelHandler protocolChannelHandler = new ProtocolChannelHandler(protocoler,applicationContext);
+        ProtocolChannelHandler protocolChannelHandler = new ProtocolChannelHandler(protocoler,applicationContext,config);
 
         ProtocolChannelInitializer protocolChannelInitializer = new ProtocolChannelInitializer(config,protocolChannelHandler,eventExecutorGroup);
 
@@ -127,7 +127,7 @@ public class ProtocolServer {
         }
 
 
-        ProtocolChannelHandler protocolChannelHandler = new ProtocolChannelHandler(protocoler,applicationContext);
+        ProtocolChannelHandler protocolChannelHandler = new ProtocolChannelHandler(protocoler,applicationContext,config);
         ProtocolChannelInitializer protocolChannelInitializer = new ProtocolChannelInitializer(config,protocolChannelHandler,eventExecutorGroup);
 
         final Bootstrap clientBootstrap = new Bootstrap();
