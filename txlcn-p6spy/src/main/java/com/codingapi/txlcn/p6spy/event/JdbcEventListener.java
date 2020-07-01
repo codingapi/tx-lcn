@@ -22,6 +22,7 @@ import com.codingapi.txlcn.p6spy.common.*;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.concurrent.Callable;
 
 /**
  * Implementations of this class receive notifications for interesting JDBC events.
@@ -377,7 +378,7 @@ public abstract class JdbcEventListener {
    *
    * @param connectionInformation The meta information about the {@link Connection} being invoked
    */
-  public void onBeforeCommit(ConnectionInformation connectionInformation) {
+  public void onBeforeCommit(ConnectionInformation connectionInformation, JdbcCallable callable) throws SQLException {
   }
 
   /**
@@ -407,7 +408,7 @@ public abstract class JdbcEventListener {
    *
    * @param connectionInformation The meta information about the {@link Connection} being invoked
    */
-  public void onBeforeRollback(ConnectionInformation connectionInformation) {
+  public void onBeforeRollback(ConnectionInformation connectionInformation,JdbcCallable callable)throws SQLException {
   }
 
   /**

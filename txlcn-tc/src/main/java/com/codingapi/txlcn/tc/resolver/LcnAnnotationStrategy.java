@@ -2,7 +2,7 @@ package com.codingapi.txlcn.tc.resolver;
 
 import com.codingapi.maven.uml.annotation.GraphRelation;
 import com.codingapi.maven.uml.annotation.Model;
-import com.codingapi.txlcn.tc.TransactionContent;
+import com.codingapi.txlcn.tc.TransactionConstant;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 
 import java.lang.reflect.Method;
@@ -20,7 +20,7 @@ public class LcnAnnotationStrategy implements AnnotationStrategy {
     public TxAnnotation getAnnotation(Method targetMethod) {
         LcnTransaction lcnTransaction =  targetMethod.getAnnotation(LcnTransaction.class);
         if(lcnTransaction!=null){
-            return new TxAnnotation(lcnTransaction, TransactionContent.LCN);
+            return new TxAnnotation(lcnTransaction, TransactionConstant.LCN);
         }
         return null;
     }

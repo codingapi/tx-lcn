@@ -46,6 +46,10 @@ public class ConnectionInformation implements Loggable {
     return connectionInformation;
   }
 
+  public Connection getConnection() {
+    return connection;
+  }
+
   public int getConnectionId() {
     return connectionId;
   }

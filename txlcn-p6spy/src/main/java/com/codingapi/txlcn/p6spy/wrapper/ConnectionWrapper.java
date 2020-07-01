@@ -158,8 +158,7 @@ public class ConnectionWrapper extends AbstractWrapper implements Connection {
         SQLException e = null;
         long start = System.nanoTime();
         try {
-            jdbcEventListener.onBeforeCommit(connectionInformation);
-            delegate.commit();
+            jdbcEventListener.onBeforeCommit(connectionInformation, delegate::commit);
         } catch (SQLException sqle) {
             e = sqle;
             throw e;
@@ -174,8 +173,7 @@ public class ConnectionWrapper extends AbstractWrapper implements Connection {
         SQLException e = null;
         long start = System.nanoTime();
         try {
-            jdbcEventListener.onBeforeRollback(connectionInformation);
-            delegate.rollback();
+            jdbcEventListener.onBeforeRollback(connectionInformation, delegate::rollback);
         } catch (SQLException sqle) {
             e = sqle;
             throw e;
@@ -186,17 +184,7 @@ public class ConnectionWrapper extends AbstractWrapper implements Connection {
 
     @Override
     public void rollback(Savepoint savepoint) throws SQLException {
-        SQLException e = null;
-        long start = System.nanoTime();
-        try {
-            jdbcEventListener.onBeforeRollback(connectionInformation);
-            delegate.rollback(savepoint);
-        } catch (SQLException sqle) {
-            e = sqle;
-            throw e;
-        } finally {
-            jdbcEventListener.onAfterRollback(connectionInformation, System.nanoTime() - start, e);
-        }
+        delegate.rollback(savepoint);
     }
 
     @Override

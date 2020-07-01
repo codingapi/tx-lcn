@@ -20,11 +20,13 @@ package com.codingapi.txlcn.p6spy;
 
 import com.codingapi.txlcn.p6spy.common.*;
 import com.codingapi.txlcn.p6spy.event.DefaultEventListener;
+import com.codingapi.txlcn.p6spy.event.JdbcCallable;
 import com.codingapi.txlcn.p6spy.event.JdbcEventListener;
 import com.codingapi.txlcn.p6spy.event.P6spyJdbcEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
+import java.util.concurrent.Callable;
 
 public class CompoundJdbcEventListener extends JdbcEventListener {
 
@@ -212,9 +214,9 @@ public class CompoundJdbcEventListener extends JdbcEventListener {
     }
 
     @Override
-    public void onBeforeCommit(ConnectionInformation connectionInformation) {
-        DefaultEventListener.INSTANCE.onBeforeCommit(connectionInformation);
-        p6spyEventListener.onBeforeCommit(connectionInformation);
+    public void onBeforeCommit(ConnectionInformation connectionInformation, JdbcCallable callable) throws SQLException{
+        DefaultEventListener.INSTANCE.onBeforeCommit(connectionInformation,callable);
+        p6spyEventListener.onBeforeCommit(connectionInformation,callable);
     }
 
     @Override
@@ -230,9 +232,9 @@ public class CompoundJdbcEventListener extends JdbcEventListener {
     }
 
     @Override
-    public void onBeforeRollback(ConnectionInformation connectionInformation) {
-        DefaultEventListener.INSTANCE.onBeforeRollback(connectionInformation);
-        p6spyEventListener.onBeforeRollback(connectionInformation);
+    public void onBeforeRollback(ConnectionInformation connectionInformation,JdbcCallable callable)throws SQLException {
+        DefaultEventListener.INSTANCE.onBeforeRollback(connectionInformation,callable);
+        p6spyEventListener.onBeforeRollback(connectionInformation,callable);
     }
 
     @Override

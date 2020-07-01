@@ -1,9 +1,11 @@
-package com.codingapi.txlcn.tc.sql;
+package com.codingapi.txlcn.tc.jdbc;
 
 import com.codingapi.txlcn.p6spy.CompoundJdbcEventListener;
-import com.codingapi.txlcn.p6spy.event.P6spyJdbcEventListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 /**
  * @author lorne
@@ -11,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @description
  */
 @Configuration
-public class SqlConfiguration {
+public class JdbcConfiguration {
 
 
     @Bean
@@ -20,8 +22,8 @@ public class SqlConfiguration {
     }
 
     @Bean
-    public TransactionJdbcEventListener transactionJdbcEventListener(){
-        return new TransactionJdbcEventListener();
+    public TransactionJdbcEventListener transactionJdbcEventListener(@Autowired(required = false) List<TransactionJdbcEvent> transactionJdbcEvents){
+        return new TransactionJdbcEventListener(transactionJdbcEvents);
     }
 
 }

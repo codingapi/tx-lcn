@@ -8,7 +8,7 @@ import com.codingapi.maven.uml.annotation.Model;
  * @description
  */
 @Model(flag = "C",value = "事务全局变量",color = "#FF88EE")
-public class TransactionContent {
+public class TransactionConstant {
 
     public static final String LCN = "lcn";
 

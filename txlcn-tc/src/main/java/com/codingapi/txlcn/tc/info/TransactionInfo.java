@@ -2,6 +2,7 @@ package com.codingapi.txlcn.tc.info;
 
 import com.codingapi.maven.uml.annotation.GraphRelation;
 import com.codingapi.maven.uml.annotation.Model;
+import com.codingapi.txlcn.tc.TransactionConstant;
 import com.codingapi.txlcn.tc.control.TransactionState;
 import lombok.Data;
 
@@ -65,5 +66,12 @@ public class TransactionInfo {
 
     public void setSuccessReturn(boolean successReturn) {
         this.successReturn = successReturn;
+    }
+
+    public boolean hasSqlProxy() {
+        if(transactionType.equals(TransactionConstant.LCN)){
+            return true;
+        }
+        return false;
     }
 }
