@@ -1,4 +1,4 @@
-package com.codingapi.example.tc.feign;
+package com.codingapi.txlcn.feign;
 
 import com.codingapi.example.tc2.vo.DemoReq;
 import com.codingapi.example.tc2.vo.DemoRes;

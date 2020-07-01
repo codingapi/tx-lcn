@@ -1,6 +1,6 @@
-package com.codingapi.example.tc.controller;
+package com.codingapi.txlcn.controller;
 
-import com.codingapi.example.tc.service.DemoService;
+import com.codingapi.txlcn.service.DemoService;
 import com.codingapi.example.tc2.vo.DemoReq;
 import com.codingapi.example.tc2.vo.DemoRes;
 import org.springframework.beans.factory.annotation.Autowired;

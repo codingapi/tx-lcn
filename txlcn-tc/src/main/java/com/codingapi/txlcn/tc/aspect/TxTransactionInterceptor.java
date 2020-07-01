@@ -2,6 +2,7 @@ package com.codingapi.txlcn.tc.aspect;
 
 
 import com.codingapi.maven.uml.annotation.Model;
+import lombok.AllArgsConstructor;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
@@ -11,13 +12,10 @@ import org.aopalliance.intercept.MethodInvocation;
  * @description
  */
 @Model(flag = "C",value = "LCN注解切面",color = "#FF88EE")
+@AllArgsConstructor
 public class TxTransactionInterceptor implements MethodInterceptor {
 
     private TransactionAspectContext transactionAspectContext;
-
-    public TxTransactionInterceptor(TransactionAspectContext transactionAspectContext) {
-        this.transactionAspectContext = transactionAspectContext;
-    }
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {

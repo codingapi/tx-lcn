@@ -17,6 +17,12 @@
 
     <dependency>
       <groupId>com.codingapi.txlcn</groupId>
+      <artifactId>txlcn-p6spy</artifactId>
+      <version>6.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.codingapi.txlcn</groupId>
       <artifactId>starter-txlcn-protocol</artifactId>
       <version>6.0.0</version>
     </dependency>

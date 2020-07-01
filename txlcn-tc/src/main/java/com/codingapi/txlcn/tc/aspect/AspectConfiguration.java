@@ -1,9 +1,9 @@
 package com.codingapi.txlcn.tc.aspect;
 
+import com.codingapi.txlcn.p6spy.CompoundJdbcEventListener;
 import com.codingapi.txlcn.tc.config.TxConfig;
 import com.codingapi.txlcn.tc.control.TransactionContext;
 import com.codingapi.txlcn.tc.resolver.AnnotationContext;
-import org.aopalliance.aop.Advice;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
@@ -22,17 +22,29 @@ public class AspectConfiguration {
   }
 
   @Bean
-  @ConditionalOnMissingBean
   public Advisor txTransactionAdvisor(TxTransactionInterceptor txTransactionInterceptor, TxConfig txConfig){
     AspectJExpressionPointcut pointcut=new AspectJExpressionPointcut();
-    pointcut.setExpression(txConfig.getPointcut());
+    pointcut.setExpression(txConfig.getTransactionPointcut());
     return new DefaultPointcutAdvisor(pointcut, txTransactionInterceptor);
   }
 
-  @Bean(name = "txTransactionInterceptor")
-  @ConditionalOnMissingBean
+
+  @Bean
+  public Advisor txDataSourceAdvisor(TxDataSourceInterceptor txDataSourceInterceptor, TxConfig txConfig){
+    AspectJExpressionPointcut pointcut=new AspectJExpressionPointcut();
+    pointcut.setExpression(txConfig.getDatasourcePointcut());
+    return new DefaultPointcutAdvisor(pointcut, txDataSourceInterceptor);
+  }
+
+
+  @Bean
   public TxTransactionInterceptor txTransactionInterceptor(TransactionAspectContext transactionAspectContext){
     return new TxTransactionInterceptor(transactionAspectContext);
+  }
+
+  @Bean
+  public TxDataSourceInterceptor txDataSourceInterceptor(CompoundJdbcEventListener compoundJdbcEventListener){
+    return new TxDataSourceInterceptor(compoundJdbcEventListener);
   }
 
 

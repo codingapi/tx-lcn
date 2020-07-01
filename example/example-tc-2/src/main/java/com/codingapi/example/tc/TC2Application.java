@@ -1,4 +1,4 @@
-package com.codingapi.example.tc;
+package com.codingapi.txlcn;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;

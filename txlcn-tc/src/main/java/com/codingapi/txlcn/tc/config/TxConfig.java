@@ -23,7 +23,12 @@ public class TxConfig {
   /**
    * 事务切面
    */
-  private String pointcut = "@annotation(com.codingapi.txlcn.tc.annotation.LcnTransaction)";
+  private String transactionPointcut = "@annotation(com.codingapi.txlcn.tc.annotation.LcnTransaction)";
+
+  /**
+   * jdbc切面
+   */
+  private String datasourcePointcut = "execution(* javax.sql.DataSource.getConnection(..))";
 
   /**
    * application name
