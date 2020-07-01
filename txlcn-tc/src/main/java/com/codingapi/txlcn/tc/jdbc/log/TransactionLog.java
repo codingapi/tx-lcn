@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.tc.jdbc.log;
 
 import com.codingapi.txlcn.tc.info.TransactionInfo;
+import lombok.Getter;
 
 /**
  * @author lorne
@@ -21,6 +22,7 @@ public class TransactionLog {
     /**
      * 日志主键
      */
+    @Getter
     private long id;
 
     /**

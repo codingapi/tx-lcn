@@ -1,5 +1,9 @@
 package com.codingapi.txlcn.tc.jdbc.log;
 
+import com.google.common.base.Joiner;
+
+import java.util.List;
+
 /**
  * @author lorne
  * @date 2020/7/1
@@ -18,7 +22,8 @@ public class MysqlLogExecutor implements LogExecutor {
     }
 
     @Override
-    public String delete(long id) {
-        return null;
+    public String delete(List<Long> ids) {
+        String id = Joiner.on(",").join(ids);
+        return "delete from `transaction_log` where id in ("+id+")";
     }
 }

@@ -1,5 +1,7 @@
 package com.codingapi.txlcn.tc.jdbc.log;
 
+import java.util.List;
+
 /**
  * @author lorne
  * @date 2020/7/1
@@ -11,6 +13,6 @@ public interface LogExecutor {
 
     String create();
 
-    String delete(long id);
+    String delete(List<Long> ids);
 
 }

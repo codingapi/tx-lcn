@@ -19,7 +19,7 @@ import java.sql.SQLException;
  */
 @Slf4j
 @AllArgsConstructor
-public class LcnCommitTransactionJdbcEvent implements TransactionJdbcEvent {
+public class LcnRollbackTransactionJdbcEvent implements TransactionJdbcEvent {
 
     private TransactionLogExecutor transactionLogExecutor;
 
@@ -30,7 +30,7 @@ public class LcnCommitTransactionJdbcEvent implements TransactionJdbcEvent {
 
     @Override
     public TransactionJdbcState state() {
-        return TransactionJdbcState.COMMIT;
+        return TransactionJdbcState.ROLLBACK;
     }
 
     @Override

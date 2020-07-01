@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author lorne
@@ -35,5 +36,9 @@ public class JdbcTransaction {
 
     public void add(TransactionLog transactionLog) {
         transactionLogs.add(transactionLog);
+    }
+
+    public List<Long> logIds(){
+        return transactionLogs.stream().map(TransactionLog::getId).collect(Collectors.toList());
     }
 }

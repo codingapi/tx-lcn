@@ -13,8 +13,13 @@ import org.springframework.context.annotation.Configuration;
 public class JdbcEventConfiguration {
 
     @Bean
-    public LcnCommitTransactionJdbcEvent lcnCommitTransactionJdbcEvent(){
-        return new LcnCommitTransactionJdbcEvent();
+    public LcnCommitTransactionJdbcEvent lcnCommitTransactionJdbcEvent(TransactionLogExecutor transactionLogExecutor){
+        return new LcnCommitTransactionJdbcEvent(transactionLogExecutor);
+    }
+
+    @Bean
+    public LcnRollbackTransactionJdbcEvent lcnRollbackTransactionJdbcEvent(TransactionLogExecutor transactionLogExecutor){
+        return new LcnRollbackTransactionJdbcEvent(transactionLogExecutor);
     }
 
     @Bean
