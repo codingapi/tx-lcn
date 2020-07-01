@@ -56,8 +56,13 @@ public class TransactionContext {
             transactionStepContext.execute(transactionInfo);
             transactionEventContext.onAfterJoinTransaction(transactionInfo);
         }
+
+    }
+
+
+    public void commitTransaction(){
         JdbcTransaction.clear();
-        transactionInfo.clear();
+        TransactionInfo.clear();
     }
 
     @GraphRelation(value = "..>",type = TransactionState.class)

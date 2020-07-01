@@ -37,12 +37,14 @@ public class LcnCommitTransactionJdbcEvent implements TransactionJdbcEvent {
     public Object execute(Object param) throws SQLException {
         Connection connection = JdbcTransaction.current().getConnection();
         log.info("connection:{}",connection);
-        JdbcCallable jdbcCallable = (JdbcCallable) param;
+//        JdbcCallable jdbcCallable = (JdbcCallable) param;
 
         transactionLogExecutor.delete(connection);
 
+        //todo 事务提交是需要通过TM控制触发的,这里应该要开线程绑架连接对象然后等待TM通知事务提交。
+
         //不需要返回值，返回固定值1
-        jdbcCallable.call();
+        //jdbcCallable.call();
         return 1;
     }
 }

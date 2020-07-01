@@ -60,7 +60,7 @@ public class TransactionInfo {
         return TransactionInfoThreadLocal.current();
     }
 
-    public void clear() {
+    public static void clear() {
         TransactionInfoThreadLocal.push(null);
     }
 

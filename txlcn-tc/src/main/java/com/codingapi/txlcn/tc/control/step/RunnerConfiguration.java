@@ -24,4 +24,10 @@ public class RunnerConfiguration {
         return new TransactionStepNotify(managerProtocoler);
     }
 
+
+    @Bean
+    public TransactionStep transactionStepJoin(TxManagerReporter managerProtocoler){
+        return new TransactionStepJoin(managerProtocoler);
+    }
+
 }
