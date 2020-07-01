@@ -68,7 +68,8 @@ public class ProxyConnection implements Connection {
 
     @Override
     public void close() throws SQLException {
-        connection.close();
+        //不允许主动关闭连接对象.
+        //connection.close();
     }
 
     @Override

@@ -1,7 +1,8 @@
 package com.codingapi.txlcn.tc.jdbc.event;
 
-import com.codingapi.txlcn.p6spy.event.JdbcCallable;
 import com.codingapi.txlcn.tc.TransactionConstant;
+import com.codingapi.txlcn.tc.info.TransactionInfo;
+import com.codingapi.txlcn.tc.jdbc.JdbcContext;
 import com.codingapi.txlcn.tc.jdbc.JdbcTransaction;
 import com.codingapi.txlcn.tc.jdbc.TransactionJdbcEvent;
 import com.codingapi.txlcn.tc.jdbc.TransactionJdbcState;
@@ -35,16 +36,13 @@ public class LcnCommitTransactionJdbcEvent implements TransactionJdbcEvent {
 
     @Override
     public Object execute(Object param) throws SQLException {
+        TransactionInfo transactionInfo = TransactionInfo.current();
+        String groupId = transactionInfo.getGroupId();
         Connection connection = JdbcTransaction.current().getConnection();
-        log.info("connection:{}",connection);
-//        JdbcCallable jdbcCallable = (JdbcCallable) param;
-
+        log.info("commit connection:{}",connection);
         transactionLogExecutor.delete(connection);
-
-        //todo 事务提交是需要通过TM控制触发的,这里应该要开线程绑架连接对象然后等待TM通知事务提交。
-
-        //不需要返回值，返回固定值1
-        //jdbcCallable.call();
+        //事务提交时需要通过TM控制触发的,这里应该要绑架连接对象，等待TM通知事务提交。
+        JdbcContext.getInstance().push(groupId,connection);
         return 1;
     }
 }

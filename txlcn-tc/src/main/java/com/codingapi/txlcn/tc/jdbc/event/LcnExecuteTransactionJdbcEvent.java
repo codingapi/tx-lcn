@@ -37,7 +37,7 @@ public class LcnExecuteTransactionJdbcEvent implements TransactionJdbcEvent {
     public Object execute(Object param) throws SQLException {
         String sql = (String) param;
         Connection connection = JdbcTransaction.current().getConnection();
-        log.info("connection:{}",connection);
+        log.info("execute connection:{}",connection);
         log.info("sql=>{}",sql);
 
         TransactionLog transactionLog = new TransactionLog(sql);

@@ -29,5 +29,10 @@ public class ControlConfiguration {
         return new TransactionStepContext(transactionSteps);
     }
 
+    @Bean
+    public TransactionCommitorStrategy transactionCommitor(@Autowired(required = false) List<Commitor> commitors){
+        return new TransactionCommitorStrategy(commitors);
+    }
+
 
 }

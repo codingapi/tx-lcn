@@ -36,7 +36,7 @@ public class LcnRollbackTransactionJdbcEvent implements TransactionJdbcEvent {
     @Override
     public Object execute(Object param) throws SQLException {
         Connection connection = JdbcTransaction.current().getConnection();
-        log.info("connection:{}",connection);
+        log.info("rollback connection:{}",connection);
         JdbcCallable jdbcCallable = (JdbcCallable) param;
 
         transactionLogExecutor.delete(connection);

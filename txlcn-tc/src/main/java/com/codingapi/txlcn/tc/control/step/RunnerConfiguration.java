@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.control.step;
 
+import com.codingapi.txlcn.tc.control.TransactionCommitorStrategy;
 import com.codingapi.txlcn.tc.control.TransactionStep;
 import com.codingapi.txlcn.tc.reporter.TxManagerReporter;
 import org.springframework.context.annotation.Bean;
@@ -20,14 +21,16 @@ public class RunnerConfiguration {
 
 
     @Bean
-    public TransactionStep transactionStepNotify(TxManagerReporter managerProtocoler){
-        return new TransactionStepNotify(managerProtocoler);
+    public TransactionStep transactionStepNotify(TxManagerReporter managerProtocoler,
+                                                 TransactionCommitorStrategy transactionCommitorStrategy){
+        return new TransactionStepNotify(managerProtocoler,transactionCommitorStrategy);
     }
 
 
     @Bean
-    public TransactionStep transactionStepJoin(TxManagerReporter managerProtocoler){
-        return new TransactionStepJoin(managerProtocoler);
+    public TransactionStep transactionStepJoin(TxManagerReporter managerProtocoler,
+                                               TransactionCommitorStrategy transactionCommitorStrategy){
+        return new TransactionStepJoin(managerProtocoler,transactionCommitorStrategy);
     }
 
 }
