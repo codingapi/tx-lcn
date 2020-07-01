@@ -21,6 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 public class TxConfig {
 
   /**
+   * 事务切面
+   */
+  private String pointcut = "@annotation(com.codingapi.txlcn.tc.annotation.LcnTransaction)";
+
+  /**
    * application name
    */
   private String applicationName;

@@ -8,10 +8,9 @@ import com.codingapi.txlcn.tc.control.TransactionStateStrategy;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
 import com.codingapi.txlcn.tc.resolver.AnnotationContext;
 import com.codingapi.txlcn.tc.resolver.TxAnnotation;
-import com.codingapi.txlcn.tc.utils.PointUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.ProceedingJoinPoint;
+import org.aopalliance.intercept.MethodInvocation;
 
 import java.lang.reflect.Method;
 
@@ -26,13 +25,12 @@ public class TransactionAspectContext {
   @GraphRelation(value = "-->",type = TransactionContext.class)
   private AnnotationContext annotationContext;
 
-  public Object runWithTransaction(ProceedingJoinPoint point) throws Throwable {
-
-    Method targetMethod = PointUtils.targetMethod(point);
+  public Object runWithTransaction(MethodInvocation invocation) throws Throwable {
+    Method targetMethod = invocation.getMethod();
 
     TxAnnotation txAnnotation = annotationContext.getAnnotation(targetMethod);
     if(txAnnotation==null){
-      return point.proceed();
+      return invocation.proceed();
     }
 
     TransactionState transactionState = TransactionStateStrategy.getTransactionState();
@@ -42,7 +40,7 @@ public class TransactionAspectContext {
     Object res = null;
     try {
       transactionContext.tryBeginTransaction(transactionInfo);
-      res = point.proceed();
+      res = invocation.proceed();
       transactionInfo.setSuccessReturn(true);
     }catch (Exception e){
       transactionInfo.setSuccessReturn(false);
