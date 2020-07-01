@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.tc.jdbc;
 
 import com.codingapi.txlcn.p6spy.CompoundJdbcEventListener;
+import org.h2.util.JdbcUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,5 +26,6 @@ public class JdbcConfiguration {
     public TransactionJdbcEventListener transactionJdbcEventListener(@Autowired(required = false) List<TransactionJdbcEvent> transactionJdbcEvents){
         return new TransactionJdbcEventListener(transactionJdbcEvents);
     }
+
 
 }

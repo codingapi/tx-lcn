@@ -1,5 +1,9 @@
 package com.codingapi.txlcn.tc.jdbc;
 
+import com.codingapi.txlcn.p6spy.CompoundJdbcEventListener;
+import com.codingapi.txlcn.p6spy.common.ConnectionInformation;
+import com.codingapi.txlcn.p6spy.wrapper.ConnectionWrapper;
+
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
@@ -14,8 +18,11 @@ public class ProxyConnection implements Connection {
 
     private Connection connection;
 
-    public ProxyConnection(Connection connection) {
-        this.connection = connection;
+    public ProxyConnection(CompoundJdbcEventListener compoundJdbcEventListener, Connection connection) {
+        new JdbcTransaction(connection);
+        this.connection = ConnectionWrapper.wrap(connection,
+                compoundJdbcEventListener,
+                ConnectionInformation.fromConnection(connection));
     }
 
     @Override

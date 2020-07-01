@@ -8,7 +8,6 @@ import com.codingapi.txlcn.tc.info.TransactionInfo;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,42 +42,38 @@ public class TransactionJdbcEventListener extends P6spyJdbcEventListener {
 
     @Override
     public String onBeforeAnyExecute(StatementInformation statementInformation) throws SQLException {
-        Connection connection = statementInformation.getConnectionInformation().getConnection();
         String sql = statementInformation.getSqlWithValues();
         Optional<TransactionJdbcEvent> optional =  getTransactionJdbcEvent(TransactionJdbcState.EXECUTE);
         if(!optional.isPresent()){
             return sql;
         }
-        return (String)optional.get().execute(connection,sql);
+        return (String)optional.get().execute(sql);
     }
 
     @Override
     public void onBeforeCommit(ConnectionInformation connectionInformation, JdbcCallable callable) throws SQLException{
-        Connection connection = connectionInformation.getConnection();
         Optional<TransactionJdbcEvent> optional =  getTransactionJdbcEvent(TransactionJdbcState.COMMIT);
         if(!optional.isPresent()){
             callable.call();
         }
-        optional.get().execute(connection,callable);
+        optional.get().execute(callable);
     }
 
     @Override
     public void onBeforeRollback(ConnectionInformation connectionInformation, JdbcCallable callable) throws SQLException {
-        Connection connection = connectionInformation.getConnection();
         Optional<TransactionJdbcEvent> optional =  getTransactionJdbcEvent(TransactionJdbcState.ROLLBACK);
         if(!optional.isPresent()){
             callable.call();
         }
-        optional.get().execute(connection,callable);
+        optional.get().execute(callable);
     }
 
     @SneakyThrows
     @Override
     public void onAfterAnyExecute(StatementInformation statementInformation, long timeElapsedNanos, SQLException e) {
-        Connection connection = statementInformation.getConnectionInformation().getConnection();
         Optional<TransactionJdbcEvent> optional =  getTransactionJdbcEvent(TransactionJdbcState.AFTER);
         if(optional.isPresent()){
-            optional.get().execute(connection,statementInformation);
+            optional.get().execute(statementInformation);
         }
     }
 }

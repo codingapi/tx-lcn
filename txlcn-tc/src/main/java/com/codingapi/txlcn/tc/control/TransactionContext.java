@@ -4,6 +4,7 @@ import com.codingapi.maven.uml.annotation.GraphRelation;
 import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.tc.event.transaction.TransactionEventContext;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
+import com.codingapi.txlcn.tc.jdbc.JdbcTransaction;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,7 +56,7 @@ public class TransactionContext {
             transactionStepContext.execute(transactionInfo);
             transactionEventContext.onAfterJoinTransaction(transactionInfo);
         }
-
+        JdbcTransaction.clear();
         transactionInfo.clear();
     }
 

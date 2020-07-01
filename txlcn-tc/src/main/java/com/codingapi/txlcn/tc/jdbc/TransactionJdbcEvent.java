@@ -1,6 +1,5 @@
 package com.codingapi.txlcn.tc.jdbc;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -14,5 +13,5 @@ public interface TransactionJdbcEvent {
 
     TransactionJdbcState state();
 
-    Object execute(Connection connection, Object param) throws SQLException;
+    Object execute(Object param) throws SQLException;
 }

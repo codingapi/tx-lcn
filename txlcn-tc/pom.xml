@@ -47,6 +47,12 @@
       <artifactId>spring-tx</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>commons-dbutils</groupId>
+      <artifactId>commons-dbutils</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>

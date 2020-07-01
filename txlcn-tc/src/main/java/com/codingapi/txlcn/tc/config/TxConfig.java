@@ -21,6 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 public class TxConfig {
 
   /**
+   * 数据库类型
+   */
+  private String sqlType;
+
+  /**
    * 事务切面
    */
   private String transactionPointcut = "@annotation(com.codingapi.txlcn.tc.annotation.LcnTransaction)";

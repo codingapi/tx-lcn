@@ -1,8 +1,6 @@
 package com.codingapi.txlcn.tc.aspect;
 
 import com.codingapi.txlcn.p6spy.CompoundJdbcEventListener;
-import com.codingapi.txlcn.p6spy.common.ConnectionInformation;
-import com.codingapi.txlcn.p6spy.wrapper.ConnectionWrapper;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
 import com.codingapi.txlcn.tc.jdbc.ProxyConnection;
 import lombok.AllArgsConstructor;
@@ -28,9 +26,7 @@ public class TxDataSourceInterceptor implements MethodInterceptor {
         TransactionInfo transactionInfo = TransactionInfo.current();
         Connection connection = (Connection) invocation.proceed();
         if(transactionInfo!=null&&transactionInfo.hasSqlProxy()) {
-            return new ProxyConnection(ConnectionWrapper.wrap(connection,
-                    compoundJdbcEventListener,
-                    ConnectionInformation.fromConnection(connection)));
+            return new ProxyConnection(compoundJdbcEventListener,connection);
         }else{
             return connection;
         }
