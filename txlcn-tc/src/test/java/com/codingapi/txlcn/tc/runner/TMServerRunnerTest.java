@@ -4,14 +4,14 @@ import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.protocol.config.Config;
 import com.codingapi.txlcn.tc.config.TxConfig;
 import com.google.common.collect.Lists;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 
 
-public class TMServerRunnerTest {
+ class TMServerRunnerTest {
 
   private TxConfig txConfig;
 
@@ -23,8 +23,8 @@ public class TMServerRunnerTest {
   @Autowired
   private ApplicationContext springContext;
 
-  @Before
-  public void before() {
+  @BeforeEach
+  void before() {
     Config protocolConfig = new Config();
     txConfig = new TxConfig(protocolConfig);
     txConfig.setTms(Lists.newArrayList("127.0.0.1:8070,127.0.0.1:8072"));
