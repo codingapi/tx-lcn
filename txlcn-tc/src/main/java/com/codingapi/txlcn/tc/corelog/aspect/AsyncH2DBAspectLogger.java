@@ -74,7 +74,7 @@ public class AsyncH2DBAspectLogger implements AspectLogger {
             txLog.setUnitId(unitId);
             txLog.setMethodStr(transactionInfo.getMethodStr());
             txLog.setTime(System.currentTimeMillis());
-            txLog.setUnitIdHash(groupId.hashCode());
+            txLog.setGroupIdHash(groupId.hashCode());
             txLog.setUnitIdHash(unitId.hashCode());
 
             boolean res = txLogHelper.save(txLog);
