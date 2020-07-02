@@ -47,7 +47,7 @@
 
         <txlcn-org.projectlombok.version>1.18.0</txlcn-org.projectlombok.version>
         <txlcn-spring-cloud.version>Finchley.SR2</txlcn-spring-cloud.version>
-        <txlcn-io.netty.version>4.1.31.Final</txlcn-io.netty.version>
+        <txlcn-io.netty.version>4.1.42.Final</txlcn-io.netty.version>
         <txlcn-com.alibaba.fastjson.version>1.2.34</txlcn-com.alibaba.fastjson.version>
         <txlcn-guava.version>19.0</txlcn-guava.version>
         <txlcn-hessian.version>4.0.38</txlcn-hessian.version>
