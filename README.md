@@ -21,13 +21,13 @@
 * 代码审核通过合并到仓库中 
   
 ## 代码结构
-* example                  示例与测试相关的代码    
-* starter-txlcn-protocol   txlcn-protocol模块的starter   
-* starter-txlcn-tc         txlcn-tc模块的starter 
-* txlcn-p6spy              p6spy-解析sql与jdbc的event定义
-* txlcn-protocol           通讯协议制度 
-* txlcn-tc                 TC事务客户端模块 
-* txlcn-tm                 TM事务控制端 
+* example:                  *示例与测试相关的代码*    
+* starter-txlcn-protocol:   *txlcn-protocol模块的starter*   
+* starter-txlcn-tc:        *txlcn-tc模块的starter* 
+* txlcn-p6spy:             *p6spy-解析sql与jdbc的event定义*
+* txlcn-protocol:          *通讯协议制度* 
+* txlcn-tc:                 *TC事务客户端模块* 
+* txlcn-tm:                 *TM事务控制端* 
 
 ## 从0到1实现分布式事务 公开课
 
