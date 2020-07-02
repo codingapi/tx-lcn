@@ -15,6 +15,8 @@
  */
 package com.codingapi.txlcn.tracing;
 
+import com.codingapi.txlcn.tracing.spring.TracingSpringContextUtils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,4 +30,8 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan
 public class TracingAutoConfiguration {
 
+    @Bean
+    public TracingSpringContextUtils tracingSpringContextUtils() {
+        return new TracingSpringContextUtils();
+    }
 }

@@ -17,6 +17,8 @@ package com.codingapi.txlcn.tracing.http.ribbon;
 
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.txlcn.tracing.TracingContext;
+import com.codingapi.txlcn.tracing.spring.SpringConfig;
+import com.codingapi.txlcn.tracing.spring.TracingSpringContextUtils;
 import com.netflix.loadbalancer.Server;
 import com.netflix.loadbalancer.ZoneAvoidanceRule;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +59,19 @@ public class TxlcnZoneAvoidanceRule extends ZoneAvoidanceRule {
 
         // 1. 自己加入此事务组调用链
         assert Objects.nonNull(registration);
-        TracingContext.tracing().addApp(registration.getServiceId(), registration.getHost() + ":" + registration.getPort());
+        //兼容springBoot 2.0以下版本
+        Boolean exitHost;
+        try {
+            exitHost = registration.getHost() != null;
+        } catch (NoSuchMethodError noSuchMethodError) {
+            exitHost = false;
+        }
+        if (!exitHost) {
+            SpringConfig springConfig = (SpringConfig) TracingSpringContextUtils.getContext().getBean("springConfig");
+            TracingContext.tracing().addApp(registration.getServiceId(), springConfig.getHost() + ":" + springConfig.getPort());
+        } else {
+            TracingContext.tracing().addApp(registration.getServiceId(), registration.getHost() + ":" + registration.getPort());
+        }
 
         // 2. 获取所有要访问服务的实例
         List<Server> servers = getLoadBalancer().getAllServers();
