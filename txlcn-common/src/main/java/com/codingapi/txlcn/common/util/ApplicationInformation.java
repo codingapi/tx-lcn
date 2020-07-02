@@ -15,7 +15,6 @@
  */
 package com.codingapi.txlcn.common.util;
 
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.util.StringUtils;
