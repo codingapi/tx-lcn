@@ -1,12 +1,10 @@
 package com.codingapi.txlcn.tc.control.step;
 
-import com.codingapi.maven.uml.annotation.GraphRelation;
-import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.protocol.message.event.TransactionNotifyEvent;
+import com.codingapi.txlcn.tc.control.TransactionCommitorStrategy;
 import com.codingapi.txlcn.tc.control.TransactionState;
 import com.codingapi.txlcn.tc.control.TransactionStep;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
-import com.codingapi.txlcn.tc.control.TransactionCommitorStrategy;
 import com.codingapi.txlcn.tc.reporter.TxManagerReporter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +17,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @AllArgsConstructor
-@Model(flag = "C",value = "事务步骤-通知事务",color = "#FF88EE")
-@GraphRelation(value = "..|>",type = TransactionStep.class)
 public class TransactionStepNotify implements TransactionStep {
 
-    @GraphRelation(value = "-->",type = TxManagerReporter.class)
     private TxManagerReporter managerProtocoler;
 
     private TransactionCommitorStrategy transactionCommitorStrategy;

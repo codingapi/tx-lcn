@@ -1,6 +1,5 @@
 package com.codingapi.txlcn.tc.resolver;
 
-import com.codingapi.maven.uml.annotation.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Model(flag = "C",value = "事务注解信息",color = "#FF88EE")
 public class TxAnnotation {
 
     /**

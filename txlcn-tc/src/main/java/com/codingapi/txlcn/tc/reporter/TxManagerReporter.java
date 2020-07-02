@@ -1,6 +1,5 @@
 package com.codingapi.txlcn.tc.reporter;
 
-import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
@@ -18,7 +17,6 @@ import java.util.Iterator;
  * @description
  */
 @AllArgsConstructor
-@Model(flag = "C",value = "事务管理器通讯者",color = "#FF88EE")
 public class TxManagerReporter {
 
     private Protocoler protocoler;

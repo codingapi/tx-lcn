@@ -1,16 +1,12 @@
 package com.codingapi.txlcn.tc.event.transaction;
 
-import com.codingapi.maven.uml.annotation.GraphRelation;
-import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
 
 import java.util.List;
 
 
-@Model(flag = "C",value = "事务事件监听处理",color = "#FF88EE")
 public class TransactionEventContext implements TransactionEventListener {
 
-  @GraphRelation(value = "*-->",type = TransactionEventListener.class)
   private List<TransactionEventListener> transactionEventListeners;
 
   public TransactionEventContext(
@@ -19,7 +15,6 @@ public class TransactionEventContext implements TransactionEventListener {
   }
 
   @Override
-  @GraphRelation(value = "..>",type = TransactionInfo.class)
   public void onBeforeCreateTransaction(TransactionInfo transactionInfo) {
     for (TransactionEventListener listener : transactionEventListeners) {
       listener.onBeforeCreateTransaction(transactionInfo);

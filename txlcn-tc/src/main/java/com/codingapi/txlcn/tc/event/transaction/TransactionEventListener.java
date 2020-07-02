@@ -1,12 +1,10 @@
 package com.codingapi.txlcn.tc.event.transaction;
 
-import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
 
 /**
  * 事务协调监听,TC与TM的通讯步骤监听.
  */
-@Model(flag = "I",value = "事务事件监听",color = "#FF88EE")
 public interface TransactionEventListener {
 
 

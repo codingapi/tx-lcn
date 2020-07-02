@@ -4,7 +4,5 @@
  * @description
  */
 
-@BoundContext(value = "runner")
 package com.codingapi.txlcn.tc.runner;
 
-import com.codingapi.maven.uml.annotation.BoundContext;

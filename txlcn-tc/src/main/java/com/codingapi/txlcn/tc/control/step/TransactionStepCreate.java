@@ -1,7 +1,5 @@
 package com.codingapi.txlcn.tc.control.step;
 
-import com.codingapi.maven.uml.annotation.GraphRelation;
-import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.protocol.message.event.TransactionCreateEvent;
 import com.codingapi.txlcn.tc.control.TransactionState;
 import com.codingapi.txlcn.tc.control.TransactionStep;
@@ -19,11 +17,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @AllArgsConstructor
-@Model(flag = "C",value = "事务步骤-创建事务",color = "#FF88EE")
-@GraphRelation(value = "..|>",type = TransactionStep.class)
 public class TransactionStepCreate implements TransactionStep {
 
-    @GraphRelation(value = "-->",type = TxManagerReporter.class)
     private TxManagerReporter managerProtocoler;
 
     @Override

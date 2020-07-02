@@ -1,5 +1,9 @@
 package com.codingapi.txlcn.tc.config;
 
+import com.codingapi.txlcn.protocol.config.Config;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,17 +11,11 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.codingapi.maven.uml.annotation.Model;
-import com.codingapi.txlcn.protocol.config.Config;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * Tx config properties
  */
 @Data
 @Slf4j
-@Model(flag = "C",value = "TC模块配置信息",color = "#FF88EE")
 public class TxConfig {
 
   /**

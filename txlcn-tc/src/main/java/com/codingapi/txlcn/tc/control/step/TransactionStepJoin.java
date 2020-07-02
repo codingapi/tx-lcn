@@ -1,17 +1,15 @@
 package com.codingapi.txlcn.tc.control.step;
 
-import com.codingapi.maven.uml.annotation.GraphRelation;
-import com.codingapi.maven.uml.annotation.Model;
 import com.codingapi.txlcn.protocol.await.Lock;
 import com.codingapi.txlcn.protocol.await.LockContext;
 import com.codingapi.txlcn.protocol.message.event.TransactionCommitEvent;
 import com.codingapi.txlcn.protocol.message.event.TransactionJoinEvent;
 import com.codingapi.txlcn.tc.config.TxConfig;
+import com.codingapi.txlcn.tc.control.TransactionCommitorStrategy;
 import com.codingapi.txlcn.tc.control.TransactionState;
 import com.codingapi.txlcn.tc.control.TransactionStep;
 import com.codingapi.txlcn.tc.exception.TxException;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
-import com.codingapi.txlcn.tc.control.TransactionCommitorStrategy;
 import com.codingapi.txlcn.tc.reporter.TxManagerReporter;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -25,11 +23,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @AllArgsConstructor
-@Model(flag = "C",value = "事务步骤-加入事务",color = "#FF88EE")
-@GraphRelation(value = "..|>",type = TransactionStep.class)
 public class TransactionStepJoin implements TransactionStep {
 
-    @GraphRelation(value = "-->",type = TxManagerReporter.class)
     private TxManagerReporter managerProtocoler;
 
     private TransactionCommitorStrategy transactionCommitorStrategy;
