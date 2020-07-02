@@ -23,7 +23,7 @@ public class JdbcEventConfiguration {
     }
 
     @Bean
-    public  LcnExecuteTransactionJdbcEvent lcnExecuteTransactionJdbcEvent(){
-        return new LcnExecuteTransactionJdbcEvent();
+    public LcnAfterTransactionJdbcEvent lcnExecuteTransactionJdbcEvent(){
+        return new LcnAfterTransactionJdbcEvent();
     }
 }

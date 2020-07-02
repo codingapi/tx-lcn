@@ -68,8 +68,16 @@ public class TransactionInfo {
         this.successReturn = successReturn;
     }
 
+    /**
+     * 需要SQL代理的模式判断
+     * LCN TXC
+     * @return
+     */
     public boolean hasSqlProxy() {
         if(transactionType.equals(TransactionConstant.LCN)){
+            return true;
+        }
+        if(transactionType.equals(TransactionConstant.TXC)){
             return true;
         }
         return false;

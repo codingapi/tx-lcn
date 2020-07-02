@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.jdbc.event;
 
+import com.codingapi.txlcn.p6spy.common.StatementInformation;
 import com.codingapi.txlcn.tc.TransactionConstant;
 import com.codingapi.txlcn.tc.jdbc.JdbcTransaction;
 import com.codingapi.txlcn.tc.jdbc.TransactionJdbcEvent;
@@ -18,7 +19,7 @@ import java.sql.SQLException;
  */
 @Slf4j
 @AllArgsConstructor
-public class LcnExecuteTransactionJdbcEvent implements TransactionJdbcEvent {
+public class LcnAfterTransactionJdbcEvent implements TransactionJdbcEvent {
 
     @Override
     public String type() {
@@ -27,16 +28,17 @@ public class LcnExecuteTransactionJdbcEvent implements TransactionJdbcEvent {
 
     @Override
     public TransactionJdbcState state() {
-        return TransactionJdbcState.EXECUTE;
+        return TransactionJdbcState.AFTER;
     }
 
     @Override
     public Object execute(Object param) throws SQLException {
-        String sql = (String) param;
+        StatementInformation statementInformation = (StatementInformation) param;
+        String sql = statementInformation.getSqlWithValues();
         Connection connection = JdbcTransaction.current().getConnection();
         log.info("execute connection:{}",connection);
         log.info("sql=>{}",sql);
-
+        //todo 这里要分析sql获取，真实变动的数据.不需要获取之前的数据
         TransactionLog transactionLog = new TransactionLog(sql);
         JdbcTransaction.current().add(transactionLog);
         return sql;

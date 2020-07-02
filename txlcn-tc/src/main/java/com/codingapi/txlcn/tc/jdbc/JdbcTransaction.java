@@ -9,15 +9,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * Jdbc事务消息
  * @author lorne
  * @date 2020/7/1
  * @description
  */
 public class JdbcTransaction {
 
+    /**
+     * 原始的连接对象(未代理)
+     */
     @Getter
     private Connection connection;
 
+    /**
+     * sql日志对象.
+     */
     @Getter
     private List<TransactionLog> transactionLogs;
 

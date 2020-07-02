@@ -29,6 +29,7 @@ public class TxDataSourceInterceptor implements MethodInterceptor {
         TransactionInfo transactionInfo = TransactionInfo.current();
         Connection connection = (Connection) invocation.proceed();
         if(transactionInfo!=null&&transactionInfo.hasSqlProxy()) {
+            //获取一个全局的连接对象,用于执行日志保存
             if(jdbcTransactionDataSource.noConnection()) {
                 jdbcTransactionDataSource.setConnection(connection);
                 connection = (Connection) invocation.proceed();

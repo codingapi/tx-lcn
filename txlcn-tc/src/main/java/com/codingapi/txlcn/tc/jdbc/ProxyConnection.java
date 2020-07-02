@@ -10,6 +10,8 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 /**
+ * 代理连接对象
+ *
  * @author lorne
  * @date 2020/7/1
  * @description
@@ -19,6 +21,7 @@ public class ProxyConnection implements Connection {
     private Connection connection;
 
     public ProxyConnection(CompoundJdbcEventListener compoundJdbcEventListener, Connection connection) {
+        //绑定原始的connection对象，然后创建代理对象
         new JdbcTransaction(connection);
         this.connection = ConnectionWrapper.wrap(connection,
                 compoundJdbcEventListener,

@@ -64,9 +64,4 @@ public class TransactionContext {
         JdbcTransaction.clear();
         TransactionInfo.clear();
     }
-
-    @GraphRelation(value = "..>",type = TransactionState.class)
-    public TransactionState getState() {
-        return null;
-    }
 }
