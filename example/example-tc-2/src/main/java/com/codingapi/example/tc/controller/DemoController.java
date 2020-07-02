@@ -1,4 +1,4 @@
-package com.codingapi.txlcn.controller;
+package com.codingapi.example.tc.controller;
 
 import com.codingapi.example.tc2.vo.DemoReq;
 import com.codingapi.example.tc2.vo.DemoRes;

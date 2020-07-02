@@ -1,4 +1,4 @@
-package com.codingapi.txlcn.db.domain;
+package com.codingapi.example.tc.db.domain;
 
 import lombok.Data;
 
