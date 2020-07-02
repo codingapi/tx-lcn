@@ -11,7 +11,7 @@
 * 了解代码
 * 参与任务 [issues](https://github.com/codingapi/tx-lcn/issues) 
 
-![维护者微信群](Wechat.png)
+![维护者微信群](wechat.png)
 
 ## 代码提交步骤
 * fork该项目地址,并更新代码
