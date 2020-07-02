@@ -38,6 +38,8 @@
 
 B站地址   
 https://space.bilibili.com/386239614  
+公众号
+qrcode_for_gh_7b89ea32e4f4_344.jpg 
 
 
 
