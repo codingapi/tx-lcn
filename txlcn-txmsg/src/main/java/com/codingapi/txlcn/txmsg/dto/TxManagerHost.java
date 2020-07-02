@@ -42,8 +42,9 @@ public class TxManagerHost {
     public static List<TxManagerHost> parserList(List<String> managerHost) {
         List<TxManagerHost> list = new ArrayList<>();
         for(String host:managerHost){
-            String [] array = host.split(":");
-            TxManagerHost manager = new TxManagerHost(array[0],Integer.parseInt(array[1]));
+            int index = host.lastIndexOf(":");
+            TxManagerHost manager = new TxManagerHost(host.substring(0, index),
+                            Integer.parseInt(host.substring(index + 1)));
             list.add(manager);
         }
         return list;
