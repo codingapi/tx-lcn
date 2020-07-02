@@ -54,13 +54,15 @@ public class TransactionStepJoin implements TransactionStep {
 
         //这样要执行groupId等待,等待TM通知事务提交。
         Lock lock = LockContext.getInstance().addKey(transactionInfo.getGroupId());
-        lock.wait(1000);
+        if(lock!=null) {
+            lock.wait(1000);
 
-        TransactionCommitEvent event =  (TransactionCommitEvent)lock.getRes();
-        if(event!=null){
-            transactionCommitorStrategy.commit(event.isCommit());
-        }else{
-            //todo 询问TM状态检查
+            TransactionCommitEvent event = (TransactionCommitEvent) lock.getRes();
+            if (event != null) {
+                transactionCommitorStrategy.commit(event.isCommit());
+            } else {
+                //todo 询问TM状态检查
+            }
         }
 
     }

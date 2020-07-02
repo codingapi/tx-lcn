@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.control.commit;
 
+import com.codingapi.txlcn.tc.jdbc.log.TransactionLogExecutor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,8 +13,8 @@ import org.springframework.context.annotation.Configuration;
 public class ControlCommitConfiguration {
 
     @Bean
-    public LcnCommitor lcnCommitor(){
-        return new LcnCommitor();
+    public LcnCommitor lcnCommitor(TransactionLogExecutor transactionLogExecutor){
+        return new LcnCommitor(transactionLogExecutor);
     }
 
 

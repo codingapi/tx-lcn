@@ -3,6 +3,7 @@ package com.codingapi.txlcn.tc.aspect;
 import com.codingapi.txlcn.p6spy.CompoundJdbcEventListener;
 import com.codingapi.txlcn.tc.config.TxConfig;
 import com.codingapi.txlcn.tc.control.TransactionContext;
+import com.codingapi.txlcn.tc.jdbc.JdbcTransactionDataSource;
 import com.codingapi.txlcn.tc.resolver.AnnotationContext;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
@@ -43,8 +44,8 @@ public class AspectConfiguration {
   }
 
   @Bean
-  public TxDataSourceInterceptor txDataSourceInterceptor(CompoundJdbcEventListener compoundJdbcEventListener){
-    return new TxDataSourceInterceptor(compoundJdbcEventListener);
+  public TxDataSourceInterceptor txDataSourceInterceptor(CompoundJdbcEventListener compoundJdbcEventListener, JdbcTransactionDataSource jdbcTransactionDataSource){
+    return new TxDataSourceInterceptor(compoundJdbcEventListener,jdbcTransactionDataSource);
   }
 
 

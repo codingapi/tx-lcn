@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 /**
@@ -24,6 +25,11 @@ public class JdbcConfiguration {
     @Bean
     public TransactionJdbcEventListener transactionJdbcEventListener(@Autowired(required = false) List<TransactionJdbcEvent> transactionJdbcEvents){
         return new TransactionJdbcEventListener(transactionJdbcEvents);
+    }
+
+    @Bean
+    public JdbcTransactionDataSource jdbcTransactionDataSource(){
+        return new JdbcTransactionDataSource();
     }
 
 

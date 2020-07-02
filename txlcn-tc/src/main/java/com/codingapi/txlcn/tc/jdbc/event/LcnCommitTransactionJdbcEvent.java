@@ -40,7 +40,8 @@ public class LcnCommitTransactionJdbcEvent implements TransactionJdbcEvent {
         String groupId = transactionInfo.getGroupId();
         Connection connection = JdbcTransaction.current().getConnection();
         log.info("commit connection:{}",connection);
-        transactionLogExecutor.delete(connection);
+        //save sql
+        transactionLogExecutor.saveLog();
         //事务提交时需要通过TM控制触发的,这里应该要绑架连接对象，等待TM通知事务提交。
         JdbcContext.getInstance().push(groupId,connection);
         return 1;

@@ -60,7 +60,7 @@ public class TransactionContext {
     }
 
 
-    public void commitTransaction(){
+    public void clearTransaction(){
         JdbcTransaction.clear();
         TransactionInfo.clear();
     }

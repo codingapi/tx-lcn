@@ -18,6 +18,7 @@ public class JdbcTransaction {
     @Getter
     private Connection connection;
 
+    @Getter
     private List<TransactionLog> transactionLogs;
 
     public static JdbcTransaction current(){

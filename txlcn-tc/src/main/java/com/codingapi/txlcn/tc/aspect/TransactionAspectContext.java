@@ -47,6 +47,7 @@ public class TransactionAspectContext {
       throw e;
     }finally {
       transactionContext.tryEndTransaction(transactionInfo);
+      transactionContext.clearTransaction();
     }
     log.debug("run with tx-lcn over.");
     return res;

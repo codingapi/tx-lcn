@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.jdbc.log;
 
+import com.codingapi.txlcn.tc.jdbc.JdbcTransactionDataSource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +14,8 @@ import org.springframework.context.annotation.Configuration;
 public class JdbcLogConfiguration {
 
     @Bean
-    public TransactionLogExecutor transactionLogExecutor(LogExecutor logExecutor){
-        return new TransactionLogExecutor(logExecutor);
+    public TransactionLogExecutor transactionLogExecutor(LogExecutor logExecutor, JdbcTransactionDataSource jdbcTransactionDataSource){
+        return new TransactionLogExecutor(logExecutor,jdbcTransactionDataSource);
     }
 
     @Bean
