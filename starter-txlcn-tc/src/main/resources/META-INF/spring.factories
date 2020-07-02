@@ -7,4 +7,7 @@ com.codingapi.txlcn.tc.control.step.RunnerConfiguration,\
 com.codingapi.txlcn.tc.event.transaction.EventTransactionConfiguration,\
 com.codingapi.txlcn.tc.resolver.ResolverConfiguration,\
 com.codingapi.txlcn.tc.reporter.ReporterConfiguration,\
-com.codingapi.txlcn.tc.runner.TcRunnerConfiguration
+com.codingapi.txlcn.tc.runner.TcRunnerConfiguration,\
+com.codingapi.txlcn.tc.jdbc.JdbcConfiguration,\
+com.codingapi.txlcn.tc.jdbc.event.JdbcEventConfiguration,\
+com.codingapi.txlcn.tc.jdbc.log.JdbcLogConfiguration
