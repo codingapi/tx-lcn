@@ -1,8 +1,8 @@
 package com.codingapi.example.tc.service;
 
+import com.codingapi.example.tc.db.domain.Demo;
 import com.codingapi.example.tc.db.mapper.DemoMapper;
 import com.codingapi.example.tc.feign.TC2Client;
-import com.codingapi.txlcn.db.domain.Demo;
 import com.codingapi.example.tc2.vo.DemoReq;
 import com.codingapi.example.tc2.vo.DemoRes;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
