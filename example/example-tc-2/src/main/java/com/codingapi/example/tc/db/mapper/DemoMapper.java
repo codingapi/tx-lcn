@@ -1,6 +1,6 @@
-package com.codingapi.txlcn.db.mapper;
+package com.codingapi.example.tc.db.mapper;
 
-import com.codingapi.txlcn.db.domain.Demo;
+import com.codingapi.example.tc.db.domain.Demo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;

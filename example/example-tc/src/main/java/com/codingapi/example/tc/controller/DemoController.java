@@ -1,4 +1,4 @@
-package com.codingapi.txlcn.controller;
+package com.codingapi.example.tc.controller;
 
 import com.codingapi.txlcn.service.DemoService;
 import org.springframework.beans.factory.annotation.Autowired;

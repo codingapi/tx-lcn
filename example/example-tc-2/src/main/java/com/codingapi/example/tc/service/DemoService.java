@@ -1,7 +1,7 @@
-package com.codingapi.txlcn.service;
+package com.codingapi.example.tc.service;
 
-import com.codingapi.txlcn.db.domain.Demo;
-import com.codingapi.txlcn.db.mapper.DemoMapper;
+import com.codingapi.example.tc.db.domain.Demo;
+import com.codingapi.example.tc.db.mapper.DemoMapper;
 import com.codingapi.example.tc2.vo.DemoReq;
 import com.codingapi.example.tc2.vo.DemoRes;
 import java.util.Date;
