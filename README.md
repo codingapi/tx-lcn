@@ -11,6 +11,8 @@
 * 了解代码
 * 参与任务 [issues](https://github.com/codingapi/tx-lcn/issues) 
 
+![维护者微信群](Wechat.jpeg)
+
 ## 代码提交步骤
 * fork该项目地址,并更新代码
 * 认领任务或发布问题
@@ -38,6 +40,6 @@
 
 B站地址   
 https://space.bilibili.com/386239614  
-
-
+公众号: 
+![CODINGAPI分享者](qrcode.jpg)
 
