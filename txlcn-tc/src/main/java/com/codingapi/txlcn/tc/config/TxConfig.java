@@ -26,6 +26,11 @@ public class TxConfig {
   private String sqlType;
 
   /**
+   * 事务最大等待时间 单位:毫秒
+   */
+  private int maxWaitTransactionTime = 1000;
+
+  /**
    * 事务切面
    */
   private String transactionPointcut = "@annotation(com.codingapi.txlcn.tc.annotation.LcnTransaction)";

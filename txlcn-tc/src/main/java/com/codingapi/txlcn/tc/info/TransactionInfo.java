@@ -56,6 +56,14 @@ public class TransactionInfo {
         TransactionInfoThreadLocal.push(this);
     }
 
+
+    public TransactionInfo(String groupId) {
+        this.groupId = groupId;
+        this.transactionState = TransactionState.JOIN;
+
+        TransactionInfoThreadLocal.push(this);
+    }
+
     public static TransactionInfo current(){
         return TransactionInfoThreadLocal.current();
     }

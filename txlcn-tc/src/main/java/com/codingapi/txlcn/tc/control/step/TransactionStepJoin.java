@@ -6,6 +6,7 @@ import com.codingapi.txlcn.protocol.await.Lock;
 import com.codingapi.txlcn.protocol.await.LockContext;
 import com.codingapi.txlcn.protocol.message.event.TransactionCommitEvent;
 import com.codingapi.txlcn.protocol.message.event.TransactionJoinEvent;
+import com.codingapi.txlcn.tc.config.TxConfig;
 import com.codingapi.txlcn.tc.control.TransactionState;
 import com.codingapi.txlcn.tc.control.TransactionStep;
 import com.codingapi.txlcn.tc.exception.TxException;
@@ -33,6 +34,8 @@ public class TransactionStepJoin implements TransactionStep {
 
     private TransactionCommitorStrategy transactionCommitorStrategy;
 
+    private TxConfig txConfig;
+
     @Override
     public TransactionState type() {
         return TransactionState.JOIN;
@@ -50,12 +53,12 @@ public class TransactionStepJoin implements TransactionStep {
             throw new TxException("notify transaction fail.");
         }
         long t2 = System.currentTimeMillis();
-        log.info("notify transaction result:{},time:{}",res.getResult(),(t2-t1));
+        log.info("join transaction result:{},time:{}",res.getResult(),(t2-t1));
 
         //这样要执行groupId等待,等待TM通知事务提交。
         Lock lock = LockContext.getInstance().addKey(transactionInfo.getGroupId());
         if(lock!=null) {
-            lock.wait(1000);
+            lock.await(txConfig.getMaxWaitTransactionTime());
 
             TransactionCommitEvent event = (TransactionCommitEvent) lock.getRes();
             if (event != null) {

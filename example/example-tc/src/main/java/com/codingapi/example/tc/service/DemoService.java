@@ -18,17 +18,17 @@ public class DemoService {
   @Autowired
   private DemoMapper demoMapper;
 
-//  @Autowired
-//  private TC2Client tc2Client;
+  @Autowired
+  private TC2Client tc2Client;
 
   @Transactional
   @LcnTransaction
   public boolean save(String name) {
-//    DemoReq demoReq = new DemoReq();
-//    demoReq.setName(name);
-//    demoReq.setModule("tc2");
-//    DemoRes demoRes = tc2Client.save(demoReq);
-//    log.info("tc2-client=>{}", demoRes);
+    DemoReq demoReq = new DemoReq();
+    demoReq.setName(name);
+    demoReq.setModule("tc2");
+    DemoRes demoRes = tc2Client.save(demoReq);
+    log.info("tc2-client=>{}", demoRes);
     Demo demo = new Demo();
     demo.setName(name);
     demo.setModule("tc");

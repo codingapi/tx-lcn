@@ -16,6 +16,24 @@
   <dependencies>
 
     <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.netflix.feign</groupId>
+      <artifactId>feign-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>com.codingapi.txlcn</groupId>
       <artifactId>txlcn-p6spy</artifactId>
       <version>6.0.0</version>
@@ -52,6 +70,7 @@
       <groupId>commons-dbutils</groupId>
       <artifactId>commons-dbutils</artifactId>
     </dependency>
+
 
   </dependencies>
 

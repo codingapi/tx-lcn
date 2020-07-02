@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.control.step;
 
+import com.codingapi.txlcn.tc.config.TxConfig;
 import com.codingapi.txlcn.tc.control.TransactionCommitorStrategy;
 import com.codingapi.txlcn.tc.control.TransactionStep;
 import com.codingapi.txlcn.tc.reporter.TxManagerReporter;
@@ -29,8 +30,9 @@ public class RunnerConfiguration {
 
     @Bean
     public TransactionStep transactionStepJoin(TxManagerReporter managerProtocoler,
-                                               TransactionCommitorStrategy transactionCommitorStrategy){
-        return new TransactionStepJoin(managerProtocoler,transactionCommitorStrategy);
+                                               TransactionCommitorStrategy transactionCommitorStrategy,
+                                               TxConfig txConfig){
+        return new TransactionStepJoin(managerProtocoler,transactionCommitorStrategy,txConfig);
     }
 
 }
