@@ -40,6 +40,6 @@
 
 B站地址   
 https://space.bilibili.com/386239614  
-公众号: 
-![CODINGAPI分享者](qrcode.jpg)
+公众号:    
+![CODINGAPI分享者](qrcode.png)
 
