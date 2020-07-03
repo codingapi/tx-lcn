@@ -38,10 +38,10 @@ public class TransactionStepNotify implements TransactionStep {
             res = (TransactionNotifyEvent) managerProtocoler.requestMsg(new TransactionNotifyEvent(transactionInfo.getGroupId(),transactionInfo.getSuccessReturn()));
         }
         //当TM返回是正常时,则需要提交本地事务.
-        transactionCommitorStrategy.commit(res.isSuccess()&&transactionInfo.getSuccessReturn());
+        transactionCommitorStrategy.commit(res != null && (res.isSuccess() && transactionInfo.getSuccessReturn()));
 
         long t2 = System.currentTimeMillis();
-        log.info("notify transaction result:{},time:{}",res.getResult(),(t2-t1));
+        log.info("notify transaction result:{},time:{}",res,(t2-t1));
 
 
     }
