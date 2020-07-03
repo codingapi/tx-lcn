@@ -1,5 +1,6 @@
 package com.codingapi.txlcn.tc.jdbc.log;
 
+import com.codingapi.txlcn.tc.exception.TxException;
 import com.codingapi.txlcn.tc.jdbc.JdbcTransaction;
 import com.codingapi.txlcn.tc.jdbc.JdbcTransactionDataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,23 @@ public class TransactionLogExecutor {
         for(TransactionLog transactionLog:jdbcTransaction.getTransactionLogs()) {
             String sql = logExecutor.insert(transactionLog);
             Connection connection = jdbcTransactionDataSource.getConnection();
-            int row = queryRunner.execute(connection, sql, transactionLog.params());
+            int row = -1;
+            try {
+                 row = queryRunner.execute(connection, sql, transactionLog.params());
+            }catch (SQLException e){
+                if(e.getErrorCode() == logExecutor.getTableNotFindErrorCode()){
+                    try {
+                        String createSql = logExecutor.create();
+                        queryRunner.execute(connection, createSql);
+                        row = queryRunner.execute(connection, sql, transactionLog.params());
+                        log.info("日志表创建成功");
+                    }catch (Exception exception){
+                        throw new TxException("日志表创建失败",exception);
+                    }
+                }else {
+                    throw e;
+                }
+            }
             log.info("insert-sql=>{},row:{},connection:{}", sql, row,connection);
         }
     }
