@@ -14,10 +14,4 @@ public interface LogExecutor {
     String create();
 
     String delete(List<Long> ids);
-
-    /**
-     * 返回数据库找不到表报错时的VendorCode码
-     * @return
-     */
-    int getTableNotFindErrorCode();
 }

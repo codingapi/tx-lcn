@@ -35,9 +35,4 @@ public class MysqlLogExecutor implements LogExecutor {
         String id = Joiner.on(",").join(ids);
         return "delete from `transaction_log` where id in ("+id+")";
     }
-
-    @Override
-    public int getTableNotFindErrorCode() {
-        return 1146;
-    }
 }
