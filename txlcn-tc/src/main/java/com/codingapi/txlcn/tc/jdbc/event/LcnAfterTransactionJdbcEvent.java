@@ -42,7 +42,7 @@ public class LcnAfterTransactionJdbcEvent implements TransactionJdbcEvent {
         log.info("execute connection:{}",connection);
         log.info("sql=>{}",sql);
         //这里要分析sql获取，真实变动的数据.不需要获取之前的数据
-        sqlParserStrategy.parser(connection,sql);
+        sql = sqlParserStrategy.parser(connection,sql);
         TransactionLog transactionLog = new TransactionLog(sql);
         JdbcTransaction.current().add(transactionLog);
         return sql;
