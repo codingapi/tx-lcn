@@ -6,6 +6,7 @@ import com.codingapi.txlcn.tc.jdbc.JdbcTransaction;
 import com.codingapi.txlcn.tc.jdbc.TransactionJdbcEvent;
 import com.codingapi.txlcn.tc.jdbc.TransactionJdbcState;
 import com.codingapi.txlcn.tc.jdbc.log.TransactionLog;
+import com.codingapi.txlcn.tc.jdbc.sql.SqlParserStrategy;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,6 +21,8 @@ import java.sql.SQLException;
 @Slf4j
 @AllArgsConstructor
 public class LcnAfterTransactionJdbcEvent implements TransactionJdbcEvent {
+
+    private SqlParserStrategy sqlParserStrategy;
 
     @Override
     public String type() {
@@ -38,7 +41,8 @@ public class LcnAfterTransactionJdbcEvent implements TransactionJdbcEvent {
         Connection connection = JdbcTransaction.current().getConnection();
         log.info("execute connection:{}",connection);
         log.info("sql=>{}",sql);
-        //todo 这里要分析sql获取，真实变动的数据.不需要获取之前的数据
+        //这里要分析sql获取，真实变动的数据.不需要获取之前的数据
+        sqlParserStrategy.parser(connection,sql);
         TransactionLog transactionLog = new TransactionLog(sql);
         JdbcTransaction.current().add(transactionLog);
         return sql;

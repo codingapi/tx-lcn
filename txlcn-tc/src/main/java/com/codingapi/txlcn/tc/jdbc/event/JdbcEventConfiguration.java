@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.tc.jdbc.event;
 
 import com.codingapi.txlcn.tc.jdbc.log.TransactionLogExecutor;
+import com.codingapi.txlcn.tc.jdbc.sql.SqlParserStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,7 +24,7 @@ public class JdbcEventConfiguration {
     }
 
     @Bean
-    public LcnAfterTransactionJdbcEvent lcnExecuteTransactionJdbcEvent(){
-        return new LcnAfterTransactionJdbcEvent();
+    public LcnAfterTransactionJdbcEvent lcnExecuteTransactionJdbcEvent(SqlParserStrategy sqlParserStrategy){
+        return new LcnAfterTransactionJdbcEvent(sqlParserStrategy);
     }
 }
