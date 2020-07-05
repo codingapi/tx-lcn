@@ -1,8 +1,7 @@
 package com.codingapi.txlcn.tc.jdbc.sql;
 
+import com.codingapi.txlcn.p6spy.common.StatementInformation;
 import lombok.extern.slf4j.Slf4j;
-
-import java.sql.Connection;
 
 /**
  * @author lorne
@@ -10,7 +9,7 @@ import java.sql.Connection;
  * @description
  */
 @Slf4j
-public class MysqlSqlParser implements SqlParser {
+public class MysqlSqlAnalyse implements SqlAnalyse {
 
     @Override
     public String sqlType() {
@@ -18,8 +17,8 @@ public class MysqlSqlParser implements SqlParser {
     }
 
     @Override
-    public String parser(String sql, Connection connection) {
-        log.info("mysql parser:{}",sql);
+    public String analyse(String sql,StatementInformation statementInformation) {
+        log.debug("mysql analyse:{}",sql);
         return sql;
     }
 }
