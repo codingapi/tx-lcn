@@ -14,5 +14,4 @@ public interface LogExecutor {
     String create();
 
     String delete(List<Long> ids);
-
 }

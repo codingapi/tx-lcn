@@ -39,10 +39,7 @@ public class LcnRollbackTransactionJdbcEvent implements TransactionJdbcEvent {
         log.info("rollback connection:{}",connection);
         JdbcCallable jdbcCallable = (JdbcCallable) param;
 
-        transactionLogExecutor.delete(connection);
-
         //不需要返回值，返回固定值1
-        jdbcCallable.call();
         return 1;
     }
 }

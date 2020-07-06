@@ -1,11 +1,11 @@
 package com.codingapi.txlcn.tc.jdbc;
 
 import com.codingapi.txlcn.p6spy.CompoundJdbcEventListener;
+import com.codingapi.txlcn.tc.jdbc.log.TransactionLogExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 /**
@@ -30,6 +30,11 @@ public class JdbcConfiguration {
     @Bean
     public JdbcTransactionDataSource jdbcTransactionDataSource(){
         return new JdbcTransactionDataSource();
+    }
+
+    @Bean
+    public JdbcTransactionInitializer jdbcTransactionInitializer(TransactionLogExecutor transactionLogExecutor){
+        return new JdbcTransactionInitializer(transactionLogExecutor);
     }
 
 

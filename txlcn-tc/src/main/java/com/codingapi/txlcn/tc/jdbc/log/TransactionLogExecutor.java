@@ -30,11 +30,22 @@ public class TransactionLogExecutor {
 
     public void saveLog() throws SQLException {
         JdbcTransaction jdbcTransaction = JdbcTransaction.current();
+        //todo insert all
         for(TransactionLog transactionLog:jdbcTransaction.getTransactionLogs()) {
             String sql = logExecutor.insert(transactionLog);
             Connection connection = jdbcTransactionDataSource.getConnection();
             int row = queryRunner.execute(connection, sql, transactionLog.params());
-            log.info("insert-sql=>{},row:{},connection:{}", sql, row,connection);
+            log.debug("insert-sql=>{},row:{},connection:{}", sql, row,connection);
+        }
+    }
+
+    public void init(Connection connection) throws SQLException{
+        try {
+            String createSql = logExecutor.create();
+            queryRunner.execute(connection, createSql);
+            log.info("transaction log init success .");
+        }catch (SQLException exception){
+            log.warn("init transaction-log");
         }
     }
 
@@ -42,6 +53,6 @@ public class TransactionLogExecutor {
         List<Long> ids =  JdbcTransaction.current().logIds();
         String sql = logExecutor.delete(ids);
         int row = queryRunner.execute(connection,sql);
-        log.info("delete-sql=>{},row:{}",sql,row);
+        log.debug("delete-sql=>{},row:{}",sql,row);
     }
 }

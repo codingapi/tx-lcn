@@ -39,7 +39,8 @@ public class LcnCommitor implements Commitor {
             }
         }else{
             try {
-                transactionLogExecutor.delete(connection);
+                //不需要删除补偿日志,因为日志没有存储.
+//                transactionLogExecutor.delete(connection);
                 connection.rollback();
             } catch (SQLException e) {
                 //不需要关心，即便日志没有删除，在补偿的时候也会执行回滚操作。
