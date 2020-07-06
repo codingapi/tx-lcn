@@ -5,6 +5,10 @@
 [![codecov](https://codecov.io/gh/codingapi/tx-lcn/branch/dev6.0/graph/badge.svg)](https://codecov.io/gh/codingapi/tx-lcn)
 [![Build Status](https://travis-ci.org/codingapi/tx-lcn.svg?branch=dev6.0)](https://travis-ci.org/codingapi/tx-lcn)
 
+## 文档
+
+见5.x版本文档见 [https://www.codingapi.com/docs/txlcn-preface/](https://www.codingapi.com/docs/txlcn-preface/)
+
 ## 参与方式
 * 了解原理 [LCN分布式事务框架](LCN分布式事务框架-20200102.pdf)
 * 了解代码
