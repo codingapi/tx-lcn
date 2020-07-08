@@ -44,8 +44,6 @@ public class TransactionStepNotify implements TransactionStep {
         Boolean successReturn = transactionInfo.getSuccessReturn();
         //应用名
         String applicationName = txConfig.getApplicationName();
-        //获取到connection
-        Connection connection = JdbcTransaction.current().getConnection();
 
         TransactionNotifyEvent res = (TransactionNotifyEvent) managerProtocoler.requestMsg(new TransactionNotifyEvent(groupId,successReturn,applicationName));
 
