@@ -80,7 +80,7 @@ public class PrimaryKeyListVisitor implements ItemsListVisitor {
             if (primaryKeys.contains(columns.get(i).getFullyQualifiedName())) {
                 Object expression = null;
                 if (expressions.get(i).getASTNode() != null) {
-                    expressions.get(i).getASTNode().jjtGetValue();
+                    expression = expressions.get(i).getASTNode().jjtGetValue();
                 } else {
                     expression = expressions.get(i);
                 }
