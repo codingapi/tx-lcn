@@ -100,9 +100,6 @@ public class Protocoler {
         }
     }
 
-    public String getAppName(){
-        return config.getApplicationName();
-    }
 
     public boolean existConnect(String uniqueKey) {
         return connectionService.existConnect(uniqueKey);

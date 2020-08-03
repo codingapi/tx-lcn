@@ -5,6 +5,7 @@ import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.Message;
 import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
+import com.codingapi.txlcn.tc.config.TxConfig;
 import lombok.AllArgsConstructor;
 import org.springframework.util.Assert;
 
@@ -25,8 +26,11 @@ public class TxManagerReporter {
 
     private Connection leader;
 
-    public TxManagerReporter(ProtocolServer protocolServer) {
+    private TxConfig txConfig;
+
+    public TxManagerReporter(ProtocolServer protocolServer,TxConfig txConfig) {
         this.protocoler =  protocolServer.getProtocoler();
+        this.txConfig = txConfig;
         this.connections = protocoler.getConnections();
     }
 
@@ -62,7 +66,7 @@ public class TxManagerReporter {
      * @param message
      */
     public TransactionMessage requestMsg(TransactionMessage message){
-        message.setModuleName(protocoler.getAppName());
+        message.setModuleName(txConfig.getApplicationName());
         selectLeader();
         checkLeader();
         return leader.request(message);

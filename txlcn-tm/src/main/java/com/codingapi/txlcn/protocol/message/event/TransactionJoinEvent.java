@@ -19,10 +19,6 @@ public class TransactionJoinEvent extends TransactionMessage {
 
     private String result;
 
-    public TransactionJoinEvent(String groupId) {
-        this.groupId = groupId;
-    }
-
     @Override
     public void handle(ApplicationContext springContext, Protocoler protocoler, Connection connection) throws Exception {
         super.handle(springContext, protocoler, connection);

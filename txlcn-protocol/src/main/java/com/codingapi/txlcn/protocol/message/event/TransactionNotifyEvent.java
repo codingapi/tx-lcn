@@ -18,10 +18,9 @@ public class TransactionNotifyEvent extends TransactionMessage {
      */
     private boolean success;
 
-    public TransactionNotifyEvent(String groupId,boolean success,String applicationName) {
+    public TransactionNotifyEvent(String groupId,boolean success) {
         this.groupId = groupId;
         this.success = success;
-        this.applicationName = applicationName;
     }
 
 }
