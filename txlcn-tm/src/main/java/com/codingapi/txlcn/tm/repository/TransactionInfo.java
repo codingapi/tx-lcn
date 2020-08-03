@@ -1,0 +1,35 @@
+package com.codingapi.txlcn.tm.repository;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * @author lorne
+ * @date 2020/8/3
+ * @description
+ */
+@Data
+@NoArgsConstructor
+public class TransactionInfo {
+
+    /**
+     * 模块名称
+     */
+    private String moduleName;
+
+    /**
+     * 通讯唯一标示
+     */
+    private String uniqueKey;
+
+    /**
+     * 记录时间
+     */
+    private long time;
+
+    public TransactionInfo( String uniqueKey,String moduleName) {
+        this.uniqueKey = uniqueKey;
+        this.moduleName = moduleName;
+        this.time = System.currentTimeMillis();
+    }
+}

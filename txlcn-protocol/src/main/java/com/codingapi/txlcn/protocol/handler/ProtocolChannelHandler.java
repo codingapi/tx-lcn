@@ -72,7 +72,7 @@ public class ProtocolChannelHandler  extends SimpleChannelInboundHandler<Message
 
     @Override
     public void channelRead0(final ChannelHandlerContext ctx, final Message message) throws Exception {
-        log.debug("Message {} received from {}", message.getClass(), ctx.channel().remoteAddress());
+//        log.debug("Message {} received from {}", message.getClass(), ctx.channel().remoteAddress());
         final Connection connection = getSessionAttribute(ctx).get();
         executors.execute(()->{
             try {
@@ -94,7 +94,7 @@ public class ProtocolChannelHandler  extends SimpleChannelInboundHandler<Message
             }
 
             if(idleStateEvent.state() == IdleState.WRITER_IDLE){
-                log.debug("send heart message to {} ", ctx.channel().remoteAddress());
+//                log.debug("send heart message to {} ", ctx.channel().remoteAddress());
                 ctx.writeAndFlush(new Heartbeat());
             }
         }

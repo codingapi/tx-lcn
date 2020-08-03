@@ -17,7 +17,8 @@ public abstract class TransactionMessage extends AbsMessage {
 
     protected String groupId;
 
-    protected String applicationName;
+    protected String moduleName;
+
 
     @Override
     public void handle(ApplicationContext springContext, Protocoler protocoler, Connection connection) throws Exception {

@@ -44,9 +44,8 @@ public class TransactionInfo {
         return transactionState.equals(state);
     }
 
-    public TransactionInfo(String transactionType, TransactionState transactionState) {
+    public TransactionInfo(TransactionState transactionState) {
         this.groupId = UUID.randomUUID().toString();
-        this.transactionType = transactionType;
         this.transactionState = transactionState;
 
         TransactionInfoThreadLocal.push(this);

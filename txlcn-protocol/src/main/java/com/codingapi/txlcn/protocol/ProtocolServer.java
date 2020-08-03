@@ -44,11 +44,10 @@ public class ProtocolServer {
     @Getter
     private final Protocoler protocoler;
 
-
     public ProtocolServer(Config config,ApplicationContext applicationContext) {
+        config.initApplicationName(applicationContext.getEnvironment().getProperty("spring.application.name"));
         this.config = config;
         this.applicationContext = applicationContext;
-
         protocoler = new Protocoler(config);
 
         acceptorEventLoopGroup = new NioEventLoopGroup(1);

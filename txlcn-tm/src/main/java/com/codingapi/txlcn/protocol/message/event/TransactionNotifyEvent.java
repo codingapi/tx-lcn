@@ -3,6 +3,7 @@ package com.codingapi.txlcn.protocol.message.event;
 import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
+import com.codingapi.txlcn.tm.repository.TransactionGroupRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 
@@ -24,7 +25,10 @@ public class TransactionNotifyEvent extends TransactionMessage {
     @Override
     public void handle(ApplicationContext springContext, Protocoler protocoler, Connection connection) throws Exception {
         super.handle(springContext, protocoler, connection);
-        log.info("request msg =>{} tc-client =>{} execute result =>{}",groupId,applicationName,success);
+        log.info("request msg =>{}",groupId);   
+        TransactionGroupRepository transactionGroupRepository = springContext.getBean(TransactionGroupRepository.class);
+        transactionGroupRepository.notify(groupId,success);
+   
         //记录tc请求通知 日志
         this.result = "ok";
         protocoler.sendMsg(connection.getUniqueKey(),this);
