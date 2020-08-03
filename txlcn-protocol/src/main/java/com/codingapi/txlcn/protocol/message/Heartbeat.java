@@ -14,6 +14,6 @@ public class Heartbeat implements Message {
 
     @Override
     public void handle(ApplicationContext springContext, Protocoler protocoler, Connection connection) throws Exception {
-        log.debug("heartbeat message from {}",connection);
+//        log.debug("heartbeat message from {}",connection);
     }
 }

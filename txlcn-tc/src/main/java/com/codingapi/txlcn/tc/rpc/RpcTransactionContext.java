@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.tc.rpc;
 
 import com.codingapi.txlcn.tc.info.TransactionInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 /**
@@ -8,6 +9,7 @@ import org.springframework.util.StringUtils;
  * @date 2020/7/2
  * @description
  */
+@Slf4j
 public class RpcTransactionContext {
 
     public static final String HEADER_KEY_GROUP_ID = "X-Group-ID";
@@ -40,7 +42,7 @@ public class RpcTransactionContext {
         String groupId = rpcTransactionGetter.get(HEADER_KEY_GROUP_ID);
         TransactionInfo transactionInfo = TransactionInfo.current();
         if(!StringUtils.isEmpty(groupId)&&transactionInfo==null){
-            new TransactionInfo(rpcTransactionGetter.get(HEADER_KEY_GROUP_ID));
+            new TransactionInfo(groupId);
         }
     }
 

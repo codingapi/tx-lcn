@@ -29,7 +29,13 @@ public class TransactionAspectContext {
     }
 
     TransactionState transactionState = TransactionStateStrategy.getTransactionState();
-    TransactionInfo transactionInfo = new TransactionInfo(txAnnotation.getType(),transactionState);
+    TransactionInfo transactionInfo = TransactionInfo.current();
+    //当transactionInfo == null表明是开始分布式事务
+    if(transactionInfo==null){
+      transactionInfo = new TransactionInfo(transactionState);
+    }
+    //统一设置事务类型
+    transactionInfo.setTransactionType(txAnnotation.getType());
 
     log.debug("run with tx-lcn start...");
     Object res = null;

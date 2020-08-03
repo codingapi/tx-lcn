@@ -62,6 +62,7 @@ public class TxManagerReporter {
      * @param message
      */
     public TransactionMessage requestMsg(TransactionMessage message){
+        message.setModuleName(protocoler.getAppName());
         selectLeader();
         checkLeader();
         return leader.request(message);

@@ -2,6 +2,7 @@ package com.codingapi.txlcn.protocol.config;
 
 import lombok.Data;
 import lombok.ToString;
+import org.springframework.util.StringUtils;
 
 /**
  * @author lorne
@@ -36,5 +37,17 @@ public class Config {
      * 请求发送消息的等待时间(单位:毫秒)
      */
     private int awaitTime = 1000;
+
+    /**
+     *
+     * 应用名称 默认读取application.name的值
+     */
+    private String applicationName;
+
+    public void initApplicationName(String applicationName){
+        if(!StringUtils.isEmpty(applicationName)){
+            this.applicationName = applicationName;
+        }
+    }
 
 }
