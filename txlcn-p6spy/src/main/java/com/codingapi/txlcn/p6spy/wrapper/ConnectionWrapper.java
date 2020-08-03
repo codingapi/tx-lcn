@@ -109,7 +109,8 @@ public class ConnectionWrapper extends AbstractWrapper implements Connection {
 
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        return PreparedStatementWrapper.wrap(delegate.prepareStatement(sql), new PreparedStatementInformation(connectionInformation, sql), jdbcEventListener);
+        return PreparedStatementWrapper.wrap(delegate.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS),
+                new PreparedStatementInformation(connectionInformation, sql), jdbcEventListener);
     }
 
     @Override

@@ -16,12 +16,12 @@ import java.util.List;
 public class JdbcSqlConfiguration {
 
     @Bean
-    public SqlParserStrategy sqlParserContext(@Autowired(required = false) List<SqlParser> sqlParsers, TxConfig txConfig){
-        return new SqlParserStrategy(sqlParsers,txConfig);
+    public SqlAnalyseStrategy sqlParserContext(@Autowired(required = false) List<SqlAnalyse> sqlAnalyses, TxConfig txConfig){
+        return new SqlAnalyseStrategy(sqlAnalyses,txConfig);
     }
 
     @Bean
-    public SqlParser mysqlSqlParser(){
-        return new MysqlSqlParser();
+    public SqlAnalyse mysqlSqlParser(){
+        return new MysqlSqlAnalyse();
     }
 }
