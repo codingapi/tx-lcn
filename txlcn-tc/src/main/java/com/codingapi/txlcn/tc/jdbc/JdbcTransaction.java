@@ -49,4 +49,8 @@ public class JdbcTransaction {
     public List<Long> logIds(){
         return transactionLogs.stream().map(TransactionLog::getId).collect(Collectors.toList());
     }
+
+    public void init() {
+        JdbcTransactionThreadLocal.push(this);
+    }
 }

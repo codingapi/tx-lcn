@@ -59,6 +59,10 @@ public class TransactionInfo {
         TransactionInfoThreadLocal.push(this);
     }
 
+    public void init() {
+        TransactionInfoThreadLocal.push(this);
+    }
+
     public static TransactionInfo current(){
         return TransactionInfoThreadLocal.current();
     }
@@ -85,4 +89,6 @@ public class TransactionInfo {
         }
         return false;
     }
+
+
 }

@@ -37,7 +37,7 @@ public class TransactionNotifyEvent extends TransactionMessage {
             List<TransactionInfo> transactionInfoList =  transactionGroup.listTransaction();
             TransactionCommitEvent transactionCommitEvent = new TransactionCommitEvent(groupId,transactionGroup.hasCommit());
             for(TransactionInfo transactionInfo:transactionInfoList){
-                TransactionMessage responseMsg =  protocoler.requestMsg(transactionInfo.getUniqueKey(),transactionCommitEvent);
+                protocoler.sendMsg(transactionInfo.getUniqueKey(),transactionCommitEvent);
             }
 
             this.result = "ok";
