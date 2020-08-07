@@ -2,6 +2,7 @@ package com.codingapi.txlcn.protocol.message.event;
 
 import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author lorne
@@ -9,14 +10,15 @@ import lombok.Data;
  * @description
  */
 @Data
+@Slf4j
 public class TransactionCommitEvent extends TransactionMessage {
 
     private boolean commit;
 
     private String result;
 
-    public TransactionCommitEvent(String groupId) {
+    public TransactionCommitEvent(String groupId, boolean commit) {
         this.groupId = groupId;
+        this.commit = commit;
     }
-
 }

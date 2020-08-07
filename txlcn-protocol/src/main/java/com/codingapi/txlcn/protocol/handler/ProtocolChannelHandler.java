@@ -72,7 +72,7 @@ public class ProtocolChannelHandler  extends SimpleChannelInboundHandler<Message
 
     @Override
     public void channelRead0(final ChannelHandlerContext ctx, final Message message) throws Exception {
-//        log.debug("Message {} received from {}", message.getClass(), ctx.channel().remoteAddress());
+        log.debug("Message {} received from {}", message.getClass(), ctx.channel().remoteAddress());
         final Connection connection = getSessionAttribute(ctx).get();
         executors.execute(()->{
             try {
