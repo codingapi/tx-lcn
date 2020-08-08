@@ -20,4 +20,11 @@ public class IdUtils {
     }
 
 
+    /**
+     * 创建日志id
+     * @return
+     */
+    public static long generateLogId() {
+        return System.nanoTime();
+    }
 }
