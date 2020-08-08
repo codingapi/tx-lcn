@@ -2,6 +2,7 @@ package com.codingapi.txlcn.tc.info;
 
 import com.codingapi.txlcn.tc.TransactionConstant;
 import com.codingapi.txlcn.tc.control.TransactionState;
+import com.codingapi.txlcn.tc.utils.IdUtils;
 import lombok.Data;
 
 import java.util.UUID;
@@ -45,7 +46,7 @@ public class TransactionInfo {
     }
 
     public TransactionInfo(TransactionState transactionState) {
-        this.groupId = UUID.randomUUID().toString();
+        this.groupId = IdUtils.generateGroupId();
         this.transactionState = transactionState;
 
         TransactionInfoThreadLocal.push(this);
