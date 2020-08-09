@@ -4,6 +4,7 @@ import com.codingapi.txlcn.tc.DataSourceConfiguration;
 import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
 import com.codingapi.txlcn.tc.jdbc.database.JdbcAnalyseUtils;
 import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
+import com.codingapi.txlcn.tc.jdbc.database.TableList;
 import org.apache.commons.dbutils.DbUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,8 @@ public class DataBaseAnalyseTest {
 
         DbUtils.close(connection);
 
-        List<TableInfo> list =  DataBaseContext.getInstance().get(catalog);
-        Assert.isTrue(list.size()>0,"加载数据异常.");
+        TableList tableList =  DataBaseContext.getInstance().get(catalog);
+
+        Assert.isTrue(!tableList.isEmpty(),"加载数据异常.");
     }
 }

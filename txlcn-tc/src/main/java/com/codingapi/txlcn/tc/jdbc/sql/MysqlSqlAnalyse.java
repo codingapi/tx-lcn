@@ -3,11 +3,14 @@ package com.codingapi.txlcn.tc.jdbc.sql;
 import com.codingapi.txlcn.p6spy.common.StatementInformation;
 import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
 import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
+import com.codingapi.txlcn.tc.jdbc.database.TableList;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.insert.Insert;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * @author lorne
@@ -22,12 +25,19 @@ public class MysqlSqlAnalyse implements SqlAnalyse {
         return "mysql";
     }
 
+    @SneakyThrows
     @Override
     public String analyse(String sql,StatementInformation statementInformation)  throws SQLException {
         log.debug("mysql analyse:{}",sql);
         Connection connection =  statementInformation.getConnectionInformation().getConnection();
-        List<TableInfo> tableInfoList = DataBaseContext.getInstance().get(connection);
-        log.info("tableInfoList:{}",tableInfoList);
+        TableList tableList = DataBaseContext.getInstance().get(connection);
+
+        Insert insert = (Insert) CCJSqlParserUtil.parse(sql);
+        String tableName = insert.getTable().getName();
+
+        TableInfo tableInfo =  tableList.getTable(tableName);
+        log.info("tableInfo:{}",tableInfo);
+
         return sql;
     }
 

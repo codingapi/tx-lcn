@@ -7,6 +7,7 @@ import com.codingapi.txlcn.tc.jdbc.ProxyConnection;
 import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
 import com.codingapi.txlcn.tc.jdbc.database.JdbcAnalyseUtils;
 import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
+import com.codingapi.txlcn.tc.jdbc.database.TableList;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -34,8 +35,8 @@ public class TxDataSourceInterceptor implements MethodInterceptor {
 
         //数据库表字段分析
         String catalog = connection.getCatalog();
-        List<TableInfo> tableInfos =  DataBaseContext.getInstance().get(connection);
-        if(tableInfos==null){
+        TableList tableList =  DataBaseContext.getInstance().get(connection);
+        if(tableList==null||tableList.isEmpty()){
             DataBaseContext.getInstance().push(catalog,JdbcAnalyseUtils.analyse(connection));
         }
 

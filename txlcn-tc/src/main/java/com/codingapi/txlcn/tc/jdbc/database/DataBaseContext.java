@@ -41,13 +41,13 @@ public class DataBaseContext {
         this.map.put(catalog, tableInfos);
     }
 
-    public List<TableInfo> get(String catalog){
-        return this.map.get(catalog);
+    public TableList get(String catalog){
+        return new TableList(this.map.get(catalog));
     }
 
-    public List<TableInfo> get(Connection connection) throws SQLException {
+    public TableList get(Connection connection) throws SQLException {
         String catalog = connection.getCatalog();
-        return this.map.get(catalog);
+        return new TableList(this.map.get(catalog));
     }
 
 }
