@@ -44,3 +44,16 @@ https://space.bilibili.com/386239614
 公众号(通过公众号加群):    
 ![CODINGAPI分享者](qrcode.jpg)
 
+## 项目运行步骤
+ 
+依赖的环境:    
+mysql redis      
+
+数据库脚步:   
+[sql](./sql/init.sql)   
+
+启动步骤:    
+1、配置TM的参数信息，然后启动TM。   
+2、配置example-tc example-tc-2信息，启动他们。   
+3、测试example-tc，接口地址为 http://localhost:8090/save?name=123    
+
