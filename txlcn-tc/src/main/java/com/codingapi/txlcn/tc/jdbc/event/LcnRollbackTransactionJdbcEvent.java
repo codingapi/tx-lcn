@@ -2,6 +2,8 @@ package com.codingapi.txlcn.tc.jdbc.event;
 
 import com.codingapi.txlcn.p6spy.event.JdbcCallable;
 import com.codingapi.txlcn.tc.TransactionConstant;
+import com.codingapi.txlcn.tc.info.TransactionInfo;
+import com.codingapi.txlcn.tc.jdbc.JdbcContext;
 import com.codingapi.txlcn.tc.jdbc.JdbcTransaction;
 import com.codingapi.txlcn.tc.jdbc.TransactionJdbcEvent;
 import com.codingapi.txlcn.tc.jdbc.TransactionJdbcState;
@@ -35,10 +37,12 @@ public class LcnRollbackTransactionJdbcEvent implements TransactionJdbcEvent {
 
     @Override
     public Object execute(Object param) throws SQLException {
+        TransactionInfo transactionInfo = TransactionInfo.current();
+        String groupId = transactionInfo.getGroupId();
         Connection connection = JdbcTransaction.current().getConnection();
         log.info("rollback connection:{}",connection);
         JdbcCallable jdbcCallable = (JdbcCallable) param;
-
+        JdbcContext.getInstance().push(groupId,connection);
         //不需要返回值，返回固定值1
         return 1;
     }

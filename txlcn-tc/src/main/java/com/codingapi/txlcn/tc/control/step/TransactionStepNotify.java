@@ -47,7 +47,6 @@ public class TransactionStepNotify implements TransactionStep {
         boolean needCommit = res != null && (res.isSuccess() && transactionInfo.getSuccessReturn());
         //当TM返回是正常时,则需要提交本地事务.
         transactionCommitorStrategy.commit(needCommit);
-
         long t2 = System.currentTimeMillis();
         log.info("notify transaction result:{},time:{}",res,(t2-t1));
 

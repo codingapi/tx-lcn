@@ -26,6 +26,7 @@ public class DemoService {
     demo.setName(demoReq.getName());
     demo.setModule(demoReq.getModule());
     demoMapper.save(demo);
+//    System.out.println(1/0);
     return new DemoRes(demo.getId(), new Date());
   }
 

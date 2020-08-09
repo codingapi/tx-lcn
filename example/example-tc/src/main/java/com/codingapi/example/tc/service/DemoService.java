@@ -24,15 +24,19 @@ public class DemoService {
   @Transactional
   @LcnTransaction
   public boolean save(String name) {
+
+    Demo demo = new Demo();
+    demo.setName(name);
+    demo.setModule("tc");
+    int res =  demoMapper.save(demo);
+
     DemoReq demoReq = new DemoReq();
     demoReq.setName(name);
     demoReq.setModule("tc2");
     DemoRes demoRes = tc2Client.save(demoReq);
     log.info("tc2-client=>{}", demoRes);
-    Demo demo = new Demo();
-    demo.setName(name);
-    demo.setModule("tc");
-    return demoMapper.save(demo) > 0;
+//    System.out.println(res/0);
+    return true;
   }
 
 }

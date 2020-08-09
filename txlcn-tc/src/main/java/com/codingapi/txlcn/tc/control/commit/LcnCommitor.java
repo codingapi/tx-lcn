@@ -32,7 +32,7 @@ public class LcnCommitor implements Commitor {
         Connection connection =  JdbcContext.getInstance().get(groupId);
 
         if(null == connection){
-            throw new TxException("connection 异常");
+            throw new TxException("connection mush not null.");
         }
 
         if(state){

@@ -1,8 +1,12 @@
 package com.codingapi.txlcn.protocol;
 
+import com.codingapi.txlcn.protocol.await.Lock;
+import com.codingapi.txlcn.protocol.await.LockContext;
 import com.codingapi.txlcn.protocol.config.Config;
+import com.codingapi.txlcn.protocol.exception.ProtocolException;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.Message;
+import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
 import com.codingapi.txlcn.protocol.service.ConnectionService;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -97,6 +101,24 @@ public class Protocoler {
             connection.send(message);
         } else {
             log.warn("This key {} not connected. ", uniqueKey);
+        }
+    }
+
+    public TransactionMessage requestMsg(String uniqueKey, TransactionMessage message) {
+        Connection connection = connectionService.getConnection(uniqueKey);
+        if (connection != null) {
+            String groupId = message.getGroupId();
+            Lock lock =  LockContext.getInstance().addKey(groupId);
+            try {
+                connection.send(message);
+                lock.await(config.getAwaitTime());
+                return lock.getRes();
+            }finally {
+                lock.clear();
+            }
+        } else {
+            log.warn("This key {} not connected. ", uniqueKey);
+            throw new ProtocolException("can't send message . ");
         }
     }
 
