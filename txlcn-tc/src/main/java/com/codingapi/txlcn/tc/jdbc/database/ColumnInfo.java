@@ -6,9 +6,7 @@ import lombok.NoArgsConstructor;
 import java.sql.JDBCType;
 
 /**
- * @author lorne
- * @date 2020/8/9
- * @description
+ * @author lorne 2020/8/9
  */
 @Data
 @NoArgsConstructor
