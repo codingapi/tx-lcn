@@ -2,6 +2,8 @@ package com.codingapi.txlcn.tc.jdbc.sql;
 
 import com.codingapi.txlcn.p6spy.common.StatementInformation;
 
+import java.sql.SQLException;
+
 /**
  * @author lorne
  * @date 2020/7/3
@@ -35,7 +37,7 @@ public interface SqlAnalyse {
      * @param statementInformation 执行返回数据
      * @return 满足幂等性的SQL
      */
-    String analyse(String sql,StatementInformation statementInformation);
+    String analyse(String sql,StatementInformation statementInformation)  throws SQLException;
 
     /**
      * SQL 分析判断检查
