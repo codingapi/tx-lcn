@@ -75,7 +75,6 @@ public class TxConfig {
   }
 
   public List<InetSocketAddress> txManagerAddresses() {
-    log.info("TM servers:{}", tms);
     List<InetSocketAddress> addresses = new ArrayList<>();
     if (tms != null) {
       for (String item : tms) {

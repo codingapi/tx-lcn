@@ -120,7 +120,7 @@ public class ProtocolServer {
         }
         String uniqueKey = String.format("%s:%d",host,port);
         if(protocoler.existConnect(uniqueKey)){
-            log.warn("Already existing connection to " + uniqueKey + " is closed.");
+//            log.warn("Already existing connection to " + uniqueKey + " is closed.");
             return false;
         }
 
