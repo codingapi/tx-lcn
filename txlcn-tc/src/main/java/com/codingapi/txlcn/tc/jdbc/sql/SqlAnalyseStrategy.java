@@ -6,6 +6,7 @@ import com.codingapi.txlcn.tc.jdbc.JdbcTransaction;
 import com.codingapi.txlcn.tc.jdbc.log.TransactionLog;
 import lombok.AllArgsConstructor;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ public class SqlAnalyseStrategy {
 
     private TxConfig txConfig;
 
-    public String analyse(String sql,StatementInformation statementInformation){
+    public String analyse(String sql,StatementInformation statementInformation) throws SQLException {
         SqlAnalyse analyse = getSqlAnalyse();
         if(analyse!=null){
             //是否需要分析

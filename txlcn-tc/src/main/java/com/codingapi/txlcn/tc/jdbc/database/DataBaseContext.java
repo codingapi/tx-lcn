@@ -1,5 +1,7 @@
 package com.codingapi.txlcn.tc.jdbc.database;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +41,13 @@ public class DataBaseContext {
         this.map.put(catalog, tableInfos);
     }
 
-    public List<TableInfo> get(String catalog){
-        return this.map.get(catalog);
+    public TableList get(String catalog){
+        return new TableList(this.map.get(catalog));
+    }
+
+    public TableList get(Connection connection) throws SQLException {
+        String catalog = connection.getCatalog();
+        return new TableList(this.map.get(catalog));
     }
 
 }
