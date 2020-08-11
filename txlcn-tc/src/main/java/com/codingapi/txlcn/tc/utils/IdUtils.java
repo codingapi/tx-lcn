@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.tc.utils;
 
-import java.util.UUID;
+import com.codingapi.txlcn.tc.id.Snowflake;
+
 
 /**
  * @author lorne
@@ -9,22 +10,52 @@ import java.util.UUID;
  */
 public class IdUtils {
 
+    private static final Snowflake snowflake = IdUtils.createSnowflake((long) (Math.random() * 31));
+
+    /**
+     * 创建Twitter的Snowflake 算法生成器。
+     * <p>
+     * 特别注意：此方法调用后会创建独立的{@link Snowflake}对象，每个独立的对象ID不互斥，会导致ID重复，请自行保证单例！
+     * </p>
+     * 分布式系统中，有一些需要使用全局唯一ID的场景，有些时候我们希望能使用一种简单一些的ID，并且希望ID能够按照时间有序生成。
+     *
+     * <p>
+     * snowflake的结构如下(每部分用-分开):<br>
+     *
+     * <pre>
+     * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000
+     * </pre>
+     * <p>
+     * 第一位为未使用，接下来的41位为毫秒级时间(41位的长度可以使用69年)<br>
+     * 然后是5位dataCenterId和5位workerId(10位的长度最多支持部署1024个节点）<br>
+     * 最后12位是毫秒内的计数（12位的计数顺序号支持每个节点每毫秒产生4096个ID序号）
+     *
+     * <p>
+     * 参考：http://www.cnblogs.com/relucent/p/4955340.html
+     *
+     * @param workerId 终端ID
+     * @return {@link Snowflake}
+     */
+    public static Snowflake createSnowflake(long workerId) {
+        return new Snowflake(workerId, 0);
+    }
 
     /**
      * 创建GroupId策略
      *
-     * @return
+     * @return String
      */
-    public static String generateGroupId(){
-        return UUID.randomUUID().toString();
+    public static String generateGroupId() {
+        return Long.toBinaryString(snowflake.nextId());
     }
 
 
     /**
      * 创建日志id
-     * @return
+     *
+     * @return long
      */
     public static long generateLogId() {
-        return System.nanoTime();
+        return snowflake.nextId();
     }
 }
