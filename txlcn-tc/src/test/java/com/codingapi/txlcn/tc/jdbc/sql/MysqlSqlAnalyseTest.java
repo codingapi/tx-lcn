@@ -31,6 +31,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -68,24 +70,36 @@ public class MysqlSqlAnalyseTest {
 
     @Test
     public void updateAnalyse() throws SQLException, JSQLParserException {
-        String sql = "update lcn_sql_parse_demo set home_address = 'beijing' where job = 'test'";
+        String sql = "update lcn_sql_parse_user t1,lcn_sql_parse_user_dept t2 set t1.home_address = 'shanghai',t1.age = 30 where t1.dept_id = t2.id and t2.dept_name = 'test'";
         Connection connection = dataSource.getConnection();
         String catalog = connection.getCatalog();
         DataBaseContext.getInstance().push(catalog, JdbcAnalyseUtils.analyse(connection));
-
-        QueryRunner queryRunner = new QueryRunner();
-        int res = queryRunner.execute(connection, sql);
         TableList tableList =  DataBaseContext.getInstance().get(catalog);
 
 
         if(sql.toUpperCase().startsWith("UPDATE")){
             Update statement = (Update) CCJSqlParserUtil.parse(sql);
-            List<Table> tables = statement.getTables();
-            tables.forEach(table -> {
-                System.out.println(table);
-                TableInfo tableInfo =  tableList.getTable(table.getName());
-
+            String updateTableAlias = statement.getColumns().get(0).getTable().getName();
+            String updateTableName = statement.getTables().stream().filter(table -> updateTableAlias.equals(table.getAlias().getName())).findAny().get().getName();
+            TableInfo table = tableList.getTable(updateTableName);
+            List<String> primaryKeys = table.getPrimaryKeys();
+            String primaryKey = primaryKeys.get(0);
+            StringBuilder querySql = new StringBuilder("select ").append(updateTableAlias).append(".").append(primaryKey).append(" from ");
+            String fromTable =  statement.getTables().stream().map(t->t.getName().concat(" ").concat(t.getAlias().getName())).collect(Collectors.joining( ","));
+            querySql.append(fromTable).append(" where ");
+            String whereSql = statement.getWhere().toString();
+            querySql.append(whereSql);
+            QueryRunner queryRunner = new QueryRunner();
+            List<Map<String, Object>> query = queryRunner.query(connection, querySql.toString(), new MapListHandler());
+            String setSql = statement.getColumns().stream().map(column -> column.getColumnName().concat(" ")).collect(Collectors.joining(","));
+            String newSql = "update ".concat(updateTableName).concat(" ").concat(updateTableAlias).concat(" set ").concat(setSql).concat(" where ").concat(primaryKey).concat(" in ");
+            query.forEach(map->{
+                Object o = map.get(primaryKey);
+                System.out.println(o);
+                newSql.concat((String) o).concat(",");
             });
+            System.out.println(newSql);
+
         }
 
     }
@@ -93,25 +107,13 @@ public class MysqlSqlAnalyseTest {
 
     /**
      * 删除语句分析测试样例
-     * DROP TABLE IF EXISTS `lcn_sql_parse_demo`;
-     * CREATE TABLE `lcn_sql_parse_demo` (
-     *   `id` int(12) NOT NULL AUTO_INCREMENT,
-     *   `name` varchar(30) DEFAULT NULL comment '姓名',
-     *   `sex` varchar(10)  DEFAULT NULL comment '性别',
-     *   `job` varchar(32) DEFAULT NULL comment '工作',
-     *   `home_address` varchar(128) default null comment '家庭住址',
-     *   `age` int default null comment '年龄',
-     *   PRIMARY KEY (`id`)
-     * ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-     *
-     * SET FOREIGN_KEY_CHECKS = 1;
      *
      * @throws SQLException
      * @throws JSQLParserException
      */
     @Test
     public void deleteAnalyse() throws SQLException, JSQLParserException {
-        String sql = "delete from lcn_sql_parse_demo where age = 32";
+        String sql = "delete from lcn_sql_parse_user where age = 32";
         Connection connection = dataSource.getConnection();
         String catalog = connection.getCatalog();
         DataBaseContext.getInstance().push(catalog, JdbcAnalyseUtils.analyse(connection));
