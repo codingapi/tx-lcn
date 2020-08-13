@@ -16,7 +16,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * @author Gz.
+ * @description: 删除语句分析
+ * @date 2020-08-13 23:08:26
+ */
 @Slf4j
 public class MysqlDeleteAnalyseStrategry implements MysqlSqlAnalyseStrategry {
 
