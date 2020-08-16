@@ -3,6 +3,7 @@ com.codingapi.txlcn.tc.aspect.AspectConfiguration,\
 com.codingapi.txlcn.tc.config.TcConfigConfiguration,\
 com.codingapi.txlcn.tc.control.ControlConfiguration,\
 com.codingapi.txlcn.tc.control.step.RunnerConfiguration,\
+com.codingapi.txlcn.tc.id.SnowFlakeConfiguration,\
 com.codingapi.txlcn.tc.control.commit.ControlCommitConfiguration,\
 com.codingapi.txlcn.tc.event.transaction.EventTransactionConfiguration,\
 com.codingapi.txlcn.tc.jdbc.JdbcConfiguration,\

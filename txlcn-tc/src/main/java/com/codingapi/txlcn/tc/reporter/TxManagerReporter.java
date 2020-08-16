@@ -4,6 +4,7 @@ import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.Message;
+import com.codingapi.txlcn.protocol.message.separate.SnowFlakeMessage;
 import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
 import com.codingapi.txlcn.tc.config.TxConfig;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.util.Assert;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.UUID;
 
 /**
  * @author lorne
@@ -72,6 +74,17 @@ public class TxManagerReporter {
         return leader.request(message);
     }
 
+    /**
+     * 请求消息
+     * @param message SnowFlakeMessage
+     * @return  SnowFlakeMessage
+     */
+    public SnowFlakeMessage requestMsg(SnowFlakeMessage message) {
+        message.setInstanceId(UUID.randomUUID().toString());
+        selectLeader();
+        checkLeader();
+        return leader.request(message);
+    }
 
 
 

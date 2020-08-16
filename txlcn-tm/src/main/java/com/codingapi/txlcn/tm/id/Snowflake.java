@@ -1,4 +1,4 @@
-package com.codingapi.txlcn.tc.id;
+package com.codingapi.txlcn.tm.id;
 
 
 import java.io.Serializable;

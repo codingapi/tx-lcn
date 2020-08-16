@@ -5,6 +5,7 @@ import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
 import com.codingapi.txlcn.tm.repository.TransactionGroupRepository;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 
@@ -13,6 +14,7 @@ import org.springframework.context.ApplicationContext;
  * @date 2020/4/3
  * @description
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
 public class TransactionCreateEvent extends TransactionMessage {

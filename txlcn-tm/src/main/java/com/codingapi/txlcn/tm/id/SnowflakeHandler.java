@@ -1,16 +1,13 @@
-package com.codingapi.txlcn.tc.utils;
-
-import com.codingapi.txlcn.tc.id.Snowflake;
-
+package com.codingapi.txlcn.tm.id;
 
 /**
  * @author lorne
  * @date 2020/8/8
  * @description
  */
-public class IdUtils {
+public class SnowflakeHandler {
 
-    private static final Snowflake snowflake = IdUtils.createSnowflake((long) (Math.random() * 31));
+    private static final Snowflake snowflake = SnowflakeHandler.createSnowflake((long) (Math.random() * 31));
 
     /**
      * 创建Twitter的Snowflake 算法生成器。
