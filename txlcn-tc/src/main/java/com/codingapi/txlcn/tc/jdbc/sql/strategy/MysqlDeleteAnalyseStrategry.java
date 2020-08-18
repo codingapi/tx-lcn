@@ -2,17 +2,26 @@ package com.codingapi.txlcn.tc.jdbc.sql.strategy;
 
 import com.codingapi.txlcn.p6spy.common.StatementInformation;
 import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
+import com.codingapi.txlcn.tc.jdbc.database.JdbcAnalyseUtils;
 import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
+import com.codingapi.txlcn.tc.utils.ListUtil;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.delete.Delete;
+import net.sf.jsqlparser.statement.update.Update;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 
 import java.sql.Connection;
+import java.sql.JDBCType;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -26,31 +35,30 @@ public class MysqlDeleteAnalyseStrategry implements MysqlSqlAnalyseStrategry {
 
     @Override
     public String MysqlAnalyseStrategry(String sql, StatementInformation statementInformation) throws SQLException, JSQLParserException {
-        Connection connection =  statementInformation.getConnectionInformation().getConnection();
-        TableList tableList = DataBaseContext.getInstance().get(connection);
-        Delete delete = (Delete) CCJSqlParserUtil.parse(sql);
-        String name = delete.getTable().getName();
-        TableInfo table = tableList.getTable(name);
-        List<String> primaryKeys = table.getPrimaryKeys();
-
-        String primaryKey = primaryKeys.get(0);
-        String querySql = sql.replace(sql.substring(0,6), "select ".concat(primaryKey));
-        QueryRunner queryRunner = new QueryRunner();
-        List<Map<String, Object>> queryList = queryRunner.query(connection, querySql, new MapListHandler());
-        StringBuilder sb = new StringBuilder("delete from").append(" ").append(name).append(" ").append("where").append(" ").append(primaryKey).append(" ");
-        if(queryList == null || queryList.size() == 0){
-            //主键非空且唯一 等于不做删除.
-            sb.append(" is null").append(" )");
-            return sb.toString();
+        Connection connection = statementInformation.getConnectionInformation().getConnection();
+        String catalog = connection.getCatalog();
+        DataBaseContext.getInstance().push(catalog, JdbcAnalyseUtils.analyse(connection));
+        TableList tableList =  DataBaseContext.getInstance().get(catalog);
+        Delete statement = (Delete) CCJSqlParserUtil.parse(sql);
+        Table table = statement.getTable();
+        if(!SqlAnalyseHelper.checkTableContainsPk(table, tableList)){
+            return sql;
         }
-       sb.append("in").append(" ").append("(").append(" ");
-        queryList.forEach(map->{
-            Object o = map.get(primaryKey);
-            sb.append(o).append(" ").append(",");
-        });
-        sql = sb.replace(sb.lastIndexOf(","),sb.length(),")").toString();
-        log.info("new sql=[{}]",sql);
-
+        if(SqlAnalyseHelper.checkWhereContainsPk(table, tableList,statement.getWhere().toString())){
+            return sql;
+        }
+        SqlAnalyseInfo sqlAnalyseInfo = SqlAnalyseHelper.sqlAnalyseSingleTable(tableList, table, statement.getWhere(),statement.getJoins());
+        QueryRunner queryRunner = new QueryRunner();
+        List<Map<String, Object>> query = queryRunner.query(connection, sqlAnalyseInfo.getQuerySql(), new MapListHandler());
+        if(ListUtil.isEmpty(query)){
+            return sql;
+        }
+        sql = SqlAnalyseHelper.getNewSql(sql, sqlAnalyseInfo, query);
+        log.info("newSql=[{}]",sql);
         return null;
     }
+
+
+
+
 }

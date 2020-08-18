@@ -33,11 +33,11 @@ public class MysqlSqlAnalyse implements SqlAnalyse {
         Connection connection =  statementInformation.getConnectionInformation().getConnection();
         TableList tableList = DataBaseContext.getInstance().get(connection);
 
-        Insert insert = (Insert) CCJSqlParserUtil.parse(sql);
-        String tableName = insert.getTable().getName();
-
-        TableInfo tableInfo =  tableList.getTable(tableName);
-        log.info("tableInfo:{}",tableInfo);
+//        Insert insert = (Insert) CCJSqlParserUtil.parse(sql);
+//        String tableName = insert.getTable().getName();
+//
+//        TableInfo tableInfo =  tableList.getTable(tableName);
+//        log.info("tableInfo:{}",tableInfo);
 
 //        if(StringUtils.isEmpty(sql)){
 //            throw new TxException("sql is invalid");
