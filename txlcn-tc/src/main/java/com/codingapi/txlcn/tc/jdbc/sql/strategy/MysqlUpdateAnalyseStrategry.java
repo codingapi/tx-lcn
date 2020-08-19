@@ -35,9 +35,7 @@ import java.util.stream.Collectors;
 public class MysqlUpdateAnalyseStrategry implements MysqlSqlAnalyseStrategry {
 
     @Override
-    public String MysqlAnalyseStrategry(String sql, StatementInformation statementInformation) throws SQLException, JSQLParserException {
-
-        Connection connection = statementInformation.getConnectionInformation().getConnection();
+    public String MysqlAnalyseStrategry(String sql, Connection connection) throws SQLException, JSQLParserException {
         String catalog = connection.getCatalog();
         DataBaseContext.getInstance().push(catalog, JdbcAnalyseUtils.analyse(connection));
         TableList tableList =  DataBaseContext.getInstance().get(catalog);
@@ -50,7 +48,7 @@ public class MysqlUpdateAnalyseStrategry implements MysqlSqlAnalyseStrategry {
             return sql;
         }
         //TODO now() 之类的函数有待分析
-        SqlAnalyseInfo sqlAnalyseInfo = SqlAnalyseHelper.sqlAnalyseSingleTable(tableList, table, statement.getWhere(),statement.getJoins());
+        SqlAnalyseInfo sqlAnalyseInfo = SqlAnalyseHelper.sqlAnalyseSingleTable(tableList, table, statement.getWhere(),statement.getStartJoins());
         QueryRunner queryRunner = new QueryRunner();
         List<Map<String, Object>> query = queryRunner.query(connection, sqlAnalyseInfo.getQuerySql(), new MapListHandler());
         if(ListUtil.isEmpty(query)){
@@ -58,7 +56,7 @@ public class MysqlUpdateAnalyseStrategry implements MysqlSqlAnalyseStrategry {
         }
         sql = SqlAnalyseHelper.getNewSql(sql, sqlAnalyseInfo, query);
         log.info("newSql=[{}]",sql);
-        return null;
+        return sql;
     }
 
 

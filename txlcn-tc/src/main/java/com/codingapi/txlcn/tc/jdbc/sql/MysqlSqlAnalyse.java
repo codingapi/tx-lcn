@@ -43,7 +43,7 @@ public class MysqlSqlAnalyse implements SqlAnalyse {
 //            throw new TxException("sql is invalid");
 //        }
 
-        return MysqlAnalyseContextEnum.valueOf(sql.toUpperCase().substring(0,6)).executeStrategry(sql,statementInformation);
+        return MysqlAnalyseContextEnum.valueOf(sql.toUpperCase().substring(0,6)).executeStrategry(sql,connection);
     }
 
     @Override

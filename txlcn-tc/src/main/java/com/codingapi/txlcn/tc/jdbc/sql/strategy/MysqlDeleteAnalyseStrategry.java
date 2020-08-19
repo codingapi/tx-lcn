@@ -34,8 +34,7 @@ import java.util.Map;
 public class MysqlDeleteAnalyseStrategry implements MysqlSqlAnalyseStrategry {
 
     @Override
-    public String MysqlAnalyseStrategry(String sql, StatementInformation statementInformation) throws SQLException, JSQLParserException {
-        Connection connection = statementInformation.getConnectionInformation().getConnection();
+    public String MysqlAnalyseStrategry(String sql,  Connection connection) throws SQLException, JSQLParserException {
         String catalog = connection.getCatalog();
         DataBaseContext.getInstance().push(catalog, JdbcAnalyseUtils.analyse(connection));
         TableList tableList =  DataBaseContext.getInstance().get(catalog);
@@ -55,7 +54,7 @@ public class MysqlDeleteAnalyseStrategry implements MysqlSqlAnalyseStrategry {
         }
         sql = SqlAnalyseHelper.getNewSql(sql, sqlAnalyseInfo, query);
         log.info("newSql=[{}]",sql);
-        return null;
+        return sql;
     }
 
 

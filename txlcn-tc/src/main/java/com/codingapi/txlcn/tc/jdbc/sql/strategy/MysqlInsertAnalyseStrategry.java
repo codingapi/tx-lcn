@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class MysqlInsertAnalyseStrategry implements MysqlSqlAnalyseStrategry {
 
     @Override
-    public String MysqlAnalyseStrategry(String sql, StatementInformation statementInformation) throws SQLException, JSQLParserException {
+    public String MysqlAnalyseStrategry(String sql, Connection connection) throws SQLException, JSQLParserException {
         return null;
     }
 }
