@@ -5,32 +5,68 @@ import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
 import com.codingapi.txlcn.tc.jdbc.database.JdbcAnalyseUtils;
 import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.MysqlAnalyseContextEnum;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.MysqlUpdateAnalyseStrategry;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.SqlAnalyseInfo;
+import com.codingapi.txlcn.tc.utils.ListUtil;
+import com.google.common.collect.Maps;
+import com.sun.deploy.util.StringUtils;
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Union;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.*;
+import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
+import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.parser.JSqlParser;
+import net.sf.jsqlparser.parser.SimpleNode;
+import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
-import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.*;
+import net.sf.jsqlparser.statement.alter.Alter;
+import net.sf.jsqlparser.statement.alter.sequence.AlterSequence;
+import net.sf.jsqlparser.statement.comment.Comment;
+import net.sf.jsqlparser.statement.create.index.CreateIndex;
+import net.sf.jsqlparser.statement.create.schema.CreateSchema;
+import net.sf.jsqlparser.statement.create.sequence.CreateSequence;
+import net.sf.jsqlparser.statement.create.table.CreateTable;
+import net.sf.jsqlparser.statement.create.view.AlterView;
+import net.sf.jsqlparser.statement.create.view.CreateView;
 import net.sf.jsqlparser.statement.delete.Delete;
+import net.sf.jsqlparser.statement.drop.Drop;
+import net.sf.jsqlparser.statement.execute.Execute;
+import net.sf.jsqlparser.statement.grant.Grant;
 import net.sf.jsqlparser.statement.insert.Insert;
+import net.sf.jsqlparser.statement.merge.Merge;
+import net.sf.jsqlparser.statement.replace.Replace;
+import net.sf.jsqlparser.statement.select.*;
+import net.sf.jsqlparser.statement.truncate.Truncate;
 import net.sf.jsqlparser.statement.update.Update;
+import net.sf.jsqlparser.statement.upsert.Upsert;
+import net.sf.jsqlparser.statement.values.ValuesStatement;
 import net.sf.jsqlparser.util.TablesNamesFinder;
+import org.apache.commons.dbutils.BaseResultSetHandler;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.ArrayHandler;
 import org.apache.commons.dbutils.handlers.ArrayListHandler;
+import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.sql.DataSource;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
+import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -66,82 +102,12 @@ public class MysqlSqlAnalyseTest {
         DbUtils.close(connection);
     }
 
+
     @Test
-    public void updateAnalyse() throws SQLException, JSQLParserException {
-        String sql = "update lcn_sql_parse_demo set home_address = 'beijing' where job = 'test'";
+    public void mysqlAnalyse() throws SQLException, JSQLParserException {
+        String sql = "DELETE  t2,t3 FROM lcn_sql_parse_test2 t2 ,lcn_sql_parse_test3 t3 where t3.job = t2.dept_name AND t2.dept_name = 'test' and t3.name = 'a' ";
+        sql = "update lcn_sql_parse_test3 t3 ,lcn_sql_parse_test2 t2 set t3.age = 56 ,t2.dept_name = 'dev' where t3.job = t2.dept_name and t2.dept_name = 'test'";
         Connection connection = dataSource.getConnection();
-        String catalog = connection.getCatalog();
-        DataBaseContext.getInstance().push(catalog, JdbcAnalyseUtils.analyse(connection));
-
-        QueryRunner queryRunner = new QueryRunner();
-        int res = queryRunner.execute(connection, sql);
-        TableList tableList =  DataBaseContext.getInstance().get(catalog);
-
-
-        if(sql.toUpperCase().startsWith("UPDATE")){
-            Update statement = (Update) CCJSqlParserUtil.parse(sql);
-            List<Table> tables = statement.getTables();
-            tables.forEach(table -> {
-                System.out.println(table);
-                TableInfo tableInfo =  tableList.getTable(table.getName());
-
-            });
-        }
-
-    }
-
-
-    /**
-     * 删除语句分析测试样例
-     * DROP TABLE IF EXISTS `lcn_sql_parse_demo`;
-     * CREATE TABLE `lcn_sql_parse_demo` (
-     *   `id` int(12) NOT NULL AUTO_INCREMENT,
-     *   `name` varchar(30) DEFAULT NULL comment '姓名',
-     *   `sex` varchar(10)  DEFAULT NULL comment '性别',
-     *   `job` varchar(32) DEFAULT NULL comment '工作',
-     *   `home_address` varchar(128) default null comment '家庭住址',
-     *   `age` int default null comment '年龄',
-     *   PRIMARY KEY (`id`)
-     * ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-     *
-     * SET FOREIGN_KEY_CHECKS = 1;
-     *
-     * @throws SQLException
-     * @throws JSQLParserException
-     */
-    @Test
-    public void deleteAnalyse() throws SQLException, JSQLParserException {
-        String sql = "delete from lcn_sql_parse_demo where age = 32";
-        Connection connection = dataSource.getConnection();
-        String catalog = connection.getCatalog();
-        DataBaseContext.getInstance().push(catalog, JdbcAnalyseUtils.analyse(connection));
-
-        TableList tableList =  DataBaseContext.getInstance().get(catalog);
-
-        if(sql.toUpperCase().startsWith("DELETE")){
-            Delete delete = (Delete) CCJSqlParserUtil.parse(sql);
-            String name = delete.getTable().getName();
-            TableInfo table = tableList.getTable(name);
-            List<String> primaryKeys = table.getPrimaryKeys();
-
-            String primaryKey = primaryKeys.get(0);
-            String querySql = sql.replace(sql.substring(0,6), "select ".concat(primaryKey));
-            QueryRunner queryRunner = new QueryRunner();
-            List<Map<String, Object>> query = queryRunner.query(connection, querySql, new MapListHandler());
-            StringBuilder sb = new StringBuilder("delete from").append(" ").append(name).append(" ").append("where").append(" ").append(primaryKey).append(" ").append("in").append(" ").append("(").append(" ");
-            query.forEach(map->{
-                Object o = map.get(primaryKey);
-                sb.append(o).append(" ").append(",");
-            });
-            String newSql = sb.replace(sb.lastIndexOf(","),sb.length(),")").toString();
-            System.out.println(newSql);
-        }
-
-
-//        TableInfo tableInfo =  tableList.getTable(tableName);
-//        log.info("tableInfo:{}",tableInfo);
-//
-//        assertTrue(res>0,"数据插入异常.");
-//        DbUtils.close(connection);
+        MysqlAnalyseContextEnum.valueOf(sql.toUpperCase().substring(0,6)).executeStrategry(sql,connection);
     }
 }
