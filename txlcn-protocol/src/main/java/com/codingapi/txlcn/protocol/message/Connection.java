@@ -1,16 +1,17 @@
 package com.codingapi.txlcn.protocol.message;
 
-import com.codingapi.txlcn.protocol.config.Config;
-import com.codingapi.txlcn.protocol.exception.ProtocolException;
 import com.codingapi.txlcn.protocol.await.Lock;
 import com.codingapi.txlcn.protocol.await.LockContext;
+import com.codingapi.txlcn.protocol.config.Config;
+import com.codingapi.txlcn.protocol.exception.ProtocolException;
+import com.codingapi.txlcn.protocol.message.separate.SnowFlakeMessage;
 import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
 import io.netty.channel.ChannelHandlerContext;
-import java.net.InetSocketAddress;
-
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.InetSocketAddress;
 
 /**
  * Maintains a TCP connection between the local peer and a neighbour
@@ -52,16 +53,33 @@ public class Connection {
     }
   }
 
-  public TransactionMessage request(final TransactionMessage msg){
+  public TransactionMessage request(final TransactionMessage msg) {
     if (ctx != null) {
       String groupId = msg.getGroupId();
-      Lock lock =  LockContext.getInstance().addKey(groupId);
+      Lock lock = LockContext.getInstance().addKey(groupId);
       try {
-        LOGGER.debug("send message {}",msg);
+        LOGGER.debug("send message {}", msg);
         ctx.writeAndFlush(msg);
         lock.await(config.getAwaitTime());
-        return lock.getRes();
-      }finally {
+        return (TransactionMessage) lock.getRes();
+      } finally {
+        lock.clear();
+      }
+    } else {
+      LOGGER.error("Can not send message " + msg.getClass() + " to " + toString());
+      throw new ProtocolException("can't send message . ");
+    }
+  }
+
+  public SnowFlakeMessage request(final SnowFlakeMessage msg) {
+    if (ctx != null) {
+      Lock lock = LockContext.getInstance().addKey(msg.getInstanceId());
+      try {
+        LOGGER.debug("send message {}", msg);
+        ctx.writeAndFlush(msg);
+        lock.await(config.getAwaitTime());
+        return (SnowFlakeMessage) lock.getRes();
+      } finally {
         lock.clear();
       }
     } else {

@@ -1,7 +1,7 @@
 package com.codingapi.txlcn.tc.jdbc.log;
 
+import com.codingapi.txlcn.tc.cache.Cache;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
-import com.codingapi.txlcn.tc.utils.IdUtils;
 import lombok.Getter;
 
 /**
@@ -12,7 +12,7 @@ import lombok.Getter;
 public class TransactionLog {
 
     public TransactionLog(String sql) {
-        this.id = IdUtils.generateLogId();
+        this.id = Cache.getLogId();
         this.sql = sql;
         this.groupId = TransactionInfo.current().getGroupId();
         this.time = System.currentTimeMillis();

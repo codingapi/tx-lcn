@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.protocol.await;
 
-import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
+import com.codingapi.txlcn.protocol.message.separate.AbsMessage;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class Lock {
 
-    private volatile TransactionMessage res;
+    private volatile AbsMessage res;
 
     private Condition condition;
 
@@ -67,13 +67,13 @@ public class Lock {
     }
 
 
-    public TransactionMessage getRes() {
+    public AbsMessage getRes() {
         synchronized (this) {
             return res;
         }
     }
 
-    public void setRes(TransactionMessage res) {
+    public void setRes(AbsMessage res) {
         synchronized (this) {
             this.res = res;
         }

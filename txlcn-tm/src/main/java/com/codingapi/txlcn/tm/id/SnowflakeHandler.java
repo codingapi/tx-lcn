@@ -1,16 +1,16 @@
-package com.codingapi.txlcn.tc.utils;
+package com.codingapi.txlcn.tm.id;
 
-import com.codingapi.txlcn.tc.id.Snowflake;
-
+import static com.codingapi.txlcn.tm.id.SnowflakeInitiator.getSnowflakeVo;
 
 /**
  * @author lorne
  * @date 2020/8/8
  * @description
  */
-public class IdUtils {
+public class SnowflakeHandler {
 
-    private static final Snowflake snowflake = IdUtils.createSnowflake((long) (Math.random() * 31));
+    private static final Snowflake snowflake =
+            SnowflakeHandler.createSnowflake(getSnowflakeVo().getWorkerId(), getSnowflakeVo().getDataCenterId());
 
     /**
      * 创建Twitter的Snowflake 算法生成器。
@@ -36,8 +36,8 @@ public class IdUtils {
      * @param workerId 终端ID
      * @return {@link Snowflake}
      */
-    public static Snowflake createSnowflake(long workerId) {
-        return new Snowflake(workerId, 0);
+    public static Snowflake createSnowflake(long workerId, long dataCenterId) {
+        return new Snowflake(workerId, dataCenterId);
     }
 
     /**

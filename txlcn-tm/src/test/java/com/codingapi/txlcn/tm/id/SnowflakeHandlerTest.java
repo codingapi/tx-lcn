@@ -1,4 +1,4 @@
-package com.codingapi.txlcn.tc.utils;
+package com.codingapi.txlcn.tm.id;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
@@ -7,13 +7,13 @@ import org.springframework.util.StopWatch;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.codingapi.txlcn.tc.utils.IdUtils.generateLogId;
+import static com.codingapi.txlcn.tm.id.SnowflakeHandler.generateLogId;
 
 /**
  * @author WhomHim
  * @date Create in 2020-8-10 22:09:30
  */
-public class IdUtilsTest {
+public class SnowflakeHandlerTest {
 
     @Test
     public void id() {
@@ -28,4 +28,5 @@ public class IdUtilsTest {
         stopWatch.stop();
         Assert.isTrue(1000 == logSet.size(), "size must the same");
     }
+
 }

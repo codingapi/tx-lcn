@@ -112,7 +112,7 @@ public class Protocoler {
             try {
                 connection.send(message);
                 lock.await(config.getAwaitTime());
-                return lock.getRes();
+                return (TransactionMessage)lock.getRes();
             }finally {
                 lock.clear();
             }
