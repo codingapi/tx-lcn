@@ -110,4 +110,12 @@ public class MysqlSqlAnalyseTest {
         Connection connection = dataSource.getConnection();
         MysqlAnalyseContextEnum.valueOf(sql.toUpperCase().substring(0,6)).executeStrategry(sql,connection);
     }
+
+    @Test
+    public void mysqlAnalyseInsert() throws SQLException, JSQLParserException {
+        String sql = "insert into lcn_sql_parse_test2 (dept_name) values ('a')";
+        sql = "insert into lcn_sql_parse_test1 (id, name, sex, job, home_address, age, dept_id) values (null,'gz','1','test','bjc',12,1)";
+        Connection connection = dataSource.getConnection();
+        MysqlAnalyseContextEnum.valueOf(sql.toUpperCase().substring(0,6)).executeStrategry(sql,connection);
+    }
 }
