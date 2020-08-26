@@ -31,18 +31,6 @@ public class MysqlSqlAnalyse implements SqlAnalyse {
     public String analyse(String sql,StatementInformation statementInformation)  throws SQLException {
         log.debug("mysql analyse:{}",sql);
         Connection connection =  statementInformation.getConnectionInformation().getConnection();
-        TableList tableList = DataBaseContext.getInstance().get(connection);
-
-//        Insert insert = (Insert) CCJSqlParserUtil.parse(sql);
-//        String tableName = insert.getTable().getName();
-//
-//        TableInfo tableInfo =  tableList.getTable(tableName);
-//        log.info("tableInfo:{}",tableInfo);
-
-//        if(StringUtils.isEmpty(sql)){
-//            throw new TxException("sql is invalid");
-//        }
-
         return MysqlAnalyseContextEnum.valueOf(sql.toUpperCase().substring(0,6)).executeStrategry(sql,connection);
     }
 

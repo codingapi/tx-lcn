@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 public class MysqlUpdateAnalyseStrategry implements MysqlSqlAnalyseStrategry {
 
     @Override
-    public String MysqlAnalyseStrategry(String sql, Connection connection) throws SQLException, JSQLParserException {
+    public String mysqlAnalyseStrategry(String sql, Connection connection) throws SQLException, JSQLParserException {
         String catalog = connection.getCatalog();
         DataBaseContext.getInstance().push(catalog, JdbcAnalyseUtils.analyse(connection));
         TableList tableList =  DataBaseContext.getInstance().get(catalog);

@@ -1,6 +1,5 @@
 package com.codingapi.txlcn.tc.jdbc.sql.strategy;
 
-import com.codingapi.txlcn.p6spy.common.StatementInformation;
 import net.sf.jsqlparser.JSQLParserException;
 
 import java.sql.Connection;
@@ -17,14 +16,14 @@ public  enum  MysqlAnalyseContextEnum {
         private MysqlSqlAnalyseStrategry strategry = new MysqlDeleteAnalyseStrategry();
         @Override
         public String executeStrategry(String sql, Connection connection) throws SQLException, JSQLParserException {
-            return strategry.MysqlAnalyseStrategry(sql,connection);
+            return strategry.mysqlAnalyseStrategry(sql,connection);
         }
     },
     INSERT(){
         private MysqlSqlAnalyseStrategry strategry = new MysqlInsertAnalyseStrategry();
         @Override
         public String executeStrategry(String sql,  Connection connection) throws SQLException, JSQLParserException {
-            return strategry.MysqlAnalyseStrategry(sql,connection);
+            return strategry.mysqlAnalyseStrategry(sql,connection);
         }
 
     },
@@ -32,7 +31,7 @@ public  enum  MysqlAnalyseContextEnum {
         private MysqlSqlAnalyseStrategry strategry = new MysqlUpdateAnalyseStrategry();
         @Override
         public String executeStrategry(String sql,  Connection connection) throws SQLException, JSQLParserException {
-            return strategry.MysqlAnalyseStrategry(sql,connection);
+            return strategry.mysqlAnalyseStrategry(sql,connection);
         }
 
     };
