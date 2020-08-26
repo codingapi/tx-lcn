@@ -19,6 +19,7 @@ import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.update.Update;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.ArrayHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
@@ -49,6 +50,8 @@ public class MysqlInsertAnalyseStrategry implements MysqlSqlAnalyseStrategry {
         TableList tableList =  DataBaseContext.getInstance().get(catalog);
         Insert statement = (Insert) CCJSqlParserUtil.parse(sql);
         Table table = statement.getTable();
+        ItemsList itemsList = statement.getItemsList();
+
         if(!SqlAnalyseHelper.checkTableContainsPk(table, tableList)){
             return sql;
         }
@@ -56,36 +59,60 @@ public class MysqlInsertAnalyseStrategry implements MysqlSqlAnalyseStrategry {
         String pk = tableInfo.getPrimaryKeys().get(0);
 
         int pkIndex = 0;
+        boolean contains = false;
         for (int i = 0; i < statement.getColumns().size(); i++) {
             if(statement.getColumns().get(i).getColumnName().equals(pk)){
                 pkIndex = i;
+                contains = true;
                 break;
             }
         }
-        ExpressionList itemsList = (ExpressionList) statement.getItemsList();
 
-        String defaultValue = itemsList.getExpressions().get(pkIndex).toString();
-        if(!"NULL".equals(defaultValue.toUpperCase())){
-            return sql;
+
+        if (itemsList instanceof MultiExpressionList) {
+            MultiExpressionList multiExpressionList = (MultiExpressionList) itemsList;
+            if(contains){
+                for (ExpressionList expressionList : multiExpressionList.getExprList()) {
+                    String defaultValue = expressionList.getExpressions().get(pkIndex).toString();
+                    if(!"NULL".equals(defaultValue.toUpperCase())){
+                        return sql;
+                    }
+                    expressionList.getExpressions().remove(pkIndex);
+                    statement.getColumns().remove(pkIndex);
+                }
+            }
+
+            QueryRunner queryRunner = new QueryRunner();
+            List<Map<String, Object>> insert = queryRunner.insert(connection, sql, new MapListHandler());
+
+            statement.getColumns().add(new Column(pk));
+            for (int i = 0; i < multiExpressionList.getExprList().size(); i++) {
+                multiExpressionList.getExprList().get(i).getExpressions().add(new StringValue(insert.get(i).get("GENERATED_KEY").toString()));
+            }
+
         }
-        itemsList.getExpressions().remove(pkIndex);
-        statement.getColumns().remove(pkIndex);
-        statement.getColumns().add(new Column(pk));
-        QueryRunner queryRunner = new QueryRunner();
-        Object insert = queryRunner.insert(connection, sql, new ScalarHandler<>());
+        if (itemsList instanceof ExpressionList) {
+            ExpressionList expressionList = (ExpressionList) itemsList;
 
-//        String strPKValue = "";
-//        if(insert instanceof BigInteger){
-//            BigInteger pkValue = (BigInteger) insert;
-//            strPKValue = pkValue.toString();
-//        }else if(insert instanceof Integer){
-//            Integer pkValue = (Integer) insert;
-//            strPKValue = pkValue.toString();
-//        }else if(insert instanceof Long){
-//            Long pkValue = (Long) insert;
-//            strPKValue = pkValue.toString();
-//        }
-        itemsList.getExpressions().add(new StringValue(insert.toString()));
+            if(contains){
+                String defaultValue = expressionList.getExpressions().get(pkIndex).toString();
+                if(!"NULL".equals(defaultValue.toUpperCase())){
+                    return sql;
+                }
+                expressionList.getExpressions().remove(pkIndex);
+                statement.getColumns().remove(pkIndex);
+            }
+
+            QueryRunner queryRunner = new QueryRunner();
+            List<Map<String, Object>> insert = queryRunner.insert(connection, sql, new MapListHandler());
+
+            statement.getColumns().add(new Column(pk));
+            expressionList.getExpressions().add(new StringValue(insert.toString()));
+        }
+
+
+
+
         connection.rollback();
         connection.setAutoCommit(defaultAutoCommit);
         log.info("newSql=[{}]",statement.toString());

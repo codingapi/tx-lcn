@@ -115,6 +115,7 @@ public class MysqlSqlAnalyseTest {
     public void mysqlAnalyseInsert() throws SQLException, JSQLParserException {
         String sql = "insert into lcn_sql_parse_test2 (dept_name) values ('a')";
         sql = "insert into lcn_sql_parse_test1 (id, name, sex, job, home_address, age, dept_id) values (null,'gz','1','test','bjc',12,1)";
+        sql = "INSERT INTO lcn_sql_parse_test1 (name, sex, job, home_address, age, dept_id) VALUES ('gz', '1', 'test', 'bjc', 12, 4),('gz', '1', 'test', 'bjc', 12, 5),('gz', '1', 'test', 'bjc', 12, 6)";
         Connection connection = dataSource.getConnection();
         MysqlAnalyseContextEnum.valueOf(sql.toUpperCase().substring(0,6)).executeStrategry(sql,connection);
     }
