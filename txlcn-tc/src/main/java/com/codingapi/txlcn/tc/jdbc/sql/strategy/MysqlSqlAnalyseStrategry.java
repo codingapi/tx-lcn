@@ -13,5 +13,5 @@ import java.sql.SQLException;
  */
 public interface MysqlSqlAnalyseStrategry {
 
-    String MysqlAnalyseStrategry(String sql , Connection connection) throws JSQLParserException, SQLException;
+    String mysqlAnalyseStrategry(String sql , Connection connection) throws JSQLParserException, SQLException;
 }
