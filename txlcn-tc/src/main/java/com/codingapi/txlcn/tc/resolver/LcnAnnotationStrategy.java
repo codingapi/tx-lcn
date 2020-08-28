@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tc.resolver;
 
-import com.codingapi.txlcn.tc.TransactionConstant;
+import com.codingapi.txlcn.tc.constant.TransactionConstant;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 
 import java.lang.reflect.Method;

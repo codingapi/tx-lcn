@@ -2,8 +2,10 @@ package com.codingapi.txlcn.tc.runner;
 
 import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.tc.config.TxConfig;
+import com.codingapi.txlcn.tc.id.SnowFlakeStep;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -17,10 +19,13 @@ public class TMServerRunner {
 
   private ScheduledExecutorService scheduledExecutorService;
 
-  public TMServerRunner(TxConfig txConfig, ProtocolServer protocolServer) {
+  private SnowFlakeStep snowFlakeStep;
+
+  public TMServerRunner(TxConfig txConfig, ProtocolServer protocolServer, SnowFlakeStep snowFlakeStep) {
     this.txConfig = txConfig;
     this.protocolServer = protocolServer;
-    this. scheduledExecutorService = Executors.newScheduledThreadPool(1);
+    this.snowFlakeStep = snowFlakeStep;
+    this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
   }
 
 
@@ -28,11 +33,21 @@ public class TMServerRunner {
    * 初始化连接
    */
   public void init() {
-    scheduledExecutorService.scheduleAtFixedRate(()->{
-      txConfig.txManagerAddresses().forEach(address->{
-        protocolServer.connectTo(address.getHostString(),address.getPort());
-      });
-    },0,30, TimeUnit.SECONDS);
+    try {
+      CompletableFuture<Void> futureToNotify = new CompletableFuture<>();
+      scheduledExecutorService.scheduleAtFixedRate(() -> {
+        txConfig.txManagerAddresses().forEach(address -> {
+          protocolServer.connectTo(address.getHostString(), address.getPort(), futureToNotify);
+          futureToNotify.whenCompleteAsync((s, throwable) -> {
+            log.debug("=> futureToNotify.whenCompleteAsync");
+            snowFlakeStep.getGroupIdAndLogId();
+          });
+        });
+      }, 0, 30, TimeUnit.SECONDS);
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+    }
+
   }
 
 }

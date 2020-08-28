@@ -1,7 +1,7 @@
 package com.codingapi.txlcn.tc.jdbc.event;
 
 import com.codingapi.txlcn.p6spy.event.JdbcCallable;
-import com.codingapi.txlcn.tc.TransactionConstant;
+import com.codingapi.txlcn.tc.constant.TransactionConstant;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
 import com.codingapi.txlcn.tc.jdbc.JdbcContext;
 import com.codingapi.txlcn.tc.jdbc.JdbcTransaction;
