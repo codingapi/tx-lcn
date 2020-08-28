@@ -31,6 +31,7 @@ public class MysqlSqlAnalyse implements SqlAnalyse {
     public String analyse(String sql,StatementInformation statementInformation)  throws SQLException {
         log.debug("mysql analyse:{}",sql);
         Connection connection =  statementInformation.getConnectionInformation().getConnection();
+        //todo sql.toUpperCase().substring(0,6) 这样实现有风险
         return MysqlAnalyseContextEnum.valueOf(sql.toUpperCase().substring(0,6)).executeStrategry(sql,connection);
     }
 

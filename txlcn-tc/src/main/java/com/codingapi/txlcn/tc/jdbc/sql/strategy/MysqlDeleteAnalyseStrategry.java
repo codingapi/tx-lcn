@@ -14,6 +14,7 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.update.Update;
+import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 
@@ -36,6 +37,10 @@ public class MysqlDeleteAnalyseStrategry implements MysqlSqlAnalyseStrategry {
     @Override
     public String mysqlAnalyseStrategry(String sql, Connection connection) throws SQLException, JSQLParserException {
         String catalog = connection.getCatalog();
+        /**
+         * todo JdbcAnalyseUtils.analyse(connection) 不能在此使用
+         * JdbcAnalyseUtils.analyse(connection) 是系统启动的时候获取数据的，而非在执行sql的时候做数据处理 {@link com.codingapi.txlcn.tc.aspect.TxDataSourceInterceptor#invoke(MethodInvocation)}
+         */
         DataBaseContext.getInstance().push(catalog, JdbcAnalyseUtils.analyse(connection));
         TableList tableList =  DataBaseContext.getInstance().get(catalog);
         Delete statement = (Delete) CCJSqlParserUtil.parse(sql);
