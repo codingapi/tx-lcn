@@ -9,6 +9,7 @@ import java.sql.SQLException;
  * @author Gz.
  * @description: 策略模式聚合类
  * @date 2020-08-13 23:08:26
+ * todo 建议通过策略模式优化该类
  */
 public  enum  MysqlAnalyseContextEnum {
 

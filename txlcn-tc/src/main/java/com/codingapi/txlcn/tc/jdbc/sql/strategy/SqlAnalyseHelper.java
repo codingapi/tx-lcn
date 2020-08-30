@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
  * @author Gz.
  * @description: sql分析助手类
  * @date 2020-08-17 23:26:01
+ * todo 指责有点乱，SCP原则，若定位是SqlAnalyseHelper应该划分在com.codingapi.txlcn.tc.jdbc.database包下。
  */
 @Slf4j
 public class SqlAnalyseHelper {
