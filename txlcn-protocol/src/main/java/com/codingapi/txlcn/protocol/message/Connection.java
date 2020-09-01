@@ -4,7 +4,7 @@ import com.codingapi.txlcn.protocol.await.Lock;
 import com.codingapi.txlcn.protocol.await.LockContext;
 import com.codingapi.txlcn.protocol.config.Config;
 import com.codingapi.txlcn.protocol.exception.ProtocolException;
-import com.codingapi.txlcn.protocol.message.separate.SnowFlakeMessage;
+import com.codingapi.txlcn.protocol.message.separate.SnowflakeMessage;
 import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
@@ -71,14 +71,14 @@ public class Connection {
     }
   }
 
-  public SnowFlakeMessage request(final SnowFlakeMessage msg) {
+  public SnowflakeMessage request(final SnowflakeMessage msg) {
     if (ctx != null) {
       Lock lock = LockContext.getInstance().addKey(msg.getInstanceId());
       try {
         LOGGER.debug("send message {}", msg);
         ctx.writeAndFlush(msg);
         lock.await(config.getAwaitTime());
-        return (SnowFlakeMessage) lock.getRes();
+        return (SnowflakeMessage) lock.getRes();
       } finally {
         lock.clear();
       }

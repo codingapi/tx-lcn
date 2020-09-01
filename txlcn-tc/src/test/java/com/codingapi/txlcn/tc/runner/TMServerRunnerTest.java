@@ -3,7 +3,7 @@ package com.codingapi.txlcn.tc.runner;
 import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.protocol.config.Config;
 import com.codingapi.txlcn.tc.config.TxConfig;
-import com.codingapi.txlcn.tc.id.SnowFlakeStep;
+import com.codingapi.txlcn.tc.id.SnowflakeStep;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ import org.springframework.context.ApplicationContext;
   private ApplicationContext springContext;
 
   @Autowired
-  private SnowFlakeStep snowFlakeStep;
+  private SnowflakeStep snowFlakeStep;
 
 
      @BeforeEach

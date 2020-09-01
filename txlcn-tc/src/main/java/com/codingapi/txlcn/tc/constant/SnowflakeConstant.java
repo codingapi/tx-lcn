@@ -5,7 +5,7 @@ package com.codingapi.txlcn.tc.constant;
  * @description
  * @date Create in 2020-8-16 23:05:21
  */
-public class SnowFlakeConstant {
+public class SnowflakeConstant {
     public static final String GROUP_ID = "groupId";
 
     public static final String LOG_ID = "logId";

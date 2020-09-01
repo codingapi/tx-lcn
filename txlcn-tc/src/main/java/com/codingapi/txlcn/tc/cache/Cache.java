@@ -1,7 +1,7 @@
 package com.codingapi.txlcn.tc.cache;
 
 import com.codingapi.txlcn.tc.constant.CommonConstant;
-import com.codingapi.txlcn.tc.constant.SnowFlakeConstant;
+import com.codingapi.txlcn.tc.constant.SnowflakeConstant;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -69,7 +69,7 @@ public class Cache {
     public static String getGroupId() {
         String groupId;
         try {
-            groupId = (String) getKey(SnowFlakeConstant.GROUP_ID);
+            groupId = (String) getKey(SnowflakeConstant.GROUP_ID);
         } catch (Exception e) {
             log.debug("Cache.getGroupId is null!");
             groupId = UUID.randomUUID().toString();
@@ -85,7 +85,7 @@ public class Cache {
     public static long getLogId() {
         long logId;
         try {
-            logId = (long) getKey(SnowFlakeConstant.LOG_ID);
+            logId = (long) getKey(SnowflakeConstant.LOG_ID);
         } catch (Exception e) {
             log.debug("Cache.getLogId is null!");
             logId = UUID.randomUUID().getLeastSignificantBits();

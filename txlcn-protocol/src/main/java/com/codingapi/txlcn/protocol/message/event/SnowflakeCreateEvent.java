@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.protocol.message.event;
 
-import com.codingapi.txlcn.protocol.message.separate.SnowFlakeMessage;
+import com.codingapi.txlcn.protocol.message.separate.SnowflakeMessage;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SnowFlakeCreateEvent extends SnowFlakeMessage {
+public class SnowflakeCreateEvent extends SnowflakeMessage {
 
     /**
      * 事务组Id

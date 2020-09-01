@@ -13,7 +13,7 @@ import org.springframework.context.ApplicationContext;
  * @date Create in 2020-8-16 14:23:54
  */
 @Data
-public abstract class SnowFlakeMessage extends AbsMessage {
+public abstract class SnowflakeMessage extends AbsMessage {
 
     protected String instanceId;
 
