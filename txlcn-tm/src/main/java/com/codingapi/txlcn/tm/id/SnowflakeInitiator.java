@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class SnowflakeInitiator {
 
-    private static final String prefixRedisKey = "SnowflakeRedisKey";
+    private static final String SNOWFLAKE_REDIS_KEY = "SnowflakeRedisKey";
 
     private static String snowflakeRedisKey;
 
@@ -66,7 +66,7 @@ public class SnowflakeInitiator {
      */
     public boolean tryInit() {
         snowflakeVo = nextKey(snowflakeVo);
-        snowflakeRedisKey = prefixRedisKey + "_" + snowflakeVo.getDataCenterId() + "_" + snowflakeVo.getWorkerId();
+        snowflakeRedisKey = SNOWFLAKE_REDIS_KEY + "_" + snowflakeVo.getDataCenterId() + "_" + snowflakeVo.getWorkerId();
         Boolean isNotHasKey = !redisTemplate.hasKey(snowflakeRedisKey);
         Boolean isSetKey = redisTemplate.opsForValue().setIfAbsent(snowflakeRedisKey, 1, LockExpire, TimeUnit.SECONDS);
         if (isNotHasKey && isSetKey) {

@@ -9,7 +9,7 @@ import static com.codingapi.txlcn.tm.id.SnowflakeInitiator.getSnowflakeVo;
  */
 public class SnowflakeHandler {
 
-    private static final Snowflake snowflake =
+    private static final Snowflake SNOWFLAKE =
             SnowflakeHandler.createSnowflake(getSnowflakeVo().getWorkerId(), getSnowflakeVo().getDataCenterId());
 
     /**
@@ -46,7 +46,7 @@ public class SnowflakeHandler {
      * @return String
      */
     public static String generateGroupId() {
-        return Long.toBinaryString(snowflake.nextId());
+        return Long.toBinaryString(SNOWFLAKE.nextId());
     }
 
 
@@ -56,6 +56,6 @@ public class SnowflakeHandler {
      * @return long
      */
     public static long generateLogId() {
-        return snowflake.nextId();
+        return SNOWFLAKE.nextId();
     }
 }

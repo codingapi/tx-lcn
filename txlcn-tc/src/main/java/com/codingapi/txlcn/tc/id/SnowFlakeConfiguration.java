@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class SnowFlakeConfiguration {
 
     @Bean
-    public SnowFlakeStep SnowFlakeCreate(TxManagerReporter managerProtocoler){
+    public SnowFlakeStep snowFlakeCreate(TxManagerReporter managerProtocoler){
         return new SnowFlakeInfo(managerProtocoler);
     }
 

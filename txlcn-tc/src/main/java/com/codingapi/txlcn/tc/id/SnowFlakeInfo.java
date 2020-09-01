@@ -22,7 +22,7 @@ public class SnowFlakeInfo implements SnowFlakeStep {
 
     @Override
     public void getGroupIdAndLogId() {
-        //是否请求过 TM 的标志位
+        // 是否请求过 TM 的标志位
         if (Cache.getKey(SnowFlakeConstant.TAG) == null) {
             log.debug("==> getGroupIdAndLogId");
             // 请求 TM 获得全局唯一 Id
