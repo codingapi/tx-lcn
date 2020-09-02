@@ -6,67 +6,22 @@ import com.codingapi.txlcn.tc.jdbc.database.JdbcAnalyseUtils;
 import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
 import com.codingapi.txlcn.tc.jdbc.sql.strategy.MysqlAnalyseContextEnum;
-import com.codingapi.txlcn.tc.jdbc.sql.strategy.MysqlUpdateAnalyseStrategry;
-import com.codingapi.txlcn.tc.jdbc.sql.strategy.SqlAnalyseInfo;
-import com.codingapi.txlcn.tc.utils.ListUtil;
-import com.google.common.collect.Maps;
-import com.sun.deploy.util.StringUtils;
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Union;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.expression.*;
-import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.parser.JSqlParser;
-import net.sf.jsqlparser.parser.SimpleNode;
-import net.sf.jsqlparser.schema.Column;
-import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.*;
-import net.sf.jsqlparser.statement.alter.Alter;
-import net.sf.jsqlparser.statement.alter.sequence.AlterSequence;
-import net.sf.jsqlparser.statement.comment.Comment;
-import net.sf.jsqlparser.statement.create.index.CreateIndex;
-import net.sf.jsqlparser.statement.create.schema.CreateSchema;
-import net.sf.jsqlparser.statement.create.sequence.CreateSequence;
-import net.sf.jsqlparser.statement.create.table.CreateTable;
-import net.sf.jsqlparser.statement.create.view.AlterView;
-import net.sf.jsqlparser.statement.create.view.CreateView;
-import net.sf.jsqlparser.statement.delete.Delete;
-import net.sf.jsqlparser.statement.drop.Drop;
-import net.sf.jsqlparser.statement.execute.Execute;
-import net.sf.jsqlparser.statement.grant.Grant;
 import net.sf.jsqlparser.statement.insert.Insert;
-import net.sf.jsqlparser.statement.merge.Merge;
-import net.sf.jsqlparser.statement.replace.Replace;
-import net.sf.jsqlparser.statement.select.*;
-import net.sf.jsqlparser.statement.truncate.Truncate;
-import net.sf.jsqlparser.statement.update.Update;
-import net.sf.jsqlparser.statement.upsert.Upsert;
-import net.sf.jsqlparser.statement.values.ValuesStatement;
-import net.sf.jsqlparser.util.TablesNamesFinder;
-import org.apache.commons.dbutils.BaseResultSetHandler;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.dbutils.handlers.ArrayHandler;
-import org.apache.commons.dbutils.handlers.ArrayListHandler;
-import org.apache.commons.dbutils.handlers.ColumnListHandler;
-import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.sql.DataSource;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
-import java.sql.JDBCType;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -119,4 +74,14 @@ public class MysqlSqlAnalyseTest {
         Connection connection = dataSource.getConnection();
         MysqlAnalyseContextEnum.valueOf(sql.toUpperCase().substring(0,6)).executeStrategry(sql,connection);
     }
+
+    @Test
+    public void xx() throws JSQLParserException {
+        String sql = "insert into lcn_sql_parse_test2 (dept_name) values ('a')";
+        CCJSqlParserManager parser = new CCJSqlParserManager();
+        Statement stmt = parser.parse(new StringReader(sql));
+        if(stmt instanceof Insert){
+
+        }
+        }
 }

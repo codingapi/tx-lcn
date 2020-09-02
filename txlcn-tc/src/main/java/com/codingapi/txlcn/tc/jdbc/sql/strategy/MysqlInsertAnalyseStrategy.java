@@ -1,35 +1,24 @@
 package com.codingapi.txlcn.tc.jdbc.sql.strategy;
 
-import com.codingapi.txlcn.p6spy.common.StatementInformation;
 import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
-import com.codingapi.txlcn.tc.jdbc.database.JdbcAnalyseUtils;
 import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.NullValue;
 import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.relational.*;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
-import net.sf.jsqlparser.statement.delete.Delete;
+import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.insert.Insert;
-import net.sf.jsqlparser.statement.select.SubSelect;
-import net.sf.jsqlparser.statement.update.Update;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.ArrayHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
-import org.apache.commons.dbutils.handlers.ScalarHandler;
 
-import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 
 /**
@@ -38,17 +27,16 @@ import java.util.stream.IntStream;
  * @date 2020-08-13 23:08:26
  */
 @Slf4j
-public class MysqlInsertAnalyseStrategry implements MysqlSqlAnalyseStrategry {
+public class  MysqlInsertAnalyseStrategy implements SqlSqlAnalyseHandler {
 
 
     @Override
-    public String mysqlAnalyseStrategry(String sql, Connection connection) throws SQLException, JSQLParserException {
+    public String mysqlAnalyseStrategy(String sql, Connection connection,Statement stmt) throws SQLException, JSQLParserException {
         boolean defaultAutoCommit = connection.getAutoCommit();
         connection.setAutoCommit(false);
         String catalog = connection.getCatalog();
-        DataBaseContext.getInstance().push(catalog, JdbcAnalyseUtils.analyse(connection));
         TableList tableList =  DataBaseContext.getInstance().get(catalog);
-        Insert statement = (Insert) CCJSqlParserUtil.parse(sql);
+        Insert statement = (Insert) stmt;
         Table table = statement.getTable();
         ItemsList itemsList = statement.getItemsList();
 
@@ -121,5 +109,10 @@ public class MysqlInsertAnalyseStrategry implements MysqlSqlAnalyseStrategry {
             }
         }
         return false;
+    }
+
+    @Override
+    public void afterPropertiesSet()  {
+        AnalyseStrategryFactory.register(MysqlAnalyseEnum.INSERT.name(), this);
     }
 }
