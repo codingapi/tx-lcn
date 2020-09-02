@@ -55,7 +55,7 @@ public class MysqlSqlDeleteAnalyseStrategy implements SqlSqlAnalyseHandler {
 
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         AnalyseStrategryFactory.register(MysqlAnalyseEnum.DELETE.name(), this);
     }
 
