@@ -30,6 +30,9 @@ public class SqlAnalyseHelper {
      */
     public static  boolean checkTableContainsPk(Table table, TableList tableList ) {
         TableInfo tableInfo = tableList.getTable(table.getName());
+        if(tableInfo==null){
+            return false;
+        }
         if(ListUtil.isNotEmpty(tableInfo.getPrimaryKeys())){
             return  true;
         }

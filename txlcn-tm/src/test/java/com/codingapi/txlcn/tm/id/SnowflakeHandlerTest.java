@@ -1,6 +1,9 @@
 package com.codingapi.txlcn.tm.id;
 
+import com.codingapi.txlcn.tm.MockRedisTemplateConfiguration;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
 import org.springframework.util.StopWatch;
 
@@ -13,7 +16,10 @@ import static com.codingapi.txlcn.tm.id.SnowflakeHandler.generateLogId;
  * @author WhomHim
  * @date Create in 2020-8-10 22:09:30
  */
+@SpringBootTest(classes = SnowflakeInitiator.class)
+@ImportAutoConfiguration(classes = MockRedisTemplateConfiguration.class)
 public class SnowflakeHandlerTest {
+
 
     @Test
     public void id() {
