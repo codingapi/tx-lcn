@@ -1,8 +1,8 @@
 package com.codingapi.txlcn.tc.id;
 
-import com.codingapi.txlcn.protocol.message.event.SnowFlakeCreateEvent;
+import com.codingapi.txlcn.protocol.message.event.SnowflakeCreateEvent;
 import com.codingapi.txlcn.tc.cache.Cache;
-import com.codingapi.txlcn.tc.constant.SnowFlakeConstant;
+import com.codingapi.txlcn.tc.constant.SnowflakeConstant;
 import com.codingapi.txlcn.tc.reporter.TxManagerReporter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,15 +23,15 @@ public class SnowflakeInfo implements SnowflakeStep {
     @Override
     public void getGroupIdAndLogId() {
         // 是否请求过 TM 的标志位
-        if (Cache.getKey(SnowFlakeConstant.TAG) == null) {
+        if (Cache.getKey(SnowflakeConstant.TAG) == null) {
             log.debug("==> getGroupIdAndLogId");
             // 请求 TM 获得全局唯一 Id
-            SnowFlakeCreateEvent snowFlakeCreateEvent =
-                    (SnowFlakeCreateEvent) txManagerReporter.requestMsg(new SnowFlakeCreateEvent());
+            SnowflakeCreateEvent snowFlakeCreateEvent =
+                    (SnowflakeCreateEvent) txManagerReporter.requestMsg(new SnowflakeCreateEvent());
             log.debug("==> snowFlakeCreateEvent:{}", snowFlakeCreateEvent);
-            Cache.setKey(SnowFlakeConstant.GROUP_ID, snowFlakeCreateEvent.getGroupId());
-            Cache.setKey(SnowFlakeConstant.LOG_ID, snowFlakeCreateEvent.getLogId());
-            Cache.setKey(SnowFlakeConstant.TAG, true);
+            Cache.setKey(SnowflakeConstant.GROUP_ID, snowFlakeCreateEvent.getGroupId());
+            Cache.setKey(SnowflakeConstant.LOG_ID, snowFlakeCreateEvent.getLogId());
+            Cache.setKey(SnowflakeConstant.TAG, true);
         }
 
     }
