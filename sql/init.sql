@@ -1,22 +1,5 @@
-/
- Navicat Premium Data Transfer
-
- Source Server         : localhost
- Source Server Type    : MySQL
- Source Server Version : 50636
- Source Host           : localhost:3306
- Source Schema         : test
-
- Target Server Type    : MySQL
- Target Server Version : 50636
- File Encoding         : 65001
-
- Date: 08/08/2020 23:29:07
- /
-
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
-
 
 create database test;
 use test;
@@ -35,7 +18,7 @@ CREATE TABLE `lcn_demo` (
 SET FOREIGN_KEY_CHECKS = 1;
 
 
---        删除语句分析测试样例
+-- 删除语句分析测试样例
 DROP TABLE IF EXISTS `lcn_sql_parse_test1`;
 CREATE TABLE `lcn_sql_parse_test1` (
   `id` int(12) NOT NULL AUTO_INCREMENT,
