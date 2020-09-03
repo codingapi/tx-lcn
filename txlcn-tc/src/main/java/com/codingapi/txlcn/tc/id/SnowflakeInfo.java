@@ -12,11 +12,11 @@ import lombok.extern.slf4j.Slf4j;
  * @date Create in 2020-8-15 22:55:46
  */
 @Slf4j
-public class SnowFlakeInfo implements SnowFlakeStep {
+public class SnowflakeInfo implements SnowflakeStep {
 
     private TxManagerReporter txManagerReporter;
 
-    public SnowFlakeInfo(TxManagerReporter txManagerReporter) {
+    public SnowflakeInfo(TxManagerReporter txManagerReporter) {
         this.txManagerReporter = txManagerReporter;
     }
 

@@ -3,22 +3,17 @@ package com.codingapi.txlcn.tc.config;
 import com.codingapi.txlcn.protocol.config.Config;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.util.CollectionUtils;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Tx config properties
  */
-@SuppressWarnings("rawtypes")
 @Data
 @Slf4j
 public class TxConfig {
@@ -58,18 +53,8 @@ public class TxConfig {
    */
   private Config protocol;
 
-  @Autowired
-  private RedisTemplate redisTemplate;
-
-  private static final String SNOWFLAKE_REDIS_KEY = "SnowflakeRedisKey*";
-
   public TxConfig(Config protocol) {
     this.protocol = protocol;
-  }
-
-  public TxConfig(Config protocol, RedisTemplate redisTemplate) {
-    this.protocol = protocol;
-    this.redisTemplate = redisTemplate;
   }
 
   /**
@@ -89,15 +74,13 @@ public class TxConfig {
     return null;
   }
 
-  @SuppressWarnings("unchecked")
   public List<InetSocketAddress> txManagerAddresses() {
     List<InetSocketAddress> addresses = new ArrayList<>();
-    Set tmKeys = redisTemplate.keys(SNOWFLAKE_REDIS_KEY);
-    if (!CollectionUtils.isEmpty(tmKeys)) {
-      tmKeys.forEach(
-              tmKey -> Optional.ofNullable(addressFormat(String.valueOf(redisTemplate.opsForValue().get(tmKey))))
-                      .ifPresent(addresses::add)
-      );
+    if (tms != null) {
+      for (String item : tms) {
+        Optional<InetSocketAddress> optional = Optional.ofNullable(addressFormat(item));
+        optional.ifPresent(addresses::add);
+      }
     }
     return addresses;
   }
