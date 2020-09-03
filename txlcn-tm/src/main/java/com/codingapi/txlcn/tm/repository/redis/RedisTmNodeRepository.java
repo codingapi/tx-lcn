@@ -6,6 +6,7 @@ import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -19,6 +20,7 @@ import java.util.function.Consumer;
  * @date Create in 2020/9/3 17:49
  */
 @Slf4j
+@Component
 public class RedisTmNodeRepository {
 
     @Autowired
@@ -45,7 +47,7 @@ public class RedisTmNodeRepository {
      * @param pattern  表达式
      * @param consumer 对迭代到的key进行操作
      */
-    public void scan(String pattern, Consumer<byte[]> consumer) {
+    private void scan(String pattern, Consumer<byte[]> consumer) {
         this.stringRedisTemplate.execute((RedisConnection connection) -> {
             try (Cursor<byte[]> cursor = connection
                     .scan(ScanOptions.scanOptions()

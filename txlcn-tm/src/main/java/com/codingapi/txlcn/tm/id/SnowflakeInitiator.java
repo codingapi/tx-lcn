@@ -17,12 +17,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 雪花算法初始化器
- * 初始化snowflake的dataCenterId和workerId
+ * 初始化snowflake的 dataCenterId 和 workerId
  * <p>
- * 1.系统启动时生成默认dataCenterId和workerId，并尝试作为key存储到redis
- * 2.如果存储成功，设置redis过期时间为24h，把当前dataCenterId和workerId传入snowflake
- * 3.如果存储失败workerId自加1，并判断workerId不大于31，重复1步骤
- * 4.定义一个定时器，每隔24h刷新redis的过期时间为24h
+ * 1.系统启动时生成默认 dataCenterId 和 workerId，并尝试作为 key 存储到 redis
+ * 2.如果存储成功，设置 redis 过期时间为24h，把当前 dataCenterId 和 workerId 传入 snowflake
+ * 3.如果存储失败 workerId 自加1，并判断 workerId 不大于31，重复1步骤
+ * 4.定义一个定时器，每隔 24h 刷新 redis 的过期时间为 24h
  */
 @SuppressWarnings({"unchecked", "rawtypes", "ConstantConditions"})
 @Configuration
@@ -32,7 +32,10 @@ public class SnowflakeInitiator {
     @Value("${txlcn.protocol.port}")
     private String port;
 
-    private static final String SNOWFLAKE_REDIS_KEY = "SnowflakeRedisKey";
+    /**
+     * 将 dataCenterId 和 workerId 拼接一起 作为 TM 的 全局唯一 ID
+     */
+    private static final String TX_MANAGER = "TxManager";
 
     private static String snowflakeRedisKey;
 
@@ -71,7 +74,7 @@ public class SnowflakeInitiator {
      */
     public boolean tryInit() {
         snowflakeVo = nextKey(snowflakeVo);
-        snowflakeRedisKey = String.format("%s_%d_%d", SNOWFLAKE_REDIS_KEY, snowflakeVo.getDataCenterId(), snowflakeVo.getWorkerId());
+        snowflakeRedisKey = String.format("%s_%d_%d", TX_MANAGER, snowflakeVo.getDataCenterId(), snowflakeVo.getWorkerId());
         String hostAddress = NetUtil.getLocalhost().getHostAddress();
         String hostAndPort = String.format("%s:%s", hostAddress, port);
         Boolean isNotHasKey = !redisTemplate.hasKey(snowflakeRedisKey);

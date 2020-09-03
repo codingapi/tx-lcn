@@ -18,7 +18,6 @@ public class NetUtil {
      *
      * @param addressFilter 过滤器，null表示不过滤，获取所有地址
      * @return 过滤后的地址对象列表
-     * @since 4.5.17
      */
     public static LinkedHashSet<InetAddress> localAddressList(Filter<InetAddress> addressFilter) {
         Enumeration<NetworkInterface> networkInterfaces;
