@@ -2,10 +2,12 @@ package com.codingapi.txlcn.tm.id;
 
 
 import com.alibaba.fastjson.JSON;
+import com.codingapi.txlcn.tm.util.NetUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -26,6 +28,9 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @Slf4j
 public class SnowflakeInitiator {
+
+    @Value("${txlcn.protocol.port}")
+    private String port;
 
     private static final String SNOWFLAKE_REDIS_KEY = "SnowflakeRedisKey";
 
@@ -66,9 +71,11 @@ public class SnowflakeInitiator {
      */
     public boolean tryInit() {
         snowflakeVo = nextKey(snowflakeVo);
-        snowflakeRedisKey = SNOWFLAKE_REDIS_KEY + "_" + snowflakeVo.getDataCenterId() + "_" + snowflakeVo.getWorkerId();
+        snowflakeRedisKey = String.format("%s_%d_%d", SNOWFLAKE_REDIS_KEY, snowflakeVo.getDataCenterId(), snowflakeVo.getWorkerId());
+        String hostAddress = NetUtil.getLocalhost().getHostAddress();
+        String hostAndPort = String.format("%s:%s", hostAddress, port);
         Boolean isNotHasKey = !redisTemplate.hasKey(snowflakeRedisKey);
-        Boolean isSetKey = redisTemplate.opsForValue().setIfAbsent(snowflakeRedisKey, 1, LockExpire, TimeUnit.SECONDS);
+        Boolean isSetKey = redisTemplate.opsForValue().setIfAbsent(snowflakeRedisKey, hostAndPort, LockExpire, TimeUnit.SECONDS);
         if (isNotHasKey && isSetKey) {
             log.info("snowflake setIfAbsent key:{}", JSON.toJSONString(snowflakeVo));
             return true;
