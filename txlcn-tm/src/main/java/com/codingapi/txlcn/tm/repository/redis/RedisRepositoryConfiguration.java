@@ -5,12 +5,12 @@ import com.codingapi.txlcn.tm.repository.TransactionGroupRepository;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -27,6 +27,7 @@ public class RedisRepositoryConfiguration {
     public TransactionGroupRepository transactionGroupRepository(RedisTemplate<String, TransactionGroup> redisTemplate){
         return new RedisTransactionGroupRepository(redisTemplate);
     }
+
 
     @Bean
     @ConditionalOnMissingBean
@@ -49,6 +50,13 @@ public class RedisRepositoryConfiguration {
 
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
+    }
+
+    @Bean
+    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory factory) {
+        StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
+        stringRedisTemplate.setConnectionFactory(factory);
+        return stringRedisTemplate;
     }
 
 }
