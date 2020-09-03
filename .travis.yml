@@ -8,7 +8,6 @@ branches:
 
 services:
 - mysql
-- mongodb
 - redis-server
 
 before_install:
