@@ -16,8 +16,7 @@ import static com.codingapi.txlcn.tm.id.SnowflakeHandler.generateLogId;
  * @author WhomHim
  * @date Create in 2020-8-10 22:09:30
  */
-@SpringBootTest(classes = SnowflakeInitiator.class)
-@ImportAutoConfiguration(classes = MockRedisTemplateConfiguration.class)
+@SpringBootTest(classes = {MockRedisTemplateConfiguration.class,SnowflakeInitiator.class})
 public class SnowflakeHandlerTest {
 
 

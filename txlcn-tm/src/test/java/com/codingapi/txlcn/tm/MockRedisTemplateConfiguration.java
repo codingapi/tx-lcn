@@ -21,8 +21,7 @@ public class MockRedisTemplateConfiguration {
         RedisTemplate redisTemplate = Mockito.mock(RedisTemplate.class);
         ValueOperations valueOperations = Mockito.mock(ValueOperations.class);
         Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
-        System.out.println(valueOperations);
-        Mockito.when(valueOperations.setIfAbsent(Mockito.any(), Mockito.any(), Mockito.anyLong(), TimeUnit.SECONDS)).thenReturn(true);
+        Mockito.when(valueOperations.setIfAbsent(Mockito.any(), Mockito.any(),Mockito.anyLong(),Mockito.any(TimeUnit.class))).thenReturn(true);
         return redisTemplate;
     }
 
