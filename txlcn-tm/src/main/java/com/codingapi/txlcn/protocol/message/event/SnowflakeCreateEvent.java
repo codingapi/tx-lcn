@@ -2,7 +2,7 @@ package com.codingapi.txlcn.protocol.message.event;
 
 import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
-import com.codingapi.txlcn.protocol.message.separate.SnowFlakeMessage;
+import com.codingapi.txlcn.protocol.message.separate.SnowflakeMessage;
 import com.codingapi.txlcn.tm.id.SnowflakeHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,13 +11,13 @@ import org.springframework.context.ApplicationContext;
 
 /**
  * @author WhomHim
- * @description SnowFlake 生成事件
+ * @description Snowflake 生成事件
  * @date Create in 2020-8-14 22:13:12
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
-public class SnowFlakeCreateEvent extends SnowFlakeMessage {
+public class SnowflakeCreateEvent extends SnowflakeMessage {
 
     /**
      * 事务组Id
@@ -36,6 +36,6 @@ public class SnowFlakeCreateEvent extends SnowFlakeMessage {
         this.logId = SnowflakeHandler.generateLogId();
         log.info("request msg =>{}", instanceId);
         protocoler.sendMsg(connection.getUniqueKey(), this);
-        log.info("SnowFlakeCreateEvent.send =>[groupId:{},logId:{}]", instanceId, logId);
+        log.info("SnowflakeCreateEvent.send =>[groupId:{},logId:{}]", instanceId, logId);
     }
 }

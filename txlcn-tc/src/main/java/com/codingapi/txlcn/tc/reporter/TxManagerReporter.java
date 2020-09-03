@@ -4,7 +4,7 @@ import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.Message;
-import com.codingapi.txlcn.protocol.message.separate.SnowFlakeMessage;
+import com.codingapi.txlcn.protocol.message.separate.SnowflakeMessage;
 import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
 import com.codingapi.txlcn.tc.config.TxConfig;
 import lombok.AllArgsConstructor;
@@ -77,9 +77,9 @@ public class TxManagerReporter {
     /**
      * 请求消息
      * @param message SnowFlakeMessage
-     * @return  SnowFlakeMessage
+     * @return  SnowflakeMessage
      */
-    public SnowFlakeMessage requestMsg(SnowFlakeMessage message) {
+    public SnowflakeMessage requestMsg(SnowflakeMessage message) {
         message.setInstanceId(UUID.randomUUID().toString());
         selectLeader();
         checkLeader();

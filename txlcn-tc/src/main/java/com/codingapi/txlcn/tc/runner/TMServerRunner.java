@@ -2,7 +2,7 @@ package com.codingapi.txlcn.tc.runner;
 
 import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.tc.config.TxConfig;
-import com.codingapi.txlcn.tc.id.SnowFlakeStep;
+import com.codingapi.txlcn.tc.id.SnowflakeStep;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CompletableFuture;
@@ -19,9 +19,9 @@ public class TMServerRunner {
 
   private ScheduledExecutorService scheduledExecutorService;
 
-  private SnowFlakeStep snowFlakeStep;
+  private SnowflakeStep snowFlakeStep;
 
-  public TMServerRunner(TxConfig txConfig, ProtocolServer protocolServer, SnowFlakeStep snowFlakeStep) {
+  public TMServerRunner(TxConfig txConfig, ProtocolServer protocolServer, SnowflakeStep snowFlakeStep) {
     this.txConfig = txConfig;
     this.protocolServer = protocolServer;
     this.snowFlakeStep = snowFlakeStep;
