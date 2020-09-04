@@ -62,4 +62,12 @@ public class RedisTmNodeRepository {
             }
         });
     }
+
+    /**
+     * 获取 Tm 节点的ip地址
+     * @param key Tm 全局唯一 ID
+     */
+    public String getTmNodeAddress(String key) {
+        return stringRedisTemplate.opsForValue().get(key);
+    }
 }

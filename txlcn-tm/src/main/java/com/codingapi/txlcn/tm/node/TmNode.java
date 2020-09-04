@@ -2,12 +2,16 @@ package com.codingapi.txlcn.tm.node;
 
 import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.tm.repository.redis.RedisTmNodeRepository;
+import com.codingapi.txlcn.tm.util.NetUtil;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.experimental.Accessors;
 
-import java.util.ArrayList;
+import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.codingapi.txlcn.tm.constant.CommonConstant.TX_MANAGE_KEY;
 
 /**
  * @author WhomHim
@@ -15,6 +19,7 @@ import java.util.stream.Collectors;
  * @date Create in 2020/9/3 17:22
  */
 @Data
+@Accessors(chain = true)
 public class TmNode {
 
     /**
@@ -24,25 +29,34 @@ public class TmNode {
 
     private String nodeIp;
 
-    private String port;
+    private int port;
 
-    /**
-     * 记录 p2p 节点
-     */
-    private ArrayList p2pList;
+    private RedisTmNodeRepository redisTmNodeRepository;
 
-    @Autowired
-    private RedisTmNodeRepository  redisTmNodeRepository;
+    public TmNode(String hostAndPort, String nodeIp, int port, RedisTmNodeRepository redisTmNodeRepository) {
+        this.id = hostAndPort;
+        this.nodeIp = nodeIp;
+        this.port = port;
+        this.redisTmNodeRepository = redisTmNodeRepository;
+    }
 
-    private final static String TX_MANAGE_KEY = "TxManager*";
-
-    private void getOtherNodeList(){
-        List<String> collect = redisTmNodeRepository.keys(TX_MANAGE_KEY).stream()
+    private List<InetSocketAddress> getOtherNodeList() {
+        List<String> otherNodeName = redisTmNodeRepository.keys(TX_MANAGE_KEY).stream()
                 .filter(s -> !s.equals(id))
+                .collect(Collectors.toList());
+        return otherNodeName.stream()
+                .map(tmKey -> redisTmNodeRepository.getTmNodeAddress(tmKey))
+                .map(NetUtil::addressFormat)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
-    private void connectToOtherNode(ProtocolServer protocolServer){
-//        protocolServer.connectTo()
+
+    public void connectToOtherNode(ProtocolServer protocolServer) {
+        List<InetSocketAddress> otherNodeList = this.getOtherNodeList();
+        otherNodeList.forEach(iNetSocketAddress -> {
+            protocolServer.connectTo(iNetSocketAddress.getHostString(), iNetSocketAddress.getPort());
+        });
+
     }
 }

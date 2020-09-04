@@ -2,6 +2,8 @@ package com.codingapi.txlcn.tm.id;
 
 
 import com.alibaba.fastjson.JSON;
+import com.codingapi.txlcn.tm.event.TmIdInitEvent;
+import com.codingapi.txlcn.tm.util.EventBusUtil;
 import com.codingapi.txlcn.tm.util.NetUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +17,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import javax.annotation.PreDestroy;
 import java.util.concurrent.TimeUnit;
 
+import static com.codingapi.txlcn.tm.constant.CommonConstant.TX_MANAGER;
+
 /**
  * 雪花算法初始化器
  * 初始化snowflake的 dataCenterId 和 workerId
@@ -23,6 +27,8 @@ import java.util.concurrent.TimeUnit;
  * 2.如果存储成功，设置 redis 过期时间为24h，把当前 dataCenterId 和 workerId 传入 snowflake
  * 3.如果存储失败 workerId 自加1，并判断 workerId 不大于31，重复1步骤
  * 4.定义一个定时器，每隔 24h 刷新 redis 的过期时间为 24h
+ *
+ * @author whohim
  */
 @SuppressWarnings({"unchecked", "rawtypes", "ConstantConditions"})
 @Configuration
@@ -31,11 +37,6 @@ public class SnowflakeInitiator {
 
     @Value("${txlcn.protocol.port}")
     private String port;
-
-    /**
-     * 将 dataCenterId 和 workerId 拼接一起 作为 TM 的 全局唯一 ID
-     */
-    private static final String TX_MANAGER = "TxManager";
 
     private static String snowflakeRedisKey;
 
@@ -58,6 +59,10 @@ public class SnowflakeInitiator {
     public void init() {
         if (tryInit()) {
             log.debug("snowflake try Init create key,key:{}", JSON.toJSONString(snowflakeVo));
+            // 生成 TM 的全局唯一 ID 成功时通知 TmNode
+            TmIdInitEvent tmIdInitEvent = new TmIdInitEvent();
+            tmIdInitEvent.setTmId(snowflakeRedisKey);
+            EventBusUtil.post(tmIdInitEvent);
             return;
         }
         if (stopTrying) {

@@ -5,6 +5,8 @@ import com.sun.xml.internal.ws.util.UtilException;
 import java.net.*;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author WhomHim
@@ -12,6 +14,8 @@ import java.util.LinkedHashSet;
  * @date Create in 2020-9-1 22:36:41
  */
 public class NetUtil {
+
+    private final static Pattern PATTERN = Pattern.compile("^\\s*(.*?):(\\d+)\\s*$");
 
     /**
      * 获取所有满足过滤条件的本地IP地址对象
@@ -70,5 +74,21 @@ public class NetUtil {
         return null;
     }
 
+
+    /**
+     * address to INetSocketAddress
+     *
+     * @param address ip:port
+     * @return INetSocketAddress
+     */
+    public static InetSocketAddress addressFormat(String address) {
+        Matcher m = PATTERN.matcher(address);
+        if (m.matches()) {
+            String host = m.group(1);
+            int port = Integer.parseInt(m.group(2));
+            return new InetSocketAddress(host, port);
+        }
+        return null;
+    }
 
 }
