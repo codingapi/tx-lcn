@@ -27,8 +27,14 @@ public class TmNode {
      */
     private String id;
 
+    /**
+     * Tm node 节点的 IP
+     */
     private String nodeIp;
 
+    /**
+     * 端口
+     */
     private int port;
 
     private RedisTmNodeRepository redisTmNodeRepository;
@@ -40,6 +46,9 @@ public class TmNode {
         this.redisTmNodeRepository = redisTmNodeRepository;
     }
 
+    /**
+     * @return 获得除此 TM 节点以外 TM 节点的 IP 及端口
+     */
     private List<InetSocketAddress> getOtherNodeList() {
         List<String> otherNodeName = redisTmNodeRepository.keys(TX_MANAGE_KEY).stream()
                 .filter(s -> !s.equals(id))
@@ -53,6 +62,9 @@ public class TmNode {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 连接除此 TM 节点以外 TM 节点
+     */
     public void connectToOtherNode(ProtocolServer protocolServer) {
         List<InetSocketAddress> otherNodeList = this.getOtherNodeList();
         otherNodeList.forEach(iNetSocketAddress ->
@@ -60,3 +72,5 @@ public class TmNode {
 
     }
 }
+
+
