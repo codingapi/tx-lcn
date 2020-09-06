@@ -4,6 +4,7 @@ import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.Message;
+import com.codingapi.txlcn.protocol.message.separate.AbsMessage;
 import com.codingapi.txlcn.protocol.message.separate.SnowflakeMessage;
 import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
 import com.codingapi.txlcn.tc.config.TxConfig;
@@ -61,6 +62,16 @@ public class TxManagerReporter {
         selectLeader();
         checkLeader();
         leader.send(message);
+    }
+
+    /**
+     * 请求消息
+     * @param message message
+     */
+    public AbsMessage requestMsg(AbsMessage message){
+        selectLeader();
+        checkLeader();
+        return leader.request(message);
     }
 
     /**

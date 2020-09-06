@@ -2,8 +2,6 @@ package com.codingapi.txlcn.tm.id;
 
 
 import com.alibaba.fastjson.JSON;
-import com.codingapi.txlcn.tm.event.TmIdInitEvent;
-import com.codingapi.txlcn.tm.util.EventBusUtil;
 import com.codingapi.txlcn.tm.util.NetUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -59,10 +57,6 @@ public class SnowflakeInitiator {
     public void init() {
         if (tryInit()) {
             log.debug("snowflake try Init create key,key:{}", JSON.toJSONString(snowflakeVo));
-            // 生成 TM 的全局唯一 ID 成功时通知 TmNode
-            TmIdInitEvent tmIdInitEvent = new TmIdInitEvent();
-            tmIdInitEvent.setTmId(snowflakeRedisKey);
-            EventBusUtil.post(tmIdInitEvent);
             return;
         }
         if (stopTrying) {

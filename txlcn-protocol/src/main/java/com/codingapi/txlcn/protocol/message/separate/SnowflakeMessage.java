@@ -5,6 +5,7 @@ import com.codingapi.txlcn.protocol.await.Lock;
 import com.codingapi.txlcn.protocol.await.LockContext;
 import com.codingapi.txlcn.protocol.message.Connection;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -12,6 +13,7 @@ import org.springframework.context.ApplicationContext;
  * @description
  * @date Create in 2020-8-16 14:23:54
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public abstract class SnowflakeMessage extends AbsMessage {
 

@@ -4,6 +4,7 @@ import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.tc.config.TxConfig;
 import com.codingapi.txlcn.tc.id.SnowflakeStep;
 import com.codingapi.txlcn.tc.jdbc.JdbcTransactionInitializer;
+import com.codingapi.txlcn.tc.reporter.TxManagerReporter;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,8 +26,9 @@ public class TcRunnerConfiguration {
   private JdbcTransactionInitializer jdbcTransactionInitializer;
 
   @Bean
-  public TMServerRunner tmServerRunner(TxConfig txConfig, ProtocolServer protocolServer, SnowflakeStep snowFlakeStep) {
-    return new TMServerRunner(txConfig, protocolServer,snowFlakeStep);
+  public TMServerRunner tmServerRunner(TxConfig txConfig, ProtocolServer protocolServer,
+                                       SnowflakeStep snowFlakeStep, TxManagerReporter txManagerReporter) {
+    return new TMServerRunner(txConfig, protocolServer, snowFlakeStep, txManagerReporter);
   }
 
   @SneakyThrows

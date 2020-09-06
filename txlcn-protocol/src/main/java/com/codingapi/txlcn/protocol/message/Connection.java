@@ -4,6 +4,7 @@ import com.codingapi.txlcn.protocol.await.Lock;
 import com.codingapi.txlcn.protocol.await.LockContext;
 import com.codingapi.txlcn.protocol.config.Config;
 import com.codingapi.txlcn.protocol.exception.ProtocolException;
+import com.codingapi.txlcn.protocol.message.separate.AbsMessage;
 import com.codingapi.txlcn.protocol.message.separate.SnowflakeMessage;
 import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
 import io.netty.channel.ChannelHandlerContext;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.util.UUID;
 
 /**
  * Maintains a TCP connection between the local peer and a neighbour
@@ -50,6 +52,24 @@ public class Connection {
       ctx.writeAndFlush(msg);
     } else {
       LOGGER.error("Can not send message " + msg.getClass() + " to " + toString());
+    }
+  }
+
+  public AbsMessage request(final AbsMessage msg){
+    if (ctx != null) {
+      String msgId = UUID.randomUUID().toString();
+      Lock lock = LockContext.getInstance().addKey(msgId);
+      try {
+        LOGGER.debug("send message {}", msg);
+        ctx.writeAndFlush(msg);
+        lock.await(config.getAwaitTime());
+        return lock.getRes();
+      } finally {
+        lock.clear();
+      }
+    } else {
+      LOGGER.error("Can not send message " + msg.getClass() + " to " + toString());
+      throw new ProtocolException("can't send message . ");
     }
   }
 

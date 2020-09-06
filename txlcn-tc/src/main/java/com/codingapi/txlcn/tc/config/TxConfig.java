@@ -2,6 +2,8 @@ package com.codingapi.txlcn.tc.config;
 
 import com.codingapi.txlcn.protocol.config.Config;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
@@ -16,6 +18,8 @@ import java.util.regex.Pattern;
  */
 @Data
 @Slf4j
+@Accessors(chain = true)
+@NoArgsConstructor
 public class TxConfig {
 
   /**
@@ -53,6 +57,8 @@ public class TxConfig {
    */
   private Config protocol;
 
+  private List<InetSocketAddress>iNetSocketAddresses;
+
   public TxConfig(Config protocol) {
     this.protocol = protocol;
   }
@@ -74,7 +80,7 @@ public class TxConfig {
     return null;
   }
 
-  public List<InetSocketAddress> txManagerAddresses() {
+  public TxConfig txManagerAddresses() {
     List<InetSocketAddress> addresses = new ArrayList<>();
     if (tms != null) {
       for (String item : tms) {
@@ -82,7 +88,7 @@ public class TxConfig {
         optional.ifPresent(addresses::add);
       }
     }
-    return addresses;
+    return new TxConfig().setINetSocketAddresses(addresses);
   }
 
 

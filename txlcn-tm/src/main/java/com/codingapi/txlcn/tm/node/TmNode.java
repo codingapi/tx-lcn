@@ -23,7 +23,7 @@ import static com.codingapi.txlcn.tm.constant.CommonConstant.TX_MANAGE_KEY;
 public class TmNode {
 
     /**
-     * tm 的全局唯一 Id
+     * tm 的全局唯一 Id : ip 加端口
      */
     private String id;
 
@@ -49,13 +49,11 @@ public class TmNode {
     /**
      * @return 获得除此 TM 节点以外 TM 节点的 IP 及端口
      */
-    private List<InetSocketAddress> getOtherNodeList() {
-        List<String> otherNodeName = redisTmNodeRepository.keys(TX_MANAGE_KEY).stream()
-                .filter(s -> !s.equals(id))
-                .collect(Collectors.toList());
-        return otherNodeName.stream()
+    public List<InetSocketAddress> getOtherNodeList() {
+        return redisTmNodeRepository.keys(TX_MANAGE_KEY).stream()
+                .filter(Objects::nonNull)
                 .map(tmKey -> redisTmNodeRepository.getTmNodeAddress(tmKey))
-                .filter(s -> !s.equals(String.format("%s:%s", nodeIp, port)))
+                .filter(s -> !s.equals(id))
                 .map(NetUtil::addressFormat)
                 .filter(Objects::nonNull)
                 .distinct()

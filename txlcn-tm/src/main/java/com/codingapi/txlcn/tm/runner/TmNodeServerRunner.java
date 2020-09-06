@@ -1,7 +1,6 @@
 package com.codingapi.txlcn.tm.runner;
 
 import com.codingapi.txlcn.protocol.ProtocolServer;
-import com.codingapi.txlcn.tm.id.SnowflakeInitiator;
 import com.codingapi.txlcn.tm.node.TmNode;
 import com.codingapi.txlcn.tm.repository.redis.RedisTmNodeRepository;
 import com.codingapi.txlcn.tm.util.NetUtil;
@@ -10,12 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.net.InetAddress;
 import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import static com.codingapi.txlcn.tm.constant.CommonConstant.TX_MANAGER;
 
 /**
  * @author WhomHim
@@ -45,10 +43,11 @@ public class TmNodeServerRunner {
     /**
      * 初始化连接
      */
-    public void init(String tmId) {
+    public void init() {
         try {
-            String hostAddress = Objects.requireNonNull(NetUtil.getLocalhost()).getHostAddress();
-            TmNode tmNode = new TmNode(tmId, hostAddress, port,redisTmNodeRepository);
+            InetAddress localhost = NetUtil.getLocalhost();
+            String hostAddress = Objects.requireNonNull(localhost).getHostAddress();
+            TmNode tmNode = new TmNode(String.format("%s:%s", hostAddress, port), hostAddress, port, redisTmNodeRepository);
             scheduledExecutorService.scheduleAtFixedRate(
                     () -> tmNode.connectToOtherNode(protocolServer), 0, 30, TimeUnit.SECONDS);
         } catch (Exception e) {
