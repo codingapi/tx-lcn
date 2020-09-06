@@ -35,10 +35,9 @@ public class RedisRepositoryConfiguration {
         RedisTemplate<String, TransactionGroup> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(factory);
 
-        Jackson2JsonRedisSerializer<TransactionGroup> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<TransactionGroup>(TransactionGroup.class);
+        Jackson2JsonRedisSerializer<TransactionGroup> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(TransactionGroup.class);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-//        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator(),ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
 
@@ -56,6 +55,14 @@ public class RedisRepositoryConfiguration {
     public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory factory) {
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
         stringRedisTemplate.setConnectionFactory(factory);
+
+        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+        stringRedisTemplate.setKeySerializer(stringRedisSerializer);
+        stringRedisTemplate.setHashKeySerializer(stringRedisSerializer);
+        stringRedisTemplate.setValueSerializer(stringRedisSerializer);
+        stringRedisTemplate.setHashValueSerializer(stringRedisSerializer);
+
+        stringRedisTemplate.afterPropertiesSet();
         return stringRedisTemplate;
     }
 

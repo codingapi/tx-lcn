@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import javax.annotation.PreDestroy;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 import static com.codingapi.txlcn.tm.constant.CommonConstant.TX_MANAGER;
 
 /**
- * 雪花算法初始化器
+ * 雪花算法初始器
  * 初始化snowflake的 dataCenterId 和 workerId
  * <p>
  * 1.系统启动时生成默认 dataCenterId 和 workerId，并尝试作为 key 存储到 redis
@@ -30,7 +30,7 @@ import static com.codingapi.txlcn.tm.constant.CommonConstant.TX_MANAGER;
  *
  * @author whohim
  */
-@SuppressWarnings({"unchecked", "rawtypes", "ConstantConditions"})
+@SuppressWarnings({"ConstantConditions"})
 @Configuration
 @Slf4j
 public class SnowflakeInitiator {
@@ -49,9 +49,9 @@ public class SnowflakeInitiator {
      */
     public static SnowflakeVo snowflakeVo;
 
-    private final RedisTemplate redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
-    public SnowflakeInitiator(RedisTemplate redisTemplate) {
+    public SnowflakeInitiator(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

@@ -38,14 +38,17 @@ public class RunnerConfiguration {
         return new TmNodeServerRunner(protocolServer);
     }
 
-
-    @SuppressWarnings("UnstableApiUsage")
+    /**
+     * <p>为了获得该节点的全局唯一 ID ，需等待雪花算法初始化结束</p>
+     * <p>连接其他 TM 节点</p>
+     * <p>观察者模式解耦</p>
+     */
+    @SuppressWarnings({"UnstableApiUsage", "unused"})
     public class Listen {
 
         @Subscribe
         public void listenTmIdInitEvent(TmIdInitEvent tmIdInitEvent) {
-            System.out.println("listenTmIdInitEvent" + tmIdInitEvent);
-            tmNodeServerRunner.init();
+            tmNodeServerRunner.init(tmIdInitEvent.getTmId());
         }
     }
 

@@ -45,15 +45,12 @@ public class TmNodeServerRunner {
     /**
      * 初始化连接
      */
-    public void init() {
+    public void init(String tmId) {
         try {
-            SnowflakeInitiator.SnowflakeVo snowflakeVo = SnowflakeInitiator.getSnowflakeVo();
-            String id = String.format("%s_%d_%d", TX_MANAGER, snowflakeVo.getDataCenterId(), snowflakeVo.getWorkerId());
             String hostAddress = Objects.requireNonNull(NetUtil.getLocalhost()).getHostAddress();
-            TmNode tmNode = new TmNode(id, hostAddress, port,redisTmNodeRepository);
-            scheduledExecutorService.scheduleAtFixedRate(() -> {
-                tmNode.connectToOtherNode(protocolServer);
-            }, 0, 30, TimeUnit.SECONDS);
+            TmNode tmNode = new TmNode(tmId, hostAddress, port,redisTmNodeRepository);
+            scheduledExecutorService.scheduleAtFixedRate(
+                    () -> tmNode.connectToOtherNode(protocolServer), 0, 30, TimeUnit.SECONDS);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

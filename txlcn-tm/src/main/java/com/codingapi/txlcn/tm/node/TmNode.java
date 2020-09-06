@@ -46,17 +46,17 @@ public class TmNode {
                 .collect(Collectors.toList());
         return otherNodeName.stream()
                 .map(tmKey -> redisTmNodeRepository.getTmNodeAddress(tmKey))
+                .filter(s -> !s.equals(String.format("%s:%s", nodeIp, port)))
                 .map(NetUtil::addressFormat)
                 .filter(Objects::nonNull)
+                .distinct()
                 .collect(Collectors.toList());
     }
 
-
     public void connectToOtherNode(ProtocolServer protocolServer) {
         List<InetSocketAddress> otherNodeList = this.getOtherNodeList();
-        otherNodeList.forEach(iNetSocketAddress -> {
-            protocolServer.connectTo(iNetSocketAddress.getHostString(), iNetSocketAddress.getPort());
-        });
+        otherNodeList.forEach(iNetSocketAddress ->
+                protocolServer.connectTo(iNetSocketAddress.getHostString(), iNetSocketAddress.getPort()));
 
     }
 }
