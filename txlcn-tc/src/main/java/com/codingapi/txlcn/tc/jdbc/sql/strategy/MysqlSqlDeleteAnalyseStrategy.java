@@ -30,10 +30,6 @@ public class MysqlSqlDeleteAnalyseStrategy implements SqlSqlAnalyseHandler {
     @Override
     public String mysqlAnalyseStrategy(String sql, Connection connection,Statement stmt) throws SQLException, JSQLParserException {
         String catalog = connection.getCatalog();
-        /**
-         * todo JdbcAnalyseUtils.analyse(connection) 不能在此使用
-         * JdbcAnalyseUtils.analyse(connection) 是系统启动的时候获取数据的，而非在执行sql的时候做数据处理 {@link com.codingapi.txlcn.tc.aspect.TxDataSourceInterceptor#invoke(MethodInvocation)}
-         */
         TableList tableList =  DataBaseContext.getInstance().get(catalog);
         Delete statement = (Delete) stmt;
         Table table = statement.getTable();
