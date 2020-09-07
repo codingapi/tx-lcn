@@ -1,8 +1,9 @@
 package com.codingapi.txlcn.protocol.message.event;
 
-import com.codingapi.txlcn.protocol.message.separate.AbsMessage;
+import com.codingapi.txlcn.protocol.message.separate.TmNodeMessage;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class OtherTmNodeEvent extends AbsMessage {
+@Accessors(chain = true)
+public class OtherTmNodeEvent extends TmNodeMessage {
     private List<InetSocketAddress> otherNodeList;
 }

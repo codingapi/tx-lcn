@@ -13,14 +13,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 
 
- class TMServerRunnerTest {
+ class TmServerRunnerTest {
 
   private TxConfig txConfig;
 
   private ProtocolServer protocolServer;
 
   @MockBean
-  private TMServerRunner serverRunner;
+  private TmServerRunner serverRunner;
 
   @Autowired
   private ApplicationContext springContext;
@@ -37,7 +37,7 @@ import org.springframework.context.ApplicationContext;
     txConfig = new TxConfig(protocolConfig);
     txConfig.setTms(Lists.newArrayList("127.0.0.1:8070,127.0.0.1:8072"));
     protocolServer = new ProtocolServer(protocolConfig,springContext);
-    serverRunner = new TMServerRunner(txConfig, protocolServer,snowFlakeStep, txManagerReporter);
+    serverRunner = new TmServerRunner(txConfig, protocolServer,snowFlakeStep, txManagerReporter);
   }
 
   @Test

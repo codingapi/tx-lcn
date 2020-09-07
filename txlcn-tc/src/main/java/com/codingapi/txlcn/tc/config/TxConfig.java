@@ -57,7 +57,12 @@ public class TxConfig {
    */
   private Config protocol;
 
-  private List<InetSocketAddress>iNetSocketAddresses;
+  private List<InetSocketAddress> iNetSocketAddresses;
+
+  /**
+   * 用户自行配置需要连接的 TM 数量
+   */
+  private int tmResource = 1;
 
   public TxConfig(Config protocol) {
     this.protocol = protocol;
@@ -80,7 +85,7 @@ public class TxConfig {
     return null;
   }
 
-  public TxConfig txManagerAddresses() {
+  public List<InetSocketAddress> txManagerAddresses() {
     List<InetSocketAddress> addresses = new ArrayList<>();
     if (tms != null) {
       for (String item : tms) {
@@ -88,7 +93,7 @@ public class TxConfig {
         optional.ifPresent(addresses::add);
       }
     }
-    return new TxConfig().setINetSocketAddresses(addresses);
+    return addresses;
   }
 
 

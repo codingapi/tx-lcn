@@ -5,6 +5,7 @@ import com.codingapi.txlcn.protocol.await.Lock;
 import com.codingapi.txlcn.protocol.await.LockContext;
 import com.codingapi.txlcn.protocol.message.Connection;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -12,8 +13,9 @@ import org.springframework.context.ApplicationContext;
  * @date 2020/3/4
  * @description
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public abstract class TransactionMessage extends AbsMessage {
+public  class TransactionMessage extends AbsMessage {
 
     protected String groupId;
 

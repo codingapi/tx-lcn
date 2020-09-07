@@ -34,7 +34,7 @@ public class SnowflakeCreateEvent extends SnowflakeMessage {
         super.handle(springContext, protocoler, connection);
         this.groupId = SnowflakeHandler.generateGroupId();
         this.logId = SnowflakeHandler.generateLogId();
-        log.info("request msg =>{}", instanceId);
+        log.info("SnowflakeCreateEvent request msg =>{}", instanceId);
         protocoler.sendMsg(connection.getUniqueKey(), this);
         log.info("SnowflakeCreateEvent.send =>[groupId:{},logId:{}]", instanceId, logId);
     }

@@ -5,6 +5,7 @@ import com.codingapi.txlcn.protocol.await.LockContext;
 import com.codingapi.txlcn.protocol.config.Config;
 import com.codingapi.txlcn.protocol.exception.ProtocolException;
 import com.codingapi.txlcn.protocol.message.separate.AbsMessage;
+import com.codingapi.txlcn.protocol.message.separate.TmNodeMessage;
 import com.codingapi.txlcn.protocol.message.separate.SnowflakeMessage;
 import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
 import io.netty.channel.ChannelHandlerContext;
@@ -82,6 +83,23 @@ public class Connection {
         ctx.writeAndFlush(msg);
         lock.await(config.getAwaitTime());
         return (TransactionMessage) lock.getRes();
+      } finally {
+        lock.clear();
+      }
+    } else {
+      LOGGER.error("Can not send message " + msg.getClass() + " to " + toString());
+      throw new ProtocolException("can't send message . ");
+    }
+  }
+
+  public TmNodeMessage request(final TmNodeMessage msg) {
+    if (ctx != null) {
+      Lock lock = LockContext.getInstance().addKey(msg.getInstanceId());
+      try {
+        LOGGER.debug("send message {}", msg);
+        ctx.writeAndFlush(msg);
+        lock.await(config.getAwaitTime());
+        return (TmNodeMessage) lock.getRes();
       } finally {
         lock.clear();
       }

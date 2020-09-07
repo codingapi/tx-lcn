@@ -11,11 +11,11 @@ import org.springframework.context.ApplicationContext;
 /**
  * @author WhomHim
  * @description
- * @date Create in 2020-8-16 14:23:54
+ * @date Create in 2020/9/7 10:46
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SnowflakeMessage extends AbsMessage {
+public class TmNodeMessage extends AbsMessage {
 
     protected String instanceId;
 

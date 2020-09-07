@@ -20,15 +20,15 @@ public class TcRunnerConfiguration {
   private DataSource dataSource;
 
   @Autowired
-  private TMServerRunner tmServerRunner;
+  private TmServerRunner tmServerRunner;
 
   @Autowired
   private JdbcTransactionInitializer jdbcTransactionInitializer;
 
   @Bean
-  public TMServerRunner tmServerRunner(TxConfig txConfig, ProtocolServer protocolServer,
+  public TmServerRunner tmServerRunner(TxConfig txConfig, ProtocolServer protocolServer,
                                        SnowflakeStep snowFlakeStep, TxManagerReporter txManagerReporter) {
-    return new TMServerRunner(txConfig, protocolServer, snowFlakeStep, txManagerReporter);
+    return new TmServerRunner(txConfig, protocolServer, snowFlakeStep, txManagerReporter);
   }
 
   @SneakyThrows

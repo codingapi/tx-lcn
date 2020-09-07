@@ -61,13 +61,28 @@ public class TmNode {
     }
 
     /**
+     * @param iNetSocketAddressList iNetSocketAddressList
+     * @return 获得传入集合以外的 TM 节点的 IP 及端口
+     */
+    public List<InetSocketAddress> getBesidesNodeList(List<InetSocketAddress> iNetSocketAddressList) {
+        return redisTmNodeRepository.keys(TX_MANAGE_KEY).stream()
+                .filter(Objects::nonNull)
+                .map(tmKey -> redisTmNodeRepository.getTmNodeAddress(tmKey))
+                .filter(s -> !s.equals(id))
+                .map(NetUtil::addressFormat)
+                .filter(Objects::nonNull)
+                .filter(iNetSocketAddress -> !iNetSocketAddressList.contains(iNetSocketAddress))
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    /**
      * 连接除此 TM 节点以外 TM 节点
      */
     public void connectToOtherNode(ProtocolServer protocolServer) {
         List<InetSocketAddress> otherNodeList = this.getOtherNodeList();
         otherNodeList.forEach(iNetSocketAddress ->
                 protocolServer.connectTo(iNetSocketAddress.getHostString(), iNetSocketAddress.getPort()));
-
     }
 }
 
