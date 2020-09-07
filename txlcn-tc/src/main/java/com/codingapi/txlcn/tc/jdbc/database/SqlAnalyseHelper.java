@@ -1,8 +1,5 @@
 package com.codingapi.txlcn.tc.jdbc.database;
 
-import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
-import com.codingapi.txlcn.tc.jdbc.database.TableList;
-import com.codingapi.txlcn.tc.jdbc.sql.strategy.SqlAnalyseInfo;
 import com.codingapi.txlcn.tc.utils.ListUtil;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;

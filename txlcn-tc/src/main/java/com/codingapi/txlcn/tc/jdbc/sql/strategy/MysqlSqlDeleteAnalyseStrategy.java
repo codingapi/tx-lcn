@@ -2,6 +2,7 @@ package com.codingapi.txlcn.tc.jdbc.sql.strategy;
 
 import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
 import com.codingapi.txlcn.tc.jdbc.database.SqlAnalyseHelper;
+import com.codingapi.txlcn.tc.jdbc.database.SqlAnalyseInfo;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
 import com.codingapi.txlcn.tc.utils.ListUtil;
 import lombok.extern.slf4j.Slf4j;
