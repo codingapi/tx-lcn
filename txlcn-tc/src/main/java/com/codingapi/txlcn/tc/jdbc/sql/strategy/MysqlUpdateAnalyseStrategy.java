@@ -1,11 +1,11 @@
 package com.codingapi.txlcn.tc.jdbc.sql.strategy;
 
 import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
+import com.codingapi.txlcn.tc.jdbc.database.SqlAnalyseHelper;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
 import com.codingapi.txlcn.tc.utils.ListUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.update.Update;

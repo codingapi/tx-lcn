@@ -83,5 +83,5 @@ public class MysqlSqlAnalyseTest {
         if(stmt instanceof Insert){
 
         }
-        }
+    }
 }

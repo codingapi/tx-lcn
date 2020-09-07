@@ -1,7 +1,8 @@
-package com.codingapi.txlcn.tc.jdbc.sql.strategy;
+package com.codingapi.txlcn.tc.jdbc.database;
 
 import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.SqlAnalyseInfo;
 import com.codingapi.txlcn.tc.utils.ListUtil;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,6 @@ import java.util.stream.Collectors;
  * @author Gz.
  * @description: sql分析助手类
  * @date 2020-08-17 23:26:01
- * todo 指责有点乱，SCP原则，若定位是SqlAnalyseHelper应该划分在com.codingapi.txlcn.tc.jdbc.database包下。
  */
 @Slf4j
 public class SqlAnalyseHelper {
@@ -41,22 +41,6 @@ public class SqlAnalyseHelper {
     }
 
 
-    /**
-     * sql分析
-     * @param tableList
-     * @param tables
-     * @param where
-     * @return
-     */
-//    public static SqlAnalyseInfo sqlAnalyse(TableList tableList, Table tables, Expression where){
-//        SqlAnalyseInfo sqlAnalyseInfo ;
-//        if(tables.size() == 1){
-//            sqlAnalyseInfo = SqlAnalyseHelper.sqlAnalyseSingleTable(tableList, tables,where);
-//        }else {
-//            sqlAnalyseInfo = SqlAnalyseHelper.sqlAnalyseMultiTable(tableList, tables,where);
-//       }
-//        return  SqlAnalyseHelper.sqlAnalyseSingleTable(tableList, tables,where);
-//    }
 
     public static SqlAnalyseInfo sqlAnalyseSingleTable(TableList tableList, Table table, Expression where, List<Join> joinList) {
         SqlAnalyseInfo sqlAnalyseInfo = new SqlAnalyseInfo();
