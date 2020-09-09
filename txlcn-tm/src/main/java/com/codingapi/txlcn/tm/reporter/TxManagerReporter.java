@@ -1,4 +1,4 @@
-package com.codingapi.txlcn.tc.reporter;
+package com.codingapi.txlcn.tm.reporter;
 
 import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.protocol.Protocoler;
@@ -7,7 +7,7 @@ import com.codingapi.txlcn.protocol.message.Message;
 import com.codingapi.txlcn.protocol.message.separate.SnowflakeMessage;
 import com.codingapi.txlcn.protocol.message.separate.TmNodeMessage;
 import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
-import com.codingapi.txlcn.tc.config.TxConfig;
+import com.codingapi.txlcn.tm.config.TmConfig;
 import lombok.AllArgsConstructor;
 import org.springframework.util.Assert;
 
@@ -15,9 +15,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 /**
- * @author lorne
- * @date 2020/4/3
- * @description
+ * @author whohim
  */
 @AllArgsConstructor
 public class TxManagerReporter {
@@ -28,11 +26,11 @@ public class TxManagerReporter {
 
     private Connection leader;
 
-    private TxConfig txConfig;
+    private TmConfig tmConfig;
 
-    public TxManagerReporter(ProtocolServer protocolServer,TxConfig txConfig) {
+    public TxManagerReporter(ProtocolServer protocolServer, TmConfig tmConfig) {
         this.protocoler =  protocolServer.getProtocoler();
-        this.txConfig = txConfig;
+        this.tmConfig = tmConfig;
         this.connections = protocoler.getConnections();
     }
 
@@ -68,8 +66,6 @@ public class TxManagerReporter {
      */
     public TmNodeMessage requestMsg(TmNodeMessage message){
         message.setInstanceId(UUID.randomUUID().toString());
-        // 第一个接收到 TC 消息的节点
-        message.setIsFirstNode(true);
         selectLeader();
         checkLeader();
         return leader.request(message);
@@ -80,9 +76,7 @@ public class TxManagerReporter {
      * @param message TransactionMessage
      */
     public TransactionMessage requestMsg(TransactionMessage message){
-        message.setModuleName(txConfig.getApplicationName());
-        // 第一个接收到 TC 消息的节点
-        message.setIsFirstNode(true);
+        message.setModuleName(tmConfig.getName());
         selectLeader();
         checkLeader();
         return leader.request(message);
@@ -95,8 +89,6 @@ public class TxManagerReporter {
      */
     public SnowflakeMessage requestMsg(SnowflakeMessage message) {
         message.setInstanceId(UUID.randomUUID().toString());
-        // 第一个接收到 TC 消息的节点
-        message.setIsFirstNode(true);
         selectLeader();
         checkLeader();
         return leader.request(message);

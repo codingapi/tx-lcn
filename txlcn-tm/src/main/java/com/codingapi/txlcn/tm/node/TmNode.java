@@ -84,6 +84,10 @@ public class TmNode {
         otherNodeList.forEach(iNetSocketAddress ->
                 protocolServer.connectTo(iNetSocketAddress.getHostString(), iNetSocketAddress.getPort()));
     }
+
+    public void sentToOtherNode(){
+
+    }
 }
 
 
