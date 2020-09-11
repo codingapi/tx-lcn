@@ -67,7 +67,7 @@ public class TxManagerReporter {
      * @param message TmNodeMessage
      */
     public TmNodeMessage requestMsg(TmNodeMessage message){
-        message.setInstanceId(UUID.randomUUID().toString());
+        message.setMessageId(UUID.randomUUID().toString());
         // 第一个接收到 TC 消息的节点
         message.setIsFirstNode(true);
         selectLeader();
@@ -94,7 +94,7 @@ public class TxManagerReporter {
      * @return  SnowflakeMessage
      */
     public SnowflakeMessage requestMsg(SnowflakeMessage message) {
-        message.setInstanceId(UUID.randomUUID().toString());
+        message.setMessageId(UUID.randomUUID().toString());
         // 第一个接收到 TC 消息的节点
         message.setIsFirstNode(true);
         selectLeader();

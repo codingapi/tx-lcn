@@ -14,7 +14,24 @@ import org.springframework.context.ApplicationContext;
 @Data
 public abstract class AbsMessage implements Message {
 
-    private Boolean isFirstNode;
+    /**
+     * 是否第一个 node 节点
+     */
+    protected Boolean isFirstNode = false;
+
+    /**
+     * 是否执行过业务逻辑
+     */
+    protected Boolean isBusinessExecuted = false;
+
+    /**
+     * 是否可以回调 TC
+     */
+    protected Boolean isReadyCallBack = false;
+
+    protected Connection tcConnection;
+
+    protected String messageId;
 
     @Override
     public void handle(ApplicationContext springContext,

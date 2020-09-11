@@ -23,6 +23,7 @@ public class Connection {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Connection.class);
 
+  @Getter
   private final InetSocketAddress remoteAddress;
 
   private ChannelHandlerContext ctx;
@@ -54,12 +55,11 @@ public class Connection {
     } else {
       LOGGER.error("Can not send message " + msg.getClass() + " to " + toString());
     }
-  }
+   }
 
   public AbsMessage request(final AbsMessage msg){
     if (ctx != null) {
-      String msgId = UUID.randomUUID().toString();
-      Lock lock = LockContext.getInstance().addKey(msgId);
+      Lock lock = LockContext.getInstance().addKey(msg.getMessageId());
       try {
         LOGGER.debug("send message {}", msg);
         ctx.writeAndFlush(msg);
@@ -94,7 +94,7 @@ public class Connection {
 
   public TmNodeMessage request(final TmNodeMessage msg) {
     if (ctx != null) {
-      Lock lock = LockContext.getInstance().addKey(msg.getInstanceId());
+      Lock lock = LockContext.getInstance().addKey(msg.getMessageId());
       try {
         LOGGER.debug("send message {}", msg);
         ctx.writeAndFlush(msg);
@@ -111,7 +111,7 @@ public class Connection {
 
   public SnowflakeMessage request(final SnowflakeMessage msg) {
     if (ctx != null) {
-      Lock lock = LockContext.getInstance().addKey(msg.getInstanceId());
+      Lock lock = LockContext.getInstance().addKey(msg.getMessageId());
       try {
         LOGGER.debug("send message {}", msg);
         ctx.writeAndFlush(msg);

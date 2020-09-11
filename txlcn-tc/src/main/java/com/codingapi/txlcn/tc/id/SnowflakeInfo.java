@@ -29,9 +29,12 @@ public class SnowflakeInfo implements SnowflakeStep {
             SnowflakeCreateEvent snowFlakeCreateEvent =
                     (SnowflakeCreateEvent) txManagerReporter.requestMsg(new SnowflakeCreateEvent());
             log.debug("==> snowFlakeCreateEvent:{}", snowFlakeCreateEvent);
-            Cache.setKey(SnowflakeConstant.GROUP_ID, snowFlakeCreateEvent.getGroupId());
-            Cache.setKey(SnowflakeConstant.LOG_ID, snowFlakeCreateEvent.getLogId());
-            Cache.setKey(SnowflakeConstant.TAG, true);
+            if (snowFlakeCreateEvent != null) {
+                Cache.setKey(SnowflakeConstant.GROUP_ID, snowFlakeCreateEvent.getGroupId());
+                Cache.setKey(SnowflakeConstant.LOG_ID, snowFlakeCreateEvent.getLogId());
+                Cache.setKey(SnowflakeConstant.TAG, true);
+            }
+
         }
 
     }

@@ -17,14 +17,12 @@ import org.springframework.context.ApplicationContext;
 @Data
 public class SnowflakeMessage extends AbsMessage {
 
-    protected String instanceId;
-
     @Override
     public void handle(ApplicationContext springContext, Protocoler protocoler, Connection connection) throws Exception {
         super.handle(springContext, protocoler, connection);
         //唤醒等待消息
-        if (instanceId != null) {
-            Lock lock = LockContext.getInstance().getKey(instanceId);
+        if (messageId != null) {
+            Lock lock = LockContext.getInstance().getKey(messageId);
             if (lock != null) {
                 lock.setRes(this);
                 lock.signal();

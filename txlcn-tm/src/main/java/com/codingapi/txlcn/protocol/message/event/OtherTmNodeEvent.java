@@ -34,7 +34,7 @@ public class OtherTmNodeEvent extends TmNodeMessage {
 
     @Override
     public void handle(ApplicationContext springContext, Protocoler protocoler, Connection connection) throws Exception {
-        log.info("OtherTmNodeEvent request msg =>{}", instanceId);
+        log.info("OtherTmNodeEvent request msg =>{}", messageId);
         super.handle(springContext, protocoler, connection);
         RedisTmNodeRepository redisTmNodeRepository = springContext.getBean(RedisTmNodeRepository.class);
         TmConfig tmConfig = springContext.getBean(TmConfig.class);

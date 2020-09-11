@@ -39,7 +39,7 @@ public class TmServerRunner {
         this.snowFlakeStep = snowFlakeStep;
         this.reporter = txManagerReporter;
         this.scheduledExecutorService = new ScheduledThreadPoolExecutor(1,
-                new ThreadFactoryBuilder().setNameFormat("tmNode-pool-%d").build());
+                new ThreadFactoryBuilder().setNameFormat("tmServerRunner-pool-%d").build());
     }
 
     /**
@@ -74,6 +74,7 @@ public class TmServerRunner {
             log.info("=> Try to get more Tm resource");
             OtherTmNodeEvent requestTmNodeEvent = new OtherTmNodeEvent().setOtherNodeList(iNetSocketAddresses);
             OtherTmNodeEvent responseTmNodeEvent = (OtherTmNodeEvent) reporter.requestMsg(requestTmNodeEvent);
+            log.debug("=> tryToGetMoreTmResource.responseTmNodeEvent:{}", responseTmNodeEvent.getOtherNodeList());
             List<InetSocketAddress> otherNodeList = responseTmNodeEvent.getOtherNodeList();
             iNetSocketAddresses.addAll(otherNodeList);
             this.txConfig.setINetSocketAddresses(iNetSocketAddresses);
