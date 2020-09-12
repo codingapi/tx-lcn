@@ -25,13 +25,5 @@ public  class TransactionMessage extends AbsMessage {
     @Override
     public void handle(ApplicationContext springContext, Protocoler protocoler, Connection connection) throws Exception {
         super.handle(springContext, protocoler, connection);
-        //唤醒等待消息
-        if(groupId!=null) {
-            Lock lock = LockContext.getInstance().getKey(groupId);
-            if (lock != null) {
-                lock.setRes(this);
-                lock.signal();
-            }
-        }
     }
 }

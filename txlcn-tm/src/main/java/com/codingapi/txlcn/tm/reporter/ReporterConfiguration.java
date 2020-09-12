@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Configuration;
 public class ReporterConfiguration {
 
     @Bean
-    public TxManagerReporter txManagerProtocolHandler(ProtocolServer protocolServer, TmConfig tmConfig) {
-        return new TxManagerReporter(protocolServer, tmConfig);
+    public TmManagerReporter txManagerProtocolHandler(ProtocolServer protocolServer, TmConfig tmConfig) {
+        return new TmManagerReporter(protocolServer, tmConfig);
     }
 
 

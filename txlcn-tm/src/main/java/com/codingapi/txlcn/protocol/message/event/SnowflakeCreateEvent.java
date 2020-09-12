@@ -33,18 +33,9 @@ public class SnowflakeCreateEvent extends SnowflakeMessage {
     @Override
     public void handle(ApplicationContext springContext, Protocoler protocoler, Connection connection) throws Exception {
         super.handle(springContext, protocoler, connection);
-        if (isFirstNode) {
-            tcConnection = connection;
-            log.debug("SnowflakeCreateEvent isFirstNode");
-            LoadBalancerInterceptor loadBalancer = (LoadBalancerInterceptor) springContext.getBean("interceptor");
-            SnowflakeCreateEvent snowflakeCreateEvent = loadBalancer.intercept(new SnowflakeCreateEvent(), connection);
-            this.groupId = snowflakeCreateEvent.groupId;
-            this.logId = snowflakeCreateEvent.logId;
-            this.isReadyCallBack = snowflakeCreateEvent.isReadyCallBack;
-            isFirstNode = true;
-        }
-        if (!isFirstNode && !isBusinessExecuted) {
-            log.info("isReadyCallBack = true ");
+        LoadBalancerInterceptor loadBalancer = (LoadBalancerInterceptor) springContext.getBean("interceptor");
+        loadBalancer.handle(this, protocoler, connection, () -> {
+            log.debug("isBusinessExecuted = false ");
             this.groupId = SnowflakeHandler.generateGroupId();
             this.logId = SnowflakeHandler.generateLogId();
             log.info("SnowflakeCreateEvent isBusinessExecuted groupId =>{}", groupId);
@@ -52,14 +43,7 @@ public class SnowflakeCreateEvent extends SnowflakeMessage {
             isBusinessExecuted = true;
             isReadyCallBack = true;
             protocoler.sendMsg(connection.getUniqueKey(), this);
-
-        }
-        if (isFirstNode && isReadyCallBack) {
-            log.debug("isReadyCallBack = true");
-            log.debug("connection.getUniqueKey():{}", connection.getUniqueKey());
-            protocoler.sendMsg(tcConnection.getUniqueKey(), this);
-            log.info("SnowflakeCreateEvent.send =>[groupId:{},logId:{}]", groupId, logId);
-        }
+        });
 
     }
 }

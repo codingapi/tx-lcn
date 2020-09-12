@@ -4,8 +4,7 @@ import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.Message;
-import com.codingapi.txlcn.protocol.message.separate.SnowflakeMessage;
-import com.codingapi.txlcn.protocol.message.separate.TmNodeMessage;
+import com.codingapi.txlcn.protocol.message.separate.AbsMessage;
 import com.codingapi.txlcn.tm.config.TmConfig;
 import lombok.AllArgsConstructor;
 import org.springframework.util.Assert;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
  * @author whohim
  */
 @AllArgsConstructor
-public class TxManagerReporter {
+public class TmManagerReporter {
 
     private Protocoler protocoler;
 
@@ -30,7 +29,7 @@ public class TxManagerReporter {
 
     private TmConfig tmConfig;
 
-    public TxManagerReporter(ProtocolServer protocolServer, TmConfig tmConfig) {
+    public TmManagerReporter(ProtocolServer protocolServer, TmConfig tmConfig) {
         this.protocoler = protocolServer.getProtocoler();
         this.tmConfig = tmConfig;
         this.connections = protocoler.getConnections();
@@ -81,46 +80,26 @@ public class TxManagerReporter {
         leader.send(message);
     }
 
-//    public AbsMessage requestMsg(AbsMessage absMessage) {
-//        absMessage.setMessageId(UUID.randomUUID().toString());
-//        // 第一个接收到 TC 消息的节点
-//        absMessage.setIsFirstNode(true);
-//        selectLeader();
-//        checkLeader();
-//        return leader.request(absMessage);
-//    }
-
     /**
-     * 请求消息
+     * TM 间传输消息
      *
-     * @param message TmNodeMessage
+     * @param absMessage    AbsMessage
+     * @param connection    TC 第一次连接 TM
+     * @param otherNodeList 除了头节点 TM 以外的 TM
+     * @return AbsMessage
      */
-    public TmNodeMessage requestMsg(TmNodeMessage message) {
-        message.setMessageId(UUID.randomUUID().toString());
-        // 第一个接收到 TC 消息的节点
-        message.setIsFirstNode(true);
+    public AbsMessage requestMsg(AbsMessage absMessage,
+                                 Connection connection,
+                                 List<InetSocketAddress> otherNodeList) {
+        absMessage.setMessageId(UUID.randomUUID().toString());
+        // 不是第一个接收到 TC 消息的节点
+        absMessage.setIsFirstNode(false);
+        selectLeaderWithoutTc(connection, otherNodeList);
         selectLeader();
         checkLeader();
-        return leader.request(message);
+        return leader.request(absMessage);
     }
 
-
-    /**
-     * 请求消息
-     *
-     * @param message       SnowFlakeMessage
-     * @param connection  TC 第一次连接 TM
-     * @param otherNodeList 除了头节点 TM 以外的 TM
-     * @return SnowflakeMessage
-     */
-    public SnowflakeMessage requestMsg(SnowflakeMessage message, Connection connection, List<InetSocketAddress> otherNodeList) {
-        message.setMessageId(UUID.randomUUID().toString());
-        // 第一个接收到 TC 消息的节点
-        message.setIsFirstNode(false);
-        selectLeaderWithoutTc(connection, otherNodeList);
-        checkLeader();
-        return leader.request(message);
-    }
 
 
 }

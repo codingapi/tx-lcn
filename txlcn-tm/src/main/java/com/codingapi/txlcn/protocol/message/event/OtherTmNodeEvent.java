@@ -12,7 +12,6 @@ import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Objects;
@@ -38,8 +37,7 @@ public class OtherTmNodeEvent extends TmNodeMessage {
         super.handle(springContext, protocoler, connection);
         RedisTmNodeRepository redisTmNodeRepository = springContext.getBean(RedisTmNodeRepository.class);
         TmConfig tmConfig = springContext.getBean(TmConfig.class);
-        InetAddress localhost = NetUtil.getLocalhost();
-        String hostAddress = Objects.requireNonNull(localhost).getHostAddress();
+        String hostAddress = Objects.requireNonNull(NetUtil.getLocalhost()).getHostAddress();
         String tmId = String.format("%s:%s", hostAddress, tmConfig.getPort());
         TmNode tmNode = new TmNode(tmId, hostAddress, tmConfig.getPort(), redisTmNodeRepository);
         this.otherNodeList = tmNode.getBesidesNodeList(otherNodeList);

@@ -1,6 +1,8 @@
 package com.codingapi.txlcn.protocol.message.separate;
 
 import com.codingapi.txlcn.protocol.Protocoler;
+import com.codingapi.txlcn.protocol.await.Lock;
+import com.codingapi.txlcn.protocol.await.LockContext;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.Message;
 import lombok.Data;
@@ -31,12 +33,23 @@ public abstract class AbsMessage implements Message {
 
     protected Connection tcConnection;
 
+    protected String firstConnectionKey;
+
     protected String messageId;
+
+    protected String firstMessageId;
 
     @Override
     public void handle(ApplicationContext springContext,
                        Protocoler protocoler,
                        Connection connection) throws Exception {
-
+        //唤醒等待消息
+        if (messageId != null) {
+            Lock lock = LockContext.getInstance().getKey(messageId);
+            if (lock != null) {
+                lock.setRes(this);
+                lock.signal();
+            }
+        }
     }
 }
