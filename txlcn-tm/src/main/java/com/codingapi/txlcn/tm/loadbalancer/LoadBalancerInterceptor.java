@@ -39,7 +39,8 @@ public class LoadBalancerInterceptor implements EventInterceptor {
     private EventStatus eventStatus;
 
     @Override
-    public void handle(AbsMessage absMessage, Protocoler protocoler, Connection connection, EventService event) {
+    public void handle(AbsMessage absMessage, Protocoler protocoler, Connection connection, EventService event)
+            throws Exception {
         String firstConnectionKeyTmp = connection.getUniqueKey();
         String firstMessageIdTmp = absMessage.getMessageId();
         eventStatus.onFirstNode(absMessage, firstMessageIdTmp, connection);
@@ -55,7 +56,7 @@ public class LoadBalancerInterceptor implements EventInterceptor {
      * @return AbsMessage
      */
     public AbsMessage requestMsgToOtherTm(AbsMessage absMessage, Connection connection) {
-        log.info("=> LoadBalancerInterceptor intercept");
+        log.debug("=> LoadBalancerInterceptor requestMsgToOtherTm");
         String hostAddress = Objects.requireNonNull(NetUtil.getLocalhost()).getHostAddress();
         String tmId = String.format("%s:%s", hostAddress, tmConfig.getPort());
         TmNode tmNode = new TmNode(tmId, hostAddress, tmConfig.getPort(), redisTmNodeRepository);

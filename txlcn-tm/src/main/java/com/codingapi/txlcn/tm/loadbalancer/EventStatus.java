@@ -26,7 +26,7 @@ public interface EventStatus {
      * @param absMessage AbsMessage
      * @param event      EventService
      */
-    void onBusinessExecuted(AbsMessage absMessage, EventService event);
+    void onBusinessExecuted(AbsMessage absMessage, EventService event) throws Exception;
 
     /**
      * 事件状态在准备发送结果的时候

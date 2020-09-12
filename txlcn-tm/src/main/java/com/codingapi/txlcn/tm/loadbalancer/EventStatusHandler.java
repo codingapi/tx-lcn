@@ -41,7 +41,7 @@ public class EventStatusHandler implements EventStatus {
     }
 
     @Override
-    public void onBusinessExecuted(AbsMessage absMessage, EventService event) {
+    public void onBusinessExecuted(AbsMessage absMessage, EventService event) throws Exception {
         if (!absMessage.getIsFirstNode() && !absMessage.getIsBusinessExecuted()) {
             log.debug("EventStatusHandler.onBusinessExecuted");
             event.execute();

@@ -11,5 +11,5 @@ import com.codingapi.txlcn.protocol.message.separate.AbsMessage;
  */
 public interface EventInterceptor {
 
-    void handle(AbsMessage absMessage, Protocoler protocoler, Connection connection, EventService event);
+    void handle(AbsMessage absMessage, Protocoler protocoler, Connection connection, EventService event) throws Exception;
 }

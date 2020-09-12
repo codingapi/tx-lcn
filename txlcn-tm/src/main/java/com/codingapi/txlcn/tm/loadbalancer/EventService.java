@@ -8,5 +8,5 @@ package com.codingapi.txlcn.tm.loadbalancer;
 @FunctionalInterface
 public interface EventService {
 
-    void execute();
+    void execute() throws Exception;
 }

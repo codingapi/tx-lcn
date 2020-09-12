@@ -3,6 +3,7 @@ package com.codingapi.txlcn.protocol.message.event;
 import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
+import com.codingapi.txlcn.tm.loadbalancer.LoadBalancerInterceptor;
 import com.codingapi.txlcn.tm.repository.TransactionGroupRepository;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,10 +25,14 @@ public class TransactionJoinEvent extends TransactionMessage {
     @Override
     public void handle(ApplicationContext springContext, Protocoler protocoler, Connection connection) throws Exception {
         super.handle(springContext, protocoler, connection);
-        TransactionGroupRepository transactionGroupRepository = springContext.getBean(TransactionGroupRepository.class);
-        log.info("request msg =>{}",groupId);
-        transactionGroupRepository.join(groupId,connection.getUniqueKey(),moduleName);
-        this.result = "ok";
-        protocoler.sendMsg(connection.getUniqueKey(),this);
+        LoadBalancerInterceptor loadBalancer = (LoadBalancerInterceptor) springContext.getBean("interceptor");
+        loadBalancer.handle(this, protocoler, connection, () -> {
+            TransactionGroupRepository transactionGroupRepository =
+                    springContext.getBean(TransactionGroupRepository.class);
+            log.info("request msg =>{}", groupId);
+            transactionGroupRepository.join(groupId, connection.getUniqueKey(), moduleName);
+            this.result = "ok";
+            protocoler.sendMsg(connection.getUniqueKey(), this);
+        });
     }
 }
