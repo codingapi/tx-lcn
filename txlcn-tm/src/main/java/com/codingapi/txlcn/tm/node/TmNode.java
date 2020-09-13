@@ -85,9 +85,6 @@ public class TmNode {
                 protocolServer.connectTo(iNetSocketAddress.getHostString(), iNetSocketAddress.getPort()));
     }
 
-    public void sentToOtherNode(){
-
-    }
 }
 
 

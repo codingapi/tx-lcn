@@ -38,7 +38,7 @@ public class SnowflakeInitiator {
 
     private static String snowflakeRedisKey;
 
-    private static long LockExpire = 60 * 60 * 24;
+    private static long LockExpire = 30;
 
     private static boolean stopTrying = false;
 
@@ -73,11 +73,13 @@ public class SnowflakeInitiator {
      */
     public boolean tryInit() {
         snowflakeVo = nextKey(snowflakeVo);
-        snowflakeRedisKey = String.format("%s_%d_%d", TX_MANAGER, snowflakeVo.getDataCenterId(), snowflakeVo.getWorkerId());
+        snowflakeRedisKey = String.format("%s_%d_%d", TX_MANAGER, snowflakeVo.getDataCenterId(),
+                snowflakeVo.getWorkerId());
         String hostAddress = NetUtil.getLocalhost().getHostAddress();
         String hostAndPort = String.format("%s:%s", hostAddress, port);
         Boolean isNotHasKey = !redisTemplate.hasKey(snowflakeRedisKey);
-        Boolean isSetKey = redisTemplate.opsForValue().setIfAbsent(snowflakeRedisKey, hostAndPort, LockExpire, TimeUnit.SECONDS);
+        Boolean isSetKey = redisTemplate.opsForValue().setIfAbsent(snowflakeRedisKey, hostAndPort,
+                LockExpire + randomDigits(), TimeUnit.SECONDS);
         if (isNotHasKey && isSetKey) {
             log.info("snowflake setIfAbsent key:{}", JSON.toJSONString(snowflakeVo));
             return true;
@@ -115,11 +117,15 @@ public class SnowflakeInitiator {
         return snowflakeVo;
     }
 
+    private int randomDigits() {
+        return (int) (Math.random() * 10);
+    }
+
     /**
      * 重新设置过期时间，由定时任务调用
      */
     public void resetExpire() {
-        redisTemplate.expire(snowflakeRedisKey, (LockExpire - 600), TimeUnit.SECONDS);
+        redisTemplate.expire(snowflakeRedisKey, (LockExpire + randomDigits()), TimeUnit.SECONDS);
         log.info("reset the snowflakeRedisKey's resetExpire time,redisKey :{}", snowflakeRedisKey);
     }
 

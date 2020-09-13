@@ -33,7 +33,6 @@ public class TmNodeServerRunner {
     @Autowired
     private RedisTmNodeRepository redisTmNodeRepository;
 
-
     public TmNodeServerRunner(ProtocolServer protocolServer) {
         this.protocolServer = protocolServer;
         this.scheduledExecutorService = new ScheduledThreadPoolExecutor(1,
