@@ -15,7 +15,7 @@ import org.springframework.context.ApplicationContext;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public  class TransactionMessage extends AbsMessage {
+public class TransactionMessage extends AbsMessage {
 
     protected String groupId;
 

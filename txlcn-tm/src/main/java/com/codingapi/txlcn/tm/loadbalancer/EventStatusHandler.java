@@ -58,6 +58,12 @@ public class EventStatusHandler implements EventStatus {
         }
     }
 
+    @Override
+    public void onOneConnection(EventService event) throws Exception {
+        log.debug("EventStatusHandler.onOneConnection");
+        event.execute();
+    }
+
     /**
      * 判断 AbsMessage 是来自哪个事件的，并 new 一个该事件
      *

@@ -36,4 +36,11 @@ public interface EventStatus {
      * @param firstConnectionKeyTmp 暂时保存 ConnectionUniKey
      */
     void onReadyCallBack(AbsMessage absMessage, Protocoler protocoler, String firstConnectionKeyTmp);
+
+    /**
+     * TM 节点只连接了一个 TC 时
+     *
+     * @param event EventService
+     */
+    void onOneConnection(EventService event) throws Exception;
 }

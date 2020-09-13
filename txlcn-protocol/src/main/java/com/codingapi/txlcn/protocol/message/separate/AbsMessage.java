@@ -31,10 +31,6 @@ public abstract class AbsMessage implements Message {
      */
     protected Boolean isReadyCallBack = false;
 
-    protected Connection tcConnection;
-
-    protected String firstConnectionKey;
-
     protected String messageId;
 
     protected String firstMessageId;

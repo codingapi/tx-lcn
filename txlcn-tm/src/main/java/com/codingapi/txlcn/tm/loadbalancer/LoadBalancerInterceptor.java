@@ -43,9 +43,14 @@ public class LoadBalancerInterceptor implements EventInterceptor {
             throws Exception {
         String firstConnectionKeyTmp = connection.getUniqueKey();
         String firstMessageIdTmp = absMessage.getMessageId();
-        eventStatus.onFirstNode(absMessage, firstMessageIdTmp, connection);
-        eventStatus.onBusinessExecuted(absMessage, event);
-        eventStatus.onReadyCallBack(absMessage, protocoler, firstConnectionKeyTmp);
+        if (protocoler.getConnections().size() == 1) {
+            eventStatus.onOneConnection(event);
+        } else {
+            eventStatus.onFirstNode(absMessage, firstMessageIdTmp, connection);
+            eventStatus.onBusinessExecuted(absMessage, event);
+            eventStatus.onReadyCallBack(absMessage, protocoler, firstConnectionKeyTmp);
+        }
+
     }
 
     /**
