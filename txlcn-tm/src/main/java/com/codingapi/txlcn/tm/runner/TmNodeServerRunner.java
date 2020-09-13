@@ -2,7 +2,7 @@ package com.codingapi.txlcn.tm.runner;
 
 import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.tm.node.TmNode;
-import com.codingapi.txlcn.tm.repository.redis.RedisTmNodeRepository;
+import com.codingapi.txlcn.tm.repository.TmNodeRepository;
 import com.codingapi.txlcn.tm.util.NetUtil;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class TmNodeServerRunner {
     private ScheduledExecutorService scheduledExecutorService;
 
     @Autowired
-    private RedisTmNodeRepository redisTmNodeRepository;
+    private TmNodeRepository tmNodeRepository;
 
     public TmNodeServerRunner(ProtocolServer protocolServer) {
         this.protocolServer = protocolServer;
@@ -46,7 +46,7 @@ public class TmNodeServerRunner {
         try {
             InetAddress localhost = NetUtil.getLocalhost();
             String hostAddress = Objects.requireNonNull(localhost).getHostAddress();
-            TmNode tmNode = new TmNode(String.format("%s:%s", hostAddress, port), hostAddress, port, redisTmNodeRepository);
+            TmNode tmNode = new TmNode(String.format("%s:%s", hostAddress, port), hostAddress, port, tmNodeRepository);
             scheduledExecutorService.scheduleAtFixedRate(
                     () -> tmNode.connectToOtherNode(protocolServer), 0, 30, TimeUnit.SECONDS);
         } catch (Exception e) {

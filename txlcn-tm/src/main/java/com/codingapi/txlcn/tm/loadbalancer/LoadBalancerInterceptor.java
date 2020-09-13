@@ -6,7 +6,7 @@ import com.codingapi.txlcn.protocol.message.separate.AbsMessage;
 import com.codingapi.txlcn.tm.config.TmConfig;
 import com.codingapi.txlcn.tm.node.TmNode;
 import com.codingapi.txlcn.tm.reporter.TmManagerReporter;
-import com.codingapi.txlcn.tm.repository.redis.RedisTmNodeRepository;
+import com.codingapi.txlcn.tm.repository.TmNodeRepository;
 import com.codingapi.txlcn.tm.util.NetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class LoadBalancerInterceptor implements EventInterceptor {
     private TmManagerReporter tmManagerReporter;
 
     @Autowired
-    private RedisTmNodeRepository redisTmNodeRepository;
+    private TmNodeRepository tmNodeRepository;
 
     @Autowired
     private TmConfig tmConfig;
@@ -64,7 +64,7 @@ public class LoadBalancerInterceptor implements EventInterceptor {
         log.debug("=> LoadBalancerInterceptor requestMsgToOtherTm");
         String hostAddress = Objects.requireNonNull(NetUtil.getLocalhost()).getHostAddress();
         String tmId = String.format("%s:%s", hostAddress, tmConfig.getPort());
-        TmNode tmNode = new TmNode(tmId, hostAddress, tmConfig.getPort(), redisTmNodeRepository);
+        TmNode tmNode = new TmNode(tmId, hostAddress, tmConfig.getPort(), tmNodeRepository);
         // 其他 node 节点
         List<InetSocketAddress> otherNodeList = tmNode.getOtherNodeList();
 

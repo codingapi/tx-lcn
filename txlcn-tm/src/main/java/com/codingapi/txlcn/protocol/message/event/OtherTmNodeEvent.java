@@ -5,7 +5,7 @@ import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.separate.TmNodeMessage;
 import com.codingapi.txlcn.tm.config.TmConfig;
 import com.codingapi.txlcn.tm.node.TmNode;
-import com.codingapi.txlcn.tm.repository.redis.RedisTmNodeRepository;
+import com.codingapi.txlcn.tm.repository.TmNodeRepository;
 import com.codingapi.txlcn.tm.util.NetUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,11 +35,11 @@ public class OtherTmNodeEvent extends TmNodeMessage {
     public void handle(ApplicationContext springContext, Protocoler protocoler, Connection connection) throws Exception {
         log.info("OtherTmNodeEvent request msg =>{}", messageId);
         super.handle(springContext, protocoler, connection);
-        RedisTmNodeRepository redisTmNodeRepository = springContext.getBean(RedisTmNodeRepository.class);
+        TmNodeRepository tmNodeRepository = springContext.getBean(TmNodeRepository.class);
         TmConfig tmConfig = springContext.getBean(TmConfig.class);
         String hostAddress = Objects.requireNonNull(NetUtil.getLocalhost()).getHostAddress();
         String tmId = String.format("%s:%s", hostAddress, tmConfig.getPort());
-        TmNode tmNode = new TmNode(tmId, hostAddress, tmConfig.getPort(), redisTmNodeRepository);
+        TmNode tmNode = new TmNode(tmId, hostAddress, tmConfig.getPort(), tmNodeRepository);
         this.otherNodeList = tmNode.getBesidesNodeList(otherNodeList);
         protocoler.sendMsg(connection.getUniqueKey(), this);
         log.info("OtherTmNodeEvent.send =>[tmId:{}]", tmId);

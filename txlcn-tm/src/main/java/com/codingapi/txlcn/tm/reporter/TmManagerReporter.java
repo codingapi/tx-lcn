@@ -7,6 +7,7 @@ import com.codingapi.txlcn.protocol.message.Message;
 import com.codingapi.txlcn.protocol.message.separate.AbsMessage;
 import com.codingapi.txlcn.tm.config.TmConfig;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.util.Assert;
 
 import java.net.InetSocketAddress;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
  * @author whohim
  */
 @AllArgsConstructor
+@Data
 public class TmManagerReporter {
 
     private Protocoler protocoler;
@@ -99,7 +101,6 @@ public class TmManagerReporter {
         checkLeader();
         return leader.request(absMessage);
     }
-
 
 
 }

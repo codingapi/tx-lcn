@@ -2,6 +2,7 @@ package com.codingapi.txlcn.tm.id;
 
 
 import com.alibaba.fastjson.JSON;
+import com.codingapi.txlcn.tm.repository.TmNodeInfo;
 import com.codingapi.txlcn.tm.util.NetUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.PreDestroy;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +20,7 @@ import static com.codingapi.txlcn.tm.constant.CommonConstant.TX_MANAGER;
 
 /**
  * 雪花算法初始器
- * 初始化snowflake的 dataCenterId 和 workerId
+ * 初始化 snowflake 的 dataCenterId 和 workerId
  * <p>
  * 1.系统启动时生成默认 dataCenterId 和 workerId，并尝试作为 key 存储到 redis
  * 2.如果存储成功，设置 redis 过期时间为24h，把当前 dataCenterId 和 workerId 传入 snowflake
@@ -47,9 +48,9 @@ public class SnowflakeInitiator {
      */
     public static SnowflakeVo snowflakeVo;
 
-    private final StringRedisTemplate redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    public SnowflakeInitiator(StringRedisTemplate redisTemplate) {
+    public SnowflakeInitiator(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
@@ -78,7 +79,8 @@ public class SnowflakeInitiator {
         String hostAddress = NetUtil.getLocalhost().getHostAddress();
         String hostAndPort = String.format("%s:%s", hostAddress, port);
         Boolean isNotHasKey = !redisTemplate.hasKey(snowflakeRedisKey);
-        Boolean isSetKey = redisTemplate.opsForValue().setIfAbsent(snowflakeRedisKey, hostAndPort,
+        TmNodeInfo tmNodeInfo = new TmNodeInfo(snowflakeRedisKey, hostAndPort, 0);
+        Boolean isSetKey = redisTemplate.opsForValue().setIfAbsent(snowflakeRedisKey, tmNodeInfo,
                 LockExpire + randomDigits(), TimeUnit.SECONDS);
         if (isNotHasKey && isSetKey) {
             log.info("snowflake setIfAbsent key:{}", JSON.toJSONString(snowflakeVo));

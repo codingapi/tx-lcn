@@ -1,7 +1,7 @@
 package com.codingapi.txlcn.tm.node;
 
 import com.codingapi.txlcn.protocol.ProtocolServer;
-import com.codingapi.txlcn.tm.repository.redis.RedisTmNodeRepository;
+import com.codingapi.txlcn.tm.repository.TmNodeRepository;
 import com.codingapi.txlcn.tm.util.NetUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -37,22 +37,22 @@ public class TmNode {
      */
     private int port;
 
-    private RedisTmNodeRepository redisTmNodeRepository;
+    private TmNodeRepository tmNodeRepository;
 
-    public TmNode(String hostAndPort, String nodeIp, int port, RedisTmNodeRepository redisTmNodeRepository) {
+    public TmNode(String hostAndPort, String nodeIp, int port, TmNodeRepository tmNodeRepository) {
         this.id = hostAndPort;
         this.nodeIp = nodeIp;
         this.port = port;
-        this.redisTmNodeRepository = redisTmNodeRepository;
+        this.tmNodeRepository = tmNodeRepository;
     }
 
     /**
      * @return 获得除此 TM 节点以外 TM 节点的 IP 及端口
      */
     public List<InetSocketAddress> getOtherNodeList() {
-        return redisTmNodeRepository.keys(TX_MANAGE_KEY).stream()
+        return tmNodeRepository.keys(TX_MANAGE_KEY).stream()
                 .filter(Objects::nonNull)
-                .map(tmKey -> redisTmNodeRepository.getTmNodeAddress(tmKey))
+                .map(tmKey -> tmNodeRepository.getTmNodeInfo(tmKey).getHostAndPort())
                 .filter(s -> !s.equals(id))
                 .map(NetUtil::addressFormat)
                 .filter(Objects::nonNull)
@@ -65,9 +65,9 @@ public class TmNode {
      * @return 获得传入集合以外的 TM 节点的 IP 及端口
      */
     public List<InetSocketAddress> getBesidesNodeList(List<InetSocketAddress> iNetSocketAddressList) {
-        return redisTmNodeRepository.keys(TX_MANAGE_KEY).stream()
+        return tmNodeRepository.keys(TX_MANAGE_KEY).stream()
                 .filter(Objects::nonNull)
-                .map(tmKey -> redisTmNodeRepository.getTmNodeAddress(tmKey))
+                .map(tmKey -> tmNodeRepository.getTmNodeInfo(tmKey).getHostAndPort())
                 .filter(s -> !s.equals(id))
                 .map(NetUtil::addressFormat)
                 .filter(Objects::nonNull)

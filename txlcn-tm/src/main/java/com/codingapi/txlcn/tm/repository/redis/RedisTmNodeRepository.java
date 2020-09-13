@@ -1,12 +1,14 @@
 package com.codingapi.txlcn.tm.repository.redis;
 
+import com.codingapi.txlcn.tm.repository.TmNodeInfo;
+import com.codingapi.txlcn.tm.repository.TmNodeRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.data.redis.core.ValueOperations;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -20,17 +22,17 @@ import java.util.function.Consumer;
  * @date Create in 2020/9/3 17:49
  */
 @Slf4j
-@Component
-public class RedisTmNodeRepository {
+@AllArgsConstructor
+public class RedisTmNodeRepository implements TmNodeRepository {
 
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 获取符合条件的key
      *
      * @param pattern 表达式
      */
+    @Override
     public List<String> keys(String pattern) {
         List<String> keys = new ArrayList<>();
         this.scan(pattern, item -> {
@@ -48,7 +50,7 @@ public class RedisTmNodeRepository {
      * @param consumer 对迭代到的key进行操作
      */
     private void scan(String pattern, Consumer<byte[]> consumer) {
-        this.stringRedisTemplate.execute((RedisConnection connection) -> {
+        this.redisTemplate.execute((RedisConnection connection) -> {
             try (Cursor<byte[]> cursor = connection
                     .scan(ScanOptions.scanOptions()
                             .count(Long.MAX_VALUE)
@@ -65,9 +67,17 @@ public class RedisTmNodeRepository {
 
     /**
      * 获取 Tm 节点的ip地址
+     *
      * @param key Tm 全局唯一 ID
      */
-    public String getTmNodeAddress(String key) {
-        return stringRedisTemplate.opsForValue().get(key);
+    public TmNodeInfo getTmNodeInfo(String key) {
+        return (TmNodeInfo) redisTemplate.opsForValue().get(key);
+    }
+
+    @Override
+    public void create(String tmId, String hostAndPort, int connection) {
+        ValueOperations<String, Object> operations = redisTemplate.opsForValue();
+        TmNodeInfo tmNodeInfo = new TmNodeInfo(tmId, hostAndPort, connection);
+        operations.set(tmId, tmNodeInfo);
     }
 }
