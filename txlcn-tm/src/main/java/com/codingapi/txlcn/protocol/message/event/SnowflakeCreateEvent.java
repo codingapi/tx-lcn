@@ -2,37 +2,48 @@ package com.codingapi.txlcn.protocol.message.event;
 
 import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
-import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
+import com.codingapi.txlcn.protocol.message.separate.SnowflakeMessage;
+import com.codingapi.txlcn.tm.id.SnowflakeHandler;
 import com.codingapi.txlcn.tm.loadbalancer.LoadBalancerInterceptor;
-import com.codingapi.txlcn.tm.repository.TransactionGroupRepository;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 
 /**
- * @author lorne
- * @date 2020/7/1
- * @description
+ * @author WhomHim
+ * @description Snowflake 生成事件
+ * @date Create in 2020-8-14 22:13:12
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
-public class TransactionJoinEvent extends TransactionMessage {
+public class SnowflakeCreateEvent extends SnowflakeMessage {
 
-    private String result;
+    /**
+     * 事务组Id
+     */
+    private String groupId;
+
+    /**
+     * 日志主键
+     */
+    private long logId;
 
     @Override
     public void handle(ApplicationContext springContext, Protocoler protocoler, Connection connection) throws Exception {
         super.handle(springContext, protocoler, connection);
         LoadBalancerInterceptor loadBalancer = (LoadBalancerInterceptor) springContext.getBean("interceptor");
         loadBalancer.handle(this, protocoler, connection, () -> {
-            TransactionGroupRepository transactionGroupRepository =
-                    springContext.getBean(TransactionGroupRepository.class);
-            log.info("request msg =>{}", groupId);
-            transactionGroupRepository.join(groupId, connection.getUniqueKey(), moduleName);
-            this.result = "ok";
+            log.debug("isBusinessExecuted = false ");
+            this.groupId = SnowflakeHandler.generateGroupId();
+            this.logId = SnowflakeHandler.generateLogId();
+            log.info("SnowflakeCreateEvent isBusinessExecuted groupId =>{}", groupId);
+            log.debug("setIsBusinessExecuted connection.getUniqueKey():{}", connection.getUniqueKey());
+            isBusinessExecuted = true;
+            isReadyCallBack = true;
             protocoler.sendMsg(connection.getUniqueKey(), this);
         });
+
     }
 }

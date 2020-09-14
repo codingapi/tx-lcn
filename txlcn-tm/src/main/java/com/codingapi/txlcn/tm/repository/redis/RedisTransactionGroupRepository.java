@@ -16,11 +16,11 @@ import org.springframework.data.redis.core.ValueOperations;
 @AllArgsConstructor
 public class RedisTransactionGroupRepository implements TransactionGroupRepository {
 
-    private RedisTemplate<String, TransactionGroup> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public void create(String groupId, String uniqueKey,String moduleName) throws Exception {
-        ValueOperations<String,TransactionGroup> operations =  redisTemplate.opsForValue();
+        ValueOperations<String,Object> operations =  redisTemplate.opsForValue();
         TransactionGroup transactionGroup = new TransactionGroup(groupId,uniqueKey,moduleName, TransactionInfo.TransactionType.REQUEST);
         operations.set(groupId,transactionGroup);
 
@@ -29,8 +29,8 @@ public class RedisTransactionGroupRepository implements TransactionGroupReposito
 
     @Override
     public void join(String groupId, String uniqueKey, String moduleName) throws Exception {
-        ValueOperations<String,TransactionGroup> operations =  redisTemplate.opsForValue();
-        TransactionGroup transactionGroup =  operations.get(groupId);
+        ValueOperations<String,Object> operations =  redisTemplate.opsForValue();
+        TransactionGroup transactionGroup = (TransactionGroup) operations.get(groupId);
         if(transactionGroup!=null){
             transactionGroup.add(uniqueKey,moduleName, TransactionInfo.TransactionType.JOIN);
             operations.set(groupId,transactionGroup);
@@ -41,8 +41,8 @@ public class RedisTransactionGroupRepository implements TransactionGroupReposito
 
     @Override
     public TransactionGroup notify(String groupId, boolean success) throws Exception {
-        ValueOperations<String,TransactionGroup> operations =  redisTemplate.opsForValue();
-        TransactionGroup transactionGroup =  operations.get(groupId);
+        ValueOperations<String,Object> operations =  redisTemplate.opsForValue();
+        TransactionGroup transactionGroup = (TransactionGroup) operations.get(groupId);
         if(transactionGroup==null){
             return null;
         }

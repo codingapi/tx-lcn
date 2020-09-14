@@ -10,11 +10,11 @@ import org.springframework.context.annotation.Configuration;
  * @date Create in 2020-8-15 22:53:17
  */
 @Configuration
-public class SnowFlakeConfiguration {
+public class SnowflakeConfiguration {
 
     @Bean
-    public SnowFlakeStep SnowFlakeCreate(TxManagerReporter managerProtocoler){
-        return new SnowFlakeInfo(managerProtocoler);
+    public SnowflakeStep snowFlakeCreate(TxManagerReporter managerProtocoler){
+        return new SnowflakeInfo(managerProtocoler);
     }
 
 }

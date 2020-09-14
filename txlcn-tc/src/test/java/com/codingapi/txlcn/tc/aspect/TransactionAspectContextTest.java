@@ -43,7 +43,7 @@ import java.util.Collections;
         transactionContext = Mockito.mock(TransactionContext.class);
         methodInvocation = Mockito.mock(MethodInvocation.class);
         Mockito.when(methodInvocation.getMethod()).thenReturn(TestMethod.class.getDeclaredMethod("test"));
-//        transactionAspectContext = new TransactionAspectContext(transactionContext,annotationContext);
+        transactionAspectContext = new TransactionAspectContext(transactionContext,annotationContext);
     }
 
     @SneakyThrows

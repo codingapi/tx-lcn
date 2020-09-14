@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TcConfigConfiguration {
 
-  @Bean
-  @ConfigurationProperties(prefix = "txlcn.tc")
-  public TxConfig txConfig(Config config) {
-    return new TxConfig(config);
-  }
+    @Bean
+    @ConfigurationProperties(prefix = "txlcn.tc")
+    public TxConfig txConfig(Config config) {
+        return new TxConfig(config);
+    }
 
 
 }

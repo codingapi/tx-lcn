@@ -6,7 +6,7 @@ package com.codingapi.txlcn.tc.id;
  * @description
  * @date Create in 2020-8-15 22:53:57
  */
-public interface SnowFlakeStep {
+public interface SnowflakeStep {
     /**
      * 去 TM 取得 groupId 及 logId
      */

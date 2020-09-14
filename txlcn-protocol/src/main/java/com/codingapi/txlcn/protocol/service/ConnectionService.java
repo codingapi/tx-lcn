@@ -17,7 +17,7 @@ import java.util.Map;
 public class ConnectionService {
 
     // server name -> connection
-    private final Map<String, Connection> connections = new HashMap<String, Connection>();
+    private final Map<String, Connection> connections = new HashMap<>();
 
     public void addConnection(final Connection connection) {
         final String uniqueKey = connection.getUniqueKey();
