@@ -20,10 +20,12 @@ import java.util.concurrent.TimeUnit;
 public class MockRedisTemplateConfiguration {
 
     @Bean
+    @ConditionalOnMissingBean
     public RedisTemplate redisTemplate(){
         RedisTemplate redisTemplate = Mockito.mock(RedisTemplate.class);
         ValueOperations valueOperations = Mockito.mock(ValueOperations.class);
         Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        Mockito.when(redisTemplate.hasKey(Mockito.any())).thenReturn(true);
         Mockito.when(valueOperations.setIfAbsent(Mockito.any(), Mockito.any(),Mockito.anyLong(),Mockito.any(TimeUnit.class))).thenReturn(true);
         return redisTemplate;
     }
