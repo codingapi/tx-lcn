@@ -2,6 +2,8 @@ package com.codingapi.txlcn.tc.config;
 
 import com.codingapi.txlcn.protocol.config.Config;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
@@ -16,6 +18,8 @@ import java.util.regex.Pattern;
  */
 @Data
 @Slf4j
+@Accessors(chain = true)
+@NoArgsConstructor
 public class TxConfig {
 
   /**
@@ -52,6 +56,13 @@ public class TxConfig {
    * peer network setting.
    */
   private Config protocol;
+
+  private List<InetSocketAddress> iNetSocketAddresses;
+
+  /**
+   * 用户自行配置需要连接的 TM 数量
+   */
+  private int tmResource = 1;
 
   public TxConfig(Config protocol) {
     this.protocol = protocol;

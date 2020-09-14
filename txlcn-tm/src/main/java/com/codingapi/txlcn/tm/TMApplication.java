@@ -17,6 +17,7 @@ package com.codingapi.txlcn.tm;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Description: Company: CodingApi Date: 2018/11/29
@@ -24,6 +25,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author lorne
  */
 @SpringBootApplication
+@EnableScheduling
 public class TMApplication {
 
   public static void main(String[] args) {

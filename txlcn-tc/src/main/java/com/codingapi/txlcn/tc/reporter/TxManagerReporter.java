@@ -4,15 +4,15 @@ import com.codingapi.txlcn.protocol.ProtocolServer;
 import com.codingapi.txlcn.protocol.Protocoler;
 import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.Message;
-import com.codingapi.txlcn.protocol.message.separate.SnowFlakeMessage;
+import com.codingapi.txlcn.protocol.message.separate.SnowflakeMessage;
+import com.codingapi.txlcn.protocol.message.separate.TmNodeMessage;
 import com.codingapi.txlcn.protocol.message.separate.TransactionMessage;
 import com.codingapi.txlcn.tc.config.TxConfig;
 import lombok.AllArgsConstructor;
 import org.springframework.util.Assert;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author lorne
@@ -36,15 +36,16 @@ public class TxManagerReporter {
         this.connections = protocoler.getConnections();
     }
 
-    private void selectLeader(){
-        if(connections.size()>0){
-            Iterator<Connection> iterator = connections.iterator();
-            while (iterator.hasNext()) {
-                leader = iterator.next();
-                if(leader!=null){
-                    break;
-                }
-            }
+    /**
+     * 随机选一个 TM 连接
+     */
+    private void selectLeader() {
+        if (connections.size() > 0) {
+            List<Connection> connectionList = connections.stream()
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+            int randomConnection = this.getRandom(0, connectionList.size());
+            leader = connectionList.get(randomConnection);
         }
     }
 
@@ -55,7 +56,7 @@ public class TxManagerReporter {
 
     /**
      * 发送消息
-     * @param message
+     * @param message message
      */
     public void sendMsg(Message message){
         selectLeader();
@@ -65,10 +66,25 @@ public class TxManagerReporter {
 
     /**
      * 请求消息
-     * @param message
+     * @param message TmNodeMessage
+     */
+    public TmNodeMessage requestMsg(TmNodeMessage message){
+        message.setMessageId(UUID.randomUUID().toString());
+        // 第一个接收到 TC 消息的节点
+        message.setIsFirstNode(true);
+        selectLeader();
+        checkLeader();
+        return leader.request(message);
+    }
+
+    /**
+     * 请求消息
+     * @param message TransactionMessage
      */
     public TransactionMessage requestMsg(TransactionMessage message){
         message.setModuleName(txConfig.getApplicationName());
+        // 第一个接收到 TC 消息的节点
+        message.setIsFirstNode(true);
         selectLeader();
         checkLeader();
         return leader.request(message);
@@ -77,15 +93,26 @@ public class TxManagerReporter {
     /**
      * 请求消息
      * @param message SnowFlakeMessage
-     * @return  SnowFlakeMessage
+     * @return  SnowflakeMessage
      */
-    public SnowFlakeMessage requestMsg(SnowFlakeMessage message) {
-        message.setInstanceId(UUID.randomUUID().toString());
+    public SnowflakeMessage requestMsg(SnowflakeMessage message) {
+        message.setMessageId(UUID.randomUUID().toString());
+        // 第一个接收到 TC 消息的节点
+        message.setIsFirstNode(true);
         selectLeader();
         checkLeader();
         return leader.request(message);
     }
 
-
+    /**
+     * 取得一个随机数，取值范围是 [min,max-1]
+     *
+     * @param min 最小数
+     * @param max 最大数
+     * @return int
+     */
+    public int getRandom(int min, int max) {
+        return new Random().nextInt(max) % (max - min + 1) + min;
+    }
 
 }
