@@ -13,14 +13,14 @@ import org.springframework.context.annotation.Configuration;
 public class DataSourceConfiguration {
 
     @Bean
-    public HikariDataSource dataSource(LcnTestDataSourceConfig config){
-        HikariDataSource dataSource =  new HikariDataSource();
-        dataSource.setJdbcUrl(config.getJdbcUrl());
-        dataSource.setUsername(config.getUsername());
-        dataSource.setPassword(config.getPassword());
-        dataSource.setDriverClassName(config.getDriverClassName());
-        return dataSource;
-    }
+        public HikariDataSource dataSource(LcnTestDataSourceConfig config){
+            HikariDataSource dataSource =  new HikariDataSource();
+            dataSource.setJdbcUrl(config.getJdbcUrl());
+            dataSource.setUsername(config.getUsername());
+            dataSource.setPassword(config.getPassword());
+            dataSource.setDriverClassName(config.getDriverClassName());
+            return dataSource;
+        }
 
     @Bean
     public LcnTestDataSourceConfig lcnTestDataSourceConfig(){

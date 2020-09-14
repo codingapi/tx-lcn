@@ -1,8 +1,10 @@
 package com.codingapi.txlcn.tc.jdbc.sql.strategy;
 
 import com.google.common.collect.Maps;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 
 /**
@@ -10,6 +12,7 @@ import java.util.Map;
  * @description:
  * @date 2020-09-02 22:51:37
  */
+
 public class AnalyseStrategryFactory {
 
     private static Map<String, SqlSqlAnalyseHandler> strategyMap = Maps.newHashMap();

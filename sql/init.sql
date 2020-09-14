@@ -54,13 +54,12 @@ DROP TABLE IF EXISTS `lcn_sql_parse_test2`;
 CREATE TABLE `lcn_sql_parse_test2` (
     `id`        int(12) auto_increment
         primary key,
-    `dept_name` varchar(32) null comment '部门名称',
-  PRIMARY KEY (`id`)
+    `dept_name` varchar(32) null comment '部门名称'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
-create table lcn_test.lcn_sql_parse_test3
+create table `lcn_sql_parse_test3`
 (
     id           varbinary(32) not null
         primary key,

@@ -4,22 +4,17 @@ import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
 import com.codingapi.txlcn.tc.jdbc.database.SqlAnalyseHelper;
 import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
-import com.codingapi.txlcn.tc.jdbc.sql.analyse.MysqlAnalyse;
+import com.codingapi.txlcn.tc.jdbc.sql.analyse.SqlDetailAnalyse;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.expression.StringValue;
-import net.sf.jsqlparser.expression.operators.relational.*;
-import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.expression.operators.relational.ItemsList;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.insert.Insert;
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.MapListHandler;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -28,10 +23,15 @@ import java.util.Map;
  * @date 2020-08-13 23:08:26
  */
 @Slf4j
+@Component
 public class  MysqlInsertAnalyseStrategy implements SqlSqlAnalyseHandler {
 
 
-    private MysqlAnalyse mysqlAnalyse;
+    private SqlDetailAnalyse sqlDetailAnalyse;
+
+    public MysqlInsertAnalyseStrategy(SqlDetailAnalyse sqlDetailAnalyse){
+        this.sqlDetailAnalyse = sqlDetailAnalyse;
+    }
 
     @Override
     public String mysqlAnalyseStrategy(String sql, Connection connection,Statement stmt) throws SQLException, JSQLParserException {
@@ -60,9 +60,9 @@ public class  MysqlInsertAnalyseStrategy implements SqlSqlAnalyseHandler {
             }
         }
 
-        if (mysqlAnalyse.multiInsertAnalyse(sql, connection, statement, itemsList, pk, pkIndex)) return sql;
+        if (sqlDetailAnalyse.multiInsertAnalyse(sql, connection, statement, itemsList, pk, pkIndex)) return sql;
 
-        if (mysqlAnalyse.singleInsertAnalyse(sql, connection, statement, itemsList, pk, pkIndex)) return sql;
+        if (sqlDetailAnalyse.singleInsertAnalyse(sql, connection, statement, itemsList, pk, pkIndex)) return sql;
 
         connection.rollback();
         connection.setAutoCommit(defaultAutoCommit);
