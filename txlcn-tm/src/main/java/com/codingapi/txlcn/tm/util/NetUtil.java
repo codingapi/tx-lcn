@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.tm.util;
 
-import com.sun.xml.internal.ws.util.UtilException;
+
+import com.codingapi.txlcn.tm.exception.UtilException;
 
 import java.net.*;
 import java.util.Enumeration;
