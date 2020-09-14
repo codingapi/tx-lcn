@@ -44,8 +44,7 @@ public class TmNodeServerRunner {
      */
     public void init() {
         try {
-            InetAddress localhost = NetUtil.getLocalhost();
-            String hostAddress = Objects.requireNonNull(localhost).getHostAddress();
+            String hostAddress = Objects.requireNonNull( NetUtil.getLocalhost()).getHostAddress();
             TmNode tmNode = new TmNode(String.format("%s:%s", hostAddress, port), hostAddress, port, tmNodeRepository);
             scheduledExecutorService.scheduleAtFixedRate(
                     () -> tmNode.connectToOtherNode(protocolServer), 0, 30, TimeUnit.SECONDS);

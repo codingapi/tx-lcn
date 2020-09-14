@@ -1,13 +1,16 @@
 package com.codingapi.txlcn.tm.node;
 
 import com.codingapi.txlcn.protocol.ProtocolServer;
+import com.codingapi.txlcn.tm.repository.TmNodeInfo;
 import com.codingapi.txlcn.tm.repository.TmNodeRepository;
 import com.codingapi.txlcn.tm.util.NetUtil;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -20,6 +23,7 @@ import static com.codingapi.txlcn.tm.constant.CommonConstant.TX_MANAGE_KEY;
  */
 @Data
 @Accessors(chain = true)
+@NoArgsConstructor
 public class TmNode {
 
     /**
@@ -85,6 +89,18 @@ public class TmNode {
                 protocolServer.connectTo(iNetSocketAddress.getHostString(), iNetSocketAddress.getPort()));
     }
 
+    /**
+     * 获得除了该节点其他所有 TM 的连接数信息
+     *
+     * @return Map<hostAndPort, connection>
+     */
+    public Map<String, Integer> getAllOtherTmConnection() {
+        return tmNodeRepository.keys(TX_MANAGE_KEY).stream()
+                .filter(Objects::nonNull)
+                .map(tmKey -> tmNodeRepository.getTmNodeInfo(tmKey))
+                .filter(tmNodeInfo -> !tmNodeInfo.getHostAndPort().equals(id))
+                .collect(Collectors.toMap(TmNodeInfo::getHostAndPort, TmNodeInfo::getConnection));
+    }
 }
 
 

@@ -6,14 +6,15 @@ import com.codingapi.txlcn.protocol.message.Connection;
 import com.codingapi.txlcn.protocol.message.Message;
 import com.codingapi.txlcn.protocol.message.separate.AbsMessage;
 import com.codingapi.txlcn.tm.config.TmConfig;
+import com.codingapi.txlcn.tm.node.TmNode;
+import com.codingapi.txlcn.tm.repository.TmNodeRepository;
+import com.codingapi.txlcn.tm.util.NetUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.util.Assert;
 
 import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -31,10 +32,13 @@ public class TmManagerReporter {
 
     private TmConfig tmConfig;
 
-    public TmManagerReporter(ProtocolServer protocolServer, TmConfig tmConfig) {
+    private TmNodeRepository tmNodeRepository;
+
+    public TmManagerReporter(ProtocolServer protocolServer, TmConfig tmConfig, TmNodeRepository tmNodeRepository) {
         this.protocoler = protocolServer.getProtocoler();
         this.tmConfig = tmConfig;
         this.connections = protocoler.getConnections();
+        this.tmNodeRepository = tmNodeRepository;
     }
 
     private void selectLeader() {
@@ -49,20 +53,34 @@ public class TmManagerReporter {
         }
     }
 
+    /**
+     * 选择其他 TmNode 节点进行连接
+     *
+     * @param connection    当前连接 TC
+     * @param otherNodeList 其他 TmNode 节点
+     */
     private void selectLeaderWithoutTc(Connection connection, List<InetSocketAddress> otherNodeList) {
         if (connections.size() > 0) {
+            // 过滤 TC 连接
             List<Connection> connectionList = connections.stream()
                     .filter(connectionBo -> !connectionBo.getUniqueKey().equals(connection.getUniqueKey()))
                     .filter(connectionBo -> otherNodeList.contains(connectionBo.getRemoteAddress()))
                     .collect(Collectors.toList());
 
-            //todo 负载均衡算法
-            for (Connection cnt : connectionList) {
-                leader = cnt;
-                if (leader != null) {
-                    break;
-                }
-            }
+            // 获得其他 TM 的连接数
+            String hostAddress = Objects.requireNonNull(NetUtil.getLocalhost()).getHostAddress();
+            TmNode tmNode = new TmNode()
+                    .setId(String.format("%s:%s", hostAddress, tmConfig.getPort()))
+                    .setNodeIp(hostAddress)
+                    .setPort(tmConfig.getPort())
+                    .setTmNodeRepository(tmNodeRepository);
+
+            Map<String, Integer> allTmConnection = tmNode.getAllOtherTmConnection();
+
+            //取 TM 连接数最小的进行连接
+            leader = connectionList.stream()
+                    .min(Comparator.comparingInt(cnt -> allTmConnection.get(cnt.getUniqueKey())))
+                    .orElse(null);
         }
     }
 

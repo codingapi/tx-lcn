@@ -11,8 +11,8 @@ import com.codingapi.txlcn.tc.config.TxConfig;
 import lombok.AllArgsConstructor;
 import org.springframework.util.Assert;
 
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author lorne
@@ -36,14 +36,16 @@ public class TxManagerReporter {
         this.connections = protocoler.getConnections();
     }
 
+    /**
+     * 随机选一个 TM 连接
+     */
     private void selectLeader() {
         if (connections.size() > 0) {
-            for (Connection connection : connections) {
-                leader = connection;
-                if (leader != null) {
-                    break;
-                }
-            }
+            List<Connection> connectionList = connections.stream()
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+            int randomConnection = this.getRandom(0, connectionList.size());
+            leader = connectionList.get(randomConnection);
         }
     }
 
@@ -102,6 +104,15 @@ public class TxManagerReporter {
         return leader.request(message);
     }
 
-
+    /**
+     * 取得一个随机数，取值范围是 [min,max-1]
+     *
+     * @param min 最小数
+     * @param max 最大数
+     * @return int
+     */
+    public int getRandom(int min, int max) {
+        return new Random().nextInt(max) % (max - min + 1) + min;
+    }
 
 }

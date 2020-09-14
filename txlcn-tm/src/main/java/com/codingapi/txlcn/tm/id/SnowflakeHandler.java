@@ -1,6 +1,6 @@
 package com.codingapi.txlcn.tm.id;
 
-import static com.codingapi.txlcn.tm.id.SnowflakeInitiator.getSnowflakeVo;
+import static com.codingapi.txlcn.tm.node.TmNodeInitiator.getSnowflakeVo;
 
 /**
  * @author lorne

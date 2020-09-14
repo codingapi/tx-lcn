@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
@@ -26,6 +27,11 @@ import java.util.function.Consumer;
 public class RedisTmNodeRepository implements TmNodeRepository {
 
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Override
+    public Boolean hasKey(String key) {
+        return redisTemplate.hasKey(key);
+    }
 
     /**
      * 获取符合条件的key
@@ -70,14 +76,25 @@ public class RedisTmNodeRepository implements TmNodeRepository {
      *
      * @param key Tm 全局唯一 ID
      */
+    @Override
     public TmNodeInfo getTmNodeInfo(String key) {
         return (TmNodeInfo) redisTemplate.opsForValue().get(key);
     }
 
     @Override
-    public void create(String tmId, String hostAndPort, int connection) {
+    public Boolean delete(String key) {
+        return redisTemplate.delete(key);
+    }
+
+    @Override
+    public Boolean setIfAbsent(TmNodeInfo tmNodeInfo, long expireTime) {
         ValueOperations<String, Object> operations = redisTemplate.opsForValue();
-        TmNodeInfo tmNodeInfo = new TmNodeInfo(tmId, hostAndPort, connection);
-        operations.set(tmId, tmNodeInfo);
+        return operations.setIfAbsent(tmNodeInfo.getTmId(), tmNodeInfo, expireTime, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void set(TmNodeInfo tmNodeInfo, long expireTime) {
+        ValueOperations<String, Object> operations = redisTemplate.opsForValue();
+        operations.set(tmNodeInfo.getTmId(), tmNodeInfo, expireTime, TimeUnit.SECONDS);
     }
 }
