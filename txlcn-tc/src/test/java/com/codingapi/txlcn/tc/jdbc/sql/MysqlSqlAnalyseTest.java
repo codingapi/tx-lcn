@@ -5,10 +5,9 @@ import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
 import com.codingapi.txlcn.tc.jdbc.database.JdbcAnalyseUtils;
 import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
-import com.codingapi.txlcn.tc.jdbc.sql.strategy.AnalyseStrategryFactory;
-import com.codingapi.txlcn.tc.jdbc.sql.strategy.MysqlAnalyseEnum;
-import com.codingapi.txlcn.tc.jdbc.sql.strategy.MysqlInsertAnalyseStrategy;
-import com.codingapi.txlcn.tc.jdbc.sql.strategy.SqlSqlAnalyseHandler;
+import com.codingapi.txlcn.tc.jdbc.sql.analyse.MysqlAnalyse;
+import com.codingapi.txlcn.tc.jdbc.sql.analyse.SqlDetailAnalyse;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.*;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
@@ -74,15 +73,16 @@ public class MysqlSqlAnalyseTest {
         String sql = "DELETE  t2,t3 FROM lcn_sql_parse_test2 t2 ,lcn_sql_parse_test3 t3 where t3.job = t2.dept_name AND t2.dept_name = 'test' and t3.name = 'a' ";
         sql = "update lcn_sql_parse_test3 t3 ,lcn_sql_parse_test2 t2 set t3.age = 56 ,t2.dept_name = 'dev' where t3.job = t2.dept_name and t2.dept_name = 'test'";
         Connection connection = dataSource.getConnection();
-
+        String catalog = connection.getCatalog();
+        DataBaseContext.getInstance().push(catalog, JdbcAnalyseUtils.analyse(connection));
         CCJSqlParserManager parser = new CCJSqlParserManager();
         Statement stmt = parser.parse(new StringReader(sql));
-        if (stmt instanceof Insert) {
-            System.out.println(AnalyseStrategryFactory.getInvokeStrategy(MysqlAnalyseEnum.INSERT.name()).mysqlAnalyseStrategy(sql, connection, stmt));
-        } else if (stmt instanceof Update) {
-            System.out.println(AnalyseStrategryFactory.getInvokeStrategy(MysqlAnalyseEnum.UPDATE.name()).mysqlAnalyseStrategy(sql, connection, stmt));
+        if (stmt instanceof Update) {
+            MysqlUpdateAnalyseStrategy mysqlInsertAnalyseStrategy = new MysqlUpdateAnalyseStrategy(new MysqlAnalyse());
+            mysqlInsertAnalyseStrategy.mysqlAnalyseStrategy(sql, connection, stmt);
         } else if (stmt instanceof Delete) {
-            System.out.println(AnalyseStrategryFactory.getInvokeStrategy(MysqlAnalyseEnum.DELETE.name()).mysqlAnalyseStrategy(sql, connection, stmt));
+            MysqlSqlDeleteAnalyseStrategy mysqlInsertAnalyseStrategy = new MysqlSqlDeleteAnalyseStrategy(new MysqlAnalyse());
+            mysqlInsertAnalyseStrategy.mysqlAnalyseStrategy(sql, connection, stmt);
         }
     }
 
@@ -92,26 +92,16 @@ public class MysqlSqlAnalyseTest {
         sql = "insert into lcn_sql_parse_test1 (id, name, sex, job, home_address, age, dept_id) values (null,'gz','1','test','bjc',12,1)";
         sql = "INSERT INTO lcn_sql_parse_test1 (name, sex, job, home_address, age, dept_id) VALUES ('gz', '1', 'test', 'bjc', 12, 4),('gz', '1', 'test', 'bjc', 12, 5),('gz', '1', 'test', 'bjc', 12, 6)";
         Connection connection = dataSource.getConnection();
-
+        String catalog = connection.getCatalog();
+        DataBaseContext.getInstance().push(catalog, JdbcAnalyseUtils.analyse(connection));
         CCJSqlParserManager parser = new CCJSqlParserManager();
         Statement stmt = parser.parse(new StringReader(sql));
         if (stmt instanceof Insert) {
-
-            System.out.println(AnalyseStrategryFactory.getInvokeStrategy(MysqlAnalyseEnum.INSERT.name()).mysqlAnalyseStrategy(sql, connection, stmt));
-        } else if (stmt instanceof Update) {
-            System.out.println(AnalyseStrategryFactory.getInvokeStrategy(MysqlAnalyseEnum.UPDATE.name()).mysqlAnalyseStrategy(sql, connection, stmt));
-        } else if (stmt instanceof Delete) {
-            System.out.println(AnalyseStrategryFactory.getInvokeStrategy(MysqlAnalyseEnum.DELETE.name()).mysqlAnalyseStrategy(sql, connection, stmt));
+            MysqlInsertAnalyseStrategy mysqlInsertAnalyseStrategy = new MysqlInsertAnalyseStrategy(new MysqlAnalyse());
+            String s = mysqlInsertAnalyseStrategy.mysqlAnalyseStrategy(sql, connection, stmt);
+            System.out.println(s);
         }
     }
 
-    @Test
-    public void xx() throws JSQLParserException {
-        String sql = "insert into lcn_sql_parse_test2 (dept_name) values ('a')";
-        CCJSqlParserManager parser = new CCJSqlParserManager();
-        Statement stmt = parser.parse(new StringReader(sql));
-        if(stmt instanceof Insert){
 
-        }
-    }
 }
