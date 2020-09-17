@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class MysqlAnalyse  implements SqlDetailAnalyse{
+public class MysqlSqlDetailAnalyse implements SqlDetailAnalyse{
 
     @Override
     public boolean singleInsertAnalyse(String sql, Connection connection, Insert statement, ItemsList itemsList, String pk, int pkIndex) throws SQLException {

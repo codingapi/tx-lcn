@@ -5,9 +5,10 @@ import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
 import com.codingapi.txlcn.tc.jdbc.database.JdbcAnalyseUtils;
 import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
-import com.codingapi.txlcn.tc.jdbc.sql.analyse.MysqlAnalyse;
-import com.codingapi.txlcn.tc.jdbc.sql.analyse.SqlDetailAnalyse;
-import com.codingapi.txlcn.tc.jdbc.sql.strategy.*;
+import com.codingapi.txlcn.tc.jdbc.sql.analyse.MysqlSqlDetailAnalyse;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.mysql.MysqlInsertAnalyseStrategy;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.mysql.MysqlDeleteAnalyseStrategy;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.mysql.MysqlUpdateAnalyseStrategy;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
@@ -18,8 +19,6 @@ import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.update.Update;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -78,11 +77,11 @@ public class MysqlSqlAnalyseTest {
         CCJSqlParserManager parser = new CCJSqlParserManager();
         Statement stmt = parser.parse(new StringReader(sql));
         if (stmt instanceof Update) {
-            MysqlUpdateAnalyseStrategy mysqlInsertAnalyseStrategy = new MysqlUpdateAnalyseStrategy(new MysqlAnalyse());
-            mysqlInsertAnalyseStrategy.mysqlAnalyseStrategy(sql, connection, stmt);
+            MysqlUpdateAnalyseStrategy mysqlInsertAnalyseStrategy = new MysqlUpdateAnalyseStrategy(new MysqlSqlDetailAnalyse());
+            mysqlInsertAnalyseStrategy.analyse(sql, connection, stmt);
         } else if (stmt instanceof Delete) {
-            MysqlSqlDeleteAnalyseStrategy mysqlInsertAnalyseStrategy = new MysqlSqlDeleteAnalyseStrategy(new MysqlAnalyse());
-            mysqlInsertAnalyseStrategy.mysqlAnalyseStrategy(sql, connection, stmt);
+            MysqlDeleteAnalyseStrategy mysqlInsertAnalyseStrategy = new MysqlDeleteAnalyseStrategy(new MysqlSqlDetailAnalyse());
+            mysqlInsertAnalyseStrategy.analyse(sql, connection, stmt);
         }
     }
 
@@ -97,8 +96,8 @@ public class MysqlSqlAnalyseTest {
         CCJSqlParserManager parser = new CCJSqlParserManager();
         Statement stmt = parser.parse(new StringReader(sql));
         if (stmt instanceof Insert) {
-            MysqlInsertAnalyseStrategy mysqlInsertAnalyseStrategy = new MysqlInsertAnalyseStrategy(new MysqlAnalyse());
-            String s = mysqlInsertAnalyseStrategy.mysqlAnalyseStrategy(sql, connection, stmt);
+            MysqlInsertAnalyseStrategy mysqlInsertAnalyseStrategy = new MysqlInsertAnalyseStrategy(new MysqlSqlDetailAnalyse());
+            String s = mysqlInsertAnalyseStrategy.analyse(sql, connection, stmt);
             System.out.println(s);
         }
     }

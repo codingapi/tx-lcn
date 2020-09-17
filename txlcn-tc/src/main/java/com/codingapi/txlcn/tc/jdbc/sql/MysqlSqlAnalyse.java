@@ -2,14 +2,11 @@ package com.codingapi.txlcn.tc.jdbc.sql;
 
 import com.codingapi.txlcn.p6spy.common.StatementInformation;
 import com.codingapi.txlcn.tc.jdbc.sql.strategy.AnalyseStrategryFactory;
-import com.codingapi.txlcn.tc.jdbc.sql.strategy.MysqlAnalyseEnum;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.SqlSqlAnalyseHandler;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.delete.Delete;
-import net.sf.jsqlparser.statement.insert.Insert;
-import net.sf.jsqlparser.statement.update.Update;
 
 import java.io.StringReader;
 import java.sql.Connection;
@@ -22,6 +19,12 @@ import java.sql.SQLException;
  */
 @Slf4j
 public class MysqlSqlAnalyse implements SqlAnalyse {
+
+    private AnalyseStrategryFactory analyseStrategryFactory;
+
+    public MysqlSqlAnalyse(AnalyseStrategryFactory analyseStrategryFactory) {
+        this.analyseStrategryFactory = analyseStrategryFactory;
+    }
 
     @Override
     public String sqlType() {
@@ -37,15 +40,13 @@ public class MysqlSqlAnalyse implements SqlAnalyse {
         // if else 实现并不是很优雅
         CCJSqlParserManager parser = new CCJSqlParserManager();
         Statement stmt = parser.parse(new StringReader(sql));
-        if (stmt instanceof Insert) {
-            return AnalyseStrategryFactory.getInvokeStrategy(MysqlAnalyseEnum.INSERT.name()).mysqlAnalyseStrategy(sql,connection,stmt);
-        } else if (stmt instanceof Update) {
-            return AnalyseStrategryFactory.getInvokeStrategy(MysqlAnalyseEnum.UPDATE.name()).mysqlAnalyseStrategy(sql,connection,stmt);
-        } else if (stmt instanceof Delete) {
-            return AnalyseStrategryFactory.getInvokeStrategy(MysqlAnalyseEnum.DELETE.name()).mysqlAnalyseStrategy(sql,connection,stmt);
+        SqlSqlAnalyseHandler sqlSqlAnalyseHandler =  analyseStrategryFactory.getInvokeStrategy(sqlType(),stmt);
+        if(sqlSqlAnalyseHandler==null){
+            return sql;
         }
-        return sql;
+        return sqlSqlAnalyseHandler.analyse(sql,connection,stmt);
     }
+
     @Override
     public boolean preAnalyse(String sql) {
         // SQL类型检查，只有对CUD(CURD)操作做处理
