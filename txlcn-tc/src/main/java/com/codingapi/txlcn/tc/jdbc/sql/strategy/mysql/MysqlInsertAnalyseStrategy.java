@@ -1,10 +1,11 @@
-package com.codingapi.txlcn.tc.jdbc.sql.strategy;
+package com.codingapi.txlcn.tc.jdbc.sql.strategy.mysql;
 
 import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
 import com.codingapi.txlcn.tc.jdbc.database.SqlAnalyseHelper;
 import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
 import com.codingapi.txlcn.tc.jdbc.sql.analyse.SqlDetailAnalyse;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.SqlSqlAnalyseHandler;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.operators.relational.ItemsList;
@@ -23,9 +24,7 @@ import java.sql.SQLException;
  * @date 2020-08-13 23:08:26
  */
 @Slf4j
-@Component
 public class  MysqlInsertAnalyseStrategy implements SqlSqlAnalyseHandler {
-
 
     private SqlDetailAnalyse sqlDetailAnalyse;
 
@@ -34,7 +33,7 @@ public class  MysqlInsertAnalyseStrategy implements SqlSqlAnalyseHandler {
     }
 
     @Override
-    public String mysqlAnalyseStrategy(String sql, Connection connection,Statement stmt) throws SQLException, JSQLParserException {
+    public String analyse(String sql, Connection connection, Statement stmt) throws SQLException, JSQLParserException {
         boolean defaultAutoCommit = connection.getAutoCommit();
         connection.setAutoCommit(false);
         String catalog = connection.getCatalog();
@@ -71,7 +70,8 @@ public class  MysqlInsertAnalyseStrategy implements SqlSqlAnalyseHandler {
     }
 
     @Override
-    public void afterPropertiesSet()  {
-        AnalyseStrategryFactory.register(MysqlAnalyseEnum.INSERT.name(), this);
+    public boolean preAnalyse(String sqlType,Statement stmt) {
+        return "mysql".equals(sqlType)&&stmt instanceof Insert;
     }
+
 }

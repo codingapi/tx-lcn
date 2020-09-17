@@ -1,6 +1,7 @@
 package com.codingapi.txlcn.tc.jdbc.sql;
 
 import com.codingapi.txlcn.tc.config.TxConfig;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.AnalyseStrategryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +22,7 @@ public class JdbcSqlConfiguration {
     }
 
     @Bean
-    public SqlAnalyse mysqlSqlParser(){
-        return new MysqlSqlAnalyse();
+    public SqlAnalyse mysqlSqlParser(AnalyseStrategryFactory analyseStrategryFactory){
+        return new MysqlSqlAnalyse(analyseStrategryFactory);
     }
 }

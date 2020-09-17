@@ -13,6 +13,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * //todo 若作为各种数据库的适配的话应该还需要做其他的数据库的适配，这样的话还不能满足需求。
+ */
 public interface SqlDetailAnalyse {
 
     /**
