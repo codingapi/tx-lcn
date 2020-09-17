@@ -22,39 +22,33 @@ public class TransactionGroup implements Serializable {
 
     private List<TransactionInfo> transactionInfoList;
 
-    public TransactionGroup(String groupId, String uniqueKey,String moduleName) {
+    public TransactionGroup(String groupId, String uniqueKey,String moduleName,TransactionInfo.TransactionType transactionType) {
         this.groupId = groupId;
         this.state = TransactionState.JOIN;
         this.transactionInfoList = new ArrayList<>();
 
-        this.add(uniqueKey, moduleName);
+        this.add(uniqueKey, moduleName,transactionType);
     }
 
 
-    public void add(String uniqueKey, String moduleName) {
-        TransactionInfo transactionInfo = new TransactionInfo(uniqueKey,moduleName);
+    public void add(String uniqueKey, String moduleName, TransactionInfo.TransactionType transactionType) {
+        TransactionInfo transactionInfo = new TransactionInfo(uniqueKey,moduleName,transactionType);
         this.transactionInfoList.add(transactionInfo);
     }
 
 
-    /**
-     * 事务状态
-     * 创建事务消息后的状态为 JOIN
-     * 其他事务加入后的状态为 JOIN
-     * 通知事物状态时确定为 COMMIT或ROLLBACK
-     * 询问事务信息时若数据为空也为ROLLBACK状态
-     */
-    public enum TransactionState{
-         JOIN,COMMIT,ROLLBACK;
-
-
-        public static TransactionState parser(boolean flag){
-            if(flag){
-                return COMMIT;
-            }else{
-                return ROLLBACK;
+    public List<TransactionInfo> listTransaction() {
+        List<TransactionInfo> transactionInfos = new ArrayList<>();
+        for(TransactionInfo transactionInfo:transactionInfoList) {
+            if(transactionInfo.hasJoin()){
+                transactionInfos.add(transactionInfo);
             }
         }
+        return transactionInfos;
+    }
+
+    public boolean hasCommit(){
+        return state.equals(TransactionState.COMMIT);
     }
 
 

@@ -1,11 +1,10 @@
 package com.codingapi.txlcn.tm.repository.redis;
 
-import com.codingapi.txlcn.tm.repository.TransactionGroup;
+import com.codingapi.txlcn.tm.repository.TmNodeRepository;
 import com.codingapi.txlcn.tm.repository.TransactionGroupRepository;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,21 +23,27 @@ public class RedisRepositoryConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public TransactionGroupRepository transactionGroupRepository(RedisTemplate<String, TransactionGroup> redisTemplate){
+    public TransactionGroupRepository transactionGroupRepository(RedisTemplate<String, Object> redisTemplate) {
         return new RedisTransactionGroupRepository(redisTemplate);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public RedisTemplate<String, TransactionGroup> redisTemplate(RedisConnectionFactory factory){
-        RedisTemplate<String, TransactionGroup> redisTemplate = new RedisTemplate<>();
+    public TmNodeRepository tmNodeRepository(RedisTemplate<String, Object> tmRedisTemplate) {
+        return new RedisTmNodeRepository(tmRedisTemplate);
+    }
+
+
+    @Bean
+    @ConditionalOnMissingBean
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(factory);
 
-        Jackson2JsonRedisSerializer<TransactionGroup> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<TransactionGroup>(TransactionGroup.class);
+        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-//        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-        objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator(),ObjectMapper.DefaultTyping.NON_FINAL);
+        objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
 
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();

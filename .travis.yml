@@ -8,14 +8,14 @@ branches:
 
 services:
 - mysql
-- mongodb
+- redis-server
 
 before_install:
 - pip install --user codecov
-#- mysql -u root --password=  < ./sql/init.sql
+- mysql -u root --password=  < ./sql/init.sql
 
 script:
-- mvn clean install -DskipTests=false -P travis
+- mvn clean install -DskipTests=false -P travis -Dspring.profiles.active=travis
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)

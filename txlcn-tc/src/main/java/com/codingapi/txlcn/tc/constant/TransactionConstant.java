@@ -1,4 +1,4 @@
-package com.codingapi.txlcn.tc;
+package com.codingapi.txlcn.tc.constant;
 
 /**
  * @author lorne

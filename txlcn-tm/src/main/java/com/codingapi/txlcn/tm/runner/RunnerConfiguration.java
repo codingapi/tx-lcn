@@ -10,17 +10,28 @@ import javax.annotation.PostConstruct;
 @Configuration
 public class RunnerConfiguration {
 
-  @Autowired
-  private ProtocolRunner protocolRunner;
+    @Autowired
+    private ProtocolRunner protocolRunner;
 
-  @Bean
-  public ProtocolRunner protocolRunner(ProtocolServer protocolServer) {
-    return new ProtocolRunner(protocolServer);
-  }
+    @Autowired
+    private TmNodeServerRunner tmNodeServerRunner;
 
-  @PostConstruct
-  public void start() {
-    protocolRunner.start();
-  }
+    @Bean
+    public ProtocolRunner protocolRunner(ProtocolServer protocolServer) {
+        return new ProtocolRunner(protocolServer);
+    }
+
+    @Bean
+    public TmNodeServerRunner tmNodeServerRunner(ProtocolServer protocolServer) {
+        return new TmNodeServerRunner(protocolServer);
+    }
+
+    @PostConstruct
+    public void start() {
+        protocolRunner.start();
+        tmNodeServerRunner.init();
+    }
+
+
 
 }

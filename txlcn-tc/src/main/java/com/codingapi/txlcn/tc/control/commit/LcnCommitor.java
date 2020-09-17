@@ -1,7 +1,8 @@
 package com.codingapi.txlcn.tc.control.commit;
 
-import com.codingapi.txlcn.tc.TransactionConstant;
+import com.codingapi.txlcn.tc.constant.TransactionConstant;
 import com.codingapi.txlcn.tc.control.Commitor;
+import com.codingapi.txlcn.tc.exception.TxException;
 import com.codingapi.txlcn.tc.info.TransactionInfo;
 import com.codingapi.txlcn.tc.jdbc.JdbcContext;
 import com.codingapi.txlcn.tc.jdbc.log.TransactionLogExecutor;
@@ -29,6 +30,10 @@ public class LcnCommitor implements Commitor {
     public void commit(boolean state) {
         String groupId = TransactionInfo.current().getGroupId();
         Connection connection =  JdbcContext.getInstance().get(groupId);
+
+        if(null == connection){
+            throw new TxException("connection must not null.");
+        }
 
         if(state){
             try {

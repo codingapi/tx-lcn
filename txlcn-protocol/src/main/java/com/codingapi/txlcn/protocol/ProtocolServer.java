@@ -45,7 +45,6 @@ public class ProtocolServer {
     private final Protocoler protocoler;
 
     public ProtocolServer(Config config,ApplicationContext applicationContext) {
-        config.initApplicationName(applicationContext.getEnvironment().getProperty("spring.application.name"));
         this.config = config;
         this.applicationContext = applicationContext;
         protocoler = new Protocoler(config);
@@ -121,7 +120,7 @@ public class ProtocolServer {
         }
         String uniqueKey = String.format("%s:%d",host,port);
         if(protocoler.existConnect(uniqueKey)){
-            log.warn("Already existing connection to " + uniqueKey + " is closed.");
+//            log.warn("Already existing connection to " + uniqueKey + " is closed.");
             return false;
         }
 

@@ -27,9 +27,33 @@ public class TransactionInfo {
      */
     private long time;
 
-    public TransactionInfo( String uniqueKey,String moduleName) {
+    /**
+     * 事务类型
+     */
+    private TransactionType transactionType;
+
+
+    public TransactionInfo( String uniqueKey,String moduleName,TransactionType transactionType) {
         this.uniqueKey = uniqueKey;
         this.moduleName = moduleName;
+        this.transactionType = transactionType;
         this.time = System.currentTimeMillis();
+    }
+
+    public boolean hasJoin() {
+        return TransactionType.JOIN.equals(transactionType);
+    }
+
+
+    public enum TransactionType{
+        /**
+         * 事务发起方
+         */
+        REQUEST,
+        /**
+         * 事务加入方
+         */
+        JOIN
+
     }
 }

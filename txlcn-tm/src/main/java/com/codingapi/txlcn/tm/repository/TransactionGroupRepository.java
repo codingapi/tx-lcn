@@ -11,6 +11,6 @@ public interface TransactionGroupRepository {
 
     void join(String groupId, String uniqueKey,String moduleName) throws Exception;
 
-    void notify(String groupId, boolean success) throws Exception;
+    TransactionGroup notify(String groupId, boolean success) throws Exception;
 
 }
