@@ -1,11 +1,8 @@
 package com.codingapi.txlcn.tc.jdbc.sql.strategy;
 
-import com.google.common.collect.Maps;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
+import net.sf.jsqlparser.statement.Statement;
 
-import javax.annotation.PostConstruct;
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author Gz.
@@ -15,17 +12,19 @@ import java.util.Map;
 
 public class AnalyseStrategryFactory {
 
-    private static Map<String, SqlSqlAnalyseHandler> strategyMap = Maps.newHashMap();
+    private List<SqlSqlAnalyseHandler> analyseHandlers;
 
-    public static SqlSqlAnalyseHandler getInvokeStrategy(String name) {
-        return strategyMap.get(name);
+    public AnalyseStrategryFactory(List<SqlSqlAnalyseHandler> analyseHandlers) {
+        this.analyseHandlers = analyseHandlers;
     }
 
-    public static void register(String name, SqlSqlAnalyseHandler handler) {
-        if (StringUtils.isEmpty(name) || null == handler) {
-            return;
+    public  SqlSqlAnalyseHandler getInvokeStrategy(String sqlType,Statement statement) {
+        for(SqlSqlAnalyseHandler handler : analyseHandlers){
+            if(handler.preAnalyse(sqlType,statement)){
+                return handler;
+            }
         }
-        strategyMap.put(name, handler);
+        return null;
     }
 
 }
