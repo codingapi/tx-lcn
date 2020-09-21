@@ -6,6 +6,7 @@ import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
 import com.codingapi.txlcn.tc.jdbc.sql.analyse.SqlDetailAnalyse;
 import com.codingapi.txlcn.tc.jdbc.sql.strategy.SqlSqlAnalyseHandler;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.chan.*;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.operators.relational.ItemsList;
@@ -42,12 +43,13 @@ public class  MysqlInsertAnalyseStrategy implements SqlSqlAnalyseHandler {
         Table table = statement.getTable();
         ItemsList itemsList = statement.getItemsList();
 
-        if(null == itemsList){
+        FilterFacaer filterFacaer = FilterFacaer.builder().tableList(tableList).table(table).itemsList(itemsList).build();
+        SqlAnalysqFilterChain filter = new SqlAnalysqFilterChain();
+        filter.add(new CheckTableContainsPkFilter()).add(new ItemsListFilter());
+        if(!filter.doFilter(filterFacaer)){
             return sql;
         }
-        if(!SqlAnalyseHelper.checkTableContainsPk(table, tableList)){
-            return sql;
-        }
+
         TableInfo tableInfo = tableList.getTable(table.getName());
         String pk = tableInfo.getPrimaryKeys().get(0);
 

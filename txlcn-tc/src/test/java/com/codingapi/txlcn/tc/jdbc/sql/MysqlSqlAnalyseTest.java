@@ -70,7 +70,7 @@ public class MysqlSqlAnalyseTest {
     @Test
     public void mysqlAnalyse() throws SQLException, JSQLParserException {
         String sql = "DELETE  t2,t3 FROM lcn_sql_parse_test2 t2 ,lcn_sql_parse_test3 t3 where t3.job = t2.dept_name AND t2.dept_name = 'test' and t3.name = 'a' ";
-        sql = "update lcn_sql_parse_test3 t3 ,lcn_sql_parse_test2 t2 set t3.age = 56 ,t2.dept_name = 'dev' where t3.job = t2.dept_name and t2.dept_name = 'test'";
+        sql = "update lcn_sql_parse_test3 t3 set t3.update_time = now()";
         Connection connection = dataSource.getConnection();
         String catalog = connection.getCatalog();
         DataBaseContext.getInstance().push(catalog, JdbcAnalyseUtils.analyse(connection));
