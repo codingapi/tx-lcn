@@ -1,11 +1,11 @@
 package com.codingapi.txlcn.tc.jdbc.sql.strategy.mysql;
 
 import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
-import com.codingapi.txlcn.tc.jdbc.database.SqlAnalyseHelper;
 import com.codingapi.txlcn.tc.jdbc.database.SqlAnalyseInfo;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
 import com.codingapi.txlcn.tc.jdbc.sql.analyse.SqlDetailAnalyse;
 import com.codingapi.txlcn.tc.jdbc.sql.strategy.SqlSqlAnalyseHandler;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.chan.*;
 import com.codingapi.txlcn.tc.utils.ListUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
@@ -40,10 +40,10 @@ public class MysqlDeleteAnalyseStrategy implements SqlSqlAnalyseHandler {
         TableList tableList =  DataBaseContext.getInstance().get(catalog);
         Delete statement = (Delete) stmt;
         Table table = statement.getTable();
-        if(!SqlAnalyseHelper.checkTableContainsPk(table, tableList)){
-            return sql;
-        }
-        if(SqlAnalyseHelper.checkWhereContainsPk(table, tableList,statement.getWhere().toString())){
+        FilterFacaer filterFacaer = FilterFacaer.builder().tableList(tableList).table(table).deleteStatement(statement).build();
+        SqlAnalysqFilterChain filter = new SqlAnalysqFilterChain();
+        filter.add(new WhereFilter()).add(new CheckTableContainsPkFilter()).add(new CheckWhereContainsPkFilter());
+        if(!filter.doFilter(filterFacaer)){
             return sql;
         }
         SqlAnalyseInfo sqlAnalyseInfo = sqlDetailAnalyse.sqlAnalyseSingleTable(tableList, table, statement.getWhere(),statement.getJoins());
