@@ -10,8 +10,8 @@ import com.codingapi.txlcn.tc.utils.ListUtil;
  */
 public class CheckTableContainsPkFilter implements SqlAnalysqFilter {
     @Override
-    public boolean doFilter(FilterFacaer filterFacaer) {
-        TableInfo tableInfo = filterFacaer.getTableList().getTable(filterFacaer.getTable().getName());
+    public boolean doFilter(FilterFacade filterFacade) {
+        TableInfo tableInfo = filterFacade.getTableList().getTable(filterFacade.getTable().getName());
         if(ListUtil.isNotEmpty(tableInfo.getPrimaryKeys())){
             return  true;
         }

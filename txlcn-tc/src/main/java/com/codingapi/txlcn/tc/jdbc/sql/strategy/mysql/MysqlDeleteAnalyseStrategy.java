@@ -4,6 +4,7 @@ import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
 import com.codingapi.txlcn.tc.jdbc.database.SqlAnalyseInfo;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
 import com.codingapi.txlcn.tc.jdbc.sql.analyse.SqlDetailAnalyse;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.SqlDetailAnalyseFactory;
 import com.codingapi.txlcn.tc.jdbc.sql.strategy.SqlSqlAnalyseHandler;
 import com.codingapi.txlcn.tc.jdbc.sql.strategy.chan.*;
 import com.codingapi.txlcn.tc.utils.ListUtil;
@@ -28,31 +29,32 @@ import java.util.Map;
 @Slf4j
 public class MysqlDeleteAnalyseStrategy implements SqlSqlAnalyseHandler {
 
-    private SqlDetailAnalyse sqlDetailAnalyse;
+    private SqlDetailAnalyseFactory sqlDetailAnalyseFactory;
 
-    public MysqlDeleteAnalyseStrategy(SqlDetailAnalyse sqlDetailAnalyse){
-        this.sqlDetailAnalyse = sqlDetailAnalyse;
+    public MysqlDeleteAnalyseStrategy(SqlDetailAnalyseFactory sqlDetailAnalyseFactory){
+        this.sqlDetailAnalyseFactory = sqlDetailAnalyseFactory;
     }
 
     @Override
-    public String analyse(String sql, Connection connection, Statement stmt) throws SQLException, JSQLParserException {
+    public String analyse(String sqlType,String sql, Connection connection, Statement stmt) throws SQLException, JSQLParserException {
         String catalog = connection.getCatalog();
         TableList tableList =  DataBaseContext.getInstance().get(catalog);
         Delete statement = (Delete) stmt;
         Table table = statement.getTable();
-        FilterFacaer filterFacaer = FilterFacaer.builder().tableList(tableList).table(table).deleteStatement(statement).build();
+        FilterFacade filterFacade = FilterFacade.builder().tableList(tableList).table(table).deleteStatement(statement).build();
         SqlAnalysqFilterChain filter = new SqlAnalysqFilterChain();
         filter.add(new WhereFilter()).add(new CheckTableContainsPkFilter()).add(new CheckWhereContainsPkFilter());
-        if(!filter.doFilter(filterFacaer)){
+        if(!filter.doFilter(filterFacade)){
             return sql;
         }
-        SqlAnalyseInfo sqlAnalyseInfo = sqlDetailAnalyse.sqlAnalyseSingleTable(tableList, table, statement.getWhere(),statement.getJoins());
+        SqlDetailAnalyse invokeStrategy = sqlDetailAnalyseFactory.getInvokeStrategy(sqlType);
+        SqlAnalyseInfo sqlAnalyseInfo = invokeStrategy.sqlAnalyseSingleTable(tableList, table, statement.getWhere(),statement.getJoins());
         QueryRunner queryRunner = new QueryRunner();
         List<Map<String, Object>> query = queryRunner.query(connection, sqlAnalyseInfo.getQuerySql(), new MapListHandler());
         if(ListUtil.isEmpty(query)){
             return sql;
         }
-        sql = sqlDetailAnalyse.splicingNewSql(sql, sqlAnalyseInfo, query);
+        sql = invokeStrategy.splicingNewSql(sql, sqlAnalyseInfo, query);
         log.info("newSql=[{}]",sql);
         return sql;
     }

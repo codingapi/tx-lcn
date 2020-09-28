@@ -4,6 +4,7 @@ import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
 import com.codingapi.txlcn.tc.jdbc.database.SqlAnalyseInfo;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
 import com.codingapi.txlcn.tc.jdbc.sql.analyse.SqlDetailAnalyse;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.SqlDetailAnalyseFactory;
 import com.codingapi.txlcn.tc.jdbc.sql.strategy.SqlSqlAnalyseHandler;
 import com.codingapi.txlcn.tc.jdbc.sql.strategy.chan.*;
 import com.codingapi.txlcn.tc.utils.ListUtil;
@@ -29,32 +30,33 @@ import java.util.Map;
 @Slf4j
 public class MysqlUpdateAnalyseStrategy implements SqlSqlAnalyseHandler {
 
-    private SqlDetailAnalyse sqlDetailAnalyse;
+    private SqlDetailAnalyseFactory sqlDetailAnalyseFactory;
 
-    public MysqlUpdateAnalyseStrategy(SqlDetailAnalyse sqlDetailAnalyse){
-        this.sqlDetailAnalyse = sqlDetailAnalyse;
+    public MysqlUpdateAnalyseStrategy(SqlDetailAnalyseFactory sqlDetailAnalyseFactory){
+        this.sqlDetailAnalyseFactory = sqlDetailAnalyseFactory;
     }
 
     @Override
-    public String analyse(String sql, Connection connection , Statement stmt) throws SQLException, JSQLParserException {
+    public String analyse(String sqlType,String sql, Connection connection , Statement stmt) throws SQLException, JSQLParserException {
         String catalog = connection.getCatalog();
         TableList tableList =  DataBaseContext.getInstance().get(catalog);
         Update statement = (Update) stmt;
         Table table = statement.getTable();
-        FilterFacaer filterFacaer = FilterFacaer.builder().tableList(tableList).table(table).updateStatement(statement).build();
+        FilterFacade filterFacade = FilterFacade.builder().tableList(tableList).table(table).updateStatement(statement).build();
         SqlAnalysqFilterChain filter = new SqlAnalysqFilterChain();
         filter.add(new WhereFilter()).add(new CheckTableContainsPkFilter()).add(new CheckWhereContainsPkFilter());
-        if(!filter.doFilter(filterFacaer)){
+        if(!filter.doFilter(filterFacade)){
             return sql;
         }
         //TODO now() 之类的函数有待分析
-        SqlAnalyseInfo sqlAnalyseInfo = sqlDetailAnalyse.sqlAnalyseSingleTable(tableList, table, statement.getWhere(),statement.getStartJoins());
+        SqlDetailAnalyse invokeStrategy = sqlDetailAnalyseFactory.getInvokeStrategy(sqlType);
+        SqlAnalyseInfo sqlAnalyseInfo = invokeStrategy.sqlAnalyseSingleTable(tableList, table, statement.getWhere(),statement.getStartJoins());
         QueryRunner queryRunner = new QueryRunner();
         List<Map<String, Object>> query = queryRunner.query(connection, sqlAnalyseInfo.getQuerySql(), new MapListHandler());
         if(ListUtil.isEmpty(query)){
             return sql;
         }
-        sql = sqlDetailAnalyse.splicingNewSql(sql, sqlAnalyseInfo, query);
+        sql = invokeStrategy.splicingNewSql(sql, sqlAnalyseInfo, query);
         log.info("newSql=[{}]",sql);
         return sql;
     }

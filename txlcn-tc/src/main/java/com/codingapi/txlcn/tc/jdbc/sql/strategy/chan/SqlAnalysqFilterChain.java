@@ -18,9 +18,9 @@ public class SqlAnalysqFilterChain implements SqlAnalysqFilter {
     }
 
     @Override
-    public boolean doFilter(FilterFacaer filterFacaer) {
+    public boolean doFilter(FilterFacade filterFacade) {
         for (SqlAnalysqFilter filter : filterList) {
-            if(!filter.doFilter(filterFacaer)){
+            if(!filter.doFilter(filterFacade)){
                 return false;
             }
         }

@@ -25,20 +25,25 @@ public class StrategyConfiguration {
     }
 
     @Bean
+    public SqlDetailAnalyseFactory sqlDetailStrategryFactory(@Autowired(required = false)List<SqlDetailAnalyse> sqlDetailAnalyses){
+        return new SqlDetailAnalyseFactory(sqlDetailAnalyses);
+    }
+
+    @Bean
     @ConditionalOnMissingBean
-    public SqlSqlAnalyseHandler mysqlInsertAnalyseStrategy(SqlDetailAnalyse sqlDetailAnalyse){
+    public SqlSqlAnalyseHandler mysqlInsertAnalyseStrategy(SqlDetailAnalyseFactory sqlDetailAnalyse){
         return new MysqlInsertAnalyseStrategy(sqlDetailAnalyse);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public SqlSqlAnalyseHandler mysqlDeleteAnalyseStrategy(SqlDetailAnalyse sqlDetailAnalyse){
+    public SqlSqlAnalyseHandler mysqlDeleteAnalyseStrategy(SqlDetailAnalyseFactory sqlDetailAnalyse){
         return new MysqlDeleteAnalyseStrategy(sqlDetailAnalyse);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public SqlSqlAnalyseHandler mysqlUpdateAnalyseStrategy(SqlDetailAnalyse sqlDetailAnalyse){
+    public SqlSqlAnalyseHandler mysqlUpdateAnalyseStrategy(SqlDetailAnalyseFactory sqlDetailAnalyse){
         return new MysqlUpdateAnalyseStrategy(sqlDetailAnalyse);
     }
 

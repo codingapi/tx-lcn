@@ -9,8 +9,8 @@ public class ItemsListFilter implements SqlAnalysqFilter {
 
 
     @Override
-    public boolean doFilter(FilterFacaer filterFacaer) {
-        if(null == filterFacaer.getItemsList()){
+    public boolean doFilter(FilterFacade filterFacade) {
+        if(null == filterFacade.getItemsList()){
             return false;
         }
         return true;

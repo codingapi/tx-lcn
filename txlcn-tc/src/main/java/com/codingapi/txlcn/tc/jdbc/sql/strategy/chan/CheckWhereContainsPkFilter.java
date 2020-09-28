@@ -9,8 +9,8 @@ import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
  */
 public class CheckWhereContainsPkFilter implements SqlAnalysqFilter {
     @Override
-    public boolean doFilter(FilterFacaer filterFacaer) {
-        TableInfo tableInfo = filterFacaer.getTableList().getTable(filterFacaer.getTable().getName());
-        return  (filterFacaer.getDeleteStatement() == null ? filterFacaer.getUpdateStatement().getWhere() : filterFacaer.getDeleteStatement().getWhere()).toString().toUpperCase().contains(tableInfo.getPrimaryKeys().get(0).toUpperCase());
+    public boolean doFilter(FilterFacade filterFacade) {
+        TableInfo tableInfo = filterFacade.getTableList().getTable(filterFacade.getTable().getName());
+        return  (filterFacade.getDeleteStatement() == null ? filterFacade.getUpdateStatement().getWhere() : filterFacade.getDeleteStatement().getWhere()).toString().toUpperCase().contains(tableInfo.getPrimaryKeys().get(0).toUpperCase());
     }
 }

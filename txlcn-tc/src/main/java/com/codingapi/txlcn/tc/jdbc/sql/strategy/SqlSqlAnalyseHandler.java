@@ -14,7 +14,7 @@ import java.sql.SQLException;
 public interface SqlSqlAnalyseHandler  {
 
 
-    String analyse(String sql, Connection connection, Statement stmt) throws JSQLParserException, SQLException;
+    String analyse(String sqlType,String sql, Connection connection, Statement stmt) throws JSQLParserException, SQLException;
 
 
     boolean preAnalyse(String sqlType,Statement stmt);

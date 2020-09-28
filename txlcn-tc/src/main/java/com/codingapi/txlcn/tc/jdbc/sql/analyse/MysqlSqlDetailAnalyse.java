@@ -11,6 +11,7 @@ import net.sf.jsqlparser.expression.operators.relational.ItemsList;
 import net.sf.jsqlparser.expression.operators.relational.MultiExpressionList;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
+import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Join;
 import org.apache.commons.dbutils.QueryRunner;
@@ -143,4 +144,10 @@ public class MysqlSqlDetailAnalyse implements SqlDetailAnalyse{
         sql = sql.concat(")");
         return sql;
     }
+
+    @Override
+    public boolean preAnalyse(String sqlType) {
+          return "mysql".equals(sqlType);
+    }
+
 }
