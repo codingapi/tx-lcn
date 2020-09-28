@@ -7,5 +7,5 @@ package com.codingapi.txlcn.tc.jdbc.sql.strategy.chan;
  */
 public interface SqlAnalysqFilter {
 
-    boolean doFilter(FilterFacaer filterFacaer);
+    boolean doFilter(FilterFacade filterFacade);
 }

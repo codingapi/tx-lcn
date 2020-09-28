@@ -1,7 +1,5 @@
 package com.codingapi.txlcn.tc.jdbc.sql.strategy.chan;
 
-import net.sf.jsqlparser.statement.update.Update;
-
 /**
  * @author Gz.
  * @description:
@@ -9,8 +7,8 @@ import net.sf.jsqlparser.statement.update.Update;
  */
 public class WhereFilter  implements SqlAnalysqFilter {
     @Override
-    public boolean doFilter(FilterFacaer filterFacaer) {
-        if( (filterFacaer.getDeleteStatement() == null ? filterFacaer.getUpdateStatement().getWhere() : filterFacaer.getDeleteStatement().getWhere()) == null){
+    public boolean doFilter(FilterFacade filterFacade) {
+        if( (filterFacade.getDeleteStatement() == null ? filterFacade.getUpdateStatement().getWhere() : filterFacade.getDeleteStatement().getWhere()) == null){
             return false;
         }
         return true;

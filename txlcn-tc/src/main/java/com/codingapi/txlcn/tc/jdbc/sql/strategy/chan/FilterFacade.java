@@ -15,7 +15,7 @@ import net.sf.jsqlparser.statement.update.Update;
  */
 @Data
 @Builder
-public class FilterFacaer {
+public class FilterFacade {
 
     private TableList tableList;
 

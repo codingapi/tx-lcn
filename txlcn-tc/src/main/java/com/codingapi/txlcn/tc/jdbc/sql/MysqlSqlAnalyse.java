@@ -36,15 +36,13 @@ public class MysqlSqlAnalyse implements SqlAnalyse {
     public String analyse(String sql,StatementInformation statementInformation)  throws SQLException {
         log.debug("mysql analyse:{}", sql);
         Connection connection = statementInformation.getConnectionInformation().getConnection();
-        // sql.toUpperCase().substring(0,6) 这样实现有风险
-        // if else 实现并不是很优雅
         CCJSqlParserManager parser = new CCJSqlParserManager();
         Statement stmt = parser.parse(new StringReader(sql));
         SqlSqlAnalyseHandler sqlSqlAnalyseHandler =  analyseStrategryFactory.getInvokeStrategy(sqlType(),stmt);
         if(sqlSqlAnalyseHandler==null){
             return sql;
         }
-        return sqlSqlAnalyseHandler.analyse(sql,connection,stmt);
+        return sqlSqlAnalyseHandler.analyse(sqlType(),sql,connection,stmt);
     }
 
     @Override

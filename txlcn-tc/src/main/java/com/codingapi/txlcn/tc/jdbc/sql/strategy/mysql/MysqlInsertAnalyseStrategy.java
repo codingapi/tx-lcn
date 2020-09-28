@@ -1,10 +1,10 @@
 package com.codingapi.txlcn.tc.jdbc.sql.strategy.mysql;
 
 import com.codingapi.txlcn.tc.jdbc.database.DataBaseContext;
-import com.codingapi.txlcn.tc.jdbc.database.SqlAnalyseHelper;
 import com.codingapi.txlcn.tc.jdbc.database.TableInfo;
 import com.codingapi.txlcn.tc.jdbc.database.TableList;
 import com.codingapi.txlcn.tc.jdbc.sql.analyse.SqlDetailAnalyse;
+import com.codingapi.txlcn.tc.jdbc.sql.strategy.SqlDetailAnalyseFactory;
 import com.codingapi.txlcn.tc.jdbc.sql.strategy.SqlSqlAnalyseHandler;
 import com.codingapi.txlcn.tc.jdbc.sql.strategy.chan.*;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,6 @@ import net.sf.jsqlparser.expression.operators.relational.ItemsList;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.insert.Insert;
-import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -27,14 +26,15 @@ import java.sql.SQLException;
 @Slf4j
 public class  MysqlInsertAnalyseStrategy implements SqlSqlAnalyseHandler {
 
-    private SqlDetailAnalyse sqlDetailAnalyse;
+    private SqlDetailAnalyseFactory sqlDetailAnalyseFactory;
 
-    public MysqlInsertAnalyseStrategy(SqlDetailAnalyse sqlDetailAnalyse){
-        this.sqlDetailAnalyse = sqlDetailAnalyse;
+    public MysqlInsertAnalyseStrategy(SqlDetailAnalyseFactory sqlDetailAnalyseFactory){
+        this.sqlDetailAnalyseFactory = sqlDetailAnalyseFactory;
     }
 
+
     @Override
-    public String analyse(String sql, Connection connection, Statement stmt) throws SQLException, JSQLParserException {
+    public String analyse(String sqlType, String sql, Connection connection, Statement stmt) throws SQLException, JSQLParserException {
         boolean defaultAutoCommit = connection.getAutoCommit();
         connection.setAutoCommit(false);
         String catalog = connection.getCatalog();
@@ -43,10 +43,10 @@ public class  MysqlInsertAnalyseStrategy implements SqlSqlAnalyseHandler {
         Table table = statement.getTable();
         ItemsList itemsList = statement.getItemsList();
 
-        FilterFacaer filterFacaer = FilterFacaer.builder().tableList(tableList).table(table).itemsList(itemsList).build();
+        FilterFacade filterFacade = FilterFacade.builder().tableList(tableList).table(table).itemsList(itemsList).build();
         SqlAnalysqFilterChain filter = new SqlAnalysqFilterChain();
         filter.add(new CheckTableContainsPkFilter()).add(new ItemsListFilter());
-        if(!filter.doFilter(filterFacaer)){
+        if(!filter.doFilter(filterFacade)){
             return sql;
         }
 
@@ -61,9 +61,10 @@ public class  MysqlInsertAnalyseStrategy implements SqlSqlAnalyseHandler {
             }
         }
 
-        if (sqlDetailAnalyse.multiInsertAnalyse(sql, connection, statement, itemsList, pk, pkIndex)) return sql;
+        SqlDetailAnalyse invokeStrategy = sqlDetailAnalyseFactory.getInvokeStrategy(sqlType);
+        if (invokeStrategy.multiInsertAnalyse(sql, connection, statement, itemsList, pk, pkIndex)) return sql;
 
-        if (sqlDetailAnalyse.singleInsertAnalyse(sql, connection, statement, itemsList, pk, pkIndex)) return sql;
+        if (invokeStrategy.singleInsertAnalyse(sql, connection, statement, itemsList, pk, pkIndex)) return sql;
 
         connection.rollback();
         connection.setAutoCommit(defaultAutoCommit);
