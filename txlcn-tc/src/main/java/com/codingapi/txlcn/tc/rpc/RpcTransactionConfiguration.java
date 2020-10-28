@@ -3,6 +3,7 @@ package com.codingapi.txlcn.tc.rpc;
 import feign.Feign;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -50,6 +51,16 @@ public class RpcTransactionConfiguration {
 
     }
 
+    @Bean
+    @ConditionalOnClass(org.apache.dubbo.rpc.Filter.class)
+    public ApacheDubboRpcTransactionInterceptor apacheDubboRpcTransactionInterceptor(){
+        return new ApacheDubboRpcTransactionInterceptor();
+    }
 
-
+    @Bean
+    @ConditionalOnClass(com.alibaba.dubbo.rpc.Filter.class)
+    @ConditionalOnMissingClass("org.apache.dubbo.rpc.Filter")
+    public AlibabaDubboRpcTransactionInterceptor alibabaDubboRpcTransactionInterceptor(){
+        return new AlibabaDubboRpcTransactionInterceptor();
+    }
 }
