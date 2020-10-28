@@ -1,17 +1,15 @@
 package com.codingapi.txlcn.tc.rpc;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.common.constants.CommonConstants;
-import org.apache.dubbo.common.extension.Activate;
-import org.apache.dubbo.rpc.*;
+import com.alibaba.dubbo.common.Constants;
+import com.alibaba.dubbo.common.extension.Activate;
+import com.alibaba.dubbo.rpc.*;
 
 /**
  * @author zhanghonglong
  * @date 2020/10/28 11:01
  */
-@Activate(group = CommonConstants.CONSUMER)
-@Slf4j
-public class ApacheDubboRpcTransactionInterceptor implements Filter {
+@Activate(group = Constants.CONSUMER)
+public class DubboRpcTransactionInterceptor implements Filter {
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         RpcTransactionContext.getInstance().build(invocation.getAttachments()::put);

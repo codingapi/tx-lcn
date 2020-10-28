@@ -1,2 +1,1 @@
-ApacheDubboTransactionFilter=com.codingapi.txlcn.tc.rpc.ApacheDubboRpcTransactionInterceptor
-AlibabaDubboTransactionFilter=com.codingapi.txlcn.tc.rpc.AlibabaDubboRpcTransactionInterceptor
+DubboTransactionFilter=com.codingapi.txlcn.tc.rpc.DubboRpcTransactionInterceptor
