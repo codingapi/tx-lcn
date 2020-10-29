@@ -1,0 +1,2 @@
+DubboConsumerTransactionFilter=com.codingapi.txlcn.tc.rpc.DubboConsumerRpcTransactionInterceptor
+DubboProviderTransactionFilter=com.codingapi.txlcn.tc.rpc.DubboProviderRpcTransactionInterceptor
