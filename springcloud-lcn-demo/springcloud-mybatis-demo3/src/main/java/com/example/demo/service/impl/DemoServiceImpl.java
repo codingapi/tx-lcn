@@ -32,6 +32,6 @@ public class DemoServiceImpl implements DemoService, ITxTransaction {
     public int save() {
         Random random = new Random();
         Integer ss = random.nextInt(1000);
-        return testMapper.save(ss + "", "demo3");
+        return testMapper.save("", "demo3");
     }
 }
