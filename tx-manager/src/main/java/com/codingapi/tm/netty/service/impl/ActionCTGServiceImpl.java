@@ -19,7 +19,9 @@ public class ActionCTGServiceImpl implements IActionService{
 
     @Override
     public String execute(String channelAddress, String key, JSONObject params ) {
+        //获取事务组
         String groupId = params.getString("g");
+        //获取参与者执行结果
         int state = params.getInteger("s");
         String res = String.valueOf(txManagerService.closeTransactionGroup(groupId,state));
         return res;

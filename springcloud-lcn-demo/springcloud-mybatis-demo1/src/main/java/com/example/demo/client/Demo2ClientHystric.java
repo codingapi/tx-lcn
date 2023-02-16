@@ -17,7 +17,7 @@ public class Demo2ClientHystric implements Demo2Client {
     }
 
     @Override
-    public int save(String id, String name) {
+    public int save(String name) {
         System.out.println("进入断路器-save。。。");
         throw new RuntimeException("save 保存失败.");
     }

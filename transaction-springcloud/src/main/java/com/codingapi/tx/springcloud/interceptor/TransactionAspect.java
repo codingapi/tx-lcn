@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class TransactionAspect implements Ordered
 {
-
     private Logger logger = LoggerFactory.getLogger(TransactionAspect.class);
 
     @Autowired

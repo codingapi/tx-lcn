@@ -21,11 +21,15 @@ public class ActionATGServiceImpl implements IActionService{
     @Override
     public String execute(String channelAddress,String key,JSONObject params ) {
         String res = "";
+        //groupId
         String groupId = params.getString("g");
+        //参与者方taskId
         String taskId = params.getString("t");
+        //参与者业务方法名
         String methodStr = params.getString("ms");
+        //获取参与者执行结果
         int isGroup = params.getInteger("s");
-
+        //添加事务组
         TxGroup txGroup = txManagerService.addTransactionGroup(groupId, taskId, isGroup, channelAddress, methodStr);
 
         if(txGroup!=null) {

@@ -40,11 +40,11 @@ public class DemoServiceImpl implements DemoService {
     @Override
     @TxTransaction(isStart = true)
     @Transactional
-    public int save(String id, String name) {
+    public int save(String name) {
 
-        testMapper.save("mybatis1");
+        testMapper.save("demo1");
 
-        demo2Client.save(id, name);
+        demo2Client.save( "demo2");
 
         demo3Client.save();
 

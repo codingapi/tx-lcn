@@ -69,10 +69,13 @@ public class ActionTServiceImpl implements IActionService {
 
     private String notifyWaitTask(TaskGroup task, int state) {
         String res;
+        //传递tx-m返回结果
         task.setState(state);
+        //唤醒db连接，根据state提交或回滚
         task.signalTask();
         int count = 0;
 
+        //自旋等待db连接最终执行结果
         while (true) {
             if (task.isRemove()) {
 
@@ -98,7 +101,7 @@ public class ActionTServiceImpl implements IActionService {
                 e.printStackTrace();
             }
         }
-
+        //返回结果给tx-m
         return res;
     }
 }

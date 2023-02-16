@@ -21,9 +21,12 @@ public class ActionCGServiceImpl implements IActionService{
     @Override
     public String execute(String channelAddress, String key, JSONObject params ) {
         String res = "";
+        //获取事务组id
         String groupId = params.getString("g");
+        //创建事务组
         TxGroup txGroup = txManagerService.createTransactionGroup(groupId);
         if(txGroup!=null) {
+            //设置当前时间到事务对象中。
             txGroup.setNowTime(System.currentTimeMillis());
             res = txGroup.toJsonString(false);
         }else {

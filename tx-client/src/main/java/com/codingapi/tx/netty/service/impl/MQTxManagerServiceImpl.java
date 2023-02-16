@@ -42,9 +42,13 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
     @Override
     public TxGroup addTransactionGroup(String groupId, String taskId, boolean isGroup, String methodStr) {
         JSONObject jsonObject = new JSONObject();
+        //groupId
         jsonObject.put("g", groupId);
+        //参与者方taskId
         jsonObject.put("t", taskId);
+        //参与者业务方法名
         jsonObject.put("ms", methodStr);
+        //是否同一个事务组下
         jsonObject.put("s", isGroup ? 1 : 0);
         Request request = new Request("atg", jsonObject.toString());
         String json =  SocketManager.getInstance().sendMsg(request);
@@ -54,7 +58,9 @@ public class MQTxManagerServiceImpl implements MQTxManagerService {
     @Override
     public int closeTransactionGroup(final String groupId, final int state) {
         JSONObject jsonObject = new JSONObject();
+        //groupId
         jsonObject.put("g", groupId);
+        //发起者业务方法执行结果，通过该结果，tx-m决定大伙儿一起提交还是回滚。
         jsonObject.put("s", state);
         Request request = new Request("ctg", jsonObject.toString());
         String json =  SocketManager.getInstance().sendMsg(request);

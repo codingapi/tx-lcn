@@ -60,10 +60,10 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
 
     @Override
     public int confirm(TxGroup txGroup) {
-        //绑定管道对象，检查网络
+        //1：从事务中获取所有参与者网络信息。然后检查网络，绑定管道对象。
         setChannel(txGroup.getList());
 
-        //事务不满足直接回滚事务
+        //2：事务不满足直接回滚事务
         if (txGroup.getState()==0) {
             transaction(txGroup, 0);
             return 0;
@@ -74,8 +74,11 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
             return -1;
         }
 
+        //3：查看所有参与者是否执行成功。
         boolean hasOk =  transaction(txGroup, 1);
+        //4：如果所有参与者执行成功，则从redis中删除事务组
         txManagerService.dealTxGroup(txGroup,hasOk);
+        //5：返回结果给发起者。
         return hasOk?1:0;
     }
 
@@ -88,18 +91,19 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
     private void setChannel(List<TxInfo> list) {
         for (TxInfo info : list) {
             if(Constants.address.equals(info.getAddress())){
+                //参与者记录的tx-m地址和当前tx-m地址一样，则查看管道是否存活
                 Channel channel = SocketManager.getInstance().getChannelByModelName(info.getChannelAddress());
                 if (channel != null &&channel.isActive()) {
+                    //存活则绑定管道到参与者信息中
                     ChannelSender sender = new ChannelSender();
                     sender.setChannel(channel);
-
                     info.setChannel(sender);
                 }
             }else{
+                //不存在说明tx-m触发了变更
                 ChannelSender sender = new ChannelSender();
                 sender.setAddress(info.getAddress());
                 sender.setModelName(info.getChannelAddress());
-
                 info.setChannel(sender);
             }
         }
@@ -125,7 +129,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                 if (txInfo.getIsGroup() == 0) {
                     countDownLatchHelper.addExecute(new IExecute<Boolean>() {
                         @Override
-                        public Boolean execute() {
+                        public Boolean execute() {//channel空判断
                             if(txInfo.getChannel()==null){
                                 return false;
                             }
@@ -139,24 +143,24 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                             } else { //正常业务
                                 jsonObject.put("c", checkSate);
                             }
-
+                            //获取参与方的任务id
                             jsonObject.put("t", txInfo.getKid());
                             final String key = KidUtils.generateShortUuid();
                             jsonObject.put("k", key);
-
+                            //新建一个任务
                             Task task = ConditionUtils.getInstance().createTask(key);
-
+                            //超时处理，客户端超过5秒没有返回db执行状态，则设置结果为失败
                             ScheduledFuture future = schedule(key, configReader.getTransactionNettyDelayTime());
-
+                            //向客户端发送消息
                             threadAwaitSend(task, txInfo, jsonObject.toJSONString());
-
+                            //阻塞等待客户端回复消息
                             task.awaitTask();
-
+                            //超时任务还在，则取消。
                             if (!future.isDone()) {
                                 future.cancel(false);
                             }
 
-                            try {
+                            try {//获取参与者执行结果
                                 String data = (String) task.getBack().doing();
                                 // 1  成功 0 失败 -1 task为空 -2 超过
                                 boolean res = "1".equals(data);
@@ -169,19 +173,19 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                             } catch (Throwable throwable) {
                                 throwable.printStackTrace();
                                 return false;
-                            } finally {
+                            } finally {//删除任务
                                 task.remove();
                             }
                         }
                     });
                 }
             }
-
+            //异步获取所有参与者db执行结果
             List<Boolean> hasOks = countDownLatchHelper.execute().getData();
-
+            //更新事务组信息
             String key = configReader.getKeyPrefix() + txGroup.getGroupId();
             redisServerService.saveTransaction(key, txGroup.toJsonString());
-
+            //标记是否所有参与者执行成功，只要有一个失败则返回失败。
             boolean hasOk = true;
             for (boolean bl : hasOks) {
                 if (!bl) {
@@ -208,6 +212,7 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                 }
             }
         }
+        //删除事务组
         txManagerService.deleteTxGroup(txGroup);
         return true;
 
@@ -281,9 +286,12 @@ public class TxManagerSenderServiceImpl implements TxManagerSenderService {
                     }
                 }
 
+                //判断管道是否关闭
                 if(txInfo!=null&&txInfo.getChannel()!=null) {
+                    //发送消息给参与者，执行db操作，参与者返回状态时会唤醒tx-m
                     txInfo.getChannel().send(msg,task);
                 }else{
+                    //管道不存在，则设置失败，并唤醒。
                     task.setBack(new IBack() {
                         @Override
                         public Object doing(Object... objs) throws Throwable {

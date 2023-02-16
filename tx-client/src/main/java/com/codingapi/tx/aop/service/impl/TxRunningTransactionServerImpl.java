@@ -38,14 +38,15 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
     public Object execute(final ProceedingJoinPoint point, final TxTransactionInfo info) throws Throwable {
 
         logger.info("事务参与方...");
-
+        //1：构建任务id
         String kid = KidUtils.generateShortUuid();
         String txGroupId = info.getTxGroupId();
         logger.debug("--->begin running transaction,groupId:" + txGroupId);
         long t1 = System.currentTimeMillis();
-
+        //是否是同一个事务下，第一次进入默认不在。
         boolean isHasIsGroup =  transactionControl.hasGroup(txGroupId);
 
+        //2：构建上下文对象。
         TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
         txTransactionLocal.setGroupId(txGroupId);
         txTransactionLocal.setHasStart(false);
@@ -56,33 +57,34 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
         try {
-
+            //3：执行业务方法
             Object res = point.proceed();
 
-            //写操作 处理
+            //4：针对有db操作的处理。
             if(!txTransactionLocal.isReadOnly()) {
-
+                //获取该注解的业务方法名
                 String methodStr = info.getInvocation().getMethodStr();
-
+                //添加事务组子对象
                 TxGroup resTxGroup = txManagerService.addTransactionGroup(txGroupId, kid, isHasIsGroup, methodStr);
 
                 //已经进入过该模块的，不再执行此方法
                 if(!isHasIsGroup) {
                     String type = txTransactionLocal.getType();
-
+                    //获取任务，该任务在创建db连接时创建。
                     TxTask waitTask = TaskGroupManager.getInstance().getTask(kid, type);
 
-                    //lcn 连接已经开始等待时.
+                    //lcn 连接已经开始等待时.自旋等待任务被删除
                     while (waitTask != null && !waitTask.isAwait()) {
                         TimeUnit.MILLISECONDS.sleep(1);
                     }
 
+                    //tx-m没有发现该事务组，则回滚。
                     if (resTxGroup == null) {
-
                         //通知业务回滚事务
                         if (waitTask != null) {
                             //修改事务组状态异常
                             waitTask.setState(-1);
+                            //唤醒db连接进行回滚。
                             waitTask.signalTask();
                             throw new ServiceException("update TxGroup error, groupId:" + txGroupId);
                         }
@@ -92,8 +94,10 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
 
             return res;
         } catch (Throwable e) {
-            // 这里处理以下情况：当 point.proceed() 业务代码中 db事务正常提交，开始等待，后续处理发生异常。
-            // 由于没有加入事务组，不会收到通知。这里唤醒并回滚
+            //二种情况进入这里
+            //第一种：业务方法执行失败，这里会首先调用回滚方法，然后进入这里。
+            //第二种：当 point.proceed() 业务代码中 db事务正常提交，开始等待，后续处理发生异常。
+            //由于没有加入事务组，不会收到通知。这里唤醒并回滚
             if(!isHasIsGroup) {
                 String type = txTransactionLocal.getType();
                 TxTask waitTask = TaskGroupManager.getInstance().getTask(kid, type);
@@ -107,6 +111,7 @@ public class TxRunningTransactionServerImpl implements TransactionServer {
             }
             throw e;
         } finally {
+            //清空上下文信息
             TxTransactionLocal.setCurrent(null);
             long t2 = System.currentTimeMillis();
             logger.debug("<---end running transaction,groupId:" + txGroupId+",execute time:"+(t2-t1));

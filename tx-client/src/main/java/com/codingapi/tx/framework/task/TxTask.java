@@ -67,18 +67,20 @@ public class TxTask extends Task{
 
     @Override
     public void remove() {
+        //删除任务
         task.remove();
 
         boolean hasData = true;//true没有，false有
 
         String groupKey = getKey().split("_")[1];
+        //查看任务组里面是否有对应的事务组id的任务
         TaskGroup taskGroup =  TaskGroupManager.getInstance().getTaskGroup(groupKey);
         for(TxTask task: taskGroup.getTasks()){
             if(!task.isRemove()){
                 hasData = false;
             }
         }
-
+        //清空任务组里面的数据
         if(hasData){
             TaskGroupManager.getInstance().removeKey(groupKey);
         }

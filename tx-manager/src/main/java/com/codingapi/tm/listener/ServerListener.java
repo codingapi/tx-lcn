@@ -25,6 +25,7 @@ import javax.servlet.ServletContextListener;
         springContext = WebApplicationContextUtils
                 .getWebApplicationContext(event.getServletContext());
         initService = springContext.getBean(InitService.class);
+        //启动netty内嵌服务
         initService.start();
     }
 

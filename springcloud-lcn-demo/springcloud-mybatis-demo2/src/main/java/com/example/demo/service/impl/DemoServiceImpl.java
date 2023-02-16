@@ -28,7 +28,7 @@ public class DemoServiceImpl implements DemoService, ITxTransaction {
     @Override
     @TxTransaction
     @Transactional
-    public int save(String id, String name) {
-        return testMapper.save(id, name);
+    public int save(String name) {
+        return testMapper.save(name);
     }
 }

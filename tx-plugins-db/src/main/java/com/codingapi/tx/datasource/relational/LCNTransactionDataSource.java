@@ -31,14 +31,20 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
 
     @Override
     protected Connection createLcnConnection(Connection connection, TxTransactionLocal txTransactionLocal) {
+        //累加当前获取db连接数。
         nowCount++;
+        //如果是发起方
         if(txTransactionLocal.isHasStart()){
+            //注册回调函数，用于清除缓存中连接资源。
             LCNStartConnection lcnStartConnection = new LCNStartConnection(connection,subNowCount);
             logger.debug("get new start connection - > "+txTransactionLocal.getGroupId());
+            //添加到缓存
             pools.put(txTransactionLocal.getGroupId(), lcnStartConnection);
+            //标记已经获取到db连接
             txTransactionLocal.setHasConnection(true);
             return lcnStartConnection;
         }else {
+            //调用方
             LCNDBConnection lcn = new LCNDBConnection(connection, dataSourceService, subNowCount);
             logger.debug("get new connection ->" + txTransactionLocal.getGroupId());
             pools.put(txTransactionLocal.getGroupId(), lcn);
@@ -74,10 +80,14 @@ public class LCNTransactionDataSource extends AbstractResourceProxy<Connection,L
         //说明有db操作.
         hasTransaction = true;
 
+        //设置db类型
         initDbType();
 
+        //从缓存中获取db资源
         Connection connection = (Connection)loadConnection();
+        //获取不到则新建
         if(connection==null) {
+            //没获取到利用spring生成db连接，并进行封装，加入缓存中。
             connection = initLCNConnection((Connection) point.proceed());
             if(connection==null){
                 throw new SQLException("connection was overload");

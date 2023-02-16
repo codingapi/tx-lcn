@@ -55,7 +55,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
         groupId = transactionLocal.getGroupId();
         maxOutTime = transactionLocal.getMaxTimeOut();
 
-
+        //创建任务，key为kId
         TaskGroup taskGroup = TaskGroupManager.getInstance().createTask(transactionLocal.getKid(),transactionLocal.getType());
         waitTask = taskGroup.getCurrent();
     }
@@ -67,10 +67,12 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
 
         logger.debug("commit label");
 
+        //标记成功执行。
         state = 1;
 
         close();
 
+        //设置该db已关闭
         isClose.set(true);
 
     }
@@ -89,7 +91,9 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
 
     @Override
     protected void closeConnection() throws SQLException {
+        //删除任务
         runnable.close(this);
+        //关闭连接
         connection.close();
         logger.debug("lcnConnection closed groupId:"+ groupId);
     }
@@ -97,14 +101,18 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
     @Override
     public void close() throws SQLException {
 
+        //这里会调用二次close，一次是commit时调用。另外一次是spring关闭时调用。
+        //若已经close则返回。
         if(isClose.get()!=null&& isClose.get()){
             return;
         }
 
+        //db连接关闭则返回
         if(connection==null||connection.isClosed()){
             return;
         }
 
+        //针对连接只读的处理。
         if(readOnly){
             closeConnection();
             logger.debug("now transaction is readOnly , groupId:" + groupId);
@@ -113,15 +121,18 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
 
         logger.debug("now transaction state is " + state + ", (1:commit,0:rollback) groupId:" + groupId);
 
+        //执行失败，回滚的处理。
         if (state==0) {
-
+            //回滚
             rollbackConnection();
             closeConnection();
 
             logger.debug("rollback transaction ,groupId:" + groupId);
         }
+        //执行成功
         if (state==1) {
             TxTransactionLocal txTransactionLocal = TxTransactionLocal.current();
+            //同一个模块被多次请求则直接返回。
             boolean hasGroup = (txTransactionLocal!=null)?txTransactionLocal.isHasIsGroup():false;
             if (hasGroup) {
                 //加入队列的连接，仅操作连接对象，不处理事务
@@ -150,6 +161,7 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
         //start 结束就是全部事务的结束表示,考虑start挂掉的情况
         Timer timer = new Timer();
         System.out.println(" maxOutTime : "+maxOutTime);
+        //1：等待5秒，倘若没收到tx-m返回的事务执行结果，主动询问
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -160,17 +172,20 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
 
         logger.info("transaction is wait for TxManager notify, groupId {}", getGroupId());
 
+        //2：阻塞等待，等待tx-m返回的结果
         waitTask.awaitTask();
-
+        //说明获取到结果，定时任务取消。
         timer.cancel();
 
+        //3：获取返回的结果
         int rs = waitTask.getState();
 
-
         try {
+            //4：说明发起方调用方执行成功，则提交事务。
             if (rs == 1) {
                 connection.commit();
             } else {
+                //5：说明其他方执行失败，则回滚事务
                 rollbackConnection();
             }
 
@@ -178,11 +193,11 @@ public class LCNDBConnection extends AbstractTransactionThread implements LCNCon
 
         }catch (SQLException e){
             logger.info("lcn transaction over,but connection is closed, res -> groupId:"+getGroupId());
-
+            //记录连接错误。
             waitTask.setState(TaskState.connectionError.getCode());
         }
 
-
+        //6：删除任务
         waitTask.remove();
 
     }

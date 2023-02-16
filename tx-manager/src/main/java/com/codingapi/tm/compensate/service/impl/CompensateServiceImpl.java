@@ -285,7 +285,7 @@ public class CompensateServiceImpl implements CompensateService {
 
     @Override
     public TxGroup getCompensateByGroupId(String groupId) {
-        String json = compensateDao.getCompensateByGroupId(groupId);
+        String json = compensateDao.getCompensateByGroupId(groupId);//从redis服务中获取补偿信息
         if (json == null) {
             return null;
         }

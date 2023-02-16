@@ -11,6 +11,6 @@ public interface DemoService  {
 
     List<Test> list();
 
-    int save(String id, String name);
+    int save(String name);
 
 }

@@ -1,0 +1,17 @@
+#模拟2个eurekaServer
+#端口8000,9000
+#2个server需要相互注册到对方服务器
+server:
+  port: 8001
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false  #是否将自己注册到注册中心
+    fetch-registry: false           #是否从eureka获取注册信息
+    service-url:          #配置暴露给Eureka Client的请求地址
+     defaultZone: http://127.0.0.1:${server.port}/eureka/
+     # defaultZone: http://127.0.0.1:9000/eureka/
+  server:
+    enable-self-preservation: false #关闭自我保护机制
+    eviction-interval-timer-in-ms: 4000   #间隔4秒剔除不可用服务

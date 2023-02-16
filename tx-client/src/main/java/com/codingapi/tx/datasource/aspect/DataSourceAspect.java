@@ -31,6 +31,7 @@ public class DataSourceAspect {
 
         logger.debug("getConnection-start---->");
 
+        //获取封装之后的线程池对象。
         Connection connection = lcnConnection.getConnection(point);
         logger.debug("connection-->"+connection);
 

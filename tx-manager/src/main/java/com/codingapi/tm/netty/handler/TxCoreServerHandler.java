@@ -46,6 +46,7 @@ public class TxCoreServerHandler extends ChannelInboundHandlerAdapter { // (1)
     public void channelRead(final ChannelHandlerContext ctx, Object msg) throws Exception {
         final String json = SocketUtils.getJson(msg);
         logger.debug("request->"+json);
+        //接收请求后，线程池异步处理，提高吞吐。
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -57,19 +58,22 @@ public class TxCoreServerHandler extends ChannelInboundHandlerAdapter { // (1)
     private void service(String json,ChannelHandlerContext ctx){
         if (StringUtils.isNotEmpty(json)) {
             JSONObject jsonObject = JSONObject.parseObject(json);
+            //获取命令类型
             String action = jsonObject.getString("a");
             String key = jsonObject.getString("k");
+            //获取请求参数
             JSONObject params = JSONObject.parseObject(jsonObject.getString("p"));
+            //获取客户端地址
             String channelAddress = ctx.channel().remoteAddress().toString();
-
+            //通过命令类型，从spring容器中寻找对应的类处理
             IActionService actionService =  nettyService.getActionService(action);
 
             String res = actionService.execute(channelAddress,key,params);
 
+            //封装响应结果，并刷出站
             JSONObject resObj = new JSONObject();
             resObj.put("k", key);
             resObj.put("d", res);
-
             SocketUtils.sendMsg(ctx,resObj.toString());
 
         }

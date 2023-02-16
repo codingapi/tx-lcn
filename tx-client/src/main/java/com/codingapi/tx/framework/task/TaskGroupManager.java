@@ -29,6 +29,7 @@ public class TaskGroupManager {
     }
 
     public TaskGroup createTask(String key,String type) {
+        //新建一个task
         TaskGroup taskGroup = getTaskGroup(key);
         if(taskGroup==null){
             taskGroup = new TaskGroup();

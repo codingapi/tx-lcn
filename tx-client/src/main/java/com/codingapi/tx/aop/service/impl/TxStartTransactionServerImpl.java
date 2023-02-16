@@ -41,14 +41,17 @@ public class TxStartTransactionServerImpl implements TransactionServer {
 
         final long start = System.currentTimeMillis();
 
+        //标记执行状态，0失败，1成功。
         int state = 0;
 
+        //1：构建事务组id
         final String groupId = TxCompensateLocal.current()==null?KidUtils.generateShortUuid():TxCompensateLocal.current().getGroupId();
 
-        //创建事务组
+        //2：向tx-mange发起事务创建
         logger.debug("创建事务组并发送消息");
         txManagerService.createTransactionGroup(groupId);
 
+        //3：封装事务上下文（封装组id，事务超时时间，事务模式，是否发起方），并设置当前线程中。这里贯穿整个生命周期。
         TxTransactionLocal txTransactionLocal = new TxTransactionLocal();
         txTransactionLocal.setGroupId(groupId);
         txTransactionLocal.setHasStart(true);
@@ -58,28 +61,33 @@ public class TxStartTransactionServerImpl implements TransactionServer {
         TxTransactionLocal.setCurrent(txTransactionLocal);
 
         try {
+            //4：执行业务方法
             Object obj = point.proceed();
+            //修改执行结果状态
             state = 1;
             return obj;
         } catch (Throwable e) {
+            //5：回滚事务
             state = rollbackException(info,e);
             throw e;
         } finally {
 
             final String type = txTransactionLocal.getType();
-
+            //6：通知tx-m关闭事务组，进入事务提交第一阶段，tx-m会通知所有参与者提交。获取所有参与者执行后的最终结果。
             int rs = txManagerService.closeTransactionGroup(groupId, state);
 
             int lastState = rs==-1?0:state;
 
             int executeConnectionError = 0;
 
-            //控制本地事务的数据提交
+            //获取task，走到这里的时候，发起方若执行了回滚，这里为null。
             final TxTask waitTask = TaskGroupManager.getInstance().getTask(groupId, type);
             if(waitTask!=null){
+                //设置最终执行结果
                 waitTask.setState(lastState);
+                //7：唤醒阻塞任务，这里会执行本地db连接池commit，或者回滚。然后归还db连接。
                 waitTask.signalTask();
-
+                //自旋等待线程池删除任务。
                 while (!waitTask.isRemove()){
                     try {
                         Thread.sleep(1);
@@ -101,18 +109,22 @@ public class TxStartTransactionServerImpl implements TransactionServer {
             if (compensateLocal == null) {
                 long end = System.currentTimeMillis();
                 long time = end - start;
+                //8：发起方执行失败但是参与方成功，或者发起方成功，参与方失败。则通知tx-M记录补偿
                 if ((executeConnectionError == 1&&rs == 1)||(lastState == 1 && rs == 0)) {
-                    logger.debug("记录补偿日志");
+                    logger.debug("记录补偿日志");//记录补偿事务数据到tx-m
                     txManagerService.sendCompensateMsg(groupId, time, info,executeConnectionError);
                 }
             }else{
+                //调用方执行成功
                 if(rs==1){
+                    //标记提交
                     lastState = 1;
                 }else{
+                    //标记已回滚。
                     lastState = 0;
                 }
             }
-
+            //清除事务上下文信息
             TxTransactionLocal.setCurrent(null);
             logger.debug("<---分布式事务 end start transaction");
             logger.debug("start transaction over, res -> groupId:" + groupId + ", now state:" + (lastState == 1 ? "commit" : "rollback"));

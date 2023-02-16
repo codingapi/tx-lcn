@@ -15,10 +15,10 @@ import java.util.List;
 public interface TestMapper {
 
 
-    @Select("SELECT * FROM T_TEST")
+    @Select("SELECT * FROM tx_lcn_test1")
     List<Test> findAll();
 
-    @Insert("INSERT INTO T_TEST(ID, NAME) VALUES(#{id}, #{name})")
-    int save(@Param("id") String id, @Param("name") String name);
+    @Insert("INSERT INTO tx_lcn_test1(exec_desc) VALUES (#{exec_desc})")
+    int save(@Param("exec_desc") String execDesc);
 
 }

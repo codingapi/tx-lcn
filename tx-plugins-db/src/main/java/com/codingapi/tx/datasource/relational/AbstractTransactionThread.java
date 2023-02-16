@@ -21,12 +21,15 @@ public abstract class AbstractTransactionThread {
             logger.debug("start connection is wait ! ");
             return;
         }
+        //标记已执行过该方法
         hasStartTransaction = true;
         Runnable runnable = new HookRunnable() {
             @Override
             public void run0() {
+                //清空上下文对象
                 TxTransactionLocal.setCurrent(null);
                 try {
+                    //执行提交或回滚。
                     transaction();
                 } catch (Exception e) {
                     logger.error(e.getMessage());
@@ -37,6 +40,7 @@ public abstract class AbstractTransactionThread {
                     }
                 } finally {
                     try {
+                        //关闭回调函数，关闭task，从缓存中清除db连接，归还db连接。
                         closeConnection();
                     } catch (SQLException e) {
                         logger.error(e.getMessage());

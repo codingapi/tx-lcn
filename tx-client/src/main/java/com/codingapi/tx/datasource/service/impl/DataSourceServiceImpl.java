@@ -22,13 +22,18 @@ public class DataSourceServiceImpl implements DataSourceService {
 
 
         String waitTaskId = waitTask.getKey();
+        //1：主动询问tx-m结果状态。
         int rs = txManagerService.cleanNotifyTransaction(groupId, waitTaskId);
+        //执行成功或失败则存储结果唤醒。
         if (rs == 1 || rs == 0) {
+            //将tx-m返回的结果存储。
             waitTask.setState(rs);
+            //唤醒任务
             waitTask.signalTask();
 
             return;
         }
+        //2：走到这里说明网络或连接错误，通过http请求询问tx-m结果状态，同通知txm清理事务数据。
         rs = txManagerService.cleanNotifyTransactionHttp(groupId, waitTaskId);
         if (rs == 1 || rs == 0) {
             waitTask.setState(rs);
@@ -37,7 +42,7 @@ public class DataSourceServiceImpl implements DataSourceService {
             return;
         }
 
-        //添加到补偿队列
+        //3：走到这里说明tx-m异常，则添加到补偿队列
         waitTask.setState(-100);
         waitTask.signalTask();
 

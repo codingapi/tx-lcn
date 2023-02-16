@@ -19,5 +19,5 @@ public interface Demo2Client {
 
 
     @RequestMapping(value = "/demo/save", method = RequestMethod.GET)
-    int save(@RequestParam(value = "id") String id, @RequestParam(value = "name") String name);
+    int save(@RequestParam(value = "name") String name);
 }

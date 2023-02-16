@@ -40,6 +40,7 @@ public class TransactionServerFactoryServiceImpl implements TransactionServerFac
         if (!SocketManager.getInstance().isNetState()) {
             //检查socket通讯是否正常 （第一次执行时启动txRunningTransactionServer的业务处理控制，然后嵌套调用其他事务的业务方法时都并到txInServiceTransactionServer业务处理下）
             logger.warn("tx-manager not connected.");
+            //默认事务执行，不以分布式事务执行。就简单的执行。
             return txDefaultTransactionServer;
         }
 
@@ -47,6 +48,7 @@ public class TransactionServerFactoryServiceImpl implements TransactionServerFac
         logger.info("分布式事务处理逻辑...开始");
 
         /** 事务发起方：仅当TxTransaction注解不为空，其他都为空时。表示分布式事务开始启动 **/
+        //注解不为空，且注解声明了为发起方，且事务组id为空，这就说明为事务发起方。同时txTransactionLocal记录全局上下文信息的为空。事务组id为空。
         if (info.getTxTransaction() != null && info.getTxTransaction().isStart() && info.getTxTransactionLocal() == null && StringUtils.isEmpty(info.getTxGroupId())) {
             //检查socket通讯是否正常 （当启动事务的主业务方法执行完以后，再执行其他业务方法时将进入txInServiceTransactionServer业务处理）
             if (SocketManager.getInstance().isNetState()) {
@@ -59,6 +61,7 @@ public class TransactionServerFactoryServiceImpl implements TransactionServerFac
 
         /** 事务参与方：分布式事务已经开启，业务进行中 **/
         logger.debug("事务参与方：分布式事务已经开启，业务进行中");
+        //事务组id不为空，则说明是参与者。
         if (info.getTxTransactionLocal() != null || StringUtils.isNotEmpty(info.getTxGroupId())) {
             //检查socket通讯是否正常 （第一次执行时启动txRunningTransactionServer的业务处理控制，然后嵌套调用其他事务的业务方法时都并到txInServiceTransactionServer业务处理下）
             if (SocketManager.getInstance().isNetState()) {
@@ -69,6 +72,7 @@ public class TransactionServerFactoryServiceImpl implements TransactionServerFac
                     if (transactionControl.isNoTransactionOperation() || info.getTxTransaction().readOnly()) {
                         return txRunningNoTransactionServer;
                     } else {
+                        //获取参与方事务执行器
                         return txRunningTransactionServer;
                     }
                 }
